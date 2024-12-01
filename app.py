@@ -1,18 +1,11 @@
 # app.py
 import streamlit as st
-import pandas as pd
-import random
-from datetime import datetime, timedelta
 import pm4py
-import base64
-from pm4py.algo.discovery.inductive import algorithm as inductive_miner
 from pm4py.visualization.petri_net import visualizer as pn_visualizer
 from pm4py.visualization.process_tree import visualizer as pt_visualizer
 from pm4py.visualization.bpmn import visualizer as bpmn_visualizer
-from pm4py.algo.evaluation.replay_fitness import algorithm as replay_fitness
-from pm4py.algo.evaluation.precision import algorithm as precision_evaluator
 import os
-from bpmn_exporter import BPMNExporter, generate_bpmn_from_csv
+
 
 import plotly.graph_objects as go
 from process_mining_enhanced import FXProcessMining
