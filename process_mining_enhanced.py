@@ -9,6 +9,8 @@ from pm4py.statistics.traces.generic.log import case_statistics
 from pm4py.algo.conformance.tokenreplay import algorithm as token_replay
 from pm4py.algo.discovery.inductive import algorithm as inductive_miner
 from risk_analysis import ProcessRiskAnalyzer, EnhancedFMEA
+from advanced_process_analysis import AdvancedProcessAnalyzer
+
 
 class FXProcessMining:
     def __init__(self, event_log_path: str, separator: str = ';'):
@@ -19,6 +21,7 @@ class FXProcessMining:
         self.initial_marking = None
         self.final_marking = None
         self.activity_stats = None
+        self.advanced_analyzer = None
 
     def preprocess_data(self) -> None:
         """Step 2: Data Preprocessing"""
@@ -42,6 +45,9 @@ class FXProcessMining:
             timestamp_key='timestamp'
         )
         self.event_log = pm4py.convert_to_event_log(self.event_log)
+
+        # Initialize advanced analyzer
+        self.advanced_analyzer = AdvancedProcessAnalyzer(self.event_log)
 
     def discover_process(self) -> None:
         """Step 3: Process Discovery"""
@@ -140,45 +146,142 @@ class FXProcessMining:
         }
 
     def generate_report(self) -> Dict:
-        """Generate comprehensive process mining report including risks"""
-        # Get risk analysis results
-        risk_results = self.analyze_risks()
+        """Generate comprehensive process mining report including advanced analysis"""
+        if not self.advanced_analyzer:
+            raise ValueError("Advanced analyzer not initialized. Run preprocess_data() first.")
 
-        return {
-            'conformance': self.check_conformance(),
-            'performance': self.analyze_performance(),
-            'root_causes': self.perform_root_cause_analysis(),
-            'improvements': self.suggest_improvements(),
-            'risks': risk_results
-        }
+        try:
+            # Calculate conformance using token-based replay
+            token_replay_result = token_replay.apply(
+                self.event_log,
+                self.process_model,
+                self.initial_marking,
+                self.final_marking
+            )
 
+            # Calculate fitness
+            fitness = sum(case['trace_fitness'] for case in token_replay_result) / len(
+                token_replay_result) if token_replay_result else 0
+
+            # Get variants statistics
+            variants = case_statistics.get_variant_statistics(self.event_log)
+            completed_traces = len(
+                [case for case in token_replay_result if case['trace_is_fit']]) if token_replay_result else 0
+
+            # Get activity statistics
+            start_activities = pm4py.get_start_activities(self.event_log)
+            end_activities = pm4py.get_end_activities(self.event_log)
+
+            # Get detailed analyses
+            detailed_conformance = self.advanced_analyzer.detailed_conformance_analysis()
+            detailed_performance = self.advanced_analyzer.detailed_performance_analysis()
+            root_cause_results = self.advanced_analyzer.comprehensive_root_cause_analysis()
+            improvement_suggestions = self.advanced_analyzer.generate_process_improvements()
+
+            # Get case statistics
+            case_stats = case_statistics.get_cases_description(self.event_log)
+
+            # Calculate average case duration
+            durations = [case['caseDuration'] for case in case_stats.values()]
+            avg_case_duration = sum(durations) / len(durations) if durations else 0
+            median_case_duration = sorted(durations)[len(durations) // 2] if durations else 0
+
+            # Get risk analysis
+            try:
+                risk_results = self.analyze_risks()
+            except Exception as e:
+                risk_results = {"error": str(e)}
+
+            # Structure the complete report
+            report = {
+                'process_statistics': {
+                    'start_activities': dict(start_activities),
+                    'end_activities': dict(end_activities),
+                    'variants': variants,
+                    'total_cases': len(self.event_log),
+                    'total_events': sum(len(trace) for trace in self.event_log),
+                    'case_statistics': case_stats
+                },
+                'conformance': {
+                    'fitness': fitness,
+                    'completed_traces': completed_traces,
+                    'total_traces': len(self.event_log),
+                    'detailed_metrics': detailed_conformance
+                },
+                'performance': {
+                    'avg_case_duration': avg_case_duration,
+                    'median_case_duration': median_case_duration,
+                    'bottlenecks': [
+                        {
+                            'source': activity,
+                            'target': 'End',
+                            'avg_duration': stats.get('mean', 0),
+                            'frequency': stats.get('count', 0)
+                        }
+                        for activity, stats in detailed_performance.get('activity_durations', {}).items()
+                    ] if detailed_performance.get('activity_durations') else []
+                },
+                'root_causes': {
+                    'variant_analysis': [
+                        {'activity': act, 'count': count}
+                        for act, count in start_activities.items()
+                    ],
+                    'attribute_impact': root_cause_results.get('attribute_correlation', {}),
+                    'temporal_patterns': detailed_performance.get('throughput_analysis', {})
+                },
+                'improvements': [
+                    {
+                        'type': 'performance',
+                        'issue': sugg.get('issue', ''),
+                        'recommendation': sugg.get('recommendation', '')
+                    }
+                    for sugg in improvement_suggestions.get('bottleneck_solutions', [])
+                ],
+                'risks': risk_results
+            }
+
+            return report
+
+        except Exception as e:
+            import traceback
+            print(f"Error generating report: {str(e)}")
+            print(f"Traceback: {traceback.format_exc()}")
+            # Return a minimal valid report structure even in case of error
+            return {
+                'process_statistics': {
+                    'start_activities': {},
+                    'end_activities': {},
+                    'variants': [],
+                    'total_cases': 0,
+                    'total_events': 0,
+                    'case_statistics': {}
+                },
+                'conformance': {
+                    'fitness': 0,
+                    'completed_traces': 0,
+                    'total_traces': 0,
+                    'detailed_metrics': {}
+                },
+                'performance': {
+                    'avg_case_duration': 0,
+                    'median_case_duration': 0,
+                    'bottlenecks': []
+                },
+                'root_causes': {
+                    'variant_analysis': [],
+                    'attribute_impact': {},
+                    'temporal_patterns': {}
+                },
+                'improvements': [],
+                'risks': {'error': str(e)}
+            }
 
     def analyze_performance(self) -> Dict:
         """Step 5: Performance Analysis"""
-        # Calculate case durations
-        case_durations = case_statistics.get_all_case_durations(self.event_log)
+        if not self.advanced_analyzer:
+            raise ValueError("Advanced analyzer not initialized. Run preprocess_data() first.")
 
-        # Calculate throughput time statistics
-        performance_metrics = {
-            'avg_case_duration': np.mean(case_durations),
-            'median_case_duration': np.median(case_durations),
-            'min_case_duration': np.min(case_durations),
-            'max_case_duration': np.max(case_durations)
-        }
-
-        # Identify bottlenecks
-        from pm4py.algo.discovery.dfg import algorithm as dfg_discovery
-        from pm4py.statistics.start_activities.log import get as start_activities
-        from pm4py.statistics.end_activities.log import get as end_activities
-
-        dfg = dfg_discovery.apply(self.event_log)
-        start_acts = start_activities.get_start_activities(self.event_log)
-        end_acts = end_activities.get_end_activities(self.event_log)
-
-        # Find activities with longest waiting times
-        performance_metrics['bottlenecks'] = self._identify_bottlenecks(dfg)
-
-        return performance_metrics
+        return self.advanced_analyzer.detailed_performance_analysis()
 
 
     def _identify_bottlenecks(self, dfg) -> List[Dict]:
@@ -206,12 +309,10 @@ class FXProcessMining:
 
     def perform_root_cause_analysis(self) -> Dict:
         """Step 6: Root Cause Analysis"""
-        analysis_results = {
-            'variant_analysis': self._analyze_variants(),
-            'attribute_impact': self._analyze_attribute_impact(),
-            'temporal_patterns': self._analyze_temporal_patterns()
-        }
-        return analysis_results
+        if not self.advanced_analyzer:
+            raise ValueError("Advanced analyzer not initialized. Run preprocess_data() first.")
+
+        return self.advanced_analyzer.comprehensive_root_cause_analysis()
 
     def _analyze_variants(self) -> List[Dict]:
         """Analyze process variants"""
@@ -245,50 +346,10 @@ class FXProcessMining:
 
     def suggest_improvements(self) -> List[Dict]:
         """Step 7: Process Enhancement"""
-        # Get performance metrics
-        performance = self.analyze_performance()
-        conformance = self.check_conformance()
-        root_causes = self.perform_root_cause_analysis()
+        if not self.advanced_analyzer:
+            raise ValueError("Advanced analyzer not initialized. Run preprocess_data() first.")
 
-        improvements = []
-
-        # Analyze bottlenecks
-        for bottleneck in performance['bottlenecks'][:3]:
-            improvements.append({
-                'type': 'bottleneck',
-                'location': f"{bottleneck['source']} → {bottleneck['target']}",
-                'issue': f"High average duration: {bottleneck['avg_duration']:.2f} seconds",
-                'recommendation': "Consider adding resources or automation"
-            })
-
-        # Analyze conformance issues
-        if conformance['fitness'] < 0.95:
-            improvements.append({
-                'type': 'conformance',
-                'issue': f"Low process fitness: {conformance['fitness']:.2f}",
-                'recommendation': "Review and update process documentation and training"
-            })
-
-        # Analyze variant patterns
-        variants = root_causes['variant_analysis']
-        if len(variants) > 10:  # High variability
-            improvements.append({
-                'type': 'standardization',
-                'issue': f"High process variability: {len(variants)} variants",
-                'recommendation': "Standardize common process paths and investigate deviations"
-            })
-
-        return improvements
-
-
-    def generate_report(self) -> Dict:
-        """Generate comprehensive process mining report"""
-        return {
-            'conformance': self.check_conformance(),
-            'performance': self.analyze_performance(),
-            'root_causes': self.perform_root_cause_analysis(),
-            'improvements': self.suggest_improvements()
-        }
+        return self.advanced_analyzer.generate_process_improvements()
 
 
 # Usage example
