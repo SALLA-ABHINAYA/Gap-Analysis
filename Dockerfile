@@ -17,6 +17,8 @@ EOF
 
 COPY . .
 
+ENV AZURE_FILE_PATH=/mnt/azure
+
 RUN python synthetic_data/synthetic_data_gr.py
 
 HEALTHCHECK CMD curl --fail http://localhost:8501/_stcore/health
