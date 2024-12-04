@@ -19,7 +19,8 @@ from process_mining_enhanced import FXProcessMining
 from risk_analysis import ProcessRiskAnalyzer, EnhancedFMEA
 
 # Set up Graphviz path
-os.environ["PATH"] += os.pathsep + 'C:/samadhi/technology/Graphviz/bin'
+azure_file_path = os.getenv("AZURE_FILE_PATH")
+os.environ["PATH"] += azure_file_path
 
 
 def create_directories():
