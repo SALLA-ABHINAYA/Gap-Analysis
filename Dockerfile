@@ -17,7 +17,7 @@ EOF
 
 COPY . .
 
-ENV AZURE_FILE_PATH=/mnt/azure
+ENV AZURE_FILE_PATH=/mnt/azure/graphviz-12.2.0.zip
 
 RUN python synthetic_data/synthetic_data_gr.py
 
