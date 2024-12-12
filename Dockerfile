@@ -24,6 +24,7 @@ RUN python synthetic_data/synthetic_data_gr.py
 
 HEALTHCHECK CMD curl --fail http://localhost:8501/_stcore/health
 
-CMD ["streamlit","run","app.py","--server.port","8501"]
+
+CMD ["streamlit","run","IRMAI.py","--server.port","8501"]
 
 

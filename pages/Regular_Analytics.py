@@ -11,7 +11,7 @@ import plotly.graph_objects as go
 from process_mining_enhanced import FXProcessMining
 from risk_analysis import ProcessRiskAnalyzer, EnhancedFMEA
 
-# Set up Graphviz path
+# # Set up Graphviz path
 azure_file_path = os.getenv("AZURE_FILE_PATH")
 os.environ["PATH"] += azure_file_path
 
