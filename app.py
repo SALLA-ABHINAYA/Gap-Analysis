@@ -1,18 +1,11 @@
 # app.py
 import streamlit as st
-import pandas as pd
-import random
-from datetime import datetime, timedelta
 import pm4py
-import base64
-from pm4py.algo.discovery.inductive import algorithm as inductive_miner
 from pm4py.visualization.petri_net import visualizer as pn_visualizer
 from pm4py.visualization.process_tree import visualizer as pt_visualizer
 from pm4py.visualization.bpmn import visualizer as bpmn_visualizer
-from pm4py.algo.evaluation.replay_fitness import algorithm as replay_fitness
-from pm4py.algo.evaluation.precision import algorithm as precision_evaluator
 import os
-from bpmn_exporter import BPMNExporter, generate_bpmn_from_csv
+
 
 import plotly.graph_objects as go
 from process_mining_enhanced import FXProcessMining
@@ -70,17 +63,37 @@ def process_mining_analysis(csv_path):
         bpmn_gviz = bpmn_visualizer.apply(bpmn_graph)
         bpmn_visualizer.save(bpmn_gviz, "output/fx_trade_bpmn.png")
 
-        # Get additional metrics from mining results
-        start_activities = mining_results['root_causes']['variant_analysis'][:5]
-        end_activities = mining_results['root_causes']['variant_analysis'][-5:]
-        conformance = mining_results['conformance']
-        performance = mining_results['performance']
+        # Get process statistics with error handling
+        process_stats = mining_results.get('process_statistics', {})
+        start_activities = [
+            {'activity': act, 'count': count}
+            for act, count in list(process_stats.get('start_activities', {}).items())[:5]
+        ]
+        end_activities = [
+            {'activity': act, 'count': count}
+            for act, count in list(process_stats.get('end_activities', {}).items())[-5:]
+        ]
+
+        # Get metrics with default values for error cases
+        conformance = {
+            'fitness': mining_results.get('conformance', {}).get('fitness', 0) * 100,  # Convert to percentage
+            'completed_traces': mining_results.get('conformance', {}).get('completed_traces', 0),
+            'total_traces': mining_results.get('conformance', {}).get('total_traces', 0)
+        }
+
+        performance = {
+            'avg_case_duration': mining_results.get('performance', {}).get('avg_case_duration', 0),
+            'median_case_duration': mining_results.get('performance', {}).get('median_case_duration', 0),
+            'bottlenecks': mining_results.get('performance', {}).get('bottlenecks', [])
+        }
 
         return (conformance, performance, start_activities, end_activities,
                 bpmn_graph, event_log, mining_results)
 
     except Exception as e:
         st.error(f"Error in process mining analysis: {str(e)}")
+        import traceback
+        st.error(f"Traceback: {traceback.format_exc()}")
         raise
 
 
