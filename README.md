@@ -15,7 +15,6 @@ python synthetic_data/synthetic_data_gr.py
 ----
 streamlit run app.py
 
-
 streamlit run app_ocpm.py
 
 ## step 3 : Gap Analysis
