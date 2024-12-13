@@ -1,0 +1,625 @@
+=== FX Trading Process Gap Analysis Report ===
+Generated on: 2024-11-22 06:02:36
+
+1. Current Process Overview
+   Total Activities: 35
+   Total Gateways: 0
+   Total Events: 2
+
+2. Activity Analysis
+   Activity: Strategy Validation
+     ID: id3597e18b-c346-45de-b674-415074642ad2
+     Type: task
+     Incoming Connections: 1
+     - Incoming From:
+       * 
+     Outgoing Connections: 1
+     - Outgoing To:
+       * 
+
+   Activity: Skew Calibration
+     ID: id2efd104d-8dcd-469e-bd50-f88088d14073
+     Type: task
+     Incoming Connections: 1
+     - Incoming From:
+       * 
+     Outgoing Connections: 1
+     - Outgoing To:
+       * 
+
+   Activity: Final Settlement
+     ID: id0416801c-0999-40b0-bd5e-8ce977e4c08c
+     Type: task
+     Incoming Connections: 1
+     - Incoming From:
+       * 
+     Outgoing Connections: 1
+     - Outgoing To:
+       * 
+
+   Activity: Trade Validation
+     ID: id42e00b90-dd66-4a58-97d7-5de7a7c2cfba
+     Type: task
+     Incoming Connections: 1
+     - Incoming From:
+       * 
+     Outgoing Connections: 1
+     - Outgoing To:
+       * 
+
+   Activity: Regulatory Reporting Generation
+     ID: id7b1a419d-dde0-4846-8ee1-74697b606e35
+     Type: task
+     Incoming Connections: 1
+     - Incoming From:
+       * 
+     Outgoing Connections: 1
+     - Outgoing To:
+       * 
+
+   Activity: Market Making Spread Calculation
+     ID: id56db1d77-1f8d-433b-9e57-97f35ae43c6f
+     Type: task
+     Incoming Connections: 1
+     - Incoming From:
+       * 
+     Outgoing Connections: 1
+     - Outgoing To:
+       * 
+
+   Activity: Trade Confirmation
+     ID: idc93d36fe-8fa2-4006-9b69-c3b2c7e23478
+     Type: task
+     Incoming Connections: 1
+     - Incoming From:
+       * 
+     Outgoing Connections: 1
+     - Outgoing To:
+       * 
+
+   Activity: Position Reconciliation
+     ID: id86fab05c-3adf-4a5f-9abc-fbe85724abea
+     Type: task
+     Incoming Connections: 1
+     - Incoming From:
+       * 
+     Outgoing Connections: 1
+     - Outgoing To:
+       * 
+
+   Activity: Trade Reconciliation
+     ID: id98b503dc-54bc-4e30-987f-1b1b195b970d
+     Type: task
+     Incoming Connections: 1
+     - Incoming From:
+       * 
+     Outgoing Connections: 1
+     - Outgoing To:
+       * 
+
+   Activity: Best Execution Validation
+     ID: id927851d1-0156-422c-b7a3-e4e79c93b8e5
+     Type: task
+     Incoming Connections: 1
+     - Incoming From:
+       * 
+     Outgoing Connections: 1
+     - Outgoing To:
+       * 
+
+   Activity: Quote Provided
+     ID: id954d95bc-3dbe-40dc-9b2d-1115d4e44e74
+     Type: task
+     Incoming Connections: 1
+     - Incoming From:
+       * 
+     Outgoing Connections: 1
+     - Outgoing To:
+       * 
+
+   Activity: Collateral Management
+     ID: id31607c49-0893-482d-99a6-2b13de281532
+     Type: task
+     Incoming Connections: 1
+     - Incoming From:
+       * 
+     Outgoing Connections: 1
+     - Outgoing To:
+       * 
+
+   Activity: Trade Initiated
+     ID: id605112c3-24de-41d9-b26d-69441b72c458
+     Type: task
+     Incoming Connections: 1
+     - Incoming From:
+       * start
+     Outgoing Connections: 1
+     - Outgoing To:
+       * 
+
+   Activity: Greeks Calculation
+     ID: id2a77c328-536b-43c2-bbff-80e159aef200
+     Type: task
+     Incoming Connections: 1
+     - Incoming From:
+       * 
+     Outgoing Connections: 1
+     - Outgoing To:
+       * 
+
+   Activity: ISDA Master Agreement Check
+     ID: idbff42df5-6c96-4287-acdd-82de5467d709
+     Type: task
+     Incoming Connections: 1
+     - Incoming From:
+       * 
+     Outgoing Connections: 1
+     - Outgoing To:
+       * 
+
+   Activity: KYC Refresh Check
+     ID: id04bd65a2-9524-49fc-9937-c00ef82e6f30
+     Type: task
+     Incoming Connections: 1
+     - Incoming From:
+       * 
+     Outgoing Connections: 1
+     - Outgoing To:
+       * 
+
+   Activity: Trade Transparency Assessment
+     ID: idc5b6d518-dbcc-453c-9084-ec41676e9b0e
+     Type: task
+     Incoming Connections: 1
+     - Incoming From:
+       * 
+     Outgoing Connections: 1
+     - Outgoing To:
+       * 
+
+   Activity: Premium Settlement
+     ID: id11a988ca-a204-448f-8f7c-6788c989e1ee
+     Type: task
+     Incoming Connections: 1
+     - Incoming From:
+       * 
+     Outgoing Connections: 1
+     - Outgoing To:
+       * 
+
+   Activity: Transaction Reporting Check
+     ID: idcf7db786-d7ee-400f-9374-0e9691e1ca06
+     Type: task
+     Incoming Connections: 1
+     - Incoming From:
+       * 
+     Outgoing Connections: 1
+     - Outgoing To:
+       * 
+
+   Activity: CSA Verification
+     ID: id891ae715-6e14-4059-840b-070557ea09d3
+     Type: task
+     Incoming Connections: 1
+     - Incoming From:
+       * 
+     Outgoing Connections: 1
+     - Outgoing To:
+       * 
+
+   Activity: Settlement Instructions
+     ID: id9a0da91f-2760-4ba6-91c5-9c720f1bd561
+     Type: task
+     Incoming Connections: 1
+     - Incoming From:
+       * 
+     Outgoing Connections: 1
+     - Outgoing To:
+       * 
+
+   Activity: Surface Construction
+     ID: id77a5276c-cad6-4a5a-a53f-dbff206f260e
+     Type: task
+     Incoming Connections: 1
+     - Incoming From:
+       * 
+     Outgoing Connections: 1
+     - Outgoing To:
+       * 
+
+   Activity: Trade Allocation
+     ID: id55dea364-3b7e-49a5-b8d3-e8ff3d00e37c
+     Type: task
+     Incoming Connections: 1
+     - Incoming From:
+       * 
+     Outgoing Connections: 1
+     - Outgoing To:
+       * 
+
+   Activity: Quote Requested
+     ID: idb147a9dc-d7c8-4fb3-9a6e-8b2ee25dc2de
+     Type: task
+     Incoming Connections: 1
+     - Incoming From:
+       * 
+     Outgoing Connections: 1
+     - Outgoing To:
+       * 
+
+   Activity: Risk Assessment
+     ID: id95b21f3f-c413-45b2-8a61-a6b172b7a88c
+     Type: task
+     Incoming Connections: 1
+     - Incoming From:
+       * 
+     Outgoing Connections: 1
+     - Outgoing To:
+       * 
+
+   Activity: Volatility Surface Analysis
+     ID: id47da1a2b-9d78-41f0-bc2e-45a9a64c70f9
+     Type: task
+     Incoming Connections: 1
+     - Incoming From:
+       * 
+     Outgoing Connections: 1
+     - Outgoing To:
+       * 
+
+   Activity: Volatility Smile Analysis
+     ID: id66947f1f-90cd-4da0-af21-f363ce6e53db
+     Type: task
+     Incoming Connections: 1
+     - Incoming From:
+       * 
+     Outgoing Connections: 1
+     - Outgoing To:
+       * 
+
+   Activity: Initial Margin Calculation
+     ID: id1631ee94-12bf-4ba6-b062-2d352171dabc
+     Type: task
+     Incoming Connections: 1
+     - Incoming From:
+       * 
+     Outgoing Connections: 1
+     - Outgoing To:
+       * 
+
+   Activity: Trade Execution
+     ID: id36874167-0766-4436-b963-18a41627c872
+     Type: task
+     Incoming Connections: 1
+     - Incoming From:
+       * 
+     Outgoing Connections: 1
+     - Outgoing To:
+       * 
+
+   Activity: Credit Check
+     ID: id0bbdb4dc-ef55-4f6f-b2ef-e9fb2b6c92aa
+     Type: task
+     Incoming Connections: 1
+     - Incoming From:
+       * 
+     Outgoing Connections: 1
+     - Outgoing To:
+       * 
+
+   Activity: Premium Calculation
+     ID: id47344f1e-b330-4f89-9a45-83b01bf55dee
+     Type: task
+     Incoming Connections: 1
+     - Incoming From:
+       * 
+     Outgoing Connections: 1
+     - Outgoing To:
+       * 
+
+   Activity: Trade Matching
+     ID: idad7252b9-0e64-4e1d-8b7d-714cf89a3a5c
+     Type: task
+     Incoming Connections: 1
+     - Incoming From:
+       * 
+     Outgoing Connections: 1
+     - Outgoing To:
+       * 
+
+   Activity: Exercise Decision
+     ID: idc4d22f90-9507-40ca-8e69-ce39d6fa5154
+     Type: task
+     Incoming Connections: 1
+     - Incoming From:
+       * 
+     Outgoing Connections: 1
+     - Outgoing To:
+       * 
+
+   Activity: Client Limit Validation
+     ID: id899383ec-8a7a-4182-8f3a-2a939d93782e
+     Type: task
+     Incoming Connections: 1
+     - Incoming From:
+       * 
+     Outgoing Connections: 1
+     - Outgoing To:
+       * 
+
+   Activity: Market Data Validation
+     ID: idd3a3d100-1be2-4d66-a587-40b43d666909
+     Type: task
+     Incoming Connections: 1
+     - Incoming From:
+       * 
+     Outgoing Connections: 1
+     - Outgoing To:
+       * 
+
+3. Guideline Requirements
+   Mandatory Activities:
+   - Action: monitor
+     Objects: thatstaff, bedocument, byallparties
+     Context: IManagement must actively monitor theuseofsystems toensure 
+thatstaff isproperly trained, disputes areidentified promptly ,and 
+proper interaction existswithvendor s. 
+IProcedures involv ingtrade disputesshould bedocument edandfully 
+understood byallparties before anytrades areexecuted. 
+
+
+   - Action: willneed
+     Objects: date, protection, information
+     Context: Trading parties willneed tohaveup-to-date virus protection and 
+must usecautionindownloading andaccessing external 
+information. 
+
+
+   - Action: recognize
+     Objects: tofind
+     Context: Whenever atrade isabort ed,manager sandtraders must 
+recognize that itmaybeimpossible forthebroker tofind another 
+counterparty attheoriginal price.
+
+   - Action: betake
+     Objects: fa, negotiation
+     Context: 11 
+Caremust betaken that informal dispute resolutions areachieved 
+through good-fa ith, arm’s-length negotiation.
+
+   - Action: beaware
+     Objects: tocreate, activityinthemarket
+     Context: Management must beaware ofitsresponsibility tocreate an 
+operatingstaff adequate tosupport thescope ofthetradingdesk’s 
+activityinthemarket.
+
+   - Action: mustbestrictlyfollowe
+     Objects: laws
+     Context: All applicabl emone y-laund ering laws, 
+regulati ons, andindustry guidelines mustbestrictlyfollowed.
+
+   - Action: beadequate
+     Objects: gs, suspic, ymanner
+     Context: Internal 
+contr ols,including accountopenin gs,documentationproced ures,and 
+management information/monitorin gsystems, must beadequate to 
+detect suspic ious activity .Anyirregularorsuspicious activity needs to 
+becommu nicat edtomanageme ntinatimel ymanner. 
+
+
+   - Action: bemarked
+     Objects: criteria, derivativ, onabasis, instrument, bala, prices
+     Context: Off-balance- 
+sheet derivati veinstruments, however, areaccou nted forasfollows: 
+IIftheinstrument meets certainspecified hedge-ac counting criteria, 
+thegains orlosses (income orexpe nse) associatedwith the 
+derivativ ecanbedeferred andrealized onabasis consistent with 
+theincome andexpens eofthehedged instrument. 
+IOther wise, gains orlosses must berecognized asthey occur, and 
+off-bala nce-sheet derivativ einstruments must bemarked tothe 
+market’s prices.
+
+   - Action: forvalue
+     Objects: notuseNPV, forwardbooks, ivemeans, ingtheinherentrisks
+     Context: Howeve r,ifmanagement does notuseNPV forvaluing its 
+foreign exchange forwardbooks, itmustdeviseanalternat ivemeans of 
+controll ingtheinherentrisks.
+
+   - Action: notbecircumvente
+     Objects: isbroken, ions
+     Context: Customer anonymity should notbecircumvented with theuseof 
+slang orpseudony ms.Ifconfide ntiality isbroken, managem entmust 
+actpromptly tocorrectthecondit ions that allowed theevent to 
+occur.
+
+   - Action: requi
+     Objects: fullattention, instituti, activities, positions
+     Context: Managers must requi restaff togive fullattention totheir instituti on’s 
+business activities without being distracted bypersonal financial 
+affairsorbiased bypersonal financial positions. 
+
+
+4. Gap Analysis
+   Missing Required Activities:
+   - requi
+     Context: Managers must requi restaff togive fullattention totheir instituti on’s 
+business activities without being distracted bypersonal financial 
+affairsorbiased bypersonal financial positions. 
+
+   - forvalue
+     Context: Howeve r,ifmanagement does notuseNPV forvaluing its 
+foreign exchange forwardbooks, itmustdeviseanalternat ivemeans of 
+controll ingtheinherentrisks.
+   - bemarked
+     Context: Off-balance- 
+sheet derivati veinstruments, however, areaccou nted forasfollows: 
+IIftheinstrument meets certainspecified hedge-ac counting criteria, 
+thegains orlosses (income orexpe nse) associatedwith the 
+derivativ ecanbedeferred andrealized onabasis consistent with 
+theincome andexpens eofthehedged instrument. 
+IOther wise, gains orlosses must berecognized asthey occur, and 
+off-bala nce-sheet derivativ einstruments must bemarked tothe 
+market’s prices.
+   - recognize
+     Context: Whenever atrade isabort ed,manager sandtraders must 
+recognize that itmaybeimpossible forthebroker tofind another 
+counterparty attheoriginal price.
+   - notbecircumvente
+     Context: Customer anonymity should notbecircumvented with theuseof 
+slang orpseudony ms.Ifconfide ntiality isbroken, managem entmust 
+actpromptly tocorrectthecondit ions that allowed theevent to 
+occur.
+   - betake
+     Context: 11 
+Caremust betaken that informal dispute resolutions areachieved 
+through good-fa ith, arm’s-length negotiation.
+   - mustbestrictlyfollowe
+     Context: All applicabl emone y-laund ering laws, 
+regulati ons, andindustry guidelines mustbestrictlyfollowed.
+   - beaware
+     Context: Management must beaware ofitsresponsibility tocreate an 
+operatingstaff adequate tosupport thescope ofthetradingdesk’s 
+activityinthemarket.
+   - monitor
+     Context: IManagement must actively monitor theuseofsystems toensure 
+thatstaff isproperly trained, disputes areidentified promptly ,and 
+proper interaction existswithvendor s. 
+IProcedures involv ingtrade disputesshould bedocument edandfully 
+understood byallparties before anytrades areexecuted. 
+
+   - beadequate
+     Context: Internal 
+contr ols,including accountopenin gs,documentationproced ures,and 
+management information/monitorin gsystems, must beadequate to 
+detect suspic ious activity .Anyirregularorsuspicious activity needs to 
+becommu nicat edtomanageme ntinatimel ymanner. 
+
+   - willneed
+     Context: Trading parties willneed tohaveup-to-date virus protection and 
+must usecautionindownloading andaccessing external 
+information. 
+
+
+   Control Gaps:
+   - Missing Control: ndsexpli
+     Context: Attimes, however, commer cialconsidera tionsmay dictate 
+otherwis e.Inthatevent, theCommittee recomme ndsexpli cit 
+controls andspecific procedures.
+   - Missing Control: report
+     Context: Exception reporting onamendments andcancella tions 
+isanother important controlmechanism.
+   - Missing Control: establish
+     Context: Manyinstitutions establish special controls forthistypeof 
+transacti onasamatterofpolicy.
+   - Missing Control: toverify
+     Context: The controlsincludevarious 
+measures toverify third-party payments.
+   - Missing Control: depart
+     Context: Aninstitution ’scomp liance 
+depart mentcanplay animportant role inmonitoring and ensuri ng 
+that procedures associated with third- party paymen tsarefollowed. 
+
+   - Missing Control: havecombine
+     Context: ControlFunctions 
+Market evolution, increased product sophistica tion,andtechn ological 
+advances havecombined tomake financial crimes more complex.
+   - Missing Control: forriskmanagement
+     Context: Best Practices forRiskManagement 
+Specificdivisionsorfunctions within afinancial institution can 
+implem entanumber ofpractices tolimit and controlrisk.
+   - Missing Control: esandsystem
+     Context: Inperso nnel 
+Provi sion ofsufficient human resourc esandsystems suppo rtto 
+ensure that deal proce ssingandriskreport ingremain timely and 
+accurately documented andsupported. 
+
+   - Missing Control: serve
+     Context: Such reviews serve asexternal 
+evaluations ofcomp liance withafirm’s intern alcontrols. 
+
+   - Missing Control: expose
+     Context: Risk Manag ement 
+Thegoal ofriskmanag ement istoensure thataninstitution’s trading, 
+positioning, sales ,creditextension, andoperationa lactivities donot 
+expose theinstitutio ntoexcessiv elosses.
+   - Missing Control: effect
+     Context: While systems 
+andreport sareeleme ntsofriskcontrol,effect ivecommunicationand 
+awar eness arejustasvitalinariskmanagement program. 
+
+   - Missing Control: progra
+     Context: Other important elements ofariskmanagement progra minclud e: 
+anindependent valuation-model testing andapprovalprocess; 
+independent approval and monitoring ofcustome rcredit limits and 
+market risk positi onlimits; exception reportin gand independen t 
+approval oflimitexcess es;anduseofcredit-related industry 
+agreements, such astheCross-Produ ctMaster Agreement.
+   - Missing Control: emanate
+     Context: Operati onal/technology risk emanates from inadequate 
+systems andcontrols, human error, ormanagement failure.
+   - Missing Control: gaplimitsareuse
+     Context: IMaturity gaplimitsareused tocontrollossesthat may result from 
+nonparallel shifts intheyieldcurve and/or changes inaforward 
+yield curve.
+   - Missing Control: amount
+     Context: Ilargecashdeposit s 
+Ithepurchase orsale oflarge amounts offoreign currencies with the 
+useofcash 
+Iusing accounts tomove large sums ofmoney without anapparent 
+busines spurpose 
+Ineedl essly maint aining large balances innon-inter est-bearing 
+accounts 
+Ibuying orselling securitieswith cash 
+Isettling bearer securit iesoutside ofarecogniz edclearing system Itransactin gsecurities with nodiscernible purpose 
+Iunne cessary useofanintermediar y 
+Iunexp ected repayment ofaproblem loan 
+Iregular payment oflarge sums, including wire transfers, that cannot 
+beexplained inthecontext ofthecustomer’s normal business 
+Icustomers whose identity proves unusually difficult orexpens iveto 
+verify 
+Iuseofanaddress that isnotthecustomer’s permanent business 
+address (forexampl e,utilization ofahome address forbusines s 
+corre spond ence) 
+Icustomers who purposefully avoidneeded contact with bank staff 
+Icustomers ontheOffice ofForeign Assets Control (OFAC) lists. 
+
+   - Missing Control: ensure
+     Context: Ensure thateach trader isfully acquainted with thepolicies and 
+procedures thattheinstit utionfollows intheconduct ofitsbusines s 
+andisformally committed toadherin gtothosepolicies and 
+procedures. 
+
+   - Missing Control: include
+     Context: Consid erproviding acomplete orient ation fornew employ eesatall 
+levels thatwould include training inethical standards andthe 
+institution’s risklimits aswellasimplementing formal procedures to 
+ensure that each trader periodically reviews theinstitution’s rules 
+andpolicies. 
+
+   - Missing Control: thatensure
+     Context: There areavariety ofdocum ents thatensure thesmooth 
+function ingofthemarkets andprotectpartici pants: 
+
+   - Missing Control: include
+     Context: Other forms ofdocumentation may include credit support 
+documents, compensation agreement s,margin agreements, and 
+assignment agree ments. 
+Documentation procedure sensuretheproper confirmation ofall 
+trades with aspecific format chosenbytheinstitu tion. 
+
+   - Missing Control: beprudent
+     Context: Inaddition, itwould beprudent fora 
+counterparty totakestepstoensure that itindependentl y 
+unders tandsmarketdevelopmentsandindividua ltrigger levelsifan 
+intermediary hasnot contractually agree dtobeaninvestment 
+advisor tothecounterparty . 
+
+   - Missing Control: contain
+     Context: 22.TheBISCommittee onPayment andSettlement Systems’ 2007 report, 
+Progress inReducing Foreign Exchange Settlement Risk ,contains 
+recommendations formarket participants toreduce andcontrol exposures to 
+foreign exchange settlement risk. 
+
+   - Missing Control: contain
+     Context: 25.TheCommittee’s publication, Management ofOperational Risk inForeign 
+Exchange ,contains guidance onaccess controls (page 44). 

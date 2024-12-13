@@ -24,4 +24,7 @@ PyPDF2
 psutil
 statsmodels>=0.14.0
 pydot
-graphviz
+pandas
+numpy
+matplotlib
+seaborn

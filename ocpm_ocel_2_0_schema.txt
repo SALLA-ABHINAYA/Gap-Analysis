@@ -1,0 +1,24 @@
+{
+  "event-types": [
+    {"id": "order_placed", "description": "An order has been placed."}
+  ],
+  "events": [
+    {
+      "id": "event_1",
+      "timestamp": "2024-12-12T11:00:00Z",
+      "event-type": "order_placed",
+      "objects": ["object_1", "object_2"],
+      "qualifiers": {
+        "relationship": "initiated_by"
+      }
+    }
+  ],
+  "object-types": [
+    {"id": "customer", "description": "A customer object."},
+    {"id": "product", "description": "A product object."}
+  ],
+  "objects": [
+    {"id": "object_1", "type": "customer", "attributes": {"name": "John Doe"}},
+    {"id": "object_2", "type": "product", "attributes": {"name": "Widget A"}}
+  ]
+}
