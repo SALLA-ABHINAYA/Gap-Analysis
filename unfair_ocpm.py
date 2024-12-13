@@ -1,7 +1,4 @@
-import json
-import pandas as pd
-import numpy as np
-from collections import defaultdict
+import streamlit as st
 import json
 import pandas as pd
 import numpy as np
@@ -22,20 +19,12 @@ class UnfairOCELAnalyzer:
         4. Case Treatment Bias: Identifying discriminatory case handling
         """
 
-    def __init__(self, json_path: str):
-        """Initialize the analyzer with OCEL JSON file"""
-        try:
-            with open(json_path, 'r') as f:
-                self.ocel_data = json.load(f)
-
-            print("Available keys in JSON:", self.ocel_data.keys())
-            self.events_df = self._process_events()
-            self.objects_df = self._process_objects()
-            self.relationships_df = self._process_relationships()
-
-        except Exception as e:
-            print(f"Error initializing UnfairOCELAnalyzer: {str(e)}")
-            raise
+    def __init__(self, ocel_data):
+        """Initialize analyzer with OCEL data"""
+        self.ocel_data = ocel_data
+        self.events_df = self._process_events()
+        self.objects_df = self._process_objects()
+        self.relationships_df = self._process_relationships()
 
 
     def _process_events(self):
@@ -429,9 +418,323 @@ class UnfairOCELAnalyzer:
                         print(f"  Expected: {expected_handover:.1%}")
                         print(f"  Bias Score: {bias:.2f}")
 
+    def get_analysis_plots(self):
+        """Generate all analysis plots and return them with metrics"""
+        plots = {}
+        metrics = {}
+
+        # 1. Resource Discrimination Analysis
+        fig_resource, resource_metrics = self._generate_resource_plot()
+        plots['resource_discrimination'] = fig_resource
+        metrics['resource'] = resource_metrics
+
+        # 2. Time Bias Analysis
+        fig_time, time_metrics = self._generate_time_plot()
+        plots['time_bias'] = fig_time
+        metrics['time'] = time_metrics
+
+        # 3. Case Priority Analysis
+        fig_case, case_metrics = self._generate_case_plot()
+        plots['case_priority'] = fig_case
+        metrics['case'] = case_metrics
+
+        # 4. Handover Analysis
+        fig_handover, handover_metrics = self._generate_handover_plot()
+        plots['handover'] = fig_handover
+        metrics['handover'] = handover_metrics
+
+        return plots, metrics
+
+    def _generate_resource_plot(self):
+        """Generate resource discrimination plot and metrics"""
+        fig, ax = plt.subplots(figsize=(12, 6))
+        resource_cases = self.relationships_df['resource'].value_counts()
+        total_cases = len(self.relationships_df['object_id'].unique())
+        expected_cases = total_cases / len(resource_cases)
+
+        bias_scores = []
+        resources = []
+        metrics = {}
+
+        for resource, count in resource_cases.items():
+            bias_score = (count - expected_cases) / expected_cases
+            bias_scores.append(bias_score)
+            resources.append(resource)
+            metrics[resource] = {
+                'cases': int(count),
+                'bias_score': float(bias_score),
+                'percentage': float((count / total_cases) * 100)
+            }
+
+        ax.bar(resources, bias_scores,
+               color=['red' if x > 0.2 else 'orange' if x > 0 else 'green' for x in bias_scores])
+        ax.set_xticklabels(resources, rotation=45, ha='right')
+        ax.set_title('Resource Discrimination Analysis')
+        ax.set_ylabel('Bias Score (>0.2 indicates significant bias)')
+        ax.grid(True, alpha=0.3)
+        plt.tight_layout()
+
+        return fig, metrics
+
+    def _generate_time_plot(self):
+        """Generate time bias plot and metrics"""
+        processing_times = defaultdict(list)
+        metrics = {}
+
+        for obj_id in self.relationships_df['object_id'].unique():
+            obj_events = self.relationships_df[self.relationships_df['object_id'] == obj_id]
+            if len(obj_events) > 1:
+                duration = (obj_events['timestamp'].max() -
+                            obj_events['timestamp'].min()).total_seconds() / 3600
+                resources = obj_events['resource'].unique()
+                for resource in resources:
+                    if pd.notna(resource):
+                        processing_times[resource].append(duration)
+
+        fig, ax = plt.subplots(figsize=(12, 6))
+        box_data = [times for times in processing_times.values()]
+
+        ax.boxplot(box_data, labels=processing_times.keys())
+        ax.set_xticklabels(processing_times.keys(), rotation=45, ha='right')
+        ax.set_title('Processing Time Distribution by Resource')
+        ax.set_ylabel('Processing Time (hours)')
+        ax.grid(True, alpha=0.3)
+        plt.tight_layout()
+
+        # Calculate metrics
+        for resource, times in processing_times.items():
+            metrics[resource] = {
+                'mean_time': float(np.mean(times)),
+                'median_time': float(np.median(times)),
+                'std_dev': float(np.std(times)),
+                'min_time': float(np.min(times)),
+                'max_time': float(np.max(times))
+            }
+
+        return fig, metrics
+
+    def _generate_case_plot(self):
+        """Generate case priority plot and metrics"""
+        waiting_times = defaultdict(list)
+        metrics = {}
+
+        for obj_id in self.relationships_df['object_id'].unique():
+            obj_events = self.relationships_df[
+                self.relationships_df['object_id'] == obj_id
+                ].sort_values('timestamp')
+
+            if len(obj_events) > 1:
+                obj_type = self.objects_df[
+                    self.objects_df['object_id'] == obj_id
+                    ]['object_type'].iloc[0]
+
+                timestamps = obj_events['timestamp'].tolist()
+                for i in range(len(timestamps) - 1):
+                    wait_time = (timestamps[i + 1] - timestamps[i]).total_seconds() / 3600
+                    waiting_times[obj_type].append(wait_time)
+
+        # Calculate metrics and prepare plot
+        fig, ax = plt.subplots(figsize=(12, 6))
+        overall_mean = np.mean([t for times in waiting_times.values() for t in times])
+
+        bias_scores = []
+        types = []
+
+        for case_type, times in waiting_times.items():
+            if times:
+                mean_time = np.mean(times)
+                bias_score = (mean_time - overall_mean) / overall_mean
+                bias_scores.append(bias_score)
+                types.append(case_type)
+
+                metrics[case_type] = {
+                    'mean_wait': float(mean_time),
+                    'bias_score': float(bias_score),
+                    'std_dev': float(np.std(times)),
+                    'case_count': len(times)
+                }
+
+        ax.bar(types, bias_scores,
+               color=['red' if x > 0.2 else 'orange' if x > 0 else 'green' for x in bias_scores])
+        ax.set_xticklabels(types, rotation=45, ha='right')
+        ax.set_title('Case Priority Discrimination Analysis')
+        ax.set_ylabel('Priority Bias Score (>0.2 indicates discrimination)')
+        ax.grid(True, alpha=0.3)
+        plt.tight_layout()
+
+        return fig, metrics
+
+    def _generate_handover_plot(self):
+        """Generate handover pattern plot and metrics"""
+        handovers = defaultdict(lambda: defaultdict(int))
+        total_handovers = 0
+        metrics = {}
+
+        for obj_id in self.relationships_df['object_id'].unique():
+            obj_events = self.relationships_df[
+                self.relationships_df['object_id'] == obj_id
+                ].sort_values('timestamp')
+
+            if len(obj_events) > 1:
+                resources = obj_events['resource'].tolist()
+                for i in range(len(resources) - 1):
+                    if pd.notna(resources[i]) and pd.notna(resources[i + 1]):
+                        handovers[resources[i]][resources[i + 1]] += 1
+                        total_handovers += 1
+
+        # Create handover matrix
+        resources = sorted(set(r for h in handovers.values() for r in h.keys()))
+        matrix_data = np.zeros((len(resources), len(resources)))
+
+        for i, from_resource in enumerate(resources):
+            for j, to_resource in enumerate(resources):
+                count = handovers[from_resource][to_resource]
+                matrix_data[i, j] = count / total_handovers if total_handovers > 0 else 0
+
+                if count > 0:
+                    metrics[f"{from_resource}->{to_resource}"] = {
+                        'count': int(count),
+                        'percentage': float((count / total_handovers) * 100)
+                    }
+
+        # Create heatmap
+        fig, ax = plt.subplots(figsize=(12, 10))
+        sns.heatmap(matrix_data,
+                    xticklabels=resources,
+                    yticklabels=resources,
+                    cmap='RdYlGn_r',
+                    annot=True,
+                    fmt='.2%',
+                    ax=ax)
+        plt.title('Handover Pattern Bias Analysis')
+        plt.xlabel('To Resource')
+        plt.ylabel('From Resource')
+        plt.tight_layout()
+
+        return fig, metrics
+
+
+def main():
+    st.set_page_config(layout="wide")
+
+    st.title("🔍 Unfair OCEL Process Mining Analyzer")
+
+    # Introduction
+    st.markdown("""
+    ### What is Unfair Process Mining?
+    Unfair process mining analyzes business processes to identify potential biases and discrimination patterns in:
+    - Resource allocation
+    - Processing times
+    - Case priorities
+    - Work handover patterns
+
+    Upload your OCEL JSON file to begin the analysis.
+    """)
+
+    uploaded_file = st.file_uploader("Choose an OCEL JSON file", type=['json'])
+
+    if uploaded_file is not None:
+        try:
+            with st.spinner('Analyzing process data...'):
+                # Load and analyze data
+                ocel_data = json.load(uploaded_file)
+                analyzer = UnfairOCELAnalyzer(ocel_data)
+                plots, metrics = analyzer.get_analysis_plots()
+
+                # Display Analysis Dashboard
+                st.success("Analysis complete! Exploring potential unfairness in your process...")
+
+                # Tabs for different analyses
+                tab1, tab2, tab3, tab4 = st.tabs([
+                    "Resource Discrimination",
+                    "Time Bias",
+                    "Case Priority",
+                    "Handover Patterns"
+                ])
+
+                with tab1:
+                    st.subheader("Resource Discrimination Analysis")
+                    col1, col2 = st.columns([2, 1])
+                    with col1:
+                        st.pyplot(plots['resource_discrimination'])
+                    with col2:
+                        st.markdown("""
+                        #### Key Findings:
+                        - Red bars indicate significant bias (>0.2)
+                        - Green bars show fair distribution
+                        """)
+                        for resource, data in metrics['resource'].items():
+                            if data['bias_score'] > 0.2:
+                                st.warning(f"⚠️ {resource}: {data['bias_score']:.2f} bias score")
+
+                with tab2:
+                    st.subheader("Processing Time Bias Analysis")
+                    col1, col2 = st.columns([2, 1])
+                    with col1:
+                        st.pyplot(plots['time_bias'])
+                    with col2:
+                        st.markdown("#### Processing Time Statistics")
+                        for resource, data in metrics['time'].items():
+                            with st.expander(f"{resource} Details"):
+                                st.write(f"Mean time: {data['mean_time']:.2f} hours")
+                                st.write(f"Std Dev: {data['std_dev']:.2f} hours")
+
+                with tab3:
+                    st.subheader("Case Priority Analysis")
+                    col1, col2 = st.columns([2, 1])
+                    with col1:
+                        st.pyplot(plots['case_priority'])
+                    with col2:
+                        st.markdown("#### Priority Bias Details")
+                        for case_type, data in metrics['case'].items():
+                            if abs(data['bias_score']) > 0.2:
+                                status = "👎 Potential discrimination" if data['bias_score'] > 0 else "👍 Fair treatment"
+                                st.info(f"{case_type}: {status}")
+
+                with tab4:
+                    st.subheader("Handover Pattern Analysis")
+                    col1, col2 = st.columns([2, 1])
+                    with col1:
+                        st.pyplot(plots['handover'])
+                    with col2:
+                        st.markdown("#### Significant Handover Patterns")
+                        for pattern, data in metrics['handover'].items():
+                            if data['percentage'] > 10:
+                                st.write(f"🔄 {pattern}: {data['percentage']:.1f}%")
+
+                # Download Report
+                if st.button("📊 Generate Detailed Report"):
+                    report = generate_detailed_report(metrics)
+                    st.download_button(
+                        "📥 Download Report",
+                        report,
+                        "unfair_process_analysis_report.txt",
+                        "text/plain"
+                    )
+
+        except Exception as e:
+            st.error(f"Error analyzing the file: {str(e)}")
+            st.info("Please ensure your file follows the OCEL JSON format.")
+
+
+def generate_detailed_report(metrics):
+    """Generate a comprehensive analysis report"""
+    report = []
+    report.append("Unfair Process Mining Analysis Report")
+    report.append("=====================================")
+
+    # Add sections for each analysis type
+    for analysis_type, data in metrics.items():
+        report.append(f"\n{analysis_type.upper()} ANALYSIS")
+        report.append("-" * len(f"{analysis_type.upper()} ANALYSIS"))
+
+        for key, values in data.items():
+            report.append(f"\n{key}:")
+            for metric, value in values.items():
+                report.append(f"  {metric}: {value}")
+
+    return "\n".join(report)
+
+
 if __name__ == "__main__":
-    try:
-        analyzer = UnfairOCELAnalyzer("ocel2-p2p.json")
-        analyzer.analyze_process_fairness()
-    except Exception as e:
-        print(f"Error in main execution: {str(e)}")
+    main()
