@@ -1,0 +1,4112 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<log xes.version="1849-2016" xes.features="nested-attributes" xmlns="http://www.xes-standard.org/">
+	<extension name="Concept" prefix="concept" uri="http://www.xes-standard.org/concept.xesext" />
+	<extension name="Time" prefix="time" uri="http://www.xes-standard.org/time.xesext" />
+	<string key="origin" value="csv" />
+	<trace>
+		<string key="concept:name" value="Case_1" />
+		<event>
+			<string key="case_id" value="Case_1" />
+			<string key="activity" value="Trade Initiated" />
+			<date key="timestamp" value="2024-10-08T05:55:00.618368+00:00" />
+			<string key="resource" value="Trader B" />
+			<string key="currency_pair" value="GBP/USD" />
+			<string key="concept:name" value="Trade Initiated" />
+			<date key="time:timestamp" value="2024-10-08T05:55:00.618368+00:00" />
+			<int key="@@index" value="0" />
+			<int key="@@case_index" value="0" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_1" />
+			<string key="activity" value="Trade Allocated" />
+			<date key="timestamp" value="2024-10-08T06:11:00.618368+00:00" />
+			<string key="resource" value="Trader B" />
+			<string key="currency_pair" value="GBP/USD" />
+			<string key="concept:name" value="Trade Allocated" />
+			<date key="time:timestamp" value="2024-10-08T06:11:00.618368+00:00" />
+			<int key="@@index" value="1" />
+			<int key="@@case_index" value="0" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="Case_10" />
+		<event>
+			<string key="case_id" value="Case_10" />
+			<string key="activity" value="Trade Initiated" />
+			<date key="timestamp" value="2024-10-16T05:55:00.618368+00:00" />
+			<string key="resource" value="Trader A" />
+			<string key="currency_pair" value="USD/JPY" />
+			<string key="concept:name" value="Trade Initiated" />
+			<date key="time:timestamp" value="2024-10-16T05:55:00.618368+00:00" />
+			<int key="@@index" value="2" />
+			<int key="@@case_index" value="1" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_10" />
+			<string key="activity" value="Trade Allocated" />
+			<date key="timestamp" value="2024-10-16T06:09:00.618368+00:00" />
+			<string key="resource" value="Trader A" />
+			<string key="currency_pair" value="USD/JPY" />
+			<string key="concept:name" value="Trade Allocated" />
+			<date key="time:timestamp" value="2024-10-16T06:09:00.618368+00:00" />
+			<int key="@@index" value="3" />
+			<int key="@@case_index" value="1" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_10" />
+			<string key="activity" value="Trade Settled" />
+			<date key="timestamp" value="2024-10-16T06:41:00.618368+00:00" />
+			<string key="resource" value="Trader A" />
+			<string key="currency_pair" value="USD/JPY" />
+			<string key="concept:name" value="Trade Settled" />
+			<date key="time:timestamp" value="2024-10-16T06:41:00.618368+00:00" />
+			<int key="@@index" value="4" />
+			<int key="@@case_index" value="1" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="Case_100" />
+		<event>
+			<string key="case_id" value="Case_100" />
+			<string key="activity" value="Trade Executed" />
+			<date key="timestamp" value="2024-10-05T05:55:00.621370+00:00" />
+			<string key="resource" value="Trader C" />
+			<string key="currency_pair" value="EUR/USD" />
+			<string key="concept:name" value="Trade Executed" />
+			<date key="time:timestamp" value="2024-10-05T05:55:00.621370+00:00" />
+			<int key="@@index" value="5" />
+			<int key="@@case_index" value="2" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_100" />
+			<string key="activity" value="Trade Settled" />
+			<date key="timestamp" value="2024-10-05T06:55:00.621370+00:00" />
+			<string key="resource" value="Trader C" />
+			<string key="currency_pair" value="EUR/USD" />
+			<string key="concept:name" value="Trade Settled" />
+			<date key="time:timestamp" value="2024-10-05T06:55:00.621370+00:00" />
+			<int key="@@index" value="6" />
+			<int key="@@case_index" value="2" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="Case_11" />
+		<event>
+			<string key="case_id" value="Case_11" />
+			<string key="activity" value="Trade Executed" />
+			<date key="timestamp" value="2024-10-08T05:55:00.618368+00:00" />
+			<string key="resource" value="Trader B" />
+			<string key="currency_pair" value="USD/JPY" />
+			<string key="concept:name" value="Trade Executed" />
+			<date key="time:timestamp" value="2024-10-08T05:55:00.618368+00:00" />
+			<int key="@@index" value="7" />
+			<int key="@@case_index" value="3" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_11" />
+			<string key="activity" value="Trade Allocated" />
+			<date key="timestamp" value="2024-10-08T06:52:00.618368+00:00" />
+			<string key="resource" value="Trader B" />
+			<string key="currency_pair" value="USD/JPY" />
+			<string key="concept:name" value="Trade Allocated" />
+			<date key="time:timestamp" value="2024-10-08T06:52:00.618368+00:00" />
+			<int key="@@index" value="8" />
+			<int key="@@case_index" value="3" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_11" />
+			<string key="activity" value="Trade Settled" />
+			<date key="timestamp" value="2024-10-08T07:25:00.618368+00:00" />
+			<string key="resource" value="Trader B" />
+			<string key="currency_pair" value="USD/JPY" />
+			<string key="concept:name" value="Trade Settled" />
+			<date key="time:timestamp" value="2024-10-08T07:25:00.618368+00:00" />
+			<int key="@@index" value="9" />
+			<int key="@@case_index" value="3" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_11" />
+			<string key="activity" value="Trade Canceled" />
+			<date key="timestamp" value="2024-10-08T08:07:00.618368+00:00" />
+			<string key="resource" value="Trader B" />
+			<string key="currency_pair" value="USD/JPY" />
+			<string key="concept:name" value="Trade Canceled" />
+			<date key="time:timestamp" value="2024-10-08T08:07:00.618368+00:00" />
+			<int key="@@index" value="10" />
+			<int key="@@case_index" value="3" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="Case_12" />
+		<event>
+			<string key="case_id" value="Case_12" />
+			<string key="activity" value="Trade Executed" />
+			<date key="timestamp" value="2024-10-08T05:55:00.618368+00:00" />
+			<string key="resource" value="Trader C" />
+			<string key="currency_pair" value="GBP/USD" />
+			<string key="concept:name" value="Trade Executed" />
+			<date key="time:timestamp" value="2024-10-08T05:55:00.618368+00:00" />
+			<int key="@@index" value="11" />
+			<int key="@@case_index" value="4" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_12" />
+			<string key="activity" value="Trade Settled" />
+			<date key="timestamp" value="2024-10-08T06:25:00.618368+00:00" />
+			<string key="resource" value="Trader C" />
+			<string key="currency_pair" value="GBP/USD" />
+			<string key="concept:name" value="Trade Settled" />
+			<date key="time:timestamp" value="2024-10-08T06:25:00.618368+00:00" />
+			<int key="@@index" value="12" />
+			<int key="@@case_index" value="4" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_12" />
+			<string key="activity" value="Trade Allocated" />
+			<date key="timestamp" value="2024-10-08T06:36:00.618368+00:00" />
+			<string key="resource" value="Trader C" />
+			<string key="currency_pair" value="GBP/USD" />
+			<string key="concept:name" value="Trade Allocated" />
+			<date key="time:timestamp" value="2024-10-08T06:36:00.618368+00:00" />
+			<int key="@@index" value="13" />
+			<int key="@@case_index" value="4" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_12" />
+			<string key="activity" value="Trade Canceled" />
+			<date key="timestamp" value="2024-10-08T08:49:00.618368+00:00" />
+			<string key="resource" value="Trader C" />
+			<string key="currency_pair" value="GBP/USD" />
+			<string key="concept:name" value="Trade Canceled" />
+			<date key="time:timestamp" value="2024-10-08T08:49:00.618368+00:00" />
+			<int key="@@index" value="14" />
+			<int key="@@case_index" value="4" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="Case_13" />
+		<event>
+			<string key="case_id" value="Case_13" />
+			<string key="activity" value="Trade Initiated" />
+			<date key="timestamp" value="2024-10-23T05:55:00.618368+00:00" />
+			<string key="resource" value="Trader B" />
+			<string key="currency_pair" value="AUD/USD" />
+			<string key="concept:name" value="Trade Initiated" />
+			<date key="time:timestamp" value="2024-10-23T05:55:00.618368+00:00" />
+			<int key="@@index" value="15" />
+			<int key="@@case_index" value="5" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_13" />
+			<string key="activity" value="Trade Executed" />
+			<date key="timestamp" value="2024-10-23T06:29:00.618368+00:00" />
+			<string key="resource" value="Trader B" />
+			<string key="currency_pair" value="AUD/USD" />
+			<string key="concept:name" value="Trade Executed" />
+			<date key="time:timestamp" value="2024-10-23T06:29:00.618368+00:00" />
+			<int key="@@index" value="16" />
+			<int key="@@case_index" value="5" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="Case_14" />
+		<event>
+			<string key="case_id" value="Case_14" />
+			<string key="activity" value="Trade Initiated" />
+			<date key="timestamp" value="2024-10-28T05:55:00.618368+00:00" />
+			<string key="resource" value="Trader A" />
+			<string key="currency_pair" value="USD/JPY" />
+			<string key="concept:name" value="Trade Initiated" />
+			<date key="time:timestamp" value="2024-10-28T05:55:00.618368+00:00" />
+			<int key="@@index" value="17" />
+			<int key="@@case_index" value="6" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_14" />
+			<string key="activity" value="Trade Executed" />
+			<date key="timestamp" value="2024-10-28T06:26:00.618368+00:00" />
+			<string key="resource" value="Trader A" />
+			<string key="currency_pair" value="USD/JPY" />
+			<string key="concept:name" value="Trade Executed" />
+			<date key="time:timestamp" value="2024-10-28T06:26:00.618368+00:00" />
+			<int key="@@index" value="18" />
+			<int key="@@case_index" value="6" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_14" />
+			<string key="activity" value="Trade Allocated" />
+			<date key="timestamp" value="2024-10-28T06:29:00.618368+00:00" />
+			<string key="resource" value="Trader A" />
+			<string key="currency_pair" value="USD/JPY" />
+			<string key="concept:name" value="Trade Allocated" />
+			<date key="time:timestamp" value="2024-10-28T06:29:00.618368+00:00" />
+			<int key="@@index" value="19" />
+			<int key="@@case_index" value="6" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_14" />
+			<string key="activity" value="Trade Settled" />
+			<date key="timestamp" value="2024-10-28T07:19:00.618368+00:00" />
+			<string key="resource" value="Trader A" />
+			<string key="currency_pair" value="USD/JPY" />
+			<string key="concept:name" value="Trade Settled" />
+			<date key="time:timestamp" value="2024-10-28T07:19:00.618368+00:00" />
+			<int key="@@index" value="20" />
+			<int key="@@case_index" value="6" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_14" />
+			<string key="activity" value="Trade Canceled" />
+			<date key="timestamp" value="2024-10-28T08:23:00.618368+00:00" />
+			<string key="resource" value="Trader A" />
+			<string key="currency_pair" value="USD/JPY" />
+			<string key="concept:name" value="Trade Canceled" />
+			<date key="time:timestamp" value="2024-10-28T08:23:00.618368+00:00" />
+			<int key="@@index" value="21" />
+			<int key="@@case_index" value="6" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="Case_15" />
+		<event>
+			<string key="case_id" value="Case_15" />
+			<string key="activity" value="Trade Initiated" />
+			<date key="timestamp" value="2024-10-20T05:55:00.618368+00:00" />
+			<string key="resource" value="Trader C" />
+			<string key="currency_pair" value="GBP/USD" />
+			<string key="concept:name" value="Trade Initiated" />
+			<date key="time:timestamp" value="2024-10-20T05:55:00.618368+00:00" />
+			<int key="@@index" value="22" />
+			<int key="@@case_index" value="7" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_15" />
+			<string key="activity" value="Trade Allocated" />
+			<date key="timestamp" value="2024-10-20T06:45:00.618368+00:00" />
+			<string key="resource" value="Trader C" />
+			<string key="currency_pair" value="GBP/USD" />
+			<string key="concept:name" value="Trade Allocated" />
+			<date key="time:timestamp" value="2024-10-20T06:45:00.618368+00:00" />
+			<int key="@@index" value="23" />
+			<int key="@@case_index" value="7" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_15" />
+			<string key="activity" value="Trade Settled" />
+			<date key="timestamp" value="2024-10-20T06:53:00.618368+00:00" />
+			<string key="resource" value="Trader C" />
+			<string key="currency_pair" value="GBP/USD" />
+			<string key="concept:name" value="Trade Settled" />
+			<date key="time:timestamp" value="2024-10-20T06:53:00.618368+00:00" />
+			<int key="@@index" value="24" />
+			<int key="@@case_index" value="7" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="Case_16" />
+		<event>
+			<string key="case_id" value="Case_16" />
+			<string key="activity" value="Trade Initiated" />
+			<date key="timestamp" value="2024-10-19T05:55:00.618368+00:00" />
+			<string key="resource" value="Trader A" />
+			<string key="currency_pair" value="USD/JPY" />
+			<string key="concept:name" value="Trade Initiated" />
+			<date key="time:timestamp" value="2024-10-19T05:55:00.618368+00:00" />
+			<int key="@@index" value="25" />
+			<int key="@@case_index" value="8" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_16" />
+			<string key="activity" value="Trade Executed" />
+			<date key="timestamp" value="2024-10-19T06:12:00.618368+00:00" />
+			<string key="resource" value="Trader A" />
+			<string key="currency_pair" value="USD/JPY" />
+			<string key="concept:name" value="Trade Executed" />
+			<date key="time:timestamp" value="2024-10-19T06:12:00.618368+00:00" />
+			<int key="@@index" value="26" />
+			<int key="@@case_index" value="8" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_16" />
+			<string key="activity" value="Trade Allocated" />
+			<date key="timestamp" value="2024-10-19T07:01:00.618368+00:00" />
+			<string key="resource" value="Trader A" />
+			<string key="currency_pair" value="USD/JPY" />
+			<string key="concept:name" value="Trade Allocated" />
+			<date key="time:timestamp" value="2024-10-19T07:01:00.618368+00:00" />
+			<int key="@@index" value="27" />
+			<int key="@@case_index" value="8" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="Case_17" />
+		<event>
+			<string key="case_id" value="Case_17" />
+			<string key="activity" value="Trade Initiated" />
+			<date key="timestamp" value="2024-10-30T05:55:00.618368+00:00" />
+			<string key="resource" value="Trader A" />
+			<string key="currency_pair" value="AUD/USD" />
+			<string key="concept:name" value="Trade Initiated" />
+			<date key="time:timestamp" value="2024-10-30T05:55:00.618368+00:00" />
+			<int key="@@index" value="28" />
+			<int key="@@case_index" value="9" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_17" />
+			<string key="activity" value="Trade Executed" />
+			<date key="timestamp" value="2024-10-30T06:53:00.618368+00:00" />
+			<string key="resource" value="Trader A" />
+			<string key="currency_pair" value="AUD/USD" />
+			<string key="concept:name" value="Trade Executed" />
+			<date key="time:timestamp" value="2024-10-30T06:53:00.618368+00:00" />
+			<int key="@@index" value="29" />
+			<int key="@@case_index" value="9" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_17" />
+			<string key="activity" value="Trade Allocated" />
+			<date key="timestamp" value="2024-10-30T07:23:00.618368+00:00" />
+			<string key="resource" value="Trader A" />
+			<string key="currency_pair" value="AUD/USD" />
+			<string key="concept:name" value="Trade Allocated" />
+			<date key="time:timestamp" value="2024-10-30T07:23:00.618368+00:00" />
+			<int key="@@index" value="30" />
+			<int key="@@case_index" value="9" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_17" />
+			<string key="activity" value="Trade Settled" />
+			<date key="timestamp" value="2024-10-30T08:52:00.618368+00:00" />
+			<string key="resource" value="Trader A" />
+			<string key="currency_pair" value="AUD/USD" />
+			<string key="concept:name" value="Trade Settled" />
+			<date key="time:timestamp" value="2024-10-30T08:52:00.618368+00:00" />
+			<int key="@@index" value="31" />
+			<int key="@@case_index" value="9" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="Case_18" />
+		<event>
+			<string key="case_id" value="Case_18" />
+			<string key="activity" value="Trade Executed" />
+			<date key="timestamp" value="2024-10-20T05:55:00.618368+00:00" />
+			<string key="resource" value="Trader B" />
+			<string key="currency_pair" value="USD/JPY" />
+			<string key="concept:name" value="Trade Executed" />
+			<date key="time:timestamp" value="2024-10-20T05:55:00.618368+00:00" />
+			<int key="@@index" value="32" />
+			<int key="@@case_index" value="10" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_18" />
+			<string key="activity" value="Trade Allocated" />
+			<date key="timestamp" value="2024-10-20T06:32:00.618368+00:00" />
+			<string key="resource" value="Trader B" />
+			<string key="currency_pair" value="USD/JPY" />
+			<string key="concept:name" value="Trade Allocated" />
+			<date key="time:timestamp" value="2024-10-20T06:32:00.618368+00:00" />
+			<int key="@@index" value="33" />
+			<int key="@@case_index" value="10" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_18" />
+			<string key="activity" value="Trade Settled" />
+			<date key="timestamp" value="2024-10-20T06:41:00.618368+00:00" />
+			<string key="resource" value="Trader B" />
+			<string key="currency_pair" value="USD/JPY" />
+			<string key="concept:name" value="Trade Settled" />
+			<date key="time:timestamp" value="2024-10-20T06:41:00.618368+00:00" />
+			<int key="@@index" value="34" />
+			<int key="@@case_index" value="10" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="Case_19" />
+		<event>
+			<string key="case_id" value="Case_19" />
+			<string key="activity" value="Trade Allocated" />
+			<date key="timestamp" value="2024-11-01T05:55:00.618368+00:00" />
+			<string key="resource" value="Trader C" />
+			<string key="currency_pair" value="AUD/USD" />
+			<string key="concept:name" value="Trade Allocated" />
+			<date key="time:timestamp" value="2024-11-01T05:55:00.618368+00:00" />
+			<int key="@@index" value="35" />
+			<int key="@@case_index" value="11" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_19" />
+			<string key="activity" value="Trade Canceled" />
+			<date key="timestamp" value="2024-11-01T06:29:00.618368+00:00" />
+			<string key="resource" value="Trader C" />
+			<string key="currency_pair" value="AUD/USD" />
+			<string key="concept:name" value="Trade Canceled" />
+			<date key="time:timestamp" value="2024-11-01T06:29:00.618368+00:00" />
+			<int key="@@index" value="36" />
+			<int key="@@case_index" value="11" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_19" />
+			<string key="activity" value="Trade Settled" />
+			<date key="timestamp" value="2024-11-01T06:33:00.618368+00:00" />
+			<string key="resource" value="Trader C" />
+			<string key="currency_pair" value="AUD/USD" />
+			<string key="concept:name" value="Trade Settled" />
+			<date key="time:timestamp" value="2024-11-01T06:33:00.618368+00:00" />
+			<int key="@@index" value="37" />
+			<int key="@@case_index" value="11" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="Case_2" />
+		<event>
+			<string key="case_id" value="Case_2" />
+			<string key="activity" value="Trade Settled" />
+			<date key="timestamp" value="2024-10-06T05:55:00.618368+00:00" />
+			<string key="resource" value="Trader A" />
+			<string key="currency_pair" value="EUR/USD" />
+			<string key="concept:name" value="Trade Settled" />
+			<date key="time:timestamp" value="2024-10-06T05:55:00.618368+00:00" />
+			<int key="@@index" value="38" />
+			<int key="@@case_index" value="12" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_2" />
+			<string key="activity" value="Trade Canceled" />
+			<date key="timestamp" value="2024-10-06T06:19:00.618368+00:00" />
+			<string key="resource" value="Trader A" />
+			<string key="currency_pair" value="EUR/USD" />
+			<string key="concept:name" value="Trade Canceled" />
+			<date key="time:timestamp" value="2024-10-06T06:19:00.618368+00:00" />
+			<int key="@@index" value="39" />
+			<int key="@@case_index" value="12" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="Case_20" />
+		<event>
+			<string key="case_id" value="Case_20" />
+			<string key="activity" value="Trade Initiated" />
+			<date key="timestamp" value="2024-10-22T05:55:00.618368+00:00" />
+			<string key="resource" value="Trader A" />
+			<string key="currency_pair" value="GBP/USD" />
+			<string key="concept:name" value="Trade Initiated" />
+			<date key="time:timestamp" value="2024-10-22T05:55:00.618368+00:00" />
+			<int key="@@index" value="40" />
+			<int key="@@case_index" value="13" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_20" />
+			<string key="activity" value="Trade Executed" />
+			<date key="timestamp" value="2024-10-22T06:05:00.618368+00:00" />
+			<string key="resource" value="Trader A" />
+			<string key="currency_pair" value="GBP/USD" />
+			<string key="concept:name" value="Trade Executed" />
+			<date key="time:timestamp" value="2024-10-22T06:05:00.618368+00:00" />
+			<int key="@@index" value="41" />
+			<int key="@@case_index" value="13" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_20" />
+			<string key="activity" value="Trade Canceled" />
+			<date key="timestamp" value="2024-10-22T06:23:00.618368+00:00" />
+			<string key="resource" value="Trader A" />
+			<string key="currency_pair" value="GBP/USD" />
+			<string key="concept:name" value="Trade Canceled" />
+			<date key="time:timestamp" value="2024-10-22T06:23:00.618368+00:00" />
+			<int key="@@index" value="42" />
+			<int key="@@case_index" value="13" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="Case_21" />
+		<event>
+			<string key="case_id" value="Case_21" />
+			<string key="activity" value="Trade Initiated" />
+			<date key="timestamp" value="2024-10-06T05:55:00.618368+00:00" />
+			<string key="resource" value="Trader A" />
+			<string key="currency_pair" value="USD/JPY" />
+			<string key="concept:name" value="Trade Initiated" />
+			<date key="time:timestamp" value="2024-10-06T05:55:00.618368+00:00" />
+			<int key="@@index" value="43" />
+			<int key="@@case_index" value="14" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_21" />
+			<string key="activity" value="Trade Executed" />
+			<date key="timestamp" value="2024-10-06T06:20:00.618368+00:00" />
+			<string key="resource" value="Trader A" />
+			<string key="currency_pair" value="USD/JPY" />
+			<string key="concept:name" value="Trade Executed" />
+			<date key="time:timestamp" value="2024-10-06T06:20:00.618368+00:00" />
+			<int key="@@index" value="44" />
+			<int key="@@case_index" value="14" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="Case_22" />
+		<event>
+			<string key="case_id" value="Case_22" />
+			<string key="activity" value="Trade Initiated" />
+			<date key="timestamp" value="2024-10-29T05:55:00.618368+00:00" />
+			<string key="resource" value="Trader D" />
+			<string key="currency_pair" value="GBP/USD" />
+			<string key="concept:name" value="Trade Initiated" />
+			<date key="time:timestamp" value="2024-10-29T05:55:00.618368+00:00" />
+			<int key="@@index" value="45" />
+			<int key="@@case_index" value="15" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_22" />
+			<string key="activity" value="Trade Executed" />
+			<date key="timestamp" value="2024-10-29T06:31:00.618368+00:00" />
+			<string key="resource" value="Trader D" />
+			<string key="currency_pair" value="GBP/USD" />
+			<string key="concept:name" value="Trade Executed" />
+			<date key="time:timestamp" value="2024-10-29T06:31:00.618368+00:00" />
+			<int key="@@index" value="46" />
+			<int key="@@case_index" value="15" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_22" />
+			<string key="activity" value="Trade Allocated" />
+			<date key="timestamp" value="2024-10-29T06:39:00.618368+00:00" />
+			<string key="resource" value="Trader D" />
+			<string key="currency_pair" value="GBP/USD" />
+			<string key="concept:name" value="Trade Allocated" />
+			<date key="time:timestamp" value="2024-10-29T06:39:00.618368+00:00" />
+			<int key="@@index" value="47" />
+			<int key="@@case_index" value="15" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_22" />
+			<string key="activity" value="Trade Settled" />
+			<date key="timestamp" value="2024-10-29T06:43:00.618368+00:00" />
+			<string key="resource" value="Trader D" />
+			<string key="currency_pair" value="GBP/USD" />
+			<string key="concept:name" value="Trade Settled" />
+			<date key="time:timestamp" value="2024-10-29T06:43:00.618368+00:00" />
+			<int key="@@index" value="48" />
+			<int key="@@case_index" value="15" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="Case_23" />
+		<event>
+			<string key="case_id" value="Case_23" />
+			<string key="activity" value="Trade Allocated" />
+			<date key="timestamp" value="2024-10-18T05:55:00.618368+00:00" />
+			<string key="resource" value="Trader D" />
+			<string key="currency_pair" value="AUD/USD" />
+			<string key="concept:name" value="Trade Allocated" />
+			<date key="time:timestamp" value="2024-10-18T05:55:00.618368+00:00" />
+			<int key="@@index" value="49" />
+			<int key="@@case_index" value="16" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_23" />
+			<string key="activity" value="Trade Settled" />
+			<date key="timestamp" value="2024-10-18T06:08:00.618368+00:00" />
+			<string key="resource" value="Trader D" />
+			<string key="currency_pair" value="AUD/USD" />
+			<string key="concept:name" value="Trade Settled" />
+			<date key="time:timestamp" value="2024-10-18T06:08:00.618368+00:00" />
+			<int key="@@index" value="50" />
+			<int key="@@case_index" value="16" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="Case_24" />
+		<event>
+			<string key="case_id" value="Case_24" />
+			<string key="activity" value="Trade Initiated" />
+			<date key="timestamp" value="2024-10-11T05:55:00.618368+00:00" />
+			<string key="resource" value="Trader C" />
+			<string key="currency_pair" value="EUR/USD" />
+			<string key="concept:name" value="Trade Initiated" />
+			<date key="time:timestamp" value="2024-10-11T05:55:00.618368+00:00" />
+			<int key="@@index" value="51" />
+			<int key="@@case_index" value="17" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_24" />
+			<string key="activity" value="Trade Settled" />
+			<date key="timestamp" value="2024-10-11T06:17:00.618368+00:00" />
+			<string key="resource" value="Trader C" />
+			<string key="currency_pair" value="EUR/USD" />
+			<string key="concept:name" value="Trade Settled" />
+			<date key="time:timestamp" value="2024-10-11T06:17:00.618368+00:00" />
+			<int key="@@index" value="52" />
+			<int key="@@case_index" value="17" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="Case_25" />
+		<event>
+			<string key="case_id" value="Case_25" />
+			<string key="activity" value="Trade Initiated" />
+			<date key="timestamp" value="2024-10-18T05:55:00.618368+00:00" />
+			<string key="resource" value="Trader B" />
+			<string key="currency_pair" value="EUR/USD" />
+			<string key="concept:name" value="Trade Initiated" />
+			<date key="time:timestamp" value="2024-10-18T05:55:00.618368+00:00" />
+			<int key="@@index" value="53" />
+			<int key="@@case_index" value="18" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_25" />
+			<string key="activity" value="Trade Executed" />
+			<date key="timestamp" value="2024-10-18T06:11:00.618368+00:00" />
+			<string key="resource" value="Trader B" />
+			<string key="currency_pair" value="EUR/USD" />
+			<string key="concept:name" value="Trade Executed" />
+			<date key="time:timestamp" value="2024-10-18T06:11:00.618368+00:00" />
+			<int key="@@index" value="54" />
+			<int key="@@case_index" value="18" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_25" />
+			<string key="activity" value="Trade Allocated" />
+			<date key="timestamp" value="2024-10-18T06:21:00.618368+00:00" />
+			<string key="resource" value="Trader B" />
+			<string key="currency_pair" value="EUR/USD" />
+			<string key="concept:name" value="Trade Allocated" />
+			<date key="time:timestamp" value="2024-10-18T06:21:00.618368+00:00" />
+			<int key="@@index" value="55" />
+			<int key="@@case_index" value="18" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_25" />
+			<string key="activity" value="Trade Settled" />
+			<date key="timestamp" value="2024-10-18T08:28:00.618368+00:00" />
+			<string key="resource" value="Trader B" />
+			<string key="currency_pair" value="EUR/USD" />
+			<string key="concept:name" value="Trade Settled" />
+			<date key="time:timestamp" value="2024-10-18T08:28:00.618368+00:00" />
+			<int key="@@index" value="56" />
+			<int key="@@case_index" value="18" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_25" />
+			<string key="activity" value="Trade Canceled" />
+			<date key="timestamp" value="2024-10-18T08:51:00.618368+00:00" />
+			<string key="resource" value="Trader B" />
+			<string key="currency_pair" value="EUR/USD" />
+			<string key="concept:name" value="Trade Canceled" />
+			<date key="time:timestamp" value="2024-10-18T08:51:00.618368+00:00" />
+			<int key="@@index" value="57" />
+			<int key="@@case_index" value="18" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="Case_26" />
+		<event>
+			<string key="case_id" value="Case_26" />
+			<string key="activity" value="Trade Initiated" />
+			<date key="timestamp" value="2024-10-19T05:55:00.619368+00:00" />
+			<string key="resource" value="Trader B" />
+			<string key="currency_pair" value="AUD/USD" />
+			<string key="concept:name" value="Trade Initiated" />
+			<date key="time:timestamp" value="2024-10-19T05:55:00.619368+00:00" />
+			<int key="@@index" value="58" />
+			<int key="@@case_index" value="19" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_26" />
+			<string key="activity" value="Trade Executed" />
+			<date key="timestamp" value="2024-10-19T06:18:00.619368+00:00" />
+			<string key="resource" value="Trader B" />
+			<string key="currency_pair" value="AUD/USD" />
+			<string key="concept:name" value="Trade Executed" />
+			<date key="time:timestamp" value="2024-10-19T06:18:00.619368+00:00" />
+			<int key="@@index" value="59" />
+			<int key="@@case_index" value="19" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="Case_27" />
+		<event>
+			<string key="case_id" value="Case_27" />
+			<string key="activity" value="Trade Initiated" />
+			<date key="timestamp" value="2024-10-13T05:55:00.619368+00:00" />
+			<string key="resource" value="Trader C" />
+			<string key="currency_pair" value="AUD/USD" />
+			<string key="concept:name" value="Trade Initiated" />
+			<date key="time:timestamp" value="2024-10-13T05:55:00.619368+00:00" />
+			<int key="@@index" value="60" />
+			<int key="@@case_index" value="20" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_27" />
+			<string key="activity" value="Trade Executed" />
+			<date key="timestamp" value="2024-10-13T06:49:00.619368+00:00" />
+			<string key="resource" value="Trader C" />
+			<string key="currency_pair" value="AUD/USD" />
+			<string key="concept:name" value="Trade Executed" />
+			<date key="time:timestamp" value="2024-10-13T06:49:00.619368+00:00" />
+			<int key="@@index" value="61" />
+			<int key="@@case_index" value="20" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_27" />
+			<string key="activity" value="Trade Allocated" />
+			<date key="timestamp" value="2024-10-13T07:47:00.619368+00:00" />
+			<string key="resource" value="Trader C" />
+			<string key="currency_pair" value="AUD/USD" />
+			<string key="concept:name" value="Trade Allocated" />
+			<date key="time:timestamp" value="2024-10-13T07:47:00.619368+00:00" />
+			<int key="@@index" value="62" />
+			<int key="@@case_index" value="20" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_27" />
+			<string key="activity" value="Trade Settled" />
+			<date key="timestamp" value="2024-10-13T08:55:00.619368+00:00" />
+			<string key="resource" value="Trader C" />
+			<string key="currency_pair" value="AUD/USD" />
+			<string key="concept:name" value="Trade Settled" />
+			<date key="time:timestamp" value="2024-10-13T08:55:00.619368+00:00" />
+			<int key="@@index" value="63" />
+			<int key="@@case_index" value="20" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_27" />
+			<string key="activity" value="Trade Canceled" />
+			<date key="timestamp" value="2024-10-13T08:55:00.619368+00:00" />
+			<string key="resource" value="Trader C" />
+			<string key="currency_pair" value="AUD/USD" />
+			<string key="concept:name" value="Trade Canceled" />
+			<date key="time:timestamp" value="2024-10-13T08:55:00.619368+00:00" />
+			<int key="@@index" value="64" />
+			<int key="@@case_index" value="20" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="Case_28" />
+		<event>
+			<string key="case_id" value="Case_28" />
+			<string key="activity" value="Trade Initiated" />
+			<date key="timestamp" value="2024-10-05T05:55:00.619368+00:00" />
+			<string key="resource" value="Trader A" />
+			<string key="currency_pair" value="USD/JPY" />
+			<string key="concept:name" value="Trade Initiated" />
+			<date key="time:timestamp" value="2024-10-05T05:55:00.619368+00:00" />
+			<int key="@@index" value="65" />
+			<int key="@@case_index" value="21" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_28" />
+			<string key="activity" value="Trade Executed" />
+			<date key="timestamp" value="2024-10-05T06:42:00.619368+00:00" />
+			<string key="resource" value="Trader A" />
+			<string key="currency_pair" value="USD/JPY" />
+			<string key="concept:name" value="Trade Executed" />
+			<date key="time:timestamp" value="2024-10-05T06:42:00.619368+00:00" />
+			<int key="@@index" value="66" />
+			<int key="@@case_index" value="21" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_28" />
+			<string key="activity" value="Trade Allocated" />
+			<date key="timestamp" value="2024-10-05T07:15:00.619368+00:00" />
+			<string key="resource" value="Trader A" />
+			<string key="currency_pair" value="USD/JPY" />
+			<string key="concept:name" value="Trade Allocated" />
+			<date key="time:timestamp" value="2024-10-05T07:15:00.619368+00:00" />
+			<int key="@@index" value="67" />
+			<int key="@@case_index" value="21" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_28" />
+			<string key="activity" value="Trade Settled" />
+			<date key="timestamp" value="2024-10-05T08:01:00.619368+00:00" />
+			<string key="resource" value="Trader A" />
+			<string key="currency_pair" value="USD/JPY" />
+			<string key="concept:name" value="Trade Settled" />
+			<date key="time:timestamp" value="2024-10-05T08:01:00.619368+00:00" />
+			<int key="@@index" value="68" />
+			<int key="@@case_index" value="21" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_28" />
+			<string key="activity" value="Trade Canceled" />
+			<date key="timestamp" value="2024-10-05T08:47:00.619368+00:00" />
+			<string key="resource" value="Trader A" />
+			<string key="currency_pair" value="USD/JPY" />
+			<string key="concept:name" value="Trade Canceled" />
+			<date key="time:timestamp" value="2024-10-05T08:47:00.619368+00:00" />
+			<int key="@@index" value="69" />
+			<int key="@@case_index" value="21" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="Case_29" />
+		<event>
+			<string key="case_id" value="Case_29" />
+			<string key="activity" value="Trade Initiated" />
+			<date key="timestamp" value="2024-10-25T05:55:00.619368+00:00" />
+			<string key="resource" value="Trader A" />
+			<string key="currency_pair" value="EUR/USD" />
+			<string key="concept:name" value="Trade Initiated" />
+			<date key="time:timestamp" value="2024-10-25T05:55:00.619368+00:00" />
+			<int key="@@index" value="70" />
+			<int key="@@case_index" value="22" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_29" />
+			<string key="activity" value="Trade Canceled" />
+			<date key="timestamp" value="2024-10-25T06:29:00.619368+00:00" />
+			<string key="resource" value="Trader A" />
+			<string key="currency_pair" value="EUR/USD" />
+			<string key="concept:name" value="Trade Canceled" />
+			<date key="time:timestamp" value="2024-10-25T06:29:00.619368+00:00" />
+			<int key="@@index" value="71" />
+			<int key="@@case_index" value="22" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_29" />
+			<string key="activity" value="Trade Settled" />
+			<date key="timestamp" value="2024-10-25T06:30:00.619368+00:00" />
+			<string key="resource" value="Trader A" />
+			<string key="currency_pair" value="EUR/USD" />
+			<string key="concept:name" value="Trade Settled" />
+			<date key="time:timestamp" value="2024-10-25T06:30:00.619368+00:00" />
+			<int key="@@index" value="72" />
+			<int key="@@case_index" value="22" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="Case_3" />
+		<event>
+			<string key="case_id" value="Case_3" />
+			<string key="activity" value="Trade Executed" />
+			<date key="timestamp" value="2024-10-18T05:55:00.618368+00:00" />
+			<string key="resource" value="Trader D" />
+			<string key="currency_pair" value="GBP/USD" />
+			<string key="concept:name" value="Trade Executed" />
+			<date key="time:timestamp" value="2024-10-18T05:55:00.618368+00:00" />
+			<int key="@@index" value="73" />
+			<int key="@@case_index" value="23" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_3" />
+			<string key="activity" value="Trade Canceled" />
+			<date key="timestamp" value="2024-10-18T06:22:00.618368+00:00" />
+			<string key="resource" value="Trader D" />
+			<string key="currency_pair" value="GBP/USD" />
+			<string key="concept:name" value="Trade Canceled" />
+			<date key="time:timestamp" value="2024-10-18T06:22:00.618368+00:00" />
+			<int key="@@index" value="74" />
+			<int key="@@case_index" value="23" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="Case_30" />
+		<event>
+			<string key="case_id" value="Case_30" />
+			<string key="activity" value="Trade Initiated" />
+			<date key="timestamp" value="2024-10-25T05:55:00.619368+00:00" />
+			<string key="resource" value="Trader A" />
+			<string key="currency_pair" value="AUD/USD" />
+			<string key="concept:name" value="Trade Initiated" />
+			<date key="time:timestamp" value="2024-10-25T05:55:00.619368+00:00" />
+			<int key="@@index" value="75" />
+			<int key="@@case_index" value="24" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_30" />
+			<string key="activity" value="Trade Allocated" />
+			<date key="timestamp" value="2024-10-25T06:41:00.619368+00:00" />
+			<string key="resource" value="Trader A" />
+			<string key="currency_pair" value="AUD/USD" />
+			<string key="concept:name" value="Trade Allocated" />
+			<date key="time:timestamp" value="2024-10-25T06:41:00.619368+00:00" />
+			<int key="@@index" value="76" />
+			<int key="@@case_index" value="24" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_30" />
+			<string key="activity" value="Trade Canceled" />
+			<date key="timestamp" value="2024-10-25T07:21:00.619368+00:00" />
+			<string key="resource" value="Trader A" />
+			<string key="currency_pair" value="AUD/USD" />
+			<string key="concept:name" value="Trade Canceled" />
+			<date key="time:timestamp" value="2024-10-25T07:21:00.619368+00:00" />
+			<int key="@@index" value="77" />
+			<int key="@@case_index" value="24" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="Case_31" />
+		<event>
+			<string key="case_id" value="Case_31" />
+			<string key="activity" value="Trade Executed" />
+			<date key="timestamp" value="2024-10-16T05:55:00.619368+00:00" />
+			<string key="resource" value="Trader B" />
+			<string key="currency_pair" value="USD/JPY" />
+			<string key="concept:name" value="Trade Executed" />
+			<date key="time:timestamp" value="2024-10-16T05:55:00.619368+00:00" />
+			<int key="@@index" value="78" />
+			<int key="@@case_index" value="25" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_31" />
+			<string key="activity" value="Trade Allocated" />
+			<date key="timestamp" value="2024-10-16T06:47:00.619368+00:00" />
+			<string key="resource" value="Trader B" />
+			<string key="currency_pair" value="USD/JPY" />
+			<string key="concept:name" value="Trade Allocated" />
+			<date key="time:timestamp" value="2024-10-16T06:47:00.619368+00:00" />
+			<int key="@@index" value="79" />
+			<int key="@@case_index" value="25" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_31" />
+			<string key="activity" value="Trade Canceled" />
+			<date key="timestamp" value="2024-10-16T07:22:00.619368+00:00" />
+			<string key="resource" value="Trader B" />
+			<string key="currency_pair" value="USD/JPY" />
+			<string key="concept:name" value="Trade Canceled" />
+			<date key="time:timestamp" value="2024-10-16T07:22:00.619368+00:00" />
+			<int key="@@index" value="80" />
+			<int key="@@case_index" value="25" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_31" />
+			<string key="activity" value="Trade Settled" />
+			<date key="timestamp" value="2024-10-16T07:37:00.619368+00:00" />
+			<string key="resource" value="Trader B" />
+			<string key="currency_pair" value="USD/JPY" />
+			<string key="concept:name" value="Trade Settled" />
+			<date key="time:timestamp" value="2024-10-16T07:37:00.619368+00:00" />
+			<int key="@@index" value="81" />
+			<int key="@@case_index" value="25" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="Case_32" />
+		<event>
+			<string key="case_id" value="Case_32" />
+			<string key="activity" value="Trade Initiated" />
+			<date key="timestamp" value="2024-10-20T05:55:00.619368+00:00" />
+			<string key="resource" value="Trader A" />
+			<string key="currency_pair" value="GBP/USD" />
+			<string key="concept:name" value="Trade Initiated" />
+			<date key="time:timestamp" value="2024-10-20T05:55:00.619368+00:00" />
+			<int key="@@index" value="82" />
+			<int key="@@case_index" value="26" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_32" />
+			<string key="activity" value="Trade Executed" />
+			<date key="timestamp" value="2024-10-20T06:13:00.619368+00:00" />
+			<string key="resource" value="Trader A" />
+			<string key="currency_pair" value="GBP/USD" />
+			<string key="concept:name" value="Trade Executed" />
+			<date key="time:timestamp" value="2024-10-20T06:13:00.619368+00:00" />
+			<int key="@@index" value="83" />
+			<int key="@@case_index" value="26" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_32" />
+			<string key="activity" value="Trade Settled" />
+			<date key="timestamp" value="2024-10-20T06:37:00.619368+00:00" />
+			<string key="resource" value="Trader A" />
+			<string key="currency_pair" value="GBP/USD" />
+			<string key="concept:name" value="Trade Settled" />
+			<date key="time:timestamp" value="2024-10-20T06:37:00.619368+00:00" />
+			<int key="@@index" value="84" />
+			<int key="@@case_index" value="26" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_32" />
+			<string key="activity" value="Trade Allocated" />
+			<date key="timestamp" value="2024-10-20T06:59:00.619368+00:00" />
+			<string key="resource" value="Trader A" />
+			<string key="currency_pair" value="GBP/USD" />
+			<string key="concept:name" value="Trade Allocated" />
+			<date key="time:timestamp" value="2024-10-20T06:59:00.619368+00:00" />
+			<int key="@@index" value="85" />
+			<int key="@@case_index" value="26" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_32" />
+			<string key="activity" value="Trade Canceled" />
+			<date key="timestamp" value="2024-10-20T07:35:00.619368+00:00" />
+			<string key="resource" value="Trader A" />
+			<string key="currency_pair" value="GBP/USD" />
+			<string key="concept:name" value="Trade Canceled" />
+			<date key="time:timestamp" value="2024-10-20T07:35:00.619368+00:00" />
+			<int key="@@index" value="86" />
+			<int key="@@case_index" value="26" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="Case_33" />
+		<event>
+			<string key="case_id" value="Case_33" />
+			<string key="activity" value="Trade Executed" />
+			<date key="timestamp" value="2024-11-02T05:55:00.619368+00:00" />
+			<string key="resource" value="Trader A" />
+			<string key="currency_pair" value="USD/JPY" />
+			<string key="concept:name" value="Trade Executed" />
+			<date key="time:timestamp" value="2024-11-02T05:55:00.619368+00:00" />
+			<int key="@@index" value="87" />
+			<int key="@@case_index" value="27" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_33" />
+			<string key="activity" value="Trade Allocated" />
+			<date key="timestamp" value="2024-11-02T06:11:00.619368+00:00" />
+			<string key="resource" value="Trader A" />
+			<string key="currency_pair" value="USD/JPY" />
+			<string key="concept:name" value="Trade Allocated" />
+			<date key="time:timestamp" value="2024-11-02T06:11:00.619368+00:00" />
+			<int key="@@index" value="88" />
+			<int key="@@case_index" value="27" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_33" />
+			<string key="activity" value="Trade Settled" />
+			<date key="timestamp" value="2024-11-02T06:31:00.619368+00:00" />
+			<string key="resource" value="Trader A" />
+			<string key="currency_pair" value="USD/JPY" />
+			<string key="concept:name" value="Trade Settled" />
+			<date key="time:timestamp" value="2024-11-02T06:31:00.619368+00:00" />
+			<int key="@@index" value="89" />
+			<int key="@@case_index" value="27" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_33" />
+			<string key="activity" value="Trade Canceled" />
+			<date key="timestamp" value="2024-11-02T07:13:00.619368+00:00" />
+			<string key="resource" value="Trader A" />
+			<string key="currency_pair" value="USD/JPY" />
+			<string key="concept:name" value="Trade Canceled" />
+			<date key="time:timestamp" value="2024-11-02T07:13:00.619368+00:00" />
+			<int key="@@index" value="90" />
+			<int key="@@case_index" value="27" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="Case_34" />
+		<event>
+			<string key="case_id" value="Case_34" />
+			<string key="activity" value="Trade Initiated" />
+			<date key="timestamp" value="2024-10-23T05:55:00.619368+00:00" />
+			<string key="resource" value="Trader C" />
+			<string key="currency_pair" value="USD/JPY" />
+			<string key="concept:name" value="Trade Initiated" />
+			<date key="time:timestamp" value="2024-10-23T05:55:00.619368+00:00" />
+			<int key="@@index" value="91" />
+			<int key="@@case_index" value="28" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_34" />
+			<string key="activity" value="Trade Executed" />
+			<date key="timestamp" value="2024-10-23T06:50:00.619368+00:00" />
+			<string key="resource" value="Trader C" />
+			<string key="currency_pair" value="USD/JPY" />
+			<string key="concept:name" value="Trade Executed" />
+			<date key="time:timestamp" value="2024-10-23T06:50:00.619368+00:00" />
+			<int key="@@index" value="92" />
+			<int key="@@case_index" value="28" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="Case_35" />
+		<event>
+			<string key="case_id" value="Case_35" />
+			<string key="activity" value="Trade Executed" />
+			<date key="timestamp" value="2024-10-06T05:55:00.619368+00:00" />
+			<string key="resource" value="Trader C" />
+			<string key="currency_pair" value="EUR/USD" />
+			<string key="concept:name" value="Trade Executed" />
+			<date key="time:timestamp" value="2024-10-06T05:55:00.619368+00:00" />
+			<int key="@@index" value="93" />
+			<int key="@@case_index" value="29" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_35" />
+			<string key="activity" value="Trade Canceled" />
+			<date key="timestamp" value="2024-10-06T06:31:00.619368+00:00" />
+			<string key="resource" value="Trader C" />
+			<string key="currency_pair" value="EUR/USD" />
+			<string key="concept:name" value="Trade Canceled" />
+			<date key="time:timestamp" value="2024-10-06T06:31:00.619368+00:00" />
+			<int key="@@index" value="94" />
+			<int key="@@case_index" value="29" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_35" />
+			<string key="activity" value="Trade Allocated" />
+			<date key="timestamp" value="2024-10-06T06:32:00.619368+00:00" />
+			<string key="resource" value="Trader C" />
+			<string key="currency_pair" value="EUR/USD" />
+			<string key="concept:name" value="Trade Allocated" />
+			<date key="time:timestamp" value="2024-10-06T06:32:00.619368+00:00" />
+			<int key="@@index" value="95" />
+			<int key="@@case_index" value="29" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_35" />
+			<string key="activity" value="Trade Settled" />
+			<date key="timestamp" value="2024-10-06T06:49:00.619368+00:00" />
+			<string key="resource" value="Trader C" />
+			<string key="currency_pair" value="EUR/USD" />
+			<string key="concept:name" value="Trade Settled" />
+			<date key="time:timestamp" value="2024-10-06T06:49:00.619368+00:00" />
+			<int key="@@index" value="96" />
+			<int key="@@case_index" value="29" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="Case_36" />
+		<event>
+			<string key="case_id" value="Case_36" />
+			<string key="activity" value="Trade Executed" />
+			<date key="timestamp" value="2024-10-27T05:55:00.619368+00:00" />
+			<string key="resource" value="Trader C" />
+			<string key="currency_pair" value="GBP/USD" />
+			<string key="concept:name" value="Trade Executed" />
+			<date key="time:timestamp" value="2024-10-27T05:55:00.619368+00:00" />
+			<int key="@@index" value="97" />
+			<int key="@@case_index" value="30" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_36" />
+			<string key="activity" value="Trade Allocated" />
+			<date key="timestamp" value="2024-10-27T06:40:00.619368+00:00" />
+			<string key="resource" value="Trader C" />
+			<string key="currency_pair" value="GBP/USD" />
+			<string key="concept:name" value="Trade Allocated" />
+			<date key="time:timestamp" value="2024-10-27T06:40:00.619368+00:00" />
+			<int key="@@index" value="98" />
+			<int key="@@case_index" value="30" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="Case_37" />
+		<event>
+			<string key="case_id" value="Case_37" />
+			<string key="activity" value="Trade Initiated" />
+			<date key="timestamp" value="2024-10-22T05:55:00.619368+00:00" />
+			<string key="resource" value="Trader A" />
+			<string key="currency_pair" value="USD/JPY" />
+			<string key="concept:name" value="Trade Initiated" />
+			<date key="time:timestamp" value="2024-10-22T05:55:00.619368+00:00" />
+			<int key="@@index" value="99" />
+			<int key="@@case_index" value="31" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_37" />
+			<string key="activity" value="Trade Executed" />
+			<date key="timestamp" value="2024-10-22T06:14:00.619368+00:00" />
+			<string key="resource" value="Trader A" />
+			<string key="currency_pair" value="USD/JPY" />
+			<string key="concept:name" value="Trade Executed" />
+			<date key="time:timestamp" value="2024-10-22T06:14:00.619368+00:00" />
+			<int key="@@index" value="100" />
+			<int key="@@case_index" value="31" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_37" />
+			<string key="activity" value="Trade Canceled" />
+			<date key="timestamp" value="2024-10-22T06:43:00.619368+00:00" />
+			<string key="resource" value="Trader A" />
+			<string key="currency_pair" value="USD/JPY" />
+			<string key="concept:name" value="Trade Canceled" />
+			<date key="time:timestamp" value="2024-10-22T06:43:00.619368+00:00" />
+			<int key="@@index" value="101" />
+			<int key="@@case_index" value="31" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_37" />
+			<string key="activity" value="Trade Settled" />
+			<date key="timestamp" value="2024-10-22T06:49:00.619368+00:00" />
+			<string key="resource" value="Trader A" />
+			<string key="currency_pair" value="USD/JPY" />
+			<string key="concept:name" value="Trade Settled" />
+			<date key="time:timestamp" value="2024-10-22T06:49:00.619368+00:00" />
+			<int key="@@index" value="102" />
+			<int key="@@case_index" value="31" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_37" />
+			<string key="activity" value="Trade Allocated" />
+			<date key="timestamp" value="2024-10-22T07:09:00.619368+00:00" />
+			<string key="resource" value="Trader A" />
+			<string key="currency_pair" value="USD/JPY" />
+			<string key="concept:name" value="Trade Allocated" />
+			<date key="time:timestamp" value="2024-10-22T07:09:00.619368+00:00" />
+			<int key="@@index" value="103" />
+			<int key="@@case_index" value="31" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="Case_38" />
+		<event>
+			<string key="case_id" value="Case_38" />
+			<string key="activity" value="Trade Initiated" />
+			<date key="timestamp" value="2024-10-15T05:55:00.619368+00:00" />
+			<string key="resource" value="Trader B" />
+			<string key="currency_pair" value="EUR/USD" />
+			<string key="concept:name" value="Trade Initiated" />
+			<date key="time:timestamp" value="2024-10-15T05:55:00.619368+00:00" />
+			<int key="@@index" value="104" />
+			<int key="@@case_index" value="32" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_38" />
+			<string key="activity" value="Trade Executed" />
+			<date key="timestamp" value="2024-10-15T06:40:00.619368+00:00" />
+			<string key="resource" value="Trader B" />
+			<string key="currency_pair" value="EUR/USD" />
+			<string key="concept:name" value="Trade Executed" />
+			<date key="time:timestamp" value="2024-10-15T06:40:00.619368+00:00" />
+			<int key="@@index" value="105" />
+			<int key="@@case_index" value="32" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_38" />
+			<string key="activity" value="Trade Allocated" />
+			<date key="timestamp" value="2024-10-15T07:07:00.619368+00:00" />
+			<string key="resource" value="Trader B" />
+			<string key="currency_pair" value="EUR/USD" />
+			<string key="concept:name" value="Trade Allocated" />
+			<date key="time:timestamp" value="2024-10-15T07:07:00.619368+00:00" />
+			<int key="@@index" value="106" />
+			<int key="@@case_index" value="32" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_38" />
+			<string key="activity" value="Trade Settled" />
+			<date key="timestamp" value="2024-10-15T08:22:00.619368+00:00" />
+			<string key="resource" value="Trader B" />
+			<string key="currency_pair" value="EUR/USD" />
+			<string key="concept:name" value="Trade Settled" />
+			<date key="time:timestamp" value="2024-10-15T08:22:00.619368+00:00" />
+			<int key="@@index" value="107" />
+			<int key="@@case_index" value="32" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="Case_39" />
+		<event>
+			<string key="case_id" value="Case_39" />
+			<string key="activity" value="Trade Initiated" />
+			<date key="timestamp" value="2024-10-09T05:55:00.619368+00:00" />
+			<string key="resource" value="Trader D" />
+			<string key="currency_pair" value="EUR/USD" />
+			<string key="concept:name" value="Trade Initiated" />
+			<date key="time:timestamp" value="2024-10-09T05:55:00.619368+00:00" />
+			<int key="@@index" value="108" />
+			<int key="@@case_index" value="33" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_39" />
+			<string key="activity" value="Trade Executed" />
+			<date key="timestamp" value="2024-10-09T06:26:00.619368+00:00" />
+			<string key="resource" value="Trader D" />
+			<string key="currency_pair" value="EUR/USD" />
+			<string key="concept:name" value="Trade Executed" />
+			<date key="time:timestamp" value="2024-10-09T06:26:00.619368+00:00" />
+			<int key="@@index" value="109" />
+			<int key="@@case_index" value="33" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_39" />
+			<string key="activity" value="Trade Canceled" />
+			<date key="timestamp" value="2024-10-09T07:55:00.619368+00:00" />
+			<string key="resource" value="Trader D" />
+			<string key="currency_pair" value="EUR/USD" />
+			<string key="concept:name" value="Trade Canceled" />
+			<date key="time:timestamp" value="2024-10-09T07:55:00.619368+00:00" />
+			<int key="@@index" value="110" />
+			<int key="@@case_index" value="33" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="Case_4" />
+		<event>
+			<string key="case_id" value="Case_4" />
+			<string key="activity" value="Trade Executed" />
+			<date key="timestamp" value="2024-10-08T05:55:00.618368+00:00" />
+			<string key="resource" value="Trader C" />
+			<string key="currency_pair" value="USD/JPY" />
+			<string key="concept:name" value="Trade Executed" />
+			<date key="time:timestamp" value="2024-10-08T05:55:00.618368+00:00" />
+			<int key="@@index" value="111" />
+			<int key="@@case_index" value="34" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_4" />
+			<string key="activity" value="Trade Settled" />
+			<date key="timestamp" value="2024-10-08T06:53:00.618368+00:00" />
+			<string key="resource" value="Trader C" />
+			<string key="currency_pair" value="USD/JPY" />
+			<string key="concept:name" value="Trade Settled" />
+			<date key="time:timestamp" value="2024-10-08T06:53:00.618368+00:00" />
+			<int key="@@index" value="112" />
+			<int key="@@case_index" value="34" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="Case_40" />
+		<event>
+			<string key="case_id" value="Case_40" />
+			<string key="activity" value="Trade Initiated" />
+			<date key="timestamp" value="2024-10-11T05:55:00.619368+00:00" />
+			<string key="resource" value="Trader A" />
+			<string key="currency_pair" value="AUD/USD" />
+			<string key="concept:name" value="Trade Initiated" />
+			<date key="time:timestamp" value="2024-10-11T05:55:00.619368+00:00" />
+			<int key="@@index" value="113" />
+			<int key="@@case_index" value="35" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_40" />
+			<string key="activity" value="Trade Executed" />
+			<date key="timestamp" value="2024-10-11T06:34:00.619368+00:00" />
+			<string key="resource" value="Trader A" />
+			<string key="currency_pair" value="AUD/USD" />
+			<string key="concept:name" value="Trade Executed" />
+			<date key="time:timestamp" value="2024-10-11T06:34:00.619368+00:00" />
+			<int key="@@index" value="114" />
+			<int key="@@case_index" value="35" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_40" />
+			<string key="activity" value="Trade Allocated" />
+			<date key="timestamp" value="2024-10-11T06:59:00.619368+00:00" />
+			<string key="resource" value="Trader A" />
+			<string key="currency_pair" value="AUD/USD" />
+			<string key="concept:name" value="Trade Allocated" />
+			<date key="time:timestamp" value="2024-10-11T06:59:00.619368+00:00" />
+			<int key="@@index" value="115" />
+			<int key="@@case_index" value="35" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_40" />
+			<string key="activity" value="Trade Settled" />
+			<date key="timestamp" value="2024-10-11T07:22:00.619368+00:00" />
+			<string key="resource" value="Trader A" />
+			<string key="currency_pair" value="AUD/USD" />
+			<string key="concept:name" value="Trade Settled" />
+			<date key="time:timestamp" value="2024-10-11T07:22:00.619368+00:00" />
+			<int key="@@index" value="116" />
+			<int key="@@case_index" value="35" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_40" />
+			<string key="activity" value="Trade Canceled" />
+			<date key="timestamp" value="2024-10-11T09:55:00.619368+00:00" />
+			<string key="resource" value="Trader A" />
+			<string key="currency_pair" value="AUD/USD" />
+			<string key="concept:name" value="Trade Canceled" />
+			<date key="time:timestamp" value="2024-10-11T09:55:00.619368+00:00" />
+			<int key="@@index" value="117" />
+			<int key="@@case_index" value="35" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="Case_41" />
+		<event>
+			<string key="case_id" value="Case_41" />
+			<string key="activity" value="Trade Initiated" />
+			<date key="timestamp" value="2024-10-14T05:55:00.619368+00:00" />
+			<string key="resource" value="Trader B" />
+			<string key="currency_pair" value="AUD/USD" />
+			<string key="concept:name" value="Trade Initiated" />
+			<date key="time:timestamp" value="2024-10-14T05:55:00.619368+00:00" />
+			<int key="@@index" value="118" />
+			<int key="@@case_index" value="36" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_41" />
+			<string key="activity" value="Trade Executed" />
+			<date key="timestamp" value="2024-10-14T06:09:00.619368+00:00" />
+			<string key="resource" value="Trader B" />
+			<string key="currency_pair" value="AUD/USD" />
+			<string key="concept:name" value="Trade Executed" />
+			<date key="time:timestamp" value="2024-10-14T06:09:00.619368+00:00" />
+			<int key="@@index" value="119" />
+			<int key="@@case_index" value="36" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_41" />
+			<string key="activity" value="Trade Allocated" />
+			<date key="timestamp" value="2024-10-14T07:53:00.619368+00:00" />
+			<string key="resource" value="Trader B" />
+			<string key="currency_pair" value="AUD/USD" />
+			<string key="concept:name" value="Trade Allocated" />
+			<date key="time:timestamp" value="2024-10-14T07:53:00.619368+00:00" />
+			<int key="@@index" value="120" />
+			<int key="@@case_index" value="36" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="Case_42" />
+		<event>
+			<string key="case_id" value="Case_42" />
+			<string key="activity" value="Trade Executed" />
+			<date key="timestamp" value="2024-11-01T05:55:00.619368+00:00" />
+			<string key="resource" value="Trader A" />
+			<string key="currency_pair" value="EUR/USD" />
+			<string key="concept:name" value="Trade Executed" />
+			<date key="time:timestamp" value="2024-11-01T05:55:00.619368+00:00" />
+			<int key="@@index" value="121" />
+			<int key="@@case_index" value="37" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_42" />
+			<string key="activity" value="Trade Allocated" />
+			<date key="timestamp" value="2024-11-01T06:16:00.619368+00:00" />
+			<string key="resource" value="Trader A" />
+			<string key="currency_pair" value="EUR/USD" />
+			<string key="concept:name" value="Trade Allocated" />
+			<date key="time:timestamp" value="2024-11-01T06:16:00.619368+00:00" />
+			<int key="@@index" value="122" />
+			<int key="@@case_index" value="37" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_42" />
+			<string key="activity" value="Trade Canceled" />
+			<date key="timestamp" value="2024-11-01T07:13:00.619368+00:00" />
+			<string key="resource" value="Trader A" />
+			<string key="currency_pair" value="EUR/USD" />
+			<string key="concept:name" value="Trade Canceled" />
+			<date key="time:timestamp" value="2024-11-01T07:13:00.619368+00:00" />
+			<int key="@@index" value="123" />
+			<int key="@@case_index" value="37" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_42" />
+			<string key="activity" value="Trade Settled" />
+			<date key="timestamp" value="2024-11-01T07:29:00.619368+00:00" />
+			<string key="resource" value="Trader A" />
+			<string key="currency_pair" value="EUR/USD" />
+			<string key="concept:name" value="Trade Settled" />
+			<date key="time:timestamp" value="2024-11-01T07:29:00.619368+00:00" />
+			<int key="@@index" value="124" />
+			<int key="@@case_index" value="37" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="Case_43" />
+		<event>
+			<string key="case_id" value="Case_43" />
+			<string key="activity" value="Trade Initiated" />
+			<date key="timestamp" value="2024-10-17T05:55:00.619368+00:00" />
+			<string key="resource" value="Trader C" />
+			<string key="currency_pair" value="USD/JPY" />
+			<string key="concept:name" value="Trade Initiated" />
+			<date key="time:timestamp" value="2024-10-17T05:55:00.619368+00:00" />
+			<int key="@@index" value="125" />
+			<int key="@@case_index" value="38" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_43" />
+			<string key="activity" value="Trade Settled" />
+			<date key="timestamp" value="2024-10-17T06:37:00.619368+00:00" />
+			<string key="resource" value="Trader C" />
+			<string key="currency_pair" value="USD/JPY" />
+			<string key="concept:name" value="Trade Settled" />
+			<date key="time:timestamp" value="2024-10-17T06:37:00.619368+00:00" />
+			<int key="@@index" value="126" />
+			<int key="@@case_index" value="38" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="Case_44" />
+		<event>
+			<string key="case_id" value="Case_44" />
+			<string key="activity" value="Trade Executed" />
+			<date key="timestamp" value="2024-10-26T05:55:00.619368+00:00" />
+			<string key="resource" value="Trader C" />
+			<string key="currency_pair" value="EUR/USD" />
+			<string key="concept:name" value="Trade Executed" />
+			<date key="time:timestamp" value="2024-10-26T05:55:00.619368+00:00" />
+			<int key="@@index" value="127" />
+			<int key="@@case_index" value="39" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_44" />
+			<string key="activity" value="Trade Settled" />
+			<date key="timestamp" value="2024-10-26T06:05:00.619368+00:00" />
+			<string key="resource" value="Trader C" />
+			<string key="currency_pair" value="EUR/USD" />
+			<string key="concept:name" value="Trade Settled" />
+			<date key="time:timestamp" value="2024-10-26T06:05:00.619368+00:00" />
+			<int key="@@index" value="128" />
+			<int key="@@case_index" value="39" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="Case_45" />
+		<event>
+			<string key="case_id" value="Case_45" />
+			<string key="activity" value="Trade Initiated" />
+			<date key="timestamp" value="2024-10-25T05:55:00.619368+00:00" />
+			<string key="resource" value="Trader C" />
+			<string key="currency_pair" value="USD/JPY" />
+			<string key="concept:name" value="Trade Initiated" />
+			<date key="time:timestamp" value="2024-10-25T05:55:00.619368+00:00" />
+			<int key="@@index" value="129" />
+			<int key="@@case_index" value="40" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_45" />
+			<string key="activity" value="Trade Allocated" />
+			<date key="timestamp" value="2024-10-25T06:51:00.619368+00:00" />
+			<string key="resource" value="Trader C" />
+			<string key="currency_pair" value="USD/JPY" />
+			<string key="concept:name" value="Trade Allocated" />
+			<date key="time:timestamp" value="2024-10-25T06:51:00.619368+00:00" />
+			<int key="@@index" value="130" />
+			<int key="@@case_index" value="40" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_45" />
+			<string key="activity" value="Trade Settled" />
+			<date key="timestamp" value="2024-10-25T06:53:00.619368+00:00" />
+			<string key="resource" value="Trader C" />
+			<string key="currency_pair" value="USD/JPY" />
+			<string key="concept:name" value="Trade Settled" />
+			<date key="time:timestamp" value="2024-10-25T06:53:00.619368+00:00" />
+			<int key="@@index" value="131" />
+			<int key="@@case_index" value="40" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="Case_46" />
+		<event>
+			<string key="case_id" value="Case_46" />
+			<string key="activity" value="Trade Executed" />
+			<date key="timestamp" value="2024-10-17T05:55:00.620367+00:00" />
+			<string key="resource" value="Trader B" />
+			<string key="currency_pair" value="GBP/USD" />
+			<string key="concept:name" value="Trade Executed" />
+			<date key="time:timestamp" value="2024-10-17T05:55:00.620367+00:00" />
+			<int key="@@index" value="132" />
+			<int key="@@case_index" value="41" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_46" />
+			<string key="activity" value="Trade Allocated" />
+			<date key="timestamp" value="2024-10-17T06:29:00.620367+00:00" />
+			<string key="resource" value="Trader B" />
+			<string key="currency_pair" value="GBP/USD" />
+			<string key="concept:name" value="Trade Allocated" />
+			<date key="time:timestamp" value="2024-10-17T06:29:00.620367+00:00" />
+			<int key="@@index" value="133" />
+			<int key="@@case_index" value="41" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_46" />
+			<string key="activity" value="Trade Settled" />
+			<date key="timestamp" value="2024-10-17T07:41:00.620367+00:00" />
+			<string key="resource" value="Trader B" />
+			<string key="currency_pair" value="GBP/USD" />
+			<string key="concept:name" value="Trade Settled" />
+			<date key="time:timestamp" value="2024-10-17T07:41:00.620367+00:00" />
+			<int key="@@index" value="134" />
+			<int key="@@case_index" value="41" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_46" />
+			<string key="activity" value="Trade Canceled" />
+			<date key="timestamp" value="2024-10-17T08:46:00.620367+00:00" />
+			<string key="resource" value="Trader B" />
+			<string key="currency_pair" value="GBP/USD" />
+			<string key="concept:name" value="Trade Canceled" />
+			<date key="time:timestamp" value="2024-10-17T08:46:00.620367+00:00" />
+			<int key="@@index" value="135" />
+			<int key="@@case_index" value="41" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="Case_47" />
+		<event>
+			<string key="case_id" value="Case_47" />
+			<string key="activity" value="Trade Executed" />
+			<date key="timestamp" value="2024-10-13T05:55:00.620367+00:00" />
+			<string key="resource" value="Trader A" />
+			<string key="currency_pair" value="USD/JPY" />
+			<string key="concept:name" value="Trade Executed" />
+			<date key="time:timestamp" value="2024-10-13T05:55:00.620367+00:00" />
+			<int key="@@index" value="136" />
+			<int key="@@case_index" value="42" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_47" />
+			<string key="activity" value="Trade Allocated" />
+			<date key="timestamp" value="2024-10-13T06:32:00.620367+00:00" />
+			<string key="resource" value="Trader A" />
+			<string key="currency_pair" value="USD/JPY" />
+			<string key="concept:name" value="Trade Allocated" />
+			<date key="time:timestamp" value="2024-10-13T06:32:00.620367+00:00" />
+			<int key="@@index" value="137" />
+			<int key="@@case_index" value="42" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_47" />
+			<string key="activity" value="Trade Canceled" />
+			<date key="timestamp" value="2024-10-13T07:55:00.620367+00:00" />
+			<string key="resource" value="Trader A" />
+			<string key="currency_pair" value="USD/JPY" />
+			<string key="concept:name" value="Trade Canceled" />
+			<date key="time:timestamp" value="2024-10-13T07:55:00.620367+00:00" />
+			<int key="@@index" value="138" />
+			<int key="@@case_index" value="42" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="Case_48" />
+		<event>
+			<string key="case_id" value="Case_48" />
+			<string key="activity" value="Trade Initiated" />
+			<date key="timestamp" value="2024-10-25T05:55:00.620367+00:00" />
+			<string key="resource" value="Trader D" />
+			<string key="currency_pair" value="GBP/USD" />
+			<string key="concept:name" value="Trade Initiated" />
+			<date key="time:timestamp" value="2024-10-25T05:55:00.620367+00:00" />
+			<int key="@@index" value="139" />
+			<int key="@@case_index" value="43" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_48" />
+			<string key="activity" value="Trade Executed" />
+			<date key="timestamp" value="2024-10-25T06:23:00.620367+00:00" />
+			<string key="resource" value="Trader D" />
+			<string key="currency_pair" value="GBP/USD" />
+			<string key="concept:name" value="Trade Executed" />
+			<date key="time:timestamp" value="2024-10-25T06:23:00.620367+00:00" />
+			<int key="@@index" value="140" />
+			<int key="@@case_index" value="43" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_48" />
+			<string key="activity" value="Trade Settled" />
+			<date key="timestamp" value="2024-10-25T07:19:00.620367+00:00" />
+			<string key="resource" value="Trader D" />
+			<string key="currency_pair" value="GBP/USD" />
+			<string key="concept:name" value="Trade Settled" />
+			<date key="time:timestamp" value="2024-10-25T07:19:00.620367+00:00" />
+			<int key="@@index" value="141" />
+			<int key="@@case_index" value="43" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_48" />
+			<string key="activity" value="Trade Canceled" />
+			<date key="timestamp" value="2024-10-25T08:31:00.620367+00:00" />
+			<string key="resource" value="Trader D" />
+			<string key="currency_pair" value="GBP/USD" />
+			<string key="concept:name" value="Trade Canceled" />
+			<date key="time:timestamp" value="2024-10-25T08:31:00.620367+00:00" />
+			<int key="@@index" value="142" />
+			<int key="@@case_index" value="43" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="Case_49" />
+		<event>
+			<string key="case_id" value="Case_49" />
+			<string key="activity" value="Trade Initiated" />
+			<date key="timestamp" value="2024-10-08T05:55:00.620367+00:00" />
+			<string key="resource" value="Trader B" />
+			<string key="currency_pair" value="GBP/USD" />
+			<string key="concept:name" value="Trade Initiated" />
+			<date key="time:timestamp" value="2024-10-08T05:55:00.620367+00:00" />
+			<int key="@@index" value="143" />
+			<int key="@@case_index" value="44" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_49" />
+			<string key="activity" value="Trade Executed" />
+			<date key="timestamp" value="2024-10-08T06:07:00.620367+00:00" />
+			<string key="resource" value="Trader B" />
+			<string key="currency_pair" value="GBP/USD" />
+			<string key="concept:name" value="Trade Executed" />
+			<date key="time:timestamp" value="2024-10-08T06:07:00.620367+00:00" />
+			<int key="@@index" value="144" />
+			<int key="@@case_index" value="44" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_49" />
+			<string key="activity" value="Trade Allocated" />
+			<date key="timestamp" value="2024-10-08T06:45:00.620367+00:00" />
+			<string key="resource" value="Trader B" />
+			<string key="currency_pair" value="GBP/USD" />
+			<string key="concept:name" value="Trade Allocated" />
+			<date key="time:timestamp" value="2024-10-08T06:45:00.620367+00:00" />
+			<int key="@@index" value="145" />
+			<int key="@@case_index" value="44" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_49" />
+			<string key="activity" value="Trade Settled" />
+			<date key="timestamp" value="2024-10-08T07:55:00.620367+00:00" />
+			<string key="resource" value="Trader B" />
+			<string key="currency_pair" value="GBP/USD" />
+			<string key="concept:name" value="Trade Settled" />
+			<date key="time:timestamp" value="2024-10-08T07:55:00.620367+00:00" />
+			<int key="@@index" value="146" />
+			<int key="@@case_index" value="44" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="Case_5" />
+		<event>
+			<string key="case_id" value="Case_5" />
+			<string key="activity" value="Trade Initiated" />
+			<date key="timestamp" value="2024-10-23T05:55:00.618368+00:00" />
+			<string key="resource" value="Trader C" />
+			<string key="currency_pair" value="USD/JPY" />
+			<string key="concept:name" value="Trade Initiated" />
+			<date key="time:timestamp" value="2024-10-23T05:55:00.618368+00:00" />
+			<int key="@@index" value="147" />
+			<int key="@@case_index" value="45" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_5" />
+			<string key="activity" value="Trade Executed" />
+			<date key="timestamp" value="2024-10-23T06:07:00.618368+00:00" />
+			<string key="resource" value="Trader C" />
+			<string key="currency_pair" value="USD/JPY" />
+			<string key="concept:name" value="Trade Executed" />
+			<date key="time:timestamp" value="2024-10-23T06:07:00.618368+00:00" />
+			<int key="@@index" value="148" />
+			<int key="@@case_index" value="45" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_5" />
+			<string key="activity" value="Trade Settled" />
+			<date key="timestamp" value="2024-10-23T07:47:00.618368+00:00" />
+			<string key="resource" value="Trader C" />
+			<string key="currency_pair" value="USD/JPY" />
+			<string key="concept:name" value="Trade Settled" />
+			<date key="time:timestamp" value="2024-10-23T07:47:00.618368+00:00" />
+			<int key="@@index" value="149" />
+			<int key="@@case_index" value="45" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_5" />
+			<string key="activity" value="Trade Canceled" />
+			<date key="timestamp" value="2024-10-23T07:52:00.618368+00:00" />
+			<string key="resource" value="Trader C" />
+			<string key="currency_pair" value="USD/JPY" />
+			<string key="concept:name" value="Trade Canceled" />
+			<date key="time:timestamp" value="2024-10-23T07:52:00.618368+00:00" />
+			<int key="@@index" value="150" />
+			<int key="@@case_index" value="45" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="Case_50" />
+		<event>
+			<string key="case_id" value="Case_50" />
+			<string key="activity" value="Trade Settled" />
+			<date key="timestamp" value="2024-10-19T05:55:00.620367+00:00" />
+			<string key="resource" value="Trader B" />
+			<string key="currency_pair" value="AUD/USD" />
+			<string key="concept:name" value="Trade Settled" />
+			<date key="time:timestamp" value="2024-10-19T05:55:00.620367+00:00" />
+			<int key="@@index" value="151" />
+			<int key="@@case_index" value="46" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_50" />
+			<string key="activity" value="Trade Canceled" />
+			<date key="timestamp" value="2024-10-19T06:20:00.620367+00:00" />
+			<string key="resource" value="Trader B" />
+			<string key="currency_pair" value="AUD/USD" />
+			<string key="concept:name" value="Trade Canceled" />
+			<date key="time:timestamp" value="2024-10-19T06:20:00.620367+00:00" />
+			<int key="@@index" value="152" />
+			<int key="@@case_index" value="46" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="Case_51" />
+		<event>
+			<string key="case_id" value="Case_51" />
+			<string key="activity" value="Trade Initiated" />
+			<date key="timestamp" value="2024-10-29T05:55:00.620367+00:00" />
+			<string key="resource" value="Trader B" />
+			<string key="currency_pair" value="GBP/USD" />
+			<string key="concept:name" value="Trade Initiated" />
+			<date key="time:timestamp" value="2024-10-29T05:55:00.620367+00:00" />
+			<int key="@@index" value="153" />
+			<int key="@@case_index" value="47" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_51" />
+			<string key="activity" value="Trade Executed" />
+			<date key="timestamp" value="2024-10-29T06:38:00.620367+00:00" />
+			<string key="resource" value="Trader B" />
+			<string key="currency_pair" value="GBP/USD" />
+			<string key="concept:name" value="Trade Executed" />
+			<date key="time:timestamp" value="2024-10-29T06:38:00.620367+00:00" />
+			<int key="@@index" value="154" />
+			<int key="@@case_index" value="47" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_51" />
+			<string key="activity" value="Trade Canceled" />
+			<date key="timestamp" value="2024-10-29T07:13:00.620367+00:00" />
+			<string key="resource" value="Trader B" />
+			<string key="currency_pair" value="GBP/USD" />
+			<string key="concept:name" value="Trade Canceled" />
+			<date key="time:timestamp" value="2024-10-29T07:13:00.620367+00:00" />
+			<int key="@@index" value="155" />
+			<int key="@@case_index" value="47" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="Case_52" />
+		<event>
+			<string key="case_id" value="Case_52" />
+			<string key="activity" value="Trade Executed" />
+			<date key="timestamp" value="2024-10-08T05:55:00.620367+00:00" />
+			<string key="resource" value="Trader A" />
+			<string key="currency_pair" value="AUD/USD" />
+			<string key="concept:name" value="Trade Executed" />
+			<date key="time:timestamp" value="2024-10-08T05:55:00.620367+00:00" />
+			<int key="@@index" value="156" />
+			<int key="@@case_index" value="48" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_52" />
+			<string key="activity" value="Trade Canceled" />
+			<date key="timestamp" value="2024-10-08T06:47:00.620367+00:00" />
+			<string key="resource" value="Trader A" />
+			<string key="currency_pair" value="AUD/USD" />
+			<string key="concept:name" value="Trade Canceled" />
+			<date key="time:timestamp" value="2024-10-08T06:47:00.620367+00:00" />
+			<int key="@@index" value="157" />
+			<int key="@@case_index" value="48" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="Case_53" />
+		<event>
+			<string key="case_id" value="Case_53" />
+			<string key="activity" value="Trade Executed" />
+			<date key="timestamp" value="2024-10-18T05:55:00.620367+00:00" />
+			<string key="resource" value="Trader B" />
+			<string key="currency_pair" value="AUD/USD" />
+			<string key="concept:name" value="Trade Executed" />
+			<date key="time:timestamp" value="2024-10-18T05:55:00.620367+00:00" />
+			<int key="@@index" value="158" />
+			<int key="@@case_index" value="49" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_53" />
+			<string key="activity" value="Trade Settled" />
+			<date key="timestamp" value="2024-10-18T06:45:00.620367+00:00" />
+			<string key="resource" value="Trader B" />
+			<string key="currency_pair" value="AUD/USD" />
+			<string key="concept:name" value="Trade Settled" />
+			<date key="time:timestamp" value="2024-10-18T06:45:00.620367+00:00" />
+			<int key="@@index" value="159" />
+			<int key="@@case_index" value="49" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_53" />
+			<string key="activity" value="Trade Allocated" />
+			<date key="timestamp" value="2024-10-18T06:53:00.620367+00:00" />
+			<string key="resource" value="Trader B" />
+			<string key="currency_pair" value="AUD/USD" />
+			<string key="concept:name" value="Trade Allocated" />
+			<date key="time:timestamp" value="2024-10-18T06:53:00.620367+00:00" />
+			<int key="@@index" value="160" />
+			<int key="@@case_index" value="49" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_53" />
+			<string key="activity" value="Trade Canceled" />
+			<date key="timestamp" value="2024-10-18T08:25:00.620367+00:00" />
+			<string key="resource" value="Trader B" />
+			<string key="currency_pair" value="AUD/USD" />
+			<string key="concept:name" value="Trade Canceled" />
+			<date key="time:timestamp" value="2024-10-18T08:25:00.620367+00:00" />
+			<int key="@@index" value="161" />
+			<int key="@@case_index" value="49" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="Case_54" />
+		<event>
+			<string key="case_id" value="Case_54" />
+			<string key="activity" value="Trade Initiated" />
+			<date key="timestamp" value="2024-10-06T05:55:00.620367+00:00" />
+			<string key="resource" value="Trader C" />
+			<string key="currency_pair" value="AUD/USD" />
+			<string key="concept:name" value="Trade Initiated" />
+			<date key="time:timestamp" value="2024-10-06T05:55:00.620367+00:00" />
+			<int key="@@index" value="162" />
+			<int key="@@case_index" value="50" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_54" />
+			<string key="activity" value="Trade Allocated" />
+			<date key="timestamp" value="2024-10-06T06:23:00.620367+00:00" />
+			<string key="resource" value="Trader C" />
+			<string key="currency_pair" value="AUD/USD" />
+			<string key="concept:name" value="Trade Allocated" />
+			<date key="time:timestamp" value="2024-10-06T06:23:00.620367+00:00" />
+			<int key="@@index" value="163" />
+			<int key="@@case_index" value="50" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_54" />
+			<string key="activity" value="Trade Settled" />
+			<date key="timestamp" value="2024-10-06T06:45:00.620367+00:00" />
+			<string key="resource" value="Trader C" />
+			<string key="currency_pair" value="AUD/USD" />
+			<string key="concept:name" value="Trade Settled" />
+			<date key="time:timestamp" value="2024-10-06T06:45:00.620367+00:00" />
+			<int key="@@index" value="164" />
+			<int key="@@case_index" value="50" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_54" />
+			<string key="activity" value="Trade Canceled" />
+			<date key="timestamp" value="2024-10-06T07:16:00.620367+00:00" />
+			<string key="resource" value="Trader C" />
+			<string key="currency_pair" value="AUD/USD" />
+			<string key="concept:name" value="Trade Canceled" />
+			<date key="time:timestamp" value="2024-10-06T07:16:00.620367+00:00" />
+			<int key="@@index" value="165" />
+			<int key="@@case_index" value="50" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="Case_55" />
+		<event>
+			<string key="case_id" value="Case_55" />
+			<string key="activity" value="Trade Initiated" />
+			<date key="timestamp" value="2024-10-26T05:55:00.620367+00:00" />
+			<string key="resource" value="Trader B" />
+			<string key="currency_pair" value="AUD/USD" />
+			<string key="concept:name" value="Trade Initiated" />
+			<date key="time:timestamp" value="2024-10-26T05:55:00.620367+00:00" />
+			<int key="@@index" value="166" />
+			<int key="@@case_index" value="51" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_55" />
+			<string key="activity" value="Trade Canceled" />
+			<date key="timestamp" value="2024-10-26T06:37:00.620367+00:00" />
+			<string key="resource" value="Trader B" />
+			<string key="currency_pair" value="AUD/USD" />
+			<string key="concept:name" value="Trade Canceled" />
+			<date key="time:timestamp" value="2024-10-26T06:37:00.620367+00:00" />
+			<int key="@@index" value="167" />
+			<int key="@@case_index" value="51" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_55" />
+			<string key="activity" value="Trade Settled" />
+			<date key="timestamp" value="2024-10-26T06:41:00.620367+00:00" />
+			<string key="resource" value="Trader B" />
+			<string key="currency_pair" value="AUD/USD" />
+			<string key="concept:name" value="Trade Settled" />
+			<date key="time:timestamp" value="2024-10-26T06:41:00.620367+00:00" />
+			<int key="@@index" value="168" />
+			<int key="@@case_index" value="51" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_55" />
+			<string key="activity" value="Trade Allocated" />
+			<date key="timestamp" value="2024-10-26T06:50:00.620367+00:00" />
+			<string key="resource" value="Trader B" />
+			<string key="currency_pair" value="AUD/USD" />
+			<string key="concept:name" value="Trade Allocated" />
+			<date key="time:timestamp" value="2024-10-26T06:50:00.620367+00:00" />
+			<int key="@@index" value="169" />
+			<int key="@@case_index" value="51" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="Case_56" />
+		<event>
+			<string key="case_id" value="Case_56" />
+			<string key="activity" value="Trade Initiated" />
+			<date key="timestamp" value="2024-10-30T05:55:00.620367+00:00" />
+			<string key="resource" value="Trader A" />
+			<string key="currency_pair" value="GBP/USD" />
+			<string key="concept:name" value="Trade Initiated" />
+			<date key="time:timestamp" value="2024-10-30T05:55:00.620367+00:00" />
+			<int key="@@index" value="170" />
+			<int key="@@case_index" value="52" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_56" />
+			<string key="activity" value="Trade Executed" />
+			<date key="timestamp" value="2024-10-30T06:29:00.620367+00:00" />
+			<string key="resource" value="Trader A" />
+			<string key="currency_pair" value="GBP/USD" />
+			<string key="concept:name" value="Trade Executed" />
+			<date key="time:timestamp" value="2024-10-30T06:29:00.620367+00:00" />
+			<int key="@@index" value="171" />
+			<int key="@@case_index" value="52" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_56" />
+			<string key="activity" value="Trade Allocated" />
+			<date key="timestamp" value="2024-10-30T07:53:00.620367+00:00" />
+			<string key="resource" value="Trader A" />
+			<string key="currency_pair" value="GBP/USD" />
+			<string key="concept:name" value="Trade Allocated" />
+			<date key="time:timestamp" value="2024-10-30T07:53:00.620367+00:00" />
+			<int key="@@index" value="172" />
+			<int key="@@case_index" value="52" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_56" />
+			<string key="activity" value="Trade Settled" />
+			<date key="timestamp" value="2024-10-30T08:16:00.620367+00:00" />
+			<string key="resource" value="Trader A" />
+			<string key="currency_pair" value="GBP/USD" />
+			<string key="concept:name" value="Trade Settled" />
+			<date key="time:timestamp" value="2024-10-30T08:16:00.620367+00:00" />
+			<int key="@@index" value="173" />
+			<int key="@@case_index" value="52" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_56" />
+			<string key="activity" value="Trade Canceled" />
+			<date key="timestamp" value="2024-10-30T09:31:00.620367+00:00" />
+			<string key="resource" value="Trader A" />
+			<string key="currency_pair" value="GBP/USD" />
+			<string key="concept:name" value="Trade Canceled" />
+			<date key="time:timestamp" value="2024-10-30T09:31:00.620367+00:00" />
+			<int key="@@index" value="174" />
+			<int key="@@case_index" value="52" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="Case_57" />
+		<event>
+			<string key="case_id" value="Case_57" />
+			<string key="activity" value="Trade Settled" />
+			<date key="timestamp" value="2024-11-03T05:55:00.620367+00:00" />
+			<string key="resource" value="Trader D" />
+			<string key="currency_pair" value="EUR/USD" />
+			<string key="concept:name" value="Trade Settled" />
+			<date key="time:timestamp" value="2024-11-03T05:55:00.620367+00:00" />
+			<int key="@@index" value="175" />
+			<int key="@@case_index" value="53" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_57" />
+			<string key="activity" value="Trade Canceled" />
+			<date key="timestamp" value="2024-11-03T06:24:00.620367+00:00" />
+			<string key="resource" value="Trader D" />
+			<string key="currency_pair" value="EUR/USD" />
+			<string key="concept:name" value="Trade Canceled" />
+			<date key="time:timestamp" value="2024-11-03T06:24:00.620367+00:00" />
+			<int key="@@index" value="176" />
+			<int key="@@case_index" value="53" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="Case_58" />
+		<event>
+			<string key="case_id" value="Case_58" />
+			<string key="activity" value="Trade Initiated" />
+			<date key="timestamp" value="2024-10-04T05:55:00.620367+00:00" />
+			<string key="resource" value="Trader D" />
+			<string key="currency_pair" value="AUD/USD" />
+			<string key="concept:name" value="Trade Initiated" />
+			<date key="time:timestamp" value="2024-10-04T05:55:00.620367+00:00" />
+			<int key="@@index" value="177" />
+			<int key="@@case_index" value="54" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_58" />
+			<string key="activity" value="Trade Executed" />
+			<date key="timestamp" value="2024-10-04T06:26:00.620367+00:00" />
+			<string key="resource" value="Trader D" />
+			<string key="currency_pair" value="AUD/USD" />
+			<string key="concept:name" value="Trade Executed" />
+			<date key="time:timestamp" value="2024-10-04T06:26:00.620367+00:00" />
+			<int key="@@index" value="178" />
+			<int key="@@case_index" value="54" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_58" />
+			<string key="activity" value="Trade Allocated" />
+			<date key="timestamp" value="2024-10-04T07:39:00.620367+00:00" />
+			<string key="resource" value="Trader D" />
+			<string key="currency_pair" value="AUD/USD" />
+			<string key="concept:name" value="Trade Allocated" />
+			<date key="time:timestamp" value="2024-10-04T07:39:00.620367+00:00" />
+			<int key="@@index" value="179" />
+			<int key="@@case_index" value="54" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_58" />
+			<string key="activity" value="Trade Canceled" />
+			<date key="timestamp" value="2024-10-04T08:15:00.620367+00:00" />
+			<string key="resource" value="Trader D" />
+			<string key="currency_pair" value="AUD/USD" />
+			<string key="concept:name" value="Trade Canceled" />
+			<date key="time:timestamp" value="2024-10-04T08:15:00.620367+00:00" />
+			<int key="@@index" value="180" />
+			<int key="@@case_index" value="54" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_58" />
+			<string key="activity" value="Trade Settled" />
+			<date key="timestamp" value="2024-10-04T08:34:00.620367+00:00" />
+			<string key="resource" value="Trader D" />
+			<string key="currency_pair" value="AUD/USD" />
+			<string key="concept:name" value="Trade Settled" />
+			<date key="time:timestamp" value="2024-10-04T08:34:00.620367+00:00" />
+			<int key="@@index" value="181" />
+			<int key="@@case_index" value="54" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="Case_59" />
+		<event>
+			<string key="case_id" value="Case_59" />
+			<string key="activity" value="Trade Executed" />
+			<date key="timestamp" value="2024-10-22T05:55:00.620367+00:00" />
+			<string key="resource" value="Trader A" />
+			<string key="currency_pair" value="AUD/USD" />
+			<string key="concept:name" value="Trade Executed" />
+			<date key="time:timestamp" value="2024-10-22T05:55:00.620367+00:00" />
+			<int key="@@index" value="182" />
+			<int key="@@case_index" value="55" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_59" />
+			<string key="activity" value="Trade Settled" />
+			<date key="timestamp" value="2024-10-22T06:17:00.620367+00:00" />
+			<string key="resource" value="Trader A" />
+			<string key="currency_pair" value="AUD/USD" />
+			<string key="concept:name" value="Trade Settled" />
+			<date key="time:timestamp" value="2024-10-22T06:17:00.620367+00:00" />
+			<int key="@@index" value="183" />
+			<int key="@@case_index" value="55" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_59" />
+			<string key="activity" value="Trade Allocated" />
+			<date key="timestamp" value="2024-10-22T06:47:00.620367+00:00" />
+			<string key="resource" value="Trader A" />
+			<string key="currency_pair" value="AUD/USD" />
+			<string key="concept:name" value="Trade Allocated" />
+			<date key="time:timestamp" value="2024-10-22T06:47:00.620367+00:00" />
+			<int key="@@index" value="184" />
+			<int key="@@case_index" value="55" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="Case_6" />
+		<event>
+			<string key="case_id" value="Case_6" />
+			<string key="activity" value="Trade Initiated" />
+			<date key="timestamp" value="2024-10-22T05:55:00.618368+00:00" />
+			<string key="resource" value="Trader C" />
+			<string key="currency_pair" value="USD/JPY" />
+			<string key="concept:name" value="Trade Initiated" />
+			<date key="time:timestamp" value="2024-10-22T05:55:00.618368+00:00" />
+			<int key="@@index" value="185" />
+			<int key="@@case_index" value="56" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_6" />
+			<string key="activity" value="Trade Settled" />
+			<date key="timestamp" value="2024-10-22T06:50:00.618368+00:00" />
+			<string key="resource" value="Trader C" />
+			<string key="currency_pair" value="USD/JPY" />
+			<string key="concept:name" value="Trade Settled" />
+			<date key="time:timestamp" value="2024-10-22T06:50:00.618368+00:00" />
+			<int key="@@index" value="186" />
+			<int key="@@case_index" value="56" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="Case_60" />
+		<event>
+			<string key="case_id" value="Case_60" />
+			<string key="activity" value="Trade Executed" />
+			<date key="timestamp" value="2024-10-05T05:55:00.620367+00:00" />
+			<string key="resource" value="Trader D" />
+			<string key="currency_pair" value="GBP/USD" />
+			<string key="concept:name" value="Trade Executed" />
+			<date key="time:timestamp" value="2024-10-05T05:55:00.620367+00:00" />
+			<int key="@@index" value="187" />
+			<int key="@@case_index" value="57" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_60" />
+			<string key="activity" value="Trade Settled" />
+			<date key="timestamp" value="2024-10-05T06:29:00.620367+00:00" />
+			<string key="resource" value="Trader D" />
+			<string key="currency_pair" value="GBP/USD" />
+			<string key="concept:name" value="Trade Settled" />
+			<date key="time:timestamp" value="2024-10-05T06:29:00.620367+00:00" />
+			<int key="@@index" value="188" />
+			<int key="@@case_index" value="57" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="Case_61" />
+		<event>
+			<string key="case_id" value="Case_61" />
+			<string key="activity" value="Trade Executed" />
+			<date key="timestamp" value="2024-10-28T05:55:00.620367+00:00" />
+			<string key="resource" value="Trader D" />
+			<string key="currency_pair" value="USD/JPY" />
+			<string key="concept:name" value="Trade Executed" />
+			<date key="time:timestamp" value="2024-10-28T05:55:00.620367+00:00" />
+			<int key="@@index" value="189" />
+			<int key="@@case_index" value="58" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_61" />
+			<string key="activity" value="Trade Allocated" />
+			<date key="timestamp" value="2024-10-28T06:21:00.620367+00:00" />
+			<string key="resource" value="Trader D" />
+			<string key="currency_pair" value="USD/JPY" />
+			<string key="concept:name" value="Trade Allocated" />
+			<date key="time:timestamp" value="2024-10-28T06:21:00.620367+00:00" />
+			<int key="@@index" value="190" />
+			<int key="@@case_index" value="58" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_61" />
+			<string key="activity" value="Trade Settled" />
+			<date key="timestamp" value="2024-10-28T06:25:00.620367+00:00" />
+			<string key="resource" value="Trader D" />
+			<string key="currency_pair" value="USD/JPY" />
+			<string key="concept:name" value="Trade Settled" />
+			<date key="time:timestamp" value="2024-10-28T06:25:00.620367+00:00" />
+			<int key="@@index" value="191" />
+			<int key="@@case_index" value="58" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_61" />
+			<string key="activity" value="Trade Canceled" />
+			<date key="timestamp" value="2024-10-28T07:55:00.620367+00:00" />
+			<string key="resource" value="Trader D" />
+			<string key="currency_pair" value="USD/JPY" />
+			<string key="concept:name" value="Trade Canceled" />
+			<date key="time:timestamp" value="2024-10-28T07:55:00.620367+00:00" />
+			<int key="@@index" value="192" />
+			<int key="@@case_index" value="58" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="Case_62" />
+		<event>
+			<string key="case_id" value="Case_62" />
+			<string key="activity" value="Trade Initiated" />
+			<date key="timestamp" value="2024-10-24T05:55:00.620367+00:00" />
+			<string key="resource" value="Trader C" />
+			<string key="currency_pair" value="GBP/USD" />
+			<string key="concept:name" value="Trade Initiated" />
+			<date key="time:timestamp" value="2024-10-24T05:55:00.620367+00:00" />
+			<int key="@@index" value="193" />
+			<int key="@@case_index" value="59" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_62" />
+			<string key="activity" value="Trade Canceled" />
+			<date key="timestamp" value="2024-10-24T06:54:00.620367+00:00" />
+			<string key="resource" value="Trader C" />
+			<string key="currency_pair" value="GBP/USD" />
+			<string key="concept:name" value="Trade Canceled" />
+			<date key="time:timestamp" value="2024-10-24T06:54:00.620367+00:00" />
+			<int key="@@index" value="194" />
+			<int key="@@case_index" value="59" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="Case_63" />
+		<event>
+			<string key="case_id" value="Case_63" />
+			<string key="activity" value="Trade Initiated" />
+			<date key="timestamp" value="2024-10-23T05:55:00.620367+00:00" />
+			<string key="resource" value="Trader B" />
+			<string key="currency_pair" value="EUR/USD" />
+			<string key="concept:name" value="Trade Initiated" />
+			<date key="time:timestamp" value="2024-10-23T05:55:00.620367+00:00" />
+			<int key="@@index" value="195" />
+			<int key="@@case_index" value="60" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_63" />
+			<string key="activity" value="Trade Executed" />
+			<date key="timestamp" value="2024-10-23T06:20:00.620367+00:00" />
+			<string key="resource" value="Trader B" />
+			<string key="currency_pair" value="EUR/USD" />
+			<string key="concept:name" value="Trade Executed" />
+			<date key="time:timestamp" value="2024-10-23T06:20:00.620367+00:00" />
+			<int key="@@index" value="196" />
+			<int key="@@case_index" value="60" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="Case_64" />
+		<event>
+			<string key="case_id" value="Case_64" />
+			<string key="activity" value="Trade Initiated" />
+			<date key="timestamp" value="2024-10-26T05:55:00.620367+00:00" />
+			<string key="resource" value="Trader B" />
+			<string key="currency_pair" value="AUD/USD" />
+			<string key="concept:name" value="Trade Initiated" />
+			<date key="time:timestamp" value="2024-10-26T05:55:00.620367+00:00" />
+			<int key="@@index" value="197" />
+			<int key="@@case_index" value="61" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_64" />
+			<string key="activity" value="Trade Allocated" />
+			<date key="timestamp" value="2024-10-26T06:54:00.620367+00:00" />
+			<string key="resource" value="Trader B" />
+			<string key="currency_pair" value="AUD/USD" />
+			<string key="concept:name" value="Trade Allocated" />
+			<date key="time:timestamp" value="2024-10-26T06:54:00.620367+00:00" />
+			<int key="@@index" value="198" />
+			<int key="@@case_index" value="61" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_64" />
+			<string key="activity" value="Trade Settled" />
+			<date key="timestamp" value="2024-10-26T07:01:00.620367+00:00" />
+			<string key="resource" value="Trader B" />
+			<string key="currency_pair" value="AUD/USD" />
+			<string key="concept:name" value="Trade Settled" />
+			<date key="time:timestamp" value="2024-10-26T07:01:00.620367+00:00" />
+			<int key="@@index" value="199" />
+			<int key="@@case_index" value="61" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="Case_65" />
+		<event>
+			<string key="case_id" value="Case_65" />
+			<string key="activity" value="Trade Initiated" />
+			<date key="timestamp" value="2024-10-22T05:55:00.620367+00:00" />
+			<string key="resource" value="Trader C" />
+			<string key="currency_pair" value="EUR/USD" />
+			<string key="concept:name" value="Trade Initiated" />
+			<date key="time:timestamp" value="2024-10-22T05:55:00.620367+00:00" />
+			<int key="@@index" value="200" />
+			<int key="@@case_index" value="62" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_65" />
+			<string key="activity" value="Trade Settled" />
+			<date key="timestamp" value="2024-10-22T06:24:00.620367+00:00" />
+			<string key="resource" value="Trader C" />
+			<string key="currency_pair" value="EUR/USD" />
+			<string key="concept:name" value="Trade Settled" />
+			<date key="time:timestamp" value="2024-10-22T06:24:00.620367+00:00" />
+			<int key="@@index" value="201" />
+			<int key="@@case_index" value="62" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_65" />
+			<string key="activity" value="Trade Canceled" />
+			<date key="timestamp" value="2024-10-22T07:27:00.620367+00:00" />
+			<string key="resource" value="Trader C" />
+			<string key="currency_pair" value="EUR/USD" />
+			<string key="concept:name" value="Trade Canceled" />
+			<date key="time:timestamp" value="2024-10-22T07:27:00.620367+00:00" />
+			<int key="@@index" value="202" />
+			<int key="@@case_index" value="62" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="Case_66" />
+		<event>
+			<string key="case_id" value="Case_66" />
+			<string key="activity" value="Trade Initiated" />
+			<date key="timestamp" value="2024-10-29T05:55:00.620367+00:00" />
+			<string key="resource" value="Trader C" />
+			<string key="currency_pair" value="EUR/USD" />
+			<string key="concept:name" value="Trade Initiated" />
+			<date key="time:timestamp" value="2024-10-29T05:55:00.620367+00:00" />
+			<int key="@@index" value="203" />
+			<int key="@@case_index" value="63" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_66" />
+			<string key="activity" value="Trade Allocated" />
+			<date key="timestamp" value="2024-10-29T06:19:00.620367+00:00" />
+			<string key="resource" value="Trader C" />
+			<string key="currency_pair" value="EUR/USD" />
+			<string key="concept:name" value="Trade Allocated" />
+			<date key="time:timestamp" value="2024-10-29T06:19:00.620367+00:00" />
+			<int key="@@index" value="204" />
+			<int key="@@case_index" value="63" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_66" />
+			<string key="activity" value="Trade Executed" />
+			<date key="timestamp" value="2024-10-29T06:55:00.620367+00:00" />
+			<string key="resource" value="Trader C" />
+			<string key="currency_pair" value="EUR/USD" />
+			<string key="concept:name" value="Trade Executed" />
+			<date key="time:timestamp" value="2024-10-29T06:55:00.620367+00:00" />
+			<int key="@@index" value="205" />
+			<int key="@@case_index" value="63" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_66" />
+			<string key="activity" value="Trade Settled" />
+			<date key="timestamp" value="2024-10-29T07:31:00.620367+00:00" />
+			<string key="resource" value="Trader C" />
+			<string key="currency_pair" value="EUR/USD" />
+			<string key="concept:name" value="Trade Settled" />
+			<date key="time:timestamp" value="2024-10-29T07:31:00.620367+00:00" />
+			<int key="@@index" value="206" />
+			<int key="@@case_index" value="63" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_66" />
+			<string key="activity" value="Trade Canceled" />
+			<date key="timestamp" value="2024-10-29T08:51:00.620367+00:00" />
+			<string key="resource" value="Trader C" />
+			<string key="currency_pair" value="EUR/USD" />
+			<string key="concept:name" value="Trade Canceled" />
+			<date key="time:timestamp" value="2024-10-29T08:51:00.620367+00:00" />
+			<int key="@@index" value="207" />
+			<int key="@@case_index" value="63" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="Case_67" />
+		<event>
+			<string key="case_id" value="Case_67" />
+			<string key="activity" value="Trade Initiated" />
+			<date key="timestamp" value="2024-10-07T05:55:00.620367+00:00" />
+			<string key="resource" value="Trader D" />
+			<string key="currency_pair" value="AUD/USD" />
+			<string key="concept:name" value="Trade Initiated" />
+			<date key="time:timestamp" value="2024-10-07T05:55:00.620367+00:00" />
+			<int key="@@index" value="208" />
+			<int key="@@case_index" value="64" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_67" />
+			<string key="activity" value="Trade Executed" />
+			<date key="timestamp" value="2024-10-07T06:28:00.620367+00:00" />
+			<string key="resource" value="Trader D" />
+			<string key="currency_pair" value="AUD/USD" />
+			<string key="concept:name" value="Trade Executed" />
+			<date key="time:timestamp" value="2024-10-07T06:28:00.620367+00:00" />
+			<int key="@@index" value="209" />
+			<int key="@@case_index" value="64" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_67" />
+			<string key="activity" value="Trade Allocated" />
+			<date key="timestamp" value="2024-10-07T07:35:00.620367+00:00" />
+			<string key="resource" value="Trader D" />
+			<string key="currency_pair" value="AUD/USD" />
+			<string key="concept:name" value="Trade Allocated" />
+			<date key="time:timestamp" value="2024-10-07T07:35:00.620367+00:00" />
+			<int key="@@index" value="210" />
+			<int key="@@case_index" value="64" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_67" />
+			<string key="activity" value="Trade Settled" />
+			<date key="timestamp" value="2024-10-07T07:52:00.620367+00:00" />
+			<string key="resource" value="Trader D" />
+			<string key="currency_pair" value="AUD/USD" />
+			<string key="concept:name" value="Trade Settled" />
+			<date key="time:timestamp" value="2024-10-07T07:52:00.620367+00:00" />
+			<int key="@@index" value="211" />
+			<int key="@@case_index" value="64" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_67" />
+			<string key="activity" value="Trade Canceled" />
+			<date key="timestamp" value="2024-10-07T09:35:00.620367+00:00" />
+			<string key="resource" value="Trader D" />
+			<string key="currency_pair" value="AUD/USD" />
+			<string key="concept:name" value="Trade Canceled" />
+			<date key="time:timestamp" value="2024-10-07T09:35:00.620367+00:00" />
+			<int key="@@index" value="212" />
+			<int key="@@case_index" value="64" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="Case_68" />
+		<event>
+			<string key="case_id" value="Case_68" />
+			<string key="activity" value="Trade Executed" />
+			<date key="timestamp" value="2024-10-18T05:55:00.620367+00:00" />
+			<string key="resource" value="Trader C" />
+			<string key="currency_pair" value="AUD/USD" />
+			<string key="concept:name" value="Trade Executed" />
+			<date key="time:timestamp" value="2024-10-18T05:55:00.620367+00:00" />
+			<int key="@@index" value="213" />
+			<int key="@@case_index" value="65" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_68" />
+			<string key="activity" value="Trade Allocated" />
+			<date key="timestamp" value="2024-10-18T06:51:00.620367+00:00" />
+			<string key="resource" value="Trader C" />
+			<string key="currency_pair" value="AUD/USD" />
+			<string key="concept:name" value="Trade Allocated" />
+			<date key="time:timestamp" value="2024-10-18T06:51:00.620367+00:00" />
+			<int key="@@index" value="214" />
+			<int key="@@case_index" value="65" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_68" />
+			<string key="activity" value="Trade Settled" />
+			<date key="timestamp" value="2024-10-18T07:29:00.620367+00:00" />
+			<string key="resource" value="Trader C" />
+			<string key="currency_pair" value="AUD/USD" />
+			<string key="concept:name" value="Trade Settled" />
+			<date key="time:timestamp" value="2024-10-18T07:29:00.620367+00:00" />
+			<int key="@@index" value="215" />
+			<int key="@@case_index" value="65" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="Case_69" />
+		<event>
+			<string key="case_id" value="Case_69" />
+			<string key="activity" value="Trade Initiated" />
+			<date key="timestamp" value="2024-10-28T05:55:00.620367+00:00" />
+			<string key="resource" value="Trader D" />
+			<string key="currency_pair" value="GBP/USD" />
+			<string key="concept:name" value="Trade Initiated" />
+			<date key="time:timestamp" value="2024-10-28T05:55:00.620367+00:00" />
+			<int key="@@index" value="216" />
+			<int key="@@case_index" value="66" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_69" />
+			<string key="activity" value="Trade Executed" />
+			<date key="timestamp" value="2024-10-28T06:41:00.620367+00:00" />
+			<string key="resource" value="Trader D" />
+			<string key="currency_pair" value="GBP/USD" />
+			<string key="concept:name" value="Trade Executed" />
+			<date key="time:timestamp" value="2024-10-28T06:41:00.620367+00:00" />
+			<int key="@@index" value="217" />
+			<int key="@@case_index" value="66" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_69" />
+			<string key="activity" value="Trade Allocated" />
+			<date key="timestamp" value="2024-10-28T07:33:00.620367+00:00" />
+			<string key="resource" value="Trader D" />
+			<string key="currency_pair" value="GBP/USD" />
+			<string key="concept:name" value="Trade Allocated" />
+			<date key="time:timestamp" value="2024-10-28T07:33:00.620367+00:00" />
+			<int key="@@index" value="218" />
+			<int key="@@case_index" value="66" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_69" />
+			<string key="activity" value="Trade Settled" />
+			<date key="timestamp" value="2024-10-28T08:31:00.620367+00:00" />
+			<string key="resource" value="Trader D" />
+			<string key="currency_pair" value="GBP/USD" />
+			<string key="concept:name" value="Trade Settled" />
+			<date key="time:timestamp" value="2024-10-28T08:31:00.620367+00:00" />
+			<int key="@@index" value="219" />
+			<int key="@@case_index" value="66" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="Case_7" />
+		<event>
+			<string key="case_id" value="Case_7" />
+			<string key="activity" value="Trade Initiated" />
+			<date key="timestamp" value="2024-10-31T05:55:00.618368+00:00" />
+			<string key="resource" value="Trader C" />
+			<string key="currency_pair" value="EUR/USD" />
+			<string key="concept:name" value="Trade Initiated" />
+			<date key="time:timestamp" value="2024-10-31T05:55:00.618368+00:00" />
+			<int key="@@index" value="220" />
+			<int key="@@case_index" value="67" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_7" />
+			<string key="activity" value="Trade Executed" />
+			<date key="timestamp" value="2024-10-31T06:11:00.618368+00:00" />
+			<string key="resource" value="Trader C" />
+			<string key="currency_pair" value="EUR/USD" />
+			<string key="concept:name" value="Trade Executed" />
+			<date key="time:timestamp" value="2024-10-31T06:11:00.618368+00:00" />
+			<int key="@@index" value="221" />
+			<int key="@@case_index" value="67" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="Case_70" />
+		<event>
+			<string key="case_id" value="Case_70" />
+			<string key="activity" value="Trade Initiated" />
+			<date key="timestamp" value="2024-10-15T05:55:00.620367+00:00" />
+			<string key="resource" value="Trader D" />
+			<string key="currency_pair" value="GBP/USD" />
+			<string key="concept:name" value="Trade Initiated" />
+			<date key="time:timestamp" value="2024-10-15T05:55:00.620367+00:00" />
+			<int key="@@index" value="222" />
+			<int key="@@case_index" value="68" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_70" />
+			<string key="activity" value="Trade Executed" />
+			<date key="timestamp" value="2024-10-15T06:26:00.620367+00:00" />
+			<string key="resource" value="Trader D" />
+			<string key="currency_pair" value="GBP/USD" />
+			<string key="concept:name" value="Trade Executed" />
+			<date key="time:timestamp" value="2024-10-15T06:26:00.620367+00:00" />
+			<int key="@@index" value="223" />
+			<int key="@@case_index" value="68" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_70" />
+			<string key="activity" value="Trade Allocated" />
+			<date key="timestamp" value="2024-10-15T06:49:00.620367+00:00" />
+			<string key="resource" value="Trader D" />
+			<string key="currency_pair" value="GBP/USD" />
+			<string key="concept:name" value="Trade Allocated" />
+			<date key="time:timestamp" value="2024-10-15T06:49:00.620367+00:00" />
+			<int key="@@index" value="224" />
+			<int key="@@case_index" value="68" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_70" />
+			<string key="activity" value="Trade Settled" />
+			<date key="timestamp" value="2024-10-15T08:19:00.620367+00:00" />
+			<string key="resource" value="Trader D" />
+			<string key="currency_pair" value="GBP/USD" />
+			<string key="concept:name" value="Trade Settled" />
+			<date key="time:timestamp" value="2024-10-15T08:19:00.620367+00:00" />
+			<int key="@@index" value="225" />
+			<int key="@@case_index" value="68" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_70" />
+			<string key="activity" value="Trade Canceled" />
+			<date key="timestamp" value="2024-10-15T09:31:00.620367+00:00" />
+			<string key="resource" value="Trader D" />
+			<string key="currency_pair" value="GBP/USD" />
+			<string key="concept:name" value="Trade Canceled" />
+			<date key="time:timestamp" value="2024-10-15T09:31:00.620367+00:00" />
+			<int key="@@index" value="226" />
+			<int key="@@case_index" value="68" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="Case_71" />
+		<event>
+			<string key="case_id" value="Case_71" />
+			<string key="activity" value="Trade Initiated" />
+			<date key="timestamp" value="2024-10-27T05:55:00.620367+00:00" />
+			<string key="resource" value="Trader A" />
+			<string key="currency_pair" value="GBP/USD" />
+			<string key="concept:name" value="Trade Initiated" />
+			<date key="time:timestamp" value="2024-10-27T05:55:00.620367+00:00" />
+			<int key="@@index" value="227" />
+			<int key="@@case_index" value="69" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_71" />
+			<string key="activity" value="Trade Allocated" />
+			<date key="timestamp" value="2024-10-27T06:36:00.620367+00:00" />
+			<string key="resource" value="Trader A" />
+			<string key="currency_pair" value="GBP/USD" />
+			<string key="concept:name" value="Trade Allocated" />
+			<date key="time:timestamp" value="2024-10-27T06:36:00.620367+00:00" />
+			<int key="@@index" value="228" />
+			<int key="@@case_index" value="69" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_71" />
+			<string key="activity" value="Trade Settled" />
+			<date key="timestamp" value="2024-10-27T07:25:00.620367+00:00" />
+			<string key="resource" value="Trader A" />
+			<string key="currency_pair" value="GBP/USD" />
+			<string key="concept:name" value="Trade Settled" />
+			<date key="time:timestamp" value="2024-10-27T07:25:00.620367+00:00" />
+			<int key="@@index" value="229" />
+			<int key="@@case_index" value="69" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_71" />
+			<string key="activity" value="Trade Canceled" />
+			<date key="timestamp" value="2024-10-27T08:49:00.620367+00:00" />
+			<string key="resource" value="Trader A" />
+			<string key="currency_pair" value="GBP/USD" />
+			<string key="concept:name" value="Trade Canceled" />
+			<date key="time:timestamp" value="2024-10-27T08:49:00.620367+00:00" />
+			<int key="@@index" value="230" />
+			<int key="@@case_index" value="69" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="Case_72" />
+		<event>
+			<string key="case_id" value="Case_72" />
+			<string key="activity" value="Trade Executed" />
+			<date key="timestamp" value="2024-10-13T05:55:00.620367+00:00" />
+			<string key="resource" value="Trader A" />
+			<string key="currency_pair" value="EUR/USD" />
+			<string key="concept:name" value="Trade Executed" />
+			<date key="time:timestamp" value="2024-10-13T05:55:00.620367+00:00" />
+			<int key="@@index" value="231" />
+			<int key="@@case_index" value="70" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_72" />
+			<string key="activity" value="Trade Settled" />
+			<date key="timestamp" value="2024-10-13T06:30:00.620367+00:00" />
+			<string key="resource" value="Trader A" />
+			<string key="currency_pair" value="EUR/USD" />
+			<string key="concept:name" value="Trade Settled" />
+			<date key="time:timestamp" value="2024-10-13T06:30:00.620367+00:00" />
+			<int key="@@index" value="232" />
+			<int key="@@case_index" value="70" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_72" />
+			<string key="activity" value="Trade Canceled" />
+			<date key="timestamp" value="2024-10-13T07:43:00.620367+00:00" />
+			<string key="resource" value="Trader A" />
+			<string key="currency_pair" value="EUR/USD" />
+			<string key="concept:name" value="Trade Canceled" />
+			<date key="time:timestamp" value="2024-10-13T07:43:00.620367+00:00" />
+			<int key="@@index" value="233" />
+			<int key="@@case_index" value="70" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="Case_73" />
+		<event>
+			<string key="case_id" value="Case_73" />
+			<string key="activity" value="Trade Executed" />
+			<date key="timestamp" value="2024-10-27T05:55:00.620367+00:00" />
+			<string key="resource" value="Trader C" />
+			<string key="currency_pair" value="AUD/USD" />
+			<string key="concept:name" value="Trade Executed" />
+			<date key="time:timestamp" value="2024-10-27T05:55:00.620367+00:00" />
+			<int key="@@index" value="234" />
+			<int key="@@case_index" value="71" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_73" />
+			<string key="activity" value="Trade Allocated" />
+			<date key="timestamp" value="2024-10-27T06:26:00.620367+00:00" />
+			<string key="resource" value="Trader C" />
+			<string key="currency_pair" value="AUD/USD" />
+			<string key="concept:name" value="Trade Allocated" />
+			<date key="time:timestamp" value="2024-10-27T06:26:00.620367+00:00" />
+			<int key="@@index" value="235" />
+			<int key="@@case_index" value="71" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_73" />
+			<string key="activity" value="Trade Canceled" />
+			<date key="timestamp" value="2024-10-27T06:59:00.620367+00:00" />
+			<string key="resource" value="Trader C" />
+			<string key="currency_pair" value="AUD/USD" />
+			<string key="concept:name" value="Trade Canceled" />
+			<date key="time:timestamp" value="2024-10-27T06:59:00.620367+00:00" />
+			<int key="@@index" value="236" />
+			<int key="@@case_index" value="71" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="Case_74" />
+		<event>
+			<string key="case_id" value="Case_74" />
+			<string key="activity" value="Trade Initiated" />
+			<date key="timestamp" value="2024-10-07T05:55:00.620367+00:00" />
+			<string key="resource" value="Trader B" />
+			<string key="currency_pair" value="USD/JPY" />
+			<string key="concept:name" value="Trade Initiated" />
+			<date key="time:timestamp" value="2024-10-07T05:55:00.620367+00:00" />
+			<int key="@@index" value="237" />
+			<int key="@@case_index" value="72" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_74" />
+			<string key="activity" value="Trade Executed" />
+			<date key="timestamp" value="2024-10-07T06:39:00.620367+00:00" />
+			<string key="resource" value="Trader B" />
+			<string key="currency_pair" value="USD/JPY" />
+			<string key="concept:name" value="Trade Executed" />
+			<date key="time:timestamp" value="2024-10-07T06:39:00.620367+00:00" />
+			<int key="@@index" value="238" />
+			<int key="@@case_index" value="72" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_74" />
+			<string key="activity" value="Trade Canceled" />
+			<date key="timestamp" value="2024-10-07T07:19:00.620367+00:00" />
+			<string key="resource" value="Trader B" />
+			<string key="currency_pair" value="USD/JPY" />
+			<string key="concept:name" value="Trade Canceled" />
+			<date key="time:timestamp" value="2024-10-07T07:19:00.620367+00:00" />
+			<int key="@@index" value="239" />
+			<int key="@@case_index" value="72" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_74" />
+			<string key="activity" value="Trade Allocated" />
+			<date key="timestamp" value="2024-10-07T07:51:00.620367+00:00" />
+			<string key="resource" value="Trader B" />
+			<string key="currency_pair" value="USD/JPY" />
+			<string key="concept:name" value="Trade Allocated" />
+			<date key="time:timestamp" value="2024-10-07T07:51:00.620367+00:00" />
+			<int key="@@index" value="240" />
+			<int key="@@case_index" value="72" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_74" />
+			<string key="activity" value="Trade Settled" />
+			<date key="timestamp" value="2024-10-07T08:37:00.620367+00:00" />
+			<string key="resource" value="Trader B" />
+			<string key="currency_pair" value="USD/JPY" />
+			<string key="concept:name" value="Trade Settled" />
+			<date key="time:timestamp" value="2024-10-07T08:37:00.620367+00:00" />
+			<int key="@@index" value="241" />
+			<int key="@@case_index" value="72" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="Case_75" />
+		<event>
+			<string key="case_id" value="Case_75" />
+			<string key="activity" value="Trade Executed" />
+			<date key="timestamp" value="2024-10-30T05:55:00.620367+00:00" />
+			<string key="resource" value="Trader C" />
+			<string key="currency_pair" value="EUR/USD" />
+			<string key="concept:name" value="Trade Executed" />
+			<date key="time:timestamp" value="2024-10-30T05:55:00.620367+00:00" />
+			<int key="@@index" value="242" />
+			<int key="@@case_index" value="73" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_75" />
+			<string key="activity" value="Trade Settled" />
+			<date key="timestamp" value="2024-10-30T06:23:00.620367+00:00" />
+			<string key="resource" value="Trader C" />
+			<string key="currency_pair" value="EUR/USD" />
+			<string key="concept:name" value="Trade Settled" />
+			<date key="time:timestamp" value="2024-10-30T06:23:00.620367+00:00" />
+			<int key="@@index" value="243" />
+			<int key="@@case_index" value="73" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_75" />
+			<string key="activity" value="Trade Canceled" />
+			<date key="timestamp" value="2024-10-30T06:43:00.620367+00:00" />
+			<string key="resource" value="Trader C" />
+			<string key="currency_pair" value="EUR/USD" />
+			<string key="concept:name" value="Trade Canceled" />
+			<date key="time:timestamp" value="2024-10-30T06:43:00.620367+00:00" />
+			<int key="@@index" value="244" />
+			<int key="@@case_index" value="73" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="Case_76" />
+		<event>
+			<string key="case_id" value="Case_76" />
+			<string key="activity" value="Trade Initiated" />
+			<date key="timestamp" value="2024-10-05T05:55:00.620367+00:00" />
+			<string key="resource" value="Trader C" />
+			<string key="currency_pair" value="EUR/USD" />
+			<string key="concept:name" value="Trade Initiated" />
+			<date key="time:timestamp" value="2024-10-05T05:55:00.620367+00:00" />
+			<int key="@@index" value="245" />
+			<int key="@@case_index" value="74" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_76" />
+			<string key="activity" value="Trade Executed" />
+			<date key="timestamp" value="2024-10-05T06:23:00.620367+00:00" />
+			<string key="resource" value="Trader C" />
+			<string key="currency_pair" value="EUR/USD" />
+			<string key="concept:name" value="Trade Executed" />
+			<date key="time:timestamp" value="2024-10-05T06:23:00.620367+00:00" />
+			<int key="@@index" value="246" />
+			<int key="@@case_index" value="74" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_76" />
+			<string key="activity" value="Trade Settled" />
+			<date key="timestamp" value="2024-10-05T06:49:00.620367+00:00" />
+			<string key="resource" value="Trader C" />
+			<string key="currency_pair" value="EUR/USD" />
+			<string key="concept:name" value="Trade Settled" />
+			<date key="time:timestamp" value="2024-10-05T06:49:00.620367+00:00" />
+			<int key="@@index" value="247" />
+			<int key="@@case_index" value="74" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_76" />
+			<string key="activity" value="Trade Allocated" />
+			<date key="timestamp" value="2024-10-05T07:43:00.620367+00:00" />
+			<string key="resource" value="Trader C" />
+			<string key="currency_pair" value="EUR/USD" />
+			<string key="concept:name" value="Trade Allocated" />
+			<date key="time:timestamp" value="2024-10-05T07:43:00.620367+00:00" />
+			<int key="@@index" value="248" />
+			<int key="@@case_index" value="74" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="Case_77" />
+		<event>
+			<string key="case_id" value="Case_77" />
+			<string key="activity" value="Trade Initiated" />
+			<date key="timestamp" value="2024-10-14T05:55:00.620367+00:00" />
+			<string key="resource" value="Trader D" />
+			<string key="currency_pair" value="AUD/USD" />
+			<string key="concept:name" value="Trade Initiated" />
+			<date key="time:timestamp" value="2024-10-14T05:55:00.620367+00:00" />
+			<int key="@@index" value="249" />
+			<int key="@@case_index" value="75" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_77" />
+			<string key="activity" value="Trade Executed" />
+			<date key="timestamp" value="2024-10-14T06:08:00.620367+00:00" />
+			<string key="resource" value="Trader D" />
+			<string key="currency_pair" value="AUD/USD" />
+			<string key="concept:name" value="Trade Executed" />
+			<date key="time:timestamp" value="2024-10-14T06:08:00.620367+00:00" />
+			<int key="@@index" value="250" />
+			<int key="@@case_index" value="75" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_77" />
+			<string key="activity" value="Trade Allocated" />
+			<date key="timestamp" value="2024-10-14T06:47:00.620367+00:00" />
+			<string key="resource" value="Trader D" />
+			<string key="currency_pair" value="AUD/USD" />
+			<string key="concept:name" value="Trade Allocated" />
+			<date key="time:timestamp" value="2024-10-14T06:47:00.620367+00:00" />
+			<int key="@@index" value="251" />
+			<int key="@@case_index" value="75" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_77" />
+			<string key="activity" value="Trade Canceled" />
+			<date key="timestamp" value="2024-10-14T07:03:00.620367+00:00" />
+			<string key="resource" value="Trader D" />
+			<string key="currency_pair" value="AUD/USD" />
+			<string key="concept:name" value="Trade Canceled" />
+			<date key="time:timestamp" value="2024-10-14T07:03:00.620367+00:00" />
+			<int key="@@index" value="252" />
+			<int key="@@case_index" value="75" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_77" />
+			<string key="activity" value="Trade Settled" />
+			<date key="timestamp" value="2024-10-14T07:55:00.620367+00:00" />
+			<string key="resource" value="Trader D" />
+			<string key="currency_pair" value="AUD/USD" />
+			<string key="concept:name" value="Trade Settled" />
+			<date key="time:timestamp" value="2024-10-14T07:55:00.620367+00:00" />
+			<int key="@@index" value="253" />
+			<int key="@@case_index" value="75" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="Case_78" />
+		<event>
+			<string key="case_id" value="Case_78" />
+			<string key="activity" value="Trade Settled" />
+			<date key="timestamp" value="2024-10-08T05:55:00.620367+00:00" />
+			<string key="resource" value="Trader A" />
+			<string key="currency_pair" value="EUR/USD" />
+			<string key="concept:name" value="Trade Settled" />
+			<date key="time:timestamp" value="2024-10-08T05:55:00.620367+00:00" />
+			<int key="@@index" value="254" />
+			<int key="@@case_index" value="76" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_78" />
+			<string key="activity" value="Trade Canceled" />
+			<date key="timestamp" value="2024-10-08T06:41:00.620367+00:00" />
+			<string key="resource" value="Trader A" />
+			<string key="currency_pair" value="EUR/USD" />
+			<string key="concept:name" value="Trade Canceled" />
+			<date key="time:timestamp" value="2024-10-08T06:41:00.620367+00:00" />
+			<int key="@@index" value="255" />
+			<int key="@@case_index" value="76" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="Case_79" />
+		<event>
+			<string key="case_id" value="Case_79" />
+			<string key="activity" value="Trade Initiated" />
+			<date key="timestamp" value="2024-10-18T05:55:00.620367+00:00" />
+			<string key="resource" value="Trader B" />
+			<string key="currency_pair" value="AUD/USD" />
+			<string key="concept:name" value="Trade Initiated" />
+			<date key="time:timestamp" value="2024-10-18T05:55:00.620367+00:00" />
+			<int key="@@index" value="256" />
+			<int key="@@case_index" value="77" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_79" />
+			<string key="activity" value="Trade Executed" />
+			<date key="timestamp" value="2024-10-18T06:24:00.620367+00:00" />
+			<string key="resource" value="Trader B" />
+			<string key="currency_pair" value="AUD/USD" />
+			<string key="concept:name" value="Trade Executed" />
+			<date key="time:timestamp" value="2024-10-18T06:24:00.620367+00:00" />
+			<int key="@@index" value="257" />
+			<int key="@@case_index" value="77" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_79" />
+			<string key="activity" value="Trade Settled" />
+			<date key="timestamp" value="2024-10-18T07:29:00.620367+00:00" />
+			<string key="resource" value="Trader B" />
+			<string key="currency_pair" value="AUD/USD" />
+			<string key="concept:name" value="Trade Settled" />
+			<date key="time:timestamp" value="2024-10-18T07:29:00.620367+00:00" />
+			<int key="@@index" value="258" />
+			<int key="@@case_index" value="77" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_79" />
+			<string key="activity" value="Trade Canceled" />
+			<date key="timestamp" value="2024-10-18T07:46:00.620367+00:00" />
+			<string key="resource" value="Trader B" />
+			<string key="currency_pair" value="AUD/USD" />
+			<string key="concept:name" value="Trade Canceled" />
+			<date key="time:timestamp" value="2024-10-18T07:46:00.620367+00:00" />
+			<int key="@@index" value="259" />
+			<int key="@@case_index" value="77" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="Case_8" />
+		<event>
+			<string key="case_id" value="Case_8" />
+			<string key="activity" value="Trade Initiated" />
+			<date key="timestamp" value="2024-10-10T05:55:00.618368+00:00" />
+			<string key="resource" value="Trader C" />
+			<string key="currency_pair" value="USD/JPY" />
+			<string key="concept:name" value="Trade Initiated" />
+			<date key="time:timestamp" value="2024-10-10T05:55:00.618368+00:00" />
+			<int key="@@index" value="260" />
+			<int key="@@case_index" value="78" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_8" />
+			<string key="activity" value="Trade Executed" />
+			<date key="timestamp" value="2024-10-10T06:22:00.618368+00:00" />
+			<string key="resource" value="Trader C" />
+			<string key="currency_pair" value="USD/JPY" />
+			<string key="concept:name" value="Trade Executed" />
+			<date key="time:timestamp" value="2024-10-10T06:22:00.618368+00:00" />
+			<int key="@@index" value="261" />
+			<int key="@@case_index" value="78" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_8" />
+			<string key="activity" value="Trade Allocated" />
+			<date key="timestamp" value="2024-10-10T07:43:00.618368+00:00" />
+			<string key="resource" value="Trader C" />
+			<string key="currency_pair" value="USD/JPY" />
+			<string key="concept:name" value="Trade Allocated" />
+			<date key="time:timestamp" value="2024-10-10T07:43:00.618368+00:00" />
+			<int key="@@index" value="262" />
+			<int key="@@case_index" value="78" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_8" />
+			<string key="activity" value="Trade Settled" />
+			<date key="timestamp" value="2024-10-10T08:34:00.618368+00:00" />
+			<string key="resource" value="Trader C" />
+			<string key="currency_pair" value="USD/JPY" />
+			<string key="concept:name" value="Trade Settled" />
+			<date key="time:timestamp" value="2024-10-10T08:34:00.618368+00:00" />
+			<int key="@@index" value="263" />
+			<int key="@@case_index" value="78" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_8" />
+			<string key="activity" value="Trade Canceled" />
+			<date key="timestamp" value="2024-10-10T09:19:00.618368+00:00" />
+			<string key="resource" value="Trader C" />
+			<string key="currency_pair" value="USD/JPY" />
+			<string key="concept:name" value="Trade Canceled" />
+			<date key="time:timestamp" value="2024-10-10T09:19:00.618368+00:00" />
+			<int key="@@index" value="264" />
+			<int key="@@case_index" value="78" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="Case_80" />
+		<event>
+			<string key="case_id" value="Case_80" />
+			<string key="activity" value="Trade Initiated" />
+			<date key="timestamp" value="2024-10-12T05:55:00.620367+00:00" />
+			<string key="resource" value="Trader B" />
+			<string key="currency_pair" value="GBP/USD" />
+			<string key="concept:name" value="Trade Initiated" />
+			<date key="time:timestamp" value="2024-10-12T05:55:00.620367+00:00" />
+			<int key="@@index" value="265" />
+			<int key="@@case_index" value="79" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_80" />
+			<string key="activity" value="Trade Allocated" />
+			<date key="timestamp" value="2024-10-12T06:10:00.620367+00:00" />
+			<string key="resource" value="Trader B" />
+			<string key="currency_pair" value="GBP/USD" />
+			<string key="concept:name" value="Trade Allocated" />
+			<date key="time:timestamp" value="2024-10-12T06:10:00.620367+00:00" />
+			<int key="@@index" value="266" />
+			<int key="@@case_index" value="79" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_80" />
+			<string key="activity" value="Trade Settled" />
+			<date key="timestamp" value="2024-10-12T06:35:00.620367+00:00" />
+			<string key="resource" value="Trader B" />
+			<string key="currency_pair" value="GBP/USD" />
+			<string key="concept:name" value="Trade Settled" />
+			<date key="time:timestamp" value="2024-10-12T06:35:00.620367+00:00" />
+			<int key="@@index" value="267" />
+			<int key="@@case_index" value="79" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_80" />
+			<string key="activity" value="Trade Canceled" />
+			<date key="timestamp" value="2024-10-12T07:10:00.620367+00:00" />
+			<string key="resource" value="Trader B" />
+			<string key="currency_pair" value="GBP/USD" />
+			<string key="concept:name" value="Trade Canceled" />
+			<date key="time:timestamp" value="2024-10-12T07:10:00.620367+00:00" />
+			<int key="@@index" value="268" />
+			<int key="@@case_index" value="79" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="Case_81" />
+		<event>
+			<string key="case_id" value="Case_81" />
+			<string key="activity" value="Trade Initiated" />
+			<date key="timestamp" value="2024-10-18T05:55:00.620367+00:00" />
+			<string key="resource" value="Trader A" />
+			<string key="currency_pair" value="AUD/USD" />
+			<string key="concept:name" value="Trade Initiated" />
+			<date key="time:timestamp" value="2024-10-18T05:55:00.620367+00:00" />
+			<int key="@@index" value="269" />
+			<int key="@@case_index" value="80" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_81" />
+			<string key="activity" value="Trade Settled" />
+			<date key="timestamp" value="2024-10-18T06:43:00.620367+00:00" />
+			<string key="resource" value="Trader A" />
+			<string key="currency_pair" value="AUD/USD" />
+			<string key="concept:name" value="Trade Settled" />
+			<date key="time:timestamp" value="2024-10-18T06:43:00.620367+00:00" />
+			<int key="@@index" value="270" />
+			<int key="@@case_index" value="80" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_81" />
+			<string key="activity" value="Trade Canceled" />
+			<date key="timestamp" value="2024-10-18T07:15:00.620367+00:00" />
+			<string key="resource" value="Trader A" />
+			<string key="currency_pair" value="AUD/USD" />
+			<string key="concept:name" value="Trade Canceled" />
+			<date key="time:timestamp" value="2024-10-18T07:15:00.620367+00:00" />
+			<int key="@@index" value="271" />
+			<int key="@@case_index" value="80" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="Case_82" />
+		<event>
+			<string key="case_id" value="Case_82" />
+			<string key="activity" value="Trade Initiated" />
+			<date key="timestamp" value="2024-10-25T05:55:00.620367+00:00" />
+			<string key="resource" value="Trader D" />
+			<string key="currency_pair" value="EUR/USD" />
+			<string key="concept:name" value="Trade Initiated" />
+			<date key="time:timestamp" value="2024-10-25T05:55:00.620367+00:00" />
+			<int key="@@index" value="272" />
+			<int key="@@case_index" value="81" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_82" />
+			<string key="activity" value="Trade Executed" />
+			<date key="timestamp" value="2024-10-25T06:21:00.620367+00:00" />
+			<string key="resource" value="Trader D" />
+			<string key="currency_pair" value="EUR/USD" />
+			<string key="concept:name" value="Trade Executed" />
+			<date key="time:timestamp" value="2024-10-25T06:21:00.620367+00:00" />
+			<int key="@@index" value="273" />
+			<int key="@@case_index" value="81" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_82" />
+			<string key="activity" value="Trade Allocated" />
+			<date key="timestamp" value="2024-10-25T07:55:00.620367+00:00" />
+			<string key="resource" value="Trader D" />
+			<string key="currency_pair" value="EUR/USD" />
+			<string key="concept:name" value="Trade Allocated" />
+			<date key="time:timestamp" value="2024-10-25T07:55:00.620367+00:00" />
+			<int key="@@index" value="274" />
+			<int key="@@case_index" value="81" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_82" />
+			<string key="activity" value="Trade Settled" />
+			<date key="timestamp" value="2024-10-25T08:55:00.620367+00:00" />
+			<string key="resource" value="Trader D" />
+			<string key="currency_pair" value="EUR/USD" />
+			<string key="concept:name" value="Trade Settled" />
+			<date key="time:timestamp" value="2024-10-25T08:55:00.620367+00:00" />
+			<int key="@@index" value="275" />
+			<int key="@@case_index" value="81" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="Case_83" />
+		<event>
+			<string key="case_id" value="Case_83" />
+			<string key="activity" value="Trade Initiated" />
+			<date key="timestamp" value="2024-11-02T05:55:00.620367+00:00" />
+			<string key="resource" value="Trader B" />
+			<string key="currency_pair" value="GBP/USD" />
+			<string key="concept:name" value="Trade Initiated" />
+			<date key="time:timestamp" value="2024-11-02T05:55:00.620367+00:00" />
+			<int key="@@index" value="276" />
+			<int key="@@case_index" value="82" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_83" />
+			<string key="activity" value="Trade Allocated" />
+			<date key="timestamp" value="2024-11-02T06:14:00.620367+00:00" />
+			<string key="resource" value="Trader B" />
+			<string key="currency_pair" value="GBP/USD" />
+			<string key="concept:name" value="Trade Allocated" />
+			<date key="time:timestamp" value="2024-11-02T06:14:00.620367+00:00" />
+			<int key="@@index" value="277" />
+			<int key="@@case_index" value="82" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_83" />
+			<string key="activity" value="Trade Settled" />
+			<date key="timestamp" value="2024-11-02T06:23:00.620367+00:00" />
+			<string key="resource" value="Trader B" />
+			<string key="currency_pair" value="GBP/USD" />
+			<string key="concept:name" value="Trade Settled" />
+			<date key="time:timestamp" value="2024-11-02T06:23:00.620367+00:00" />
+			<int key="@@index" value="278" />
+			<int key="@@case_index" value="82" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="Case_84" />
+		<event>
+			<string key="case_id" value="Case_84" />
+			<string key="activity" value="Trade Executed" />
+			<date key="timestamp" value="2024-10-07T05:55:00.620367+00:00" />
+			<string key="resource" value="Trader C" />
+			<string key="currency_pair" value="AUD/USD" />
+			<string key="concept:name" value="Trade Executed" />
+			<date key="time:timestamp" value="2024-10-07T05:55:00.620367+00:00" />
+			<int key="@@index" value="279" />
+			<int key="@@case_index" value="83" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_84" />
+			<string key="activity" value="Trade Allocated" />
+			<date key="timestamp" value="2024-10-07T06:49:00.620367+00:00" />
+			<string key="resource" value="Trader C" />
+			<string key="currency_pair" value="AUD/USD" />
+			<string key="concept:name" value="Trade Allocated" />
+			<date key="time:timestamp" value="2024-10-07T06:49:00.620367+00:00" />
+			<int key="@@index" value="280" />
+			<int key="@@case_index" value="83" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="Case_85" />
+		<event>
+			<string key="case_id" value="Case_85" />
+			<string key="activity" value="Trade Executed" />
+			<date key="timestamp" value="2024-10-23T05:55:00.620367+00:00" />
+			<string key="resource" value="Trader D" />
+			<string key="currency_pair" value="EUR/USD" />
+			<string key="concept:name" value="Trade Executed" />
+			<date key="time:timestamp" value="2024-10-23T05:55:00.620367+00:00" />
+			<int key="@@index" value="281" />
+			<int key="@@case_index" value="84" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_85" />
+			<string key="activity" value="Trade Allocated" />
+			<date key="timestamp" value="2024-10-23T06:32:00.620367+00:00" />
+			<string key="resource" value="Trader D" />
+			<string key="currency_pair" value="EUR/USD" />
+			<string key="concept:name" value="Trade Allocated" />
+			<date key="time:timestamp" value="2024-10-23T06:32:00.620367+00:00" />
+			<int key="@@index" value="282" />
+			<int key="@@case_index" value="84" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_85" />
+			<string key="activity" value="Trade Canceled" />
+			<date key="timestamp" value="2024-10-23T07:25:00.620367+00:00" />
+			<string key="resource" value="Trader D" />
+			<string key="currency_pair" value="EUR/USD" />
+			<string key="concept:name" value="Trade Canceled" />
+			<date key="time:timestamp" value="2024-10-23T07:25:00.620367+00:00" />
+			<int key="@@index" value="283" />
+			<int key="@@case_index" value="84" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_85" />
+			<string key="activity" value="Trade Settled" />
+			<date key="timestamp" value="2024-10-23T07:49:00.620367+00:00" />
+			<string key="resource" value="Trader D" />
+			<string key="currency_pair" value="EUR/USD" />
+			<string key="concept:name" value="Trade Settled" />
+			<date key="time:timestamp" value="2024-10-23T07:49:00.620367+00:00" />
+			<int key="@@index" value="284" />
+			<int key="@@case_index" value="84" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="Case_86" />
+		<event>
+			<string key="case_id" value="Case_86" />
+			<string key="activity" value="Trade Initiated" />
+			<date key="timestamp" value="2024-10-28T05:55:00.620367+00:00" />
+			<string key="resource" value="Trader C" />
+			<string key="currency_pair" value="EUR/USD" />
+			<string key="concept:name" value="Trade Initiated" />
+			<date key="time:timestamp" value="2024-10-28T05:55:00.620367+00:00" />
+			<int key="@@index" value="285" />
+			<int key="@@case_index" value="85" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_86" />
+			<string key="activity" value="Trade Allocated" />
+			<date key="timestamp" value="2024-10-28T06:16:00.620367+00:00" />
+			<string key="resource" value="Trader C" />
+			<string key="currency_pair" value="EUR/USD" />
+			<string key="concept:name" value="Trade Allocated" />
+			<date key="time:timestamp" value="2024-10-28T06:16:00.620367+00:00" />
+			<int key="@@index" value="286" />
+			<int key="@@case_index" value="85" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_86" />
+			<string key="activity" value="Trade Settled" />
+			<date key="timestamp" value="2024-10-28T07:15:00.620367+00:00" />
+			<string key="resource" value="Trader C" />
+			<string key="currency_pair" value="EUR/USD" />
+			<string key="concept:name" value="Trade Settled" />
+			<date key="time:timestamp" value="2024-10-28T07:15:00.620367+00:00" />
+			<int key="@@index" value="287" />
+			<int key="@@case_index" value="85" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_86" />
+			<string key="activity" value="Trade Canceled" />
+			<date key="timestamp" value="2024-10-28T08:04:00.620367+00:00" />
+			<string key="resource" value="Trader C" />
+			<string key="currency_pair" value="EUR/USD" />
+			<string key="concept:name" value="Trade Canceled" />
+			<date key="time:timestamp" value="2024-10-28T08:04:00.620367+00:00" />
+			<int key="@@index" value="288" />
+			<int key="@@case_index" value="85" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="Case_87" />
+		<event>
+			<string key="case_id" value="Case_87" />
+			<string key="activity" value="Trade Initiated" />
+			<date key="timestamp" value="2024-10-15T05:55:00.620367+00:00" />
+			<string key="resource" value="Trader A" />
+			<string key="currency_pair" value="AUD/USD" />
+			<string key="concept:name" value="Trade Initiated" />
+			<date key="time:timestamp" value="2024-10-15T05:55:00.620367+00:00" />
+			<int key="@@index" value="289" />
+			<int key="@@case_index" value="86" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_87" />
+			<string key="activity" value="Trade Executed" />
+			<date key="timestamp" value="2024-10-15T06:26:00.620367+00:00" />
+			<string key="resource" value="Trader A" />
+			<string key="currency_pair" value="AUD/USD" />
+			<string key="concept:name" value="Trade Executed" />
+			<date key="time:timestamp" value="2024-10-15T06:26:00.620367+00:00" />
+			<int key="@@index" value="290" />
+			<int key="@@case_index" value="86" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_87" />
+			<string key="activity" value="Trade Allocated" />
+			<date key="timestamp" value="2024-10-15T06:55:00.620367+00:00" />
+			<string key="resource" value="Trader A" />
+			<string key="currency_pair" value="AUD/USD" />
+			<string key="concept:name" value="Trade Allocated" />
+			<date key="time:timestamp" value="2024-10-15T06:55:00.620367+00:00" />
+			<int key="@@index" value="291" />
+			<int key="@@case_index" value="86" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_87" />
+			<string key="activity" value="Trade Canceled" />
+			<date key="timestamp" value="2024-10-15T06:59:00.620367+00:00" />
+			<string key="resource" value="Trader A" />
+			<string key="currency_pair" value="AUD/USD" />
+			<string key="concept:name" value="Trade Canceled" />
+			<date key="time:timestamp" value="2024-10-15T06:59:00.620367+00:00" />
+			<int key="@@index" value="292" />
+			<int key="@@case_index" value="86" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_87" />
+			<string key="activity" value="Trade Settled" />
+			<date key="timestamp" value="2024-10-15T08:31:00.620367+00:00" />
+			<string key="resource" value="Trader A" />
+			<string key="currency_pair" value="AUD/USD" />
+			<string key="concept:name" value="Trade Settled" />
+			<date key="time:timestamp" value="2024-10-15T08:31:00.620367+00:00" />
+			<int key="@@index" value="293" />
+			<int key="@@case_index" value="86" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="Case_88" />
+		<event>
+			<string key="case_id" value="Case_88" />
+			<string key="activity" value="Trade Allocated" />
+			<date key="timestamp" value="2024-10-25T05:55:00.620367+00:00" />
+			<string key="resource" value="Trader D" />
+			<string key="currency_pair" value="USD/JPY" />
+			<string key="concept:name" value="Trade Allocated" />
+			<date key="time:timestamp" value="2024-10-25T05:55:00.620367+00:00" />
+			<int key="@@index" value="294" />
+			<int key="@@case_index" value="87" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_88" />
+			<string key="activity" value="Trade Settled" />
+			<date key="timestamp" value="2024-10-25T06:53:00.620367+00:00" />
+			<string key="resource" value="Trader D" />
+			<string key="currency_pair" value="USD/JPY" />
+			<string key="concept:name" value="Trade Settled" />
+			<date key="time:timestamp" value="2024-10-25T06:53:00.620367+00:00" />
+			<int key="@@index" value="295" />
+			<int key="@@case_index" value="87" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_88" />
+			<string key="activity" value="Trade Canceled" />
+			<date key="timestamp" value="2024-10-25T07:25:00.620367+00:00" />
+			<string key="resource" value="Trader D" />
+			<string key="currency_pair" value="USD/JPY" />
+			<string key="concept:name" value="Trade Canceled" />
+			<date key="time:timestamp" value="2024-10-25T07:25:00.620367+00:00" />
+			<int key="@@index" value="296" />
+			<int key="@@case_index" value="87" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="Case_89" />
+		<event>
+			<string key="case_id" value="Case_89" />
+			<string key="activity" value="Trade Initiated" />
+			<date key="timestamp" value="2024-10-14T05:55:00.620367+00:00" />
+			<string key="resource" value="Trader C" />
+			<string key="currency_pair" value="USD/JPY" />
+			<string key="concept:name" value="Trade Initiated" />
+			<date key="time:timestamp" value="2024-10-14T05:55:00.620367+00:00" />
+			<int key="@@index" value="297" />
+			<int key="@@case_index" value="88" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_89" />
+			<string key="activity" value="Trade Settled" />
+			<date key="timestamp" value="2024-10-14T06:54:00.620367+00:00" />
+			<string key="resource" value="Trader C" />
+			<string key="currency_pair" value="USD/JPY" />
+			<string key="concept:name" value="Trade Settled" />
+			<date key="time:timestamp" value="2024-10-14T06:54:00.620367+00:00" />
+			<int key="@@index" value="298" />
+			<int key="@@case_index" value="88" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="Case_9" />
+		<event>
+			<string key="case_id" value="Case_9" />
+			<string key="activity" value="Trade Executed" />
+			<date key="timestamp" value="2024-10-18T05:55:00.618368+00:00" />
+			<string key="resource" value="Trader B" />
+			<string key="currency_pair" value="GBP/USD" />
+			<string key="concept:name" value="Trade Executed" />
+			<date key="time:timestamp" value="2024-10-18T05:55:00.618368+00:00" />
+			<int key="@@index" value="299" />
+			<int key="@@case_index" value="89" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_9" />
+			<string key="activity" value="Trade Canceled" />
+			<date key="timestamp" value="2024-10-18T06:22:00.618368+00:00" />
+			<string key="resource" value="Trader B" />
+			<string key="currency_pair" value="GBP/USD" />
+			<string key="concept:name" value="Trade Canceled" />
+			<date key="time:timestamp" value="2024-10-18T06:22:00.618368+00:00" />
+			<int key="@@index" value="300" />
+			<int key="@@case_index" value="89" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="Case_90" />
+		<event>
+			<string key="case_id" value="Case_90" />
+			<string key="activity" value="Trade Initiated" />
+			<date key="timestamp" value="2024-10-20T05:55:00.620367+00:00" />
+			<string key="resource" value="Trader A" />
+			<string key="currency_pair" value="GBP/USD" />
+			<string key="concept:name" value="Trade Initiated" />
+			<date key="time:timestamp" value="2024-10-20T05:55:00.620367+00:00" />
+			<int key="@@index" value="301" />
+			<int key="@@case_index" value="90" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_90" />
+			<string key="activity" value="Trade Executed" />
+			<date key="timestamp" value="2024-10-20T06:44:00.620367+00:00" />
+			<string key="resource" value="Trader A" />
+			<string key="currency_pair" value="GBP/USD" />
+			<string key="concept:name" value="Trade Executed" />
+			<date key="time:timestamp" value="2024-10-20T06:44:00.620367+00:00" />
+			<int key="@@index" value="302" />
+			<int key="@@case_index" value="90" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_90" />
+			<string key="activity" value="Trade Allocated" />
+			<date key="timestamp" value="2024-10-20T07:51:00.620367+00:00" />
+			<string key="resource" value="Trader A" />
+			<string key="currency_pair" value="GBP/USD" />
+			<string key="concept:name" value="Trade Allocated" />
+			<date key="time:timestamp" value="2024-10-20T07:51:00.620367+00:00" />
+			<int key="@@index" value="303" />
+			<int key="@@case_index" value="90" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_90" />
+			<string key="activity" value="Trade Settled" />
+			<date key="timestamp" value="2024-10-20T07:58:00.620367+00:00" />
+			<string key="resource" value="Trader A" />
+			<string key="currency_pair" value="GBP/USD" />
+			<string key="concept:name" value="Trade Settled" />
+			<date key="time:timestamp" value="2024-10-20T07:58:00.620367+00:00" />
+			<int key="@@index" value="304" />
+			<int key="@@case_index" value="90" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_90" />
+			<string key="activity" value="Trade Canceled" />
+			<date key="timestamp" value="2024-10-20T09:15:00.620367+00:00" />
+			<string key="resource" value="Trader A" />
+			<string key="currency_pair" value="GBP/USD" />
+			<string key="concept:name" value="Trade Canceled" />
+			<date key="time:timestamp" value="2024-10-20T09:15:00.620367+00:00" />
+			<int key="@@index" value="305" />
+			<int key="@@case_index" value="90" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="Case_91" />
+		<event>
+			<string key="case_id" value="Case_91" />
+			<string key="activity" value="Trade Initiated" />
+			<date key="timestamp" value="2024-10-07T05:55:00.621370+00:00" />
+			<string key="resource" value="Trader D" />
+			<string key="currency_pair" value="AUD/USD" />
+			<string key="concept:name" value="Trade Initiated" />
+			<date key="time:timestamp" value="2024-10-07T05:55:00.621370+00:00" />
+			<int key="@@index" value="306" />
+			<int key="@@case_index" value="91" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_91" />
+			<string key="activity" value="Trade Executed" />
+			<date key="timestamp" value="2024-10-07T06:45:00.621370+00:00" />
+			<string key="resource" value="Trader D" />
+			<string key="currency_pair" value="AUD/USD" />
+			<string key="concept:name" value="Trade Executed" />
+			<date key="time:timestamp" value="2024-10-07T06:45:00.621370+00:00" />
+			<int key="@@index" value="307" />
+			<int key="@@case_index" value="91" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_91" />
+			<string key="activity" value="Trade Settled" />
+			<date key="timestamp" value="2024-10-07T07:10:00.621370+00:00" />
+			<string key="resource" value="Trader D" />
+			<string key="currency_pair" value="AUD/USD" />
+			<string key="concept:name" value="Trade Settled" />
+			<date key="time:timestamp" value="2024-10-07T07:10:00.621370+00:00" />
+			<int key="@@index" value="308" />
+			<int key="@@case_index" value="91" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_91" />
+			<string key="activity" value="Trade Allocated" />
+			<date key="timestamp" value="2024-10-07T07:31:00.621370+00:00" />
+			<string key="resource" value="Trader D" />
+			<string key="currency_pair" value="AUD/USD" />
+			<string key="concept:name" value="Trade Allocated" />
+			<date key="time:timestamp" value="2024-10-07T07:31:00.621370+00:00" />
+			<int key="@@index" value="309" />
+			<int key="@@case_index" value="91" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_91" />
+			<string key="activity" value="Trade Canceled" />
+			<date key="timestamp" value="2024-10-07T09:35:00.621370+00:00" />
+			<string key="resource" value="Trader D" />
+			<string key="currency_pair" value="AUD/USD" />
+			<string key="concept:name" value="Trade Canceled" />
+			<date key="time:timestamp" value="2024-10-07T09:35:00.621370+00:00" />
+			<int key="@@index" value="310" />
+			<int key="@@case_index" value="91" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="Case_92" />
+		<event>
+			<string key="case_id" value="Case_92" />
+			<string key="activity" value="Trade Initiated" />
+			<date key="timestamp" value="2024-10-11T05:55:00.621370+00:00" />
+			<string key="resource" value="Trader D" />
+			<string key="currency_pair" value="EUR/USD" />
+			<string key="concept:name" value="Trade Initiated" />
+			<date key="time:timestamp" value="2024-10-11T05:55:00.621370+00:00" />
+			<int key="@@index" value="311" />
+			<int key="@@case_index" value="92" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_92" />
+			<string key="activity" value="Trade Canceled" />
+			<date key="timestamp" value="2024-10-11T06:29:00.621370+00:00" />
+			<string key="resource" value="Trader D" />
+			<string key="currency_pair" value="EUR/USD" />
+			<string key="concept:name" value="Trade Canceled" />
+			<date key="time:timestamp" value="2024-10-11T06:29:00.621370+00:00" />
+			<int key="@@index" value="312" />
+			<int key="@@case_index" value="92" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_92" />
+			<string key="activity" value="Trade Allocated" />
+			<date key="timestamp" value="2024-10-11T06:34:00.621370+00:00" />
+			<string key="resource" value="Trader D" />
+			<string key="currency_pair" value="EUR/USD" />
+			<string key="concept:name" value="Trade Allocated" />
+			<date key="time:timestamp" value="2024-10-11T06:34:00.621370+00:00" />
+			<int key="@@index" value="313" />
+			<int key="@@case_index" value="92" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="Case_93" />
+		<event>
+			<string key="case_id" value="Case_93" />
+			<string key="activity" value="Trade Allocated" />
+			<date key="timestamp" value="2024-10-30T05:55:00.621370+00:00" />
+			<string key="resource" value="Trader C" />
+			<string key="currency_pair" value="AUD/USD" />
+			<string key="concept:name" value="Trade Allocated" />
+			<date key="time:timestamp" value="2024-10-30T05:55:00.621370+00:00" />
+			<int key="@@index" value="314" />
+			<int key="@@case_index" value="93" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_93" />
+			<string key="activity" value="Trade Settled" />
+			<date key="timestamp" value="2024-10-30T06:35:00.621370+00:00" />
+			<string key="resource" value="Trader C" />
+			<string key="currency_pair" value="AUD/USD" />
+			<string key="concept:name" value="Trade Settled" />
+			<date key="time:timestamp" value="2024-10-30T06:35:00.621370+00:00" />
+			<int key="@@index" value="315" />
+			<int key="@@case_index" value="93" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_93" />
+			<string key="activity" value="Trade Canceled" />
+			<date key="timestamp" value="2024-10-30T06:45:00.621370+00:00" />
+			<string key="resource" value="Trader C" />
+			<string key="currency_pair" value="AUD/USD" />
+			<string key="concept:name" value="Trade Canceled" />
+			<date key="time:timestamp" value="2024-10-30T06:45:00.621370+00:00" />
+			<int key="@@index" value="316" />
+			<int key="@@case_index" value="93" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="Case_94" />
+		<event>
+			<string key="case_id" value="Case_94" />
+			<string key="activity" value="Trade Initiated" />
+			<date key="timestamp" value="2024-10-28T05:55:00.621370+00:00" />
+			<string key="resource" value="Trader A" />
+			<string key="currency_pair" value="USD/JPY" />
+			<string key="concept:name" value="Trade Initiated" />
+			<date key="time:timestamp" value="2024-10-28T05:55:00.621370+00:00" />
+			<int key="@@index" value="317" />
+			<int key="@@case_index" value="94" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_94" />
+			<string key="activity" value="Trade Executed" />
+			<date key="timestamp" value="2024-10-28T06:31:00.621370+00:00" />
+			<string key="resource" value="Trader A" />
+			<string key="currency_pair" value="USD/JPY" />
+			<string key="concept:name" value="Trade Executed" />
+			<date key="time:timestamp" value="2024-10-28T06:31:00.621370+00:00" />
+			<int key="@@index" value="318" />
+			<int key="@@case_index" value="94" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_94" />
+			<string key="activity" value="Trade Allocated" />
+			<date key="timestamp" value="2024-10-28T06:57:00.621370+00:00" />
+			<string key="resource" value="Trader A" />
+			<string key="currency_pair" value="USD/JPY" />
+			<string key="concept:name" value="Trade Allocated" />
+			<date key="time:timestamp" value="2024-10-28T06:57:00.621370+00:00" />
+			<int key="@@index" value="319" />
+			<int key="@@case_index" value="94" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_94" />
+			<string key="activity" value="Trade Canceled" />
+			<date key="timestamp" value="2024-10-28T08:43:00.621370+00:00" />
+			<string key="resource" value="Trader A" />
+			<string key="currency_pair" value="USD/JPY" />
+			<string key="concept:name" value="Trade Canceled" />
+			<date key="time:timestamp" value="2024-10-28T08:43:00.621370+00:00" />
+			<int key="@@index" value="320" />
+			<int key="@@case_index" value="94" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_94" />
+			<string key="activity" value="Trade Settled" />
+			<date key="timestamp" value="2024-10-28T08:55:00.621370+00:00" />
+			<string key="resource" value="Trader A" />
+			<string key="currency_pair" value="USD/JPY" />
+			<string key="concept:name" value="Trade Settled" />
+			<date key="time:timestamp" value="2024-10-28T08:55:00.621370+00:00" />
+			<int key="@@index" value="321" />
+			<int key="@@case_index" value="94" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="Case_95" />
+		<event>
+			<string key="case_id" value="Case_95" />
+			<string key="activity" value="Trade Initiated" />
+			<date key="timestamp" value="2024-10-18T05:55:00.621370+00:00" />
+			<string key="resource" value="Trader D" />
+			<string key="currency_pair" value="GBP/USD" />
+			<string key="concept:name" value="Trade Initiated" />
+			<date key="time:timestamp" value="2024-10-18T05:55:00.621370+00:00" />
+			<int key="@@index" value="322" />
+			<int key="@@case_index" value="95" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_95" />
+			<string key="activity" value="Trade Executed" />
+			<date key="timestamp" value="2024-10-18T06:35:00.621370+00:00" />
+			<string key="resource" value="Trader D" />
+			<string key="currency_pair" value="GBP/USD" />
+			<string key="concept:name" value="Trade Executed" />
+			<date key="time:timestamp" value="2024-10-18T06:35:00.621370+00:00" />
+			<int key="@@index" value="323" />
+			<int key="@@case_index" value="95" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_95" />
+			<string key="activity" value="Trade Allocated" />
+			<date key="timestamp" value="2024-10-18T06:59:00.621370+00:00" />
+			<string key="resource" value="Trader D" />
+			<string key="currency_pair" value="GBP/USD" />
+			<string key="concept:name" value="Trade Allocated" />
+			<date key="time:timestamp" value="2024-10-18T06:59:00.621370+00:00" />
+			<int key="@@index" value="324" />
+			<int key="@@case_index" value="95" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_95" />
+			<string key="activity" value="Trade Settled" />
+			<date key="timestamp" value="2024-10-18T07:28:00.621370+00:00" />
+			<string key="resource" value="Trader D" />
+			<string key="currency_pair" value="GBP/USD" />
+			<string key="concept:name" value="Trade Settled" />
+			<date key="time:timestamp" value="2024-10-18T07:28:00.621370+00:00" />
+			<int key="@@index" value="325" />
+			<int key="@@case_index" value="95" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="Case_96" />
+		<event>
+			<string key="case_id" value="Case_96" />
+			<string key="activity" value="Trade Initiated" />
+			<date key="timestamp" value="2024-10-05T05:55:00.621370+00:00" />
+			<string key="resource" value="Trader B" />
+			<string key="currency_pair" value="AUD/USD" />
+			<string key="concept:name" value="Trade Initiated" />
+			<date key="time:timestamp" value="2024-10-05T05:55:00.621370+00:00" />
+			<int key="@@index" value="326" />
+			<int key="@@case_index" value="96" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_96" />
+			<string key="activity" value="Trade Executed" />
+			<date key="timestamp" value="2024-10-05T06:52:00.621370+00:00" />
+			<string key="resource" value="Trader B" />
+			<string key="currency_pair" value="AUD/USD" />
+			<string key="concept:name" value="Trade Executed" />
+			<date key="time:timestamp" value="2024-10-05T06:52:00.621370+00:00" />
+			<int key="@@index" value="327" />
+			<int key="@@case_index" value="96" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_96" />
+			<string key="activity" value="Trade Allocated" />
+			<date key="timestamp" value="2024-10-05T07:15:00.621370+00:00" />
+			<string key="resource" value="Trader B" />
+			<string key="currency_pair" value="AUD/USD" />
+			<string key="concept:name" value="Trade Allocated" />
+			<date key="time:timestamp" value="2024-10-05T07:15:00.621370+00:00" />
+			<int key="@@index" value="328" />
+			<int key="@@case_index" value="96" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_96" />
+			<string key="activity" value="Trade Canceled" />
+			<date key="timestamp" value="2024-10-05T08:11:00.621370+00:00" />
+			<string key="resource" value="Trader B" />
+			<string key="currency_pair" value="AUD/USD" />
+			<string key="concept:name" value="Trade Canceled" />
+			<date key="time:timestamp" value="2024-10-05T08:11:00.621370+00:00" />
+			<int key="@@index" value="329" />
+			<int key="@@case_index" value="96" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_96" />
+			<string key="activity" value="Trade Settled" />
+			<date key="timestamp" value="2024-10-05T08:40:00.621370+00:00" />
+			<string key="resource" value="Trader B" />
+			<string key="currency_pair" value="AUD/USD" />
+			<string key="concept:name" value="Trade Settled" />
+			<date key="time:timestamp" value="2024-10-05T08:40:00.621370+00:00" />
+			<int key="@@index" value="330" />
+			<int key="@@case_index" value="96" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="Case_97" />
+		<event>
+			<string key="case_id" value="Case_97" />
+			<string key="activity" value="Trade Initiated" />
+			<date key="timestamp" value="2024-10-07T05:55:00.621370+00:00" />
+			<string key="resource" value="Trader A" />
+			<string key="currency_pair" value="AUD/USD" />
+			<string key="concept:name" value="Trade Initiated" />
+			<date key="time:timestamp" value="2024-10-07T05:55:00.621370+00:00" />
+			<int key="@@index" value="331" />
+			<int key="@@case_index" value="97" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_97" />
+			<string key="activity" value="Trade Allocated" />
+			<date key="timestamp" value="2024-10-07T06:15:00.621370+00:00" />
+			<string key="resource" value="Trader A" />
+			<string key="currency_pair" value="AUD/USD" />
+			<string key="concept:name" value="Trade Allocated" />
+			<date key="time:timestamp" value="2024-10-07T06:15:00.621370+00:00" />
+			<int key="@@index" value="332" />
+			<int key="@@case_index" value="97" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_97" />
+			<string key="activity" value="Trade Executed" />
+			<date key="timestamp" value="2024-10-07T06:34:00.621370+00:00" />
+			<string key="resource" value="Trader A" />
+			<string key="currency_pair" value="AUD/USD" />
+			<string key="concept:name" value="Trade Executed" />
+			<date key="time:timestamp" value="2024-10-07T06:34:00.621370+00:00" />
+			<int key="@@index" value="333" />
+			<int key="@@case_index" value="97" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_97" />
+			<string key="activity" value="Trade Canceled" />
+			<date key="timestamp" value="2024-10-07T07:11:00.621370+00:00" />
+			<string key="resource" value="Trader A" />
+			<string key="currency_pair" value="AUD/USD" />
+			<string key="concept:name" value="Trade Canceled" />
+			<date key="time:timestamp" value="2024-10-07T07:11:00.621370+00:00" />
+			<int key="@@index" value="334" />
+			<int key="@@case_index" value="97" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_97" />
+			<string key="activity" value="Trade Settled" />
+			<date key="timestamp" value="2024-10-07T08:43:00.621370+00:00" />
+			<string key="resource" value="Trader A" />
+			<string key="currency_pair" value="AUD/USD" />
+			<string key="concept:name" value="Trade Settled" />
+			<date key="time:timestamp" value="2024-10-07T08:43:00.621370+00:00" />
+			<int key="@@index" value="335" />
+			<int key="@@case_index" value="97" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="Case_98" />
+		<event>
+			<string key="case_id" value="Case_98" />
+			<string key="activity" value="Trade Initiated" />
+			<date key="timestamp" value="2024-10-31T05:55:00.621370+00:00" />
+			<string key="resource" value="Trader D" />
+			<string key="currency_pair" value="EUR/USD" />
+			<string key="concept:name" value="Trade Initiated" />
+			<date key="time:timestamp" value="2024-10-31T05:55:00.621370+00:00" />
+			<int key="@@index" value="336" />
+			<int key="@@case_index" value="98" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_98" />
+			<string key="activity" value="Trade Executed" />
+			<date key="timestamp" value="2024-10-31T06:48:00.621370+00:00" />
+			<string key="resource" value="Trader D" />
+			<string key="currency_pair" value="EUR/USD" />
+			<string key="concept:name" value="Trade Executed" />
+			<date key="time:timestamp" value="2024-10-31T06:48:00.621370+00:00" />
+			<int key="@@index" value="337" />
+			<int key="@@case_index" value="98" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_98" />
+			<string key="activity" value="Trade Allocated" />
+			<date key="timestamp" value="2024-10-31T07:23:00.621370+00:00" />
+			<string key="resource" value="Trader D" />
+			<string key="currency_pair" value="EUR/USD" />
+			<string key="concept:name" value="Trade Allocated" />
+			<date key="time:timestamp" value="2024-10-31T07:23:00.621370+00:00" />
+			<int key="@@index" value="338" />
+			<int key="@@case_index" value="98" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_98" />
+			<string key="activity" value="Trade Settled" />
+			<date key="timestamp" value="2024-10-31T07:37:00.621370+00:00" />
+			<string key="resource" value="Trader D" />
+			<string key="currency_pair" value="EUR/USD" />
+			<string key="concept:name" value="Trade Settled" />
+			<date key="time:timestamp" value="2024-10-31T07:37:00.621370+00:00" />
+			<int key="@@index" value="339" />
+			<int key="@@case_index" value="98" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_98" />
+			<string key="activity" value="Trade Canceled" />
+			<date key="timestamp" value="2024-10-31T07:55:00.621370+00:00" />
+			<string key="resource" value="Trader D" />
+			<string key="currency_pair" value="EUR/USD" />
+			<string key="concept:name" value="Trade Canceled" />
+			<date key="time:timestamp" value="2024-10-31T07:55:00.621370+00:00" />
+			<int key="@@index" value="340" />
+			<int key="@@case_index" value="98" />
+		</event>
+	</trace>
+	<trace>
+		<string key="concept:name" value="Case_99" />
+		<event>
+			<string key="case_id" value="Case_99" />
+			<string key="activity" value="Trade Initiated" />
+			<date key="timestamp" value="2024-10-27T05:55:00.621370+00:00" />
+			<string key="resource" value="Trader C" />
+			<string key="currency_pair" value="GBP/USD" />
+			<string key="concept:name" value="Trade Initiated" />
+			<date key="time:timestamp" value="2024-10-27T05:55:00.621370+00:00" />
+			<int key="@@index" value="341" />
+			<int key="@@case_index" value="99" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_99" />
+			<string key="activity" value="Trade Allocated" />
+			<date key="timestamp" value="2024-10-27T06:27:00.621370+00:00" />
+			<string key="resource" value="Trader C" />
+			<string key="currency_pair" value="GBP/USD" />
+			<string key="concept:name" value="Trade Allocated" />
+			<date key="time:timestamp" value="2024-10-27T06:27:00.621370+00:00" />
+			<int key="@@index" value="342" />
+			<int key="@@case_index" value="99" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_99" />
+			<string key="activity" value="Trade Executed" />
+			<date key="timestamp" value="2024-10-27T06:32:00.621370+00:00" />
+			<string key="resource" value="Trader C" />
+			<string key="currency_pair" value="GBP/USD" />
+			<string key="concept:name" value="Trade Executed" />
+			<date key="time:timestamp" value="2024-10-27T06:32:00.621370+00:00" />
+			<int key="@@index" value="343" />
+			<int key="@@case_index" value="99" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_99" />
+			<string key="activity" value="Trade Settled" />
+			<date key="timestamp" value="2024-10-27T08:49:00.621370+00:00" />
+			<string key="resource" value="Trader C" />
+			<string key="currency_pair" value="GBP/USD" />
+			<string key="concept:name" value="Trade Settled" />
+			<date key="time:timestamp" value="2024-10-27T08:49:00.621370+00:00" />
+			<int key="@@index" value="344" />
+			<int key="@@case_index" value="99" />
+		</event>
+		<event>
+			<string key="case_id" value="Case_99" />
+			<string key="activity" value="Trade Canceled" />
+			<date key="timestamp" value="2024-10-27T09:15:00.621370+00:00" />
+			<string key="resource" value="Trader C" />
+			<string key="currency_pair" value="GBP/USD" />
+			<string key="concept:name" value="Trade Canceled" />
+			<date key="time:timestamp" value="2024-10-27T09:15:00.621370+00:00" />
+			<int key="@@index" value="345" />
+			<int key="@@case_index" value="99" />
+		</event>
+	</trace>
+</log>
