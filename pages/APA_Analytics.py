@@ -17,8 +17,8 @@ st.markdown("")
 
 def setup_ocpm_page():
     """Set up the OCPM analysis page"""
-    st.title("📊 IRMAI OCPM Analytics")
-    st.info("""Object-Centric Process Mining (OCPM) provides a more detailed view of process interactions 
+    st.title("📊 IRMAI APA Analytics")
+    st.info(""" APA (Advanced Process Analytics) provides a more detailed view of process interactions 
             by considering multiple object types and their relationships.""")
 
     # Create directories if they don't exist
@@ -31,7 +31,7 @@ def setup_ocpm_page():
     # Add explanation of object types
     with st.expander("Understanding Object Types in FX Trading"):
         st.write("""
-        The OCPM analysis considers four main object types:
+        The APA analysis considers four main object types:
 
         1. **Trade Objects**: Represent the core trading activities
            - Trade execution
@@ -55,7 +55,7 @@ def setup_ocpm_page():
         """)
 
     # Add documentation
-    with st.expander("How to Use OCPM Analysis"):
+    with st.expander("How to Use APA Analysis"):
         st.write("""
         1. Upload your event log CSV file
         2. View object interactions through the heatmap

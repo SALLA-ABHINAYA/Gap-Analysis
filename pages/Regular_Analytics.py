@@ -91,7 +91,7 @@ def process_mining_analysis(csv_path):
                 bpmn_graph, event_log, mining_results)
 
     except Exception as e:
-        st.error(f"Error in process mining analysis: {str(e)}")
+        st.error(f"Error in process analytics analysis: {str(e)}")
         import traceback
         st.error(f"Traceback: {traceback.format_exc()}")
         raise
@@ -169,7 +169,7 @@ def main():
 
     # Header and Instructions
     st.title("📊 IRMAI Process Analytics")
-    st.info("Upload your Transaction Log to run process mining and risk analysis")
+    st.info("Upload your Transaction Log to run process analytics and risk analysis")
 
     # File Upload
     uploaded_file = st.file_uploader("Upload Transaction Log (CSV)", type=['csv'])
@@ -191,11 +191,11 @@ def main():
             st.success('Analysis completed successfully!')
 
             # Create tabs for different analysis sections
-            tabs = st.tabs(["Process Mining", "Risk Assessment", "Performance", "Improvements"])
+            tabs = st.tabs(["Process Analytics", "Risk Assessment", "Performance", "Improvements"])
 
             # Process Mining Tab
             with tabs[0]:
-                st.subheader("Process Mining Results")
+                st.subheader("Process Analytics Results")
 
                 # Display conformance metrics
                 col1, col2, col3 = st.columns(3)
@@ -285,7 +285,7 @@ def main():
     st.markdown("""
         <div style='text-align: center'>
             <p>© 2024 IRMAI. All rights reserved.</p>
-            <p>Process Mining & Risk Analysis Solutions</p>
+            <p>Process Analytics & Risk Analysis Solutions</p>
         </div>
         """, unsafe_allow_html=True)
 
