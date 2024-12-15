@@ -617,21 +617,21 @@ class UnfairOCELAnalyzer:
 def main():
     st.set_page_config(layout="wide")
 
-    st.title("🔍 Unfair OCEL Process Mining Analyzer")
+    st.title("🔍 Unfair Advanced Process Logs Analytics")
 
     # Introduction
     st.markdown("""
-    ### What is Unfair Process Mining?
-    Unfair process mining analyzes business processes to identify potential biases and discrimination patterns in:
+    ### What is Unfair Process Analytics?
+    Unfair process analysis analyzes business processes to identify potential biases and discrimination patterns in:
     - Resource allocation
     - Processing times
     - Case priorities
     - Work handover patterns
 
-    Upload your OCEL JSON file to begin the analysis.
+    Upload your Advanced Process Logs JSON file to begin the analysis.
     """)
 
-    uploaded_file = st.file_uploader("Choose an OCEL JSON file", type=['json'])
+    uploaded_file = st.file_uploader("Choose an Advanced Process Logs JSON file", type=['json'])
 
     if uploaded_file is not None:
         try:
@@ -714,13 +714,13 @@ def main():
 
         except Exception as e:
             st.error(f"Error analyzing the file: {str(e)}")
-            st.info("Please ensure your file follows the OCEL JSON format.")
+            st.info("Please ensure your file follows the Advanced Process Logs JSON format.")
 
 
 def generate_detailed_report(metrics):
     """Generate a comprehensive analysis report"""
     report = []
-    report.append("Unfair Process Mining Analysis Report")
+    report.append("Unfair Process Analytics Analysis Report")
     report.append("=====================================")
 
     # Add sections for each analysis type

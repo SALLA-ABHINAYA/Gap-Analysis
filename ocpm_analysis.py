@@ -265,7 +265,7 @@ class OCPMVisualizer:
 
 def create_ocpm_ui():
     """Create Streamlit UI components for OCPM analysis"""
-    st.subheader("Object-Centric Process Mining Analysis")
+    st.subheader("Object-Centric Process Analytics Analysis")
 
     uploaded_file = st.file_uploader("Upload Event Log (CSV)", type=['csv'])
 
