@@ -28,3 +28,9 @@ pandas
 numpy
 matplotlib
 seaborn
+openai
+langchain
+langchain-openai
+azure.identity
+azure-ai-inference
+kaleido

@@ -1,5 +1,17 @@
 # ocpm_analysis.py
-
+import pandas as pd
+import networkx as nx
+import matplotlib.pyplot as plt
+from datetime import datetime
+from typing import Dict, List, Optional, Tuple
+import pm4py
+from dataclasses import dataclass
+from collections import defaultdict
+import streamlit as st
+import plotly.graph_objects as go
+import numpy as np
+import os
+from pathlib import Path
 import pandas as pd
 import networkx as nx
 import matplotlib.pyplot as plt
@@ -12,7 +24,9 @@ import streamlit as st
 import plotly.graph_objects as go
 import numpy as np
 
-
+import os
+# Add this at the start of your script, before any other imports
+os.environ["PATH"] += os.pathsep + r"C:\samadhi\technology\Graphviz\bin"
 @dataclass
 class ObjectType:
     """Represents an object type in the OCPM model"""
@@ -263,9 +277,30 @@ class OCPMVisualizer:
         return figures
 
 
+import pandas as pd
+import networkx as nx
+import matplotlib.pyplot as plt
+from datetime import datetime
+from typing import Dict, List, Optional, Tuple
+import pm4py
+from dataclasses import dataclass
+from collections import defaultdict
+import streamlit as st
+import plotly.graph_objects as go
+import numpy as np
+from pathlib import Path
+import io
+from PIL import Image
+import pydot
+
+
 def create_ocpm_ui():
     """Create Streamlit UI components for OCPM analysis"""
     st.subheader("Object-Centric Process Analytics Analysis")
+
+    # Create output directory if it doesn't exist
+    output_dir = Path("ocpm_output")
+    output_dir.mkdir(exist_ok=True)
 
     uploaded_file = st.file_uploader("Upload Event Log (CSV)", type=['csv'])
 
@@ -297,13 +332,25 @@ def create_ocpm_ui():
                 fig = OCPMVisualizer.create_object_interaction_heatmap(interactions)
                 st.plotly_chart(fig)
 
+                # Save interaction heatmap
+                try:
+                    fig.write_image(str(output_dir / "tab1_interactions.png"))
+                except Exception as e:
+                    st.warning(f"Could not save interactions visualization: {str(e)}")
+
             # Object Metrics Tab
             with tabs[1]:
                 st.subheader("Object Type Metrics")
                 metrics = analyzer.calculate_object_metrics()
                 figures = OCPMVisualizer.create_object_metrics_dashboard(metrics)
-                for fig in figures:
+                for i, fig in enumerate(figures):
                     st.plotly_chart(fig)
+
+                    # Save metrics visualizations
+                    try:
+                        fig.write_image(str(output_dir / f"tab2_metrics_{i + 1}.png"))
+                    except Exception as e:
+                        st.warning(f"Could not save metrics visualization {i + 1}: {str(e)}")
 
             # Object Lifecycles Tab
             with tabs[2]:
@@ -315,14 +362,21 @@ def create_ocpm_ui():
 
                 if selected_object:
                     lifecycle_graph = analyzer.generate_object_lifecycle_graph(selected_object)
-                    st.graphviz_chart(nx.nx_pydot.to_pydot(lifecycle_graph).to_string())
+                    dot_graph = nx.nx_pydot.to_pydot(lifecycle_graph)
 
+                    # Display using original graphviz
+                    st.graphviz_chart(dot_graph.to_string())
+
+                    # Save the graphviz visualization
+                    try:
+                        dot_graph.write_png(str(output_dir / f"tab3_lifecycle_{selected_object}.png"))
+                    except Exception as e:
+                        st.warning(f"Could not save lifecycle visualization: {str(e)}")
+
+            st.success(f"Visualizations saved to {output_dir}")
 
         except Exception as e:
-
             st.error(f"Error in OCPM analysis: {str(e)}")
-
             st.write("Available columns in uploaded file:",
                      df.columns.tolist() if 'df' in locals() else 'No data loaded')
-
             st.write("Please ensure your CSV file has the required columns and data format")
