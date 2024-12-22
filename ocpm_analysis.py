@@ -1,16 +1,4 @@
 # ocpm_analysis.py
-import pandas as pd
-import networkx as nx
-import matplotlib.pyplot as plt
-from datetime import datetime
-from typing import Dict, List, Optional, Tuple
-import pm4py
-from dataclasses import dataclass
-from collections import defaultdict
-import streamlit as st
-import plotly.graph_objects as go
-import numpy as np
-import os
 from pathlib import Path
 import pandas as pd
 import networkx as nx
@@ -46,6 +34,7 @@ class OCPMAnalyzer:
         self.object_types = self._initialize_object_types()
         self.object_relationships = defaultdict(list)
         self.activity_object_mapping = self._create_activity_mapping()
+
 
     def _preprocess_event_log(self, df: pd.DataFrame) -> pd.DataFrame:
         """Preprocess event log to ensure consistent format"""
@@ -276,22 +265,6 @@ class OCPMVisualizer:
 
         return figures
 
-
-import pandas as pd
-import networkx as nx
-import matplotlib.pyplot as plt
-from datetime import datetime
-from typing import Dict, List, Optional, Tuple
-import pm4py
-from dataclasses import dataclass
-from collections import defaultdict
-import streamlit as st
-import plotly.graph_objects as go
-import numpy as np
-from pathlib import Path
-import io
-from PIL import Image
-import pydot
 
 
 def create_ocpm_ui():

@@ -15,6 +15,7 @@ st.set_page_config(
 
 st.markdown("")
 
+
 def setup_ocpm_page():
     """Set up the OCPM analysis page"""
     st.title("📊 IRMAI APA Analytics")
