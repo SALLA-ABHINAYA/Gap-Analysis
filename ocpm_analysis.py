@@ -47,6 +47,105 @@ class OCPMAnalyzer:
         self.object_relationships = defaultdict(list)
         self.activity_object_mapping = self._create_activity_mapping()
 
+    """Modified OCPMAnalyzer to generate OCEL format files."""
+
+    def convert_to_ocel(self) -> Dict:
+        """Convert OCPM data to OCEL format."""
+        ocpm_df = self.convert_to_ocpm_format()
+
+        ocel_data = {
+            "ocel:version": "1.0",
+            "ocel:ordering": "timestamp",
+            "ocel:attribute-names": [],
+            "ocel:events": [],
+            "ocel:objects": [],
+            "ocel:object-types": list(self.object_types.keys()),
+            "ocel:global-log": {
+                "ocel:attribute-names": []
+            }
+        }
+
+        # Convert events
+        events_map = {}  # To track unique events
+        for _, row in ocpm_df.iterrows():
+            event_id = f"{row['case_id']}_{row['activity']}"
+            if event_id not in events_map:
+                event = {
+                    "ocel:id": event_id,
+                    "ocel:timestamp": row['timestamp'].isoformat(),
+                    "ocel:activity": row['activity'],
+                    "ocel:type": "event",
+                    "ocel:attributes": {
+                        "resource": row['resource'],
+                        "case_id": row['case_id'],
+                        "object_type": row['object_type']
+                    },
+                    "ocel:objects": [{
+                        "id": row['object_id'],
+                        "type": row['object_type']
+                    }]
+                }
+                ocel_data["ocel:events"].append(event)
+                events_map[event_id] = True
+
+        # Convert objects
+        objects_map = {}  # To track unique objects
+        for obj_type, obj_info in self.object_types.items():
+            for activity in obj_info.activities:
+                obj_id = f"{obj_type}_{activity}"
+                if obj_id not in objects_map:
+                    obj = {
+                        "ocel:id": obj_id,
+                        "ocel:type": obj_type,
+                        "ocel:attributes": {
+                            "activity": activity,
+                            "attributes": obj_info.attributes
+                        }
+                    }
+                    ocel_data["ocel:objects"].append(obj)
+                    objects_map[obj_id] = True
+
+        return ocel_data
+
+    # In OCPMAnalyzer class
+
+    def save_ocel(self, output_path: str = "ocpm_output/process_data.json") -> str:
+        """Save OCPM data in OCEL format."""
+        import json
+        from pathlib import Path
+
+        try:
+            # Generate OCEL data
+            ocel_data = self.convert_to_ocel()
+
+            # Debug output
+            st.write("Generated OCEL data structure:")
+            st.write("Top-level keys:", list(ocel_data.keys()))
+            st.write("Number of events:", len(ocel_data.get('ocel:events', [])))
+
+            # Create output directory if needed
+            output_path = Path(output_path)
+            output_path.parent.mkdir(parents=True, exist_ok=True)
+
+            # Save OCEL file
+            with open(output_path, 'w', encoding='utf-8') as f:
+                json.dump(ocel_data, f, indent=2, ensure_ascii=False)
+
+            # Verify the file
+            with open(output_path, 'r', encoding='utf-8') as f:
+                verification = json.load(f)
+                if not verification.get('ocel:events'):
+                    st.error("Generated OCEL file has no events")
+                    raise ValueError("Generated OCEL file has no events")
+                else:
+                    st.success(f"Successfully saved {len(verification['ocel:events'])} events")
+
+            return str(output_path)
+
+        except Exception as e:
+            st.error(f"Error saving OCEL file: {str(e)}")
+            raise
+
     def _preprocess_event_log(self, df: pd.DataFrame) -> pd.DataFrame:
         """Preprocess event log to ensure consistent format"""
         # Print incoming dataframe info for debugging
@@ -293,14 +392,15 @@ import io
 from PIL import Image
 import pydot
 
+"""Modified create_ocpm_ui to generate OCEL files."""
+
 
 def create_ocpm_ui():
     """Create Streamlit UI components for OCPM analysis"""
     st.subheader("Object-Centric Process Analytics Analysis")
 
     # Create output directory if it doesn't exist
-    output_dir = Path("ocpm_output")
-    output_dir.mkdir(exist_ok=True)
+    os.makedirs("ocpm_output", exist_ok=True)
 
     uploaded_file = st.file_uploader("Upload Event Log (CSV)", type=['csv'])
 
@@ -308,19 +408,20 @@ def create_ocpm_ui():
         try:
             # Read the CSV file with multiple possible separators
             try:
-                df = pd.read_csv(uploaded_file, sep=';')  # Try semicolon first
+                df = pd.read_csv(uploaded_file, sep=';')
             except:
                 try:
-                    df = pd.read_csv(uploaded_file, sep=',')  # Try comma if semicolon fails
+                    df = pd.read_csv(uploaded_file, sep=',')
                 except:
-                    df = pd.read_csv(uploaded_file, sep='\t')  # Try tab if both fail
-
-            # Display raw data for verification
-            st.subheader("Raw Data Preview")
-            st.write(df.head())
+                    df = pd.read_csv(uploaded_file, sep='\t')
 
             # Initialize analyzer
             analyzer = OCPMAnalyzer(df)
+
+            # Generate and save OCEL file
+            ocel_path = analyzer.save_ocel()
+            st.session_state['ocel_path'] = ocel_path
+            st.success(f"OCEL file generated: {ocel_path}")
 
             # Create tabs for different analyses
             tabs = st.tabs(["Object Interactions", "Object Metrics", "Object Lifecycles"])
@@ -332,25 +433,13 @@ def create_ocpm_ui():
                 fig = OCPMVisualizer.create_object_interaction_heatmap(interactions)
                 st.plotly_chart(fig)
 
-                # Save interaction heatmap
-                try:
-                    fig.write_image(str(output_dir / "tab1_interactions.png"))
-                except Exception as e:
-                    st.warning(f"Could not save interactions visualization: {str(e)}")
-
             # Object Metrics Tab
             with tabs[1]:
                 st.subheader("Object Type Metrics")
                 metrics = analyzer.calculate_object_metrics()
                 figures = OCPMVisualizer.create_object_metrics_dashboard(metrics)
-                for i, fig in enumerate(figures):
+                for fig in figures:
                     st.plotly_chart(fig)
-
-                    # Save metrics visualizations
-                    try:
-                        fig.write_image(str(output_dir / f"tab2_metrics_{i + 1}.png"))
-                    except Exception as e:
-                        st.warning(f"Could not save metrics visualization {i + 1}: {str(e)}")
 
             # Object Lifecycles Tab
             with tabs[2]:
@@ -363,17 +452,7 @@ def create_ocpm_ui():
                 if selected_object:
                     lifecycle_graph = analyzer.generate_object_lifecycle_graph(selected_object)
                     dot_graph = nx.nx_pydot.to_pydot(lifecycle_graph)
-
-                    # Display using original graphviz
                     st.graphviz_chart(dot_graph.to_string())
-
-                    # Save the graphviz visualization
-                    try:
-                        dot_graph.write_png(str(output_dir / f"tab3_lifecycle_{selected_object}.png"))
-                    except Exception as e:
-                        st.warning(f"Could not save lifecycle visualization: {str(e)}")
-
-            st.success(f"Visualizations saved to {output_dir}")
 
         except Exception as e:
             st.error(f"Error in OCPM analysis: {str(e)}")
