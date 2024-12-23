@@ -9,6 +9,7 @@ from pages.Unfair_Advanced_Process_Logs_Analytics import UnfairOCELAnalyzer
 import json
 from pathlib import Path
 
+
 def setup_ocpm_page():
     """Set up the OCPM analysis page with integrated unfair analysis."""
     st.title("📊 IRMAI APA Analytics")
