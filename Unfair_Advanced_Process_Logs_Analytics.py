@@ -3,11 +3,9 @@ import streamlit as st
 import json
 import pandas as pd
 import numpy as np
-from collections import defaultdict
 from typing import Dict, List, Any, Tuple
 import matplotlib.pyplot as plt
 import seaborn as sns
-from pathlib import Path
 from functools import lru_cache
 import warnings
 
@@ -33,6 +31,7 @@ class UnfairOCELAnalyzer:
             # Initialize caches
             self._metrics_cache = {}
             self._df_cache = {}
+            self._trace_cache = {}  # New cache for traces
 
             # Process data efficiently
             self._process_data()
@@ -47,6 +46,7 @@ class UnfairOCELAnalyzer:
             # Process events in batch
             events_data = []
             relationships_data = []
+            trace_data = []  # New trace data storage
 
             for event in self.ocel_data['ocel:events']:
                 event_base = {
@@ -56,6 +56,13 @@ class UnfairOCELAnalyzer:
                     'resource': event.get('ocel:attributes', {}).get('resource', 'Unknown'),
                     'case_id': event.get('ocel:attributes', {}).get('case_id', 'Unknown')
                 }
+
+                # Store event details for tracing
+                trace_data.append({
+                    **event_base,
+                    'objects': [obj['id'] for obj in event.get('ocel:objects', [])],
+                    'raw_event': event  # Store complete event for traceability
+                })
 
                 events_data.append(event_base)
 
@@ -67,7 +74,7 @@ class UnfairOCELAnalyzer:
                         'object_type': obj.get('type', 'Unknown')
                     })
 
-            # Create DataFrames with optimized dtypes and proper error handling
+            # Create DataFrames with optimized dtypes
             if events_data:
                 self.events_df = pd.DataFrame(events_data)
                 self.events_df['timestamp'] = pd.to_datetime(self.events_df['timestamp'])
@@ -82,9 +89,56 @@ class UnfairOCELAnalyzer:
             else:
                 raise ValueError("No relationships data found in OCEL file")
 
+            # Create trace DataFrame and build indices
+            self.trace_df = pd.DataFrame(trace_data)
+            self._build_trace_index()
+
         except Exception as e:
             st.error(f"Error processing OCEL data: {str(e)}")
             raise
+
+    def _build_trace_index(self):
+        """Build indices for quick trace lookups"""
+        self.resource_events = {}
+        self.case_events = {}
+        self.activity_events = {}
+
+        for _, row in self.trace_df.iterrows():
+            # Index by resource
+            if row['resource'] not in self.resource_events:
+                self.resource_events[row['resource']] = []
+            self.resource_events[row['resource']].append(row['event_id'])
+
+            # Index by case
+            if row['case_id'] not in self.case_events:
+                self.case_events[row['case_id']] = []
+            self.case_events[row['case_id']].append(row['event_id'])
+
+            # Index by activity
+            if row['activity'] not in self.activity_events:
+                self.activity_events[row['activity']] = []
+            self.activity_events[row['activity']].append(row['event_id'])
+
+    def get_trace_for_metric(self, metric_type: str, identifier: str) -> List[Dict]:
+        """Get traced events for a specific metric"""
+        events = []
+
+        if metric_type == 'resource':
+            events = self.resource_events.get(identifier, [])
+        elif metric_type == 'case':
+            events = self.case_events.get(identifier, [])
+        elif metric_type == 'activity':
+            events = self.activity_events.get(identifier, [])
+        elif metric_type == 'handover':
+            source, target = identifier.split('->')
+            source_events = set(self.resource_events.get(source, []))
+            target_events = set(self.resource_events.get(target, []))
+            events = list(source_events.union(target_events))
+
+        return [
+            self.trace_df[self.trace_df['event_id'] == event_id].to_dict('records')[0]
+            for event_id in events
+        ]
 
     @lru_cache(maxsize=32)
     def _calculate_resource_metrics(self) -> Dict:
@@ -92,28 +146,25 @@ class UnfairOCELAnalyzer:
         metrics = {}
 
         try:
-            # Calculate in one pass with error handling
             resource_stats = self.relationships_df.groupby('resource').agg({
                 'case_id': 'nunique',
                 'object_id': 'count'
             })
 
             total_cases = self.relationships_df['case_id'].nunique()
-            if total_cases == 0:
-                raise ValueError("No cases found in the data")
-
             expected_cases = total_cases / len(resource_stats) if len(resource_stats) > 0 else 0
 
             for resource, stats in resource_stats.iterrows():
-                if expected_cases > 0:
-                    bias_score = (stats['case_id'] - expected_cases) / expected_cases
-                else:
-                    bias_score = 0
+                bias_score = (stats['case_id'] - expected_cases) / expected_cases if expected_cases > 0 else 0
+
+                # Get traced events for this resource
+                traced_events = self.get_trace_for_metric('resource', resource)
 
                 metrics[resource] = {
                     'cases': int(stats['case_id']),
                     'bias_score': float(bias_score),
-                    'percentage': float((stats['case_id'] / total_cases) * 100) if total_cases > 0 else 0
+                    'percentage': float((stats['case_id'] / total_cases) * 100) if total_cases > 0 else 0,
+                    'supporting_events': traced_events  # Add tracing information
                 }
 
             return metrics
@@ -229,18 +280,7 @@ class UnfairOCELAnalyzer:
 
         except Exception as e:
             st.error(f"Error generating analysis plots: {str(e)}")
-            # Return empty but valid structure
-            return {
-                'resource_discrimination': plt.figure(),
-                'time_bias': plt.figure(),
-                'case_priority': plt.figure(),
-                'handover': plt.figure()
-            }, {
-                'resource': {},
-                'time': {},
-                'case': {},
-                'handover': {}
-            }
+            return {}, {}
 
     def _create_resource_plot(self, metrics: Dict) -> plt.Figure:
         """Create resource discrimination plot"""
@@ -268,6 +308,21 @@ class UnfairOCELAnalyzer:
                     ha='center', va='center')
 
         return fig
+
+    def generate_trace_report(self, metric_type: str, identifier: str) -> str:
+        """Generate a trace report for a specific metric"""
+        events = self.get_trace_for_metric(metric_type, identifier)
+        report = [f"Trace Report for {metric_type}: {identifier}\n"]
+        report.append("Supporting Events:")
+
+        for event in events:
+            report.append(f"- Event ID: {event['event_id']}")
+            report.append(f"  Activity: {event['activity']}")
+            report.append(f"  Timestamp: {event['timestamp']}")
+            report.append(f"  Resource: {event['resource']}")
+            report.append(f"  Case ID: {event['case_id']}\n")
+
+        return "\n".join(report)
 
     def _create_time_plot(self, metrics: Dict) -> plt.Figure:
         """Create time bias plot"""

@@ -1,32 +1,16 @@
 # ocpm_analysis.py
 import pandas as pd
 import networkx as nx
-import matplotlib.pyplot as plt
-from datetime import datetime
 from typing import Dict, List, Optional, Tuple
-import pm4py
 from dataclasses import dataclass
-from collections import defaultdict
-import streamlit as st
 import plotly.graph_objects as go
-import numpy as np
-import os
-from pathlib import Path
-import pandas as pd
-import networkx as nx
-import matplotlib.pyplot as plt
-from datetime import datetime
-from typing import Dict, List, Optional, Tuple
-import pm4py
-from dataclasses import dataclass
-from collections import defaultdict
-import streamlit as st
-import plotly.graph_objects as go
-import numpy as np
+
 
 import os
+
 # Add this at the start of your script, before any other imports
 os.environ["PATH"] += os.pathsep + r"C:\samadhi\technology\Graphviz\bin"
+
 @dataclass
 class ObjectType:
     """Represents an object type in the OCPM model"""
@@ -42,14 +26,15 @@ class OCPMAnalyzer:
     def __init__(self, event_log: pd.DataFrame):
         # Log the original columns for debugging
         print(f"Original columns: {event_log.columns.tolist()}")
-        self.event_log = self._preprocess_event_log(event_log)
-        self.object_types = self._initialize_object_types()
-        self.object_relationships = defaultdict(list)
-        self.activity_object_mapping = self._create_activity_mapping()
 
-    """Modified OCPMAnalyzer to generate OCEL format files."""
+        self.event_log                  = self._preprocess_event_log(event_log)
+        self.object_types               = self._initialize_object_types()
+        self.object_relationships       = defaultdict(list)
+        self.activity_object_mapping    = self._create_activity_mapping()
+
 
     def convert_to_ocel(self) -> Dict:
+        
         """Convert OCPM data to OCEL format."""
         ocpm_df = self.convert_to_ocpm_format()
 

@@ -1,25 +1,24 @@
-# pages/APA_Analytics.py
+ #pages/APA_Analytics.py
 
 import streamlit as st
-from ocpm_analysis import create_ocpm_ui, OCPMAnalyzer
+from ocpm_analysis import create_ocpm_ui
 import os
-from typing import Optional
-import pandas as pd
-from pages.Unfair_Advanced_Process_Logs_Analytics import UnfairOCELAnalyzer
-import json
+from Unfair_Advanced_Process_Logs_Analytics import UnfairOCELAnalyzer
 from pathlib import Path
 
 
 def setup_ocpm_page():
     """Set up the OCPM analysis page with integrated unfair analysis."""
+
     st.title("📊 IRMAI APA Analytics")
+
     st.info("""APA provides a detailed view of process interactions by considering multiple object types and their relationships.""")
 
     # Create directories if they don't exist
     os.makedirs("ocpm_data", exist_ok=True)
     os.makedirs("ocpm_output", exist_ok=True)
 
-    # Create tabs for different analyses
+    # Create tabs for different analysis
     main_tabs = st.tabs(["Process Analysis", "Unfairness Analysis"])
 
     with main_tabs[0]:
@@ -43,6 +42,7 @@ def setup_ocpm_page():
     with main_tabs[1]:
         run_unfairness_analysis()
 
+
 def find_ocel_file():
     """Find the OCEL file in the expected locations."""
     possible_paths = [
@@ -55,8 +55,10 @@ def find_ocel_file():
             return path
     return None
 
+
 def run_unfairness_analysis():
-    """Run unfairness analysis using the existing UnfairOCELAnalyzer."""
+    """Run unfairness analysis using the enhanced UnfairOCELAnalyzer."""
+
     st.subheader("Unfairness Analysis")
 
     # First check session state for OCEL path
@@ -66,23 +68,15 @@ def run_unfairness_analysis():
     if not ocel_path:
         ocel_path = find_ocel_file()
 
-    # Debug information if needed
-    with st.expander("Debug Information"):
-        st.write(f"OCEL Path: {ocel_path}")
-        st.write(f"Session State: {st.session_state}")
-        if ocel_path:
-            st.write(f"File exists: {os.path.exists(ocel_path)}")
-
     if not ocel_path or not os.path.exists(ocel_path):
         st.warning("⚠️ Please process data in the Process Analysis tab first.")
         return
 
     try:
-        # Initialize the existing UnfairOCELAnalyzer
         analyzer = UnfairOCELAnalyzer(ocel_path)
         plots, metrics = analyzer.get_analysis_plots()
 
-        # Show the analysis results using the existing tabs from UnfairOCELAnalyzer
+        # Show the analysis results with traceability
         tabs = st.tabs([
             "Resource Discrimination",
             "Time Bias",
@@ -99,6 +93,10 @@ def run_unfairness_analysis():
                 for resource, data in metrics['resource'].items():
                     if isinstance(data, dict) and data.get('bias_score', 0) > 0.2:
                         st.warning(f"⚠️ {resource}: {data['bias_score']:.2f} bias score")
+                        # Add trace exploration
+                        if st.button(f"Show traces for {resource}"):
+                            trace_report = analyzer.generate_trace_report('resource', resource)
+                            st.text(trace_report)
 
         with tabs[1]:
             col1, col2 = st.columns([2, 1])
@@ -111,6 +109,10 @@ def run_unfairness_analysis():
                         with st.expander(f"{resource} Details"):
                             st.write(f"Mean time: {data.get('mean_time', 0):.2f} hours")
                             st.write(f"Std Dev: {data.get('std_dev', 0):.2f} hours")
+                            # Add trace exploration
+                            if st.button(f"Show traces for {resource} times"):
+                                trace_report = analyzer.generate_trace_report('resource', resource)
+                                st.text(trace_report)
 
         with tabs[2]:
             col1, col2 = st.columns([2, 1])
@@ -122,6 +124,10 @@ def run_unfairness_analysis():
                     if isinstance(data, dict) and abs(data.get('bias_score', 0)) > 0.2:
                         status = "👎" if data.get('bias_score', 0) > 0 else "👍"
                         st.info(f"{case_type}: {status}")
+                        # Add trace exploration
+                        if st.button(f"Show traces for {case_type}"):
+                            trace_report = analyzer.generate_trace_report('case', case_type)
+                            st.text(trace_report)
 
         with tabs[3]:
             col1, col2 = st.columns([2, 1])
@@ -132,11 +138,16 @@ def run_unfairness_analysis():
                 for pattern, data in metrics['handover'].items():
                     if isinstance(data, dict) and data.get('percentage', 0) > 10:
                         st.write(f"🔄 {pattern}: {data['percentage']:.1f}%")
+                        # Add trace exploration
+                        if st.button(f"Show traces for {pattern}"):
+                            trace_report = analyzer.generate_trace_report('handover', pattern)
+                            st.text(trace_report)
 
     except Exception as e:
         st.error(f"Error in unfairness analysis: {str(e)}")
         import traceback
         st.error(f"Detailed error:\n{traceback.format_exc()}")
+
 
 if __name__ == "__main__":
     st.set_page_config(
