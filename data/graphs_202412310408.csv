@@ -1,0 +1,5 @@
+"id","collection_id","name","description","status","document_ids","metadata","created_at","updated_at"
+"122fdf6a-e116-546b-a8f6-e4cb2e2c0a09","122fdf6a-e116-546b-a8f6-e4cb2e2c0a09",Default,"",pending,,"",2024-12-23 02:15:49.838 -0500,2024-12-23 02:15:49.838 -0500
+"4c6e1462-bcfc-47fb-ac6f-7ebb76b4e2aa","4c6e1462-bcfc-47fb-ac6f-7ebb76b4e2aa",data science,"",pending,{d47d05b9-d3c2-5e8d-bcc5-645e31bf5e86},"",2024-12-23 04:41:51.262 -0500,2024-12-23 04:41:51.262 -0500
+d4d42f73-b352-45c4-b51f-96e7218c8b72,d4d42f73-b352-45c4-b51f-96e7218c8b72,Thesis,"",pending,{8fabb7dd-993c-57ff-a6fd-896d5a7d3064},"",2024-12-23 23:02:31.843 -0500,2024-12-23 23:02:31.843 -0500
+d0abcc78-a770-4925-9dfe-be85acc88477,d0abcc78-a770-4925-9dfe-be85acc88477,IRMAI,"",pending,{01907ce6-76a2-5c39-abec-f589be26c4ab},"",2024-12-31 03:38:50.705 -0500,2024-12-31 03:38:50.705 -0500

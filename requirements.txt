@@ -23,6 +23,9 @@ spacy
 PyPDF2
 psutil
 statsmodels>=0.14.0
+r2r
+asyncpg
+supabase
 pydot
 pandas
 numpy

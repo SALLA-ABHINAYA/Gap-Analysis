@@ -1,8 +1,11 @@
 # APA_Analytics.py
+import traceback
+
 import streamlit as st
+
+from Unfair_Advanced_Process_Logs_Analytics import UnfairOCELAnalyzer
 from ocpm_analysis import create_ocpm_ui
 import os
-from Unfair_Advanced_Process_Logs_Analytics import UnfairOCELAnalyzer
 from pathlib import Path
 from openai import OpenAI
 import pandas as pd
@@ -11,6 +14,7 @@ import json
 from typing import Dict, List
 import plotly.graph_objects as go
 import numpy as np
+
 import matplotlib.pyplot as plt
 import seaborn as sns
 
@@ -156,12 +160,8 @@ class IntegratedAPAAnalyzer:
 
 
 def run_unfairness_analysis():
-    """Run unfairness analysis using UnfairOCELAnalyzer"""
     st.subheader("Unfairness Analysis")
-
-    ocel_path = st.session_state.get('ocel_path')
-    if not ocel_path:
-        ocel_path = find_ocel_file()
+    ocel_path = st.session_state.get('ocel_path') or find_ocel_file()
 
     if not ocel_path or not os.path.exists(ocel_path):
         st.warning("⚠️ Please process data in the Process Analysis tab first.")
@@ -169,75 +169,25 @@ def run_unfairness_analysis():
 
     try:
         analyzer = UnfairOCELAnalyzer(ocel_path)
-        plots, metrics = analyzer.get_analysis_plots()
-
-        # Show analysis results
-        tabs = st.tabs([
-            "Resource Discrimination",
-            "Time Bias",
-            "Case Priority",
-            "Handover Patterns"
-        ])
-
-        with tabs[0]:
-            col1, col2 = st.columns([2, 1])
-            with col1:
-                st.pyplot(plots['resource_discrimination'])
-            with col2:
-                st.markdown("### Resource Bias Findings")
-                for resource, data in metrics['resource'].items():
-                    if isinstance(data, dict) and data.get('bias_score', 0) > 0.2:
-                        st.warning(f"⚠️ {resource}: {data['bias_score']:.2f} bias score")
-                        if st.button(f"Show traces for {resource}"):
-                            trace_report = analyzer.generate_trace_report('resource', resource)
-                            st.text(trace_report)
-
-        with tabs[1]:
-            col1, col2 = st.columns([2, 1])
-            with col1:
-                st.pyplot(plots['time_bias'])
-            with col2:
-                st.markdown("### Processing Time Statistics")
-                for resource, data in metrics['time'].items():
-                    if isinstance(data, dict):
-                        with st.expander(f"{resource} Details"):
-                            st.write(f"Mean time: {data.get('mean_time', 0):.2f} hours")
-                            st.write(f"Std Dev: {data.get('std_dev', 0):.2f} hours")
-                            if st.button(f"Show traces for {resource} times"):
-                                trace_report = analyzer.generate_trace_report('resource', resource)
-                                st.text(trace_report)
-
-        with tabs[2]:
-            col1, col2 = st.columns([2, 1])
-            with col1:
-                st.pyplot(plots['case_priority'])
-            with col2:
-                st.markdown("### Case Priority Analysis")
-                for case_type, data in metrics['case'].items():
-                    if isinstance(data, dict) and abs(data.get('bias_score', 0)) > 0.2:
-                        status = "👎" if data.get('bias_score', 0) > 0 else "👍"
-                        st.info(f"{case_type}: {status}")
-                        if st.button(f"Show traces for {case_type}"):
-                            trace_report = analyzer.generate_trace_report('case', case_type)
-                            st.text(trace_report)
-
-        with tabs[3]:
-            col1, col2 = st.columns([2, 1])
-            with col1:
-                st.pyplot(plots['handover'])
-            with col2:
-                st.markdown("### Significant Handovers")
-                for pattern, data in metrics['handover'].items():
-                    if isinstance(data, dict) and data.get('percentage', 0) > 10:
-                        st.write(f"🔄 {pattern}: {data['percentage']:.1f}%")
-                        if st.button(f"Show traces for {pattern}"):
-                            trace_report = analyzer.generate_trace_report('handover', pattern)
-                            st.text(trace_report)
-
+        analyzer.display_enhanced_analysis()  # Call as instance method
     except Exception as e:
         st.error(f"Error in unfairness analysis: {str(e)}")
-        import traceback
         st.error(f"Detailed error:\n{traceback.format_exc()}")
+
+
+def find_ocel_file():
+    """Find the OCEL file in expected locations"""
+    possible_paths = [
+        "ocpm_output/process_data.json",
+        "ocpm_data/process_data.json",
+        os.path.join("ocpm_output", "process_data.json"),
+        os.path.join("ocpm_data", "process_data.json")
+    ]
+
+    for path in possible_paths:
+        if os.path.exists(path):
+            return path
+    return None
 
 
 def find_ocel_file():
