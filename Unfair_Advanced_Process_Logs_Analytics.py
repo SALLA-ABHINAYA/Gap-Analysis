@@ -312,6 +312,7 @@ class UnfairOCELAnalyzer:
         return outliers
 
     def _detect_failure_patterns(self) -> Dict[str, Any]:
+        """Enhanced failure pattern detection including all types"""
         expected_flow = {
             'Trade': ['Trade Initiated', 'Market Data Validation', 'Quote Provided'],
             'Market': ['Quote Requested', 'Market Making', 'Quote Provided'],
@@ -323,16 +324,24 @@ class UnfairOCELAnalyzer:
             'long_running': [],
             'resource_switches': [],
             'rework_activities': [],
-            'sequence_violations': []  # New category
+            'sequence_violations': []
         }
 
-        # Enhanced incomplete case detection
+        # Enhanced timing thresholds (in hours)
+        timing_thresholds = {
+            'Trade': 24,
+            'Market': 12,
+            'Risk': 48
+        }
+
+        # Process each case
         for case_id in self.relationships_df['case_id'].unique():
             case_data = self.relationships_df[self.relationships_df['case_id'] == case_id]
             case_activities = case_data['activity'].tolist()
+            case_resources = case_data['resource'].tolist()
             object_types = case_data['object_type'].unique()
 
-            # Check sequence violations
+            # 1. Check sequence violations
             for obj_type, expected_sequence in expected_flow.items():
                 if obj_type in object_types:
                     actual_sequence = [act for act in case_activities if act in expected_sequence]
@@ -344,14 +353,81 @@ class UnfairOCELAnalyzer:
                             'actual': actual_sequence
                         })
 
-        # Add timing thresholds for long-running cases (in hours)
-        timing_thresholds = {
-            'Trade': 24,
-            'Market': 12,
-            'Risk': 48
-        }
+            # 2. Check incomplete cases
+            for obj_type, required_sequence in expected_flow.items():
+                if obj_type in object_types:
+                    missing_activities = [act for act in required_sequence if act not in case_activities]
+                    if missing_activities:
+                        failures['incomplete_cases'].append({
+                            'case_id': case_id,
+                            'object_type': obj_type,
+                            'missing_activities': missing_activities
+                        })
+
+            # 3. Check long running cases
+            case_duration = (case_data['timestamp'].max() - case_data['timestamp'].min()).total_seconds() / 3600
+            for obj_type, threshold in timing_thresholds.items():
+                if obj_type in object_types and case_duration > threshold:
+                    failures['long_running'].append({
+                        'case_id': case_id,
+                        'object_type': obj_type,
+                        'duration': case_duration,
+                        'threshold': threshold
+                    })
+
+            # 4. Check resource switches
+            resource_changes = [i for i in range(len(case_resources) - 1) if case_resources[i] != case_resources[i + 1]]
+            if len(resource_changes) > 0:
+                failures['resource_switches'].append({
+                    'case_id': case_id,
+                    'switches': len(resource_changes),
+                    'resources_involved': list(set(case_resources))
+                })
+
+            # 5. Check rework activities
+            activity_counts = {}
+            for activity in case_activities:
+                activity_counts[activity] = activity_counts.get(activity, 0) + 1
+            rework = {act: count for act, count in activity_counts.items() if count > 1}
+            if rework:
+                failures['rework_activities'].append({
+                    'case_id': case_id,
+                    'rework_activities': rework
+                })
 
         return failures
+
+    def create_failure_pattern_visualization(self, failures: Dict) -> go.Figure:
+        """Create enhanced visualization for all failure patterns"""
+        # Count occurrences of each failure type
+        failure_counts = {
+            'Sequence Violations': len(failures.get('sequence_violations', [])),
+            'Incomplete Cases': len(failures.get('incomplete_cases', [])),
+            'Long Running Cases': len(failures.get('long_running', [])),
+            'Resource Switches': len(failures.get('resource_switches', [])),
+            'Rework Activities': len(failures.get('rework_activities', []))
+        }
+
+        # Create bar chart
+        fig = go.Figure(data=[
+            go.Bar(
+                x=list(failure_counts.keys()),
+                y=list(failure_counts.values()),
+                text=list(failure_counts.values()),
+                textposition='auto',
+            )
+        ])
+
+        fig.update_layout(
+            title='Process Failure Patterns Distribution',
+            xaxis_title='Failure Pattern Type',
+            yaxis_title='Count',
+            showlegend=False,
+            height=400,
+            template='plotly_dark'
+        )
+
+        return fig
 
     def create_outlier_visualizations(self) -> Dict[str, go.Figure]:
         """Create visualizations for outlier analysis"""
@@ -525,39 +601,34 @@ class UnfairOCELAnalyzer:
                                     st.write(f"Complexity Level: {details.details['complexity_level']}")
                                     st.write("Complex Cases:", details.details['outlier_cases'])
 
-            with tabs[3]:
+            with tabs[3]:  # Failure Patterns tab
                 col1, col2 = st.columns(2)
+
                 with col1:
-                    if 'failure_patterns' in outlier_plots:
-                        st.plotly_chart(outlier_plots['failure_patterns'], use_container_width=True)
+                    if self.outliers.get('failures'):
+                        # Create and display the enhanced visualization
+                        failure_fig = self.create_failure_pattern_visualization(self.outliers['failures'])
+                        st.plotly_chart(failure_fig, use_container_width=True)
+                    else:
+                        st.info("No failure patterns detected")
+
                 with col2:
                     if self.outliers.get('failures'):
                         failures = self.outliers['failures']
                         st.write("Failure Patterns Detected:")
 
-                        # Display incomplete cases
-                        if failures.get('incomplete_cases'):
-                            with st.expander(f"Incomplete Cases ({len(failures['incomplete_cases'])})"):
-                                for case in failures['incomplete_cases']:
-                                    st.write(f"Case ID: {case['case_id']}")
-                                    if 'missing_activities' in case:
-                                        st.write("Missing Activities:", case['missing_activities'])
-
-                        # Display long running cases
-                        if failures.get('long_running'):
-                            with st.expander(f"Long Running Cases ({len(failures['long_running'])})"):
-                                for case in failures['long_running']:
-                                    st.write(f"Case ID: {case['case_id']}")
-                                    st.write(f"Duration: {case.get('duration', 'N/A')} hours")
-
-                        # Display sequence violations
-                        if failures.get('sequence_violations'):
-                            with st.expander(f"Sequence Violations ({len(failures['sequence_violations'])})"):
-                                for violation in failures['sequence_violations']:
-                                    st.write(f"Case ID: {violation['case_id']}")
-                                    st.write(f"Object Type: {violation['object_type']}")
-                                    st.write("Expected:", violation['expected'])
-                                    st.write("Actual:", violation['actual'])
+                        # Display all types of failures with expandable sections
+                        for failure_type in ['sequence_violations', 'incomplete_cases', 'long_running',
+                                             'resource_switches', 'rework_activities']:
+                            if failures.get(failure_type):
+                                with st.expander(
+                                        f"{failure_type.replace('_', ' ').title()} ({len(failures[failure_type])})"):
+                                    for item in failures[failure_type]:
+                                        st.write(f"Case ID: {item['case_id']}")
+                                        for key, value in item.items():
+                                            if key != 'case_id':
+                                                st.write(f"{key.replace('_', ' ').title()}: {value}")
+                                        st.write("---")
 
         except Exception as e:
             st.error(f"Error in enhanced analysis: {str(e)}")
