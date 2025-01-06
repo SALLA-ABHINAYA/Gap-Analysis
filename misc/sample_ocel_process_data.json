@@ -1,0 +1,189 @@
+{
+  "ocel:version": "1.0",
+  "ocel:ordering": "timestamp",
+  "ocel:attribute-names": [],
+  "ocel:events": [
+    {
+      "ocel:id": "Case_1_Trade Initiated",
+      "ocel:timestamp": "2024-11-09T19:18:10.387330",
+      "ocel:activity": "Trade Initiated",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Client Desk D",
+        "case_id": "Case_1",
+        "object_type": "Trade"
+      },
+      "ocel:objects": [
+        {
+          "id": "Trade_Case_1",
+          "type": "Trade"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_1_Market Data Validation",
+      "ocel:timestamp": "2024-11-09T19:38:10.387330",
+      "ocel:activity": "Market Data Validation",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Client Desk D",
+        "case_id": "Case_1",
+        "object_type": "Trade"
+      },
+      "ocel:objects": [
+        {
+          "id": "Trade_Case_1",
+          "type": "Trade"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_1_Volatility Surface Analysis",
+      "ocel:timestamp": "2024-11-09T20:30:10.387330",
+      "ocel:activity": "Volatility Surface Analysis",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Client Desk D",
+        "case_id": "Case_1",
+        "object_type": "Trade"
+      },
+      "ocel:objects": [
+        {
+          "id": "Trade_Case_1",
+          "type": "Trade"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_1_Quote Provided",
+      "ocel:timestamp": "2024-11-09T20:53:10.387330",
+      "ocel:activity": "Quote Provided",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Client Desk D",
+        "case_id": "Case_1",
+        "object_type": "Market"
+      },
+      "ocel:objects": [
+        {
+          "id": "Market_Case_1",
+          "type": "Market"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_1_Exercise Decision",
+      "ocel:timestamp": "2024-11-09T21:10:10.387330",
+      "ocel:activity": "Exercise Decision",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Client Desk D",
+        "case_id": "Case_1",
+        "object_type": "Trade"
+      },
+      "ocel:objects": [
+        {
+          "id": "Trade_Case_1",
+          "type": "Trade"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_1_Trade Transparency Assessment",
+      "ocel:timestamp": "2024-11-09T21:28:10.387330",
+      "ocel:activity": "Trade Transparency Assessment",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Client Desk D",
+        "case_id": "Case_1",
+        "object_type": "Trade"
+      },
+      "ocel:objects": [
+        {
+          "id": "Trade_Case_1",
+          "type": "Trade"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_1_Premium Calculation",
+      "ocel:timestamp": "2024-11-09T21:39:10.387330",
+      "ocel:activity": "Premium Calculation",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Client Desk D",
+        "case_id": "Case_1",
+        "object_type": "Trade"
+      },
+      "ocel:objects": [
+        {
+          "id": "Trade_Case_1",
+          "type": "Trade"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_1_Strategy Validation",
+      "ocel:timestamp": "2024-11-09T22:38:10.387330",
+      "ocel:activity": "Strategy Validation",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Client Desk D",
+        "case_id": "Case_1",
+        "object_type": "Trade"
+      },
+      "ocel:objects": [
+        {
+          "id": "Trade_Case_1",
+          "type": "Trade"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_1_Quote Requested",
+      "ocel:timestamp": "2024-11-09T22:58:10.387330",
+      "ocel:activity": "Quote Requested",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Client Desk D",
+        "case_id": "Case_1",
+        "object_type": "Market"
+      },
+      "ocel:objects": [
+        {
+          "id": "Market_Case_1",
+          "type": "Market"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_1_Position Reconciliation",
+      "ocel:timestamp": "2024-11-09T22:59:10.387330",
+      "ocel:activity": "Position Reconciliation",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Client Desk D",
+        "case_id": "Case_1",
+        "object_type": "Settlement"
+      },
+      "ocel:objects": [
+        {
+          "id": "Settlement_Case_1",
+          "type": "Settlement"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_1_Trade Reconciliation",
+      "ocel:timestamp": "2024-11-09T23:18:10.387330",
+      "ocel:activity": "Trade Reconciliation",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Client Desk D",
+        "case_id": "Case_1",
+        "object_type": "Trade"
+      },
+      "ocel:objects": [
+        {
+          "id": "Trade_Case_1",
+          "type": "Trad,

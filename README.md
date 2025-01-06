@@ -19,6 +19,8 @@ streamlit run app_ocpm.py
 
 streamlit run unfair_ocpm.py
 
+streamlit run IRMAI.py
+
 ## step 3 : Gap Analysis
 ----
 python gap_analysis.py

@@ -1,0 +1,80 @@
+{
+  "ocel:version": "1.0",
+  "ocel:ordering": "timestamp",
+  "ocel:attribute-names": [],
+  "ocel:events": [
+    {
+      "ocel:id": "Case_1_Trade Initiated",
+      "ocel:timestamp": "2024-11-09T19:18:10.387330",
+      "ocel:activity": "Trade Initiated",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Client Desk D",
+        "case_id": "Case_1",
+        "object_type": "Trade"
+      },
+      "ocel:objects": [
+        {
+          "id": "Trade_Case_1",
+          "type": "Trade"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_1_Volatility Surface Analysis",
+      "ocel:timestamp": "2024-11-09T20:30:10.387330",
+      "ocel:activity": "Volatility Surface Analysis",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Client Desk D",
+        "case_id": "Case_1",
+        "object_type": "Trade"
+      },
+      "ocel:objects": []
+    }
+  ],
+  "ocel:objects": [
+    {
+      "ocel:id": "Trade_Trade Initiated",
+      "ocel:type": "Trade",
+      "ocel:attributes": {
+        "activity": "Trade Initiated",
+        "attributes": [
+          "currency_pair",
+          "notional_amount"
+        ]
+      }
+    },
+    {
+      "ocel:id": "Trade_Trade Executed",
+      "ocel:type": "Trade",
+      "ocel:attributes": {
+        "activity": "Trade Executed",
+        "attributes": [
+          "currency_pair",
+          "notional_amount"
+        ]
+      }
+    },
+    {
+      "ocel:id": "Trade_Trade Allocated",
+      "ocel:type": "Trade",
+      "ocel:attributes": {
+        "activity": "Trade Allocated",
+        "attributes": [
+          "currency_pair",
+          "notional_amount"
+        ]
+      }
+    }
+  ],
+  "ocel:object-types": [
+    "Trade",
+    "Market",
+    "Risk",
+    "Settlement"
+  ],
+  "ocel:global-log": {
+    "ocel:attribute-names": []
+  }
+}
