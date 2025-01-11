@@ -9,6 +9,8 @@ RUN apt-get update
 RUN apt-get install libasound-dev libportaudio2 libportaudiocpp0 portaudio19-dev -y
 RUN apt install graphviz -y
 
+RUN mkdir -p /code/temp
+
 RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
 
 RUN <<EOF
