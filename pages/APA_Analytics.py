@@ -1,8 +1,6 @@
 # APA_Analytics.py
 import traceback
-
 import streamlit as st
-
 from Unfair_Advanced_Process_Logs_Analytics import UnfairOCELAnalyzer
 from ocpm_analysis import create_ocpm_ui
 import os
@@ -14,9 +12,9 @@ import json
 from typing import Dict, List
 import plotly.graph_objects as go
 import numpy as np
-
 import matplotlib.pyplot as plt
 import seaborn as sns
+from neo4j import GraphDatabase
 
 
 class IntegratedAPAAnalyzer:
@@ -27,7 +25,10 @@ class IntegratedAPAAnalyzer:
         if not self.api_key:
             raise ValueError("Missing OpenAI API key")
 
-        self.client = OpenAI(api_key=self.api_key)
+        # Initialize OpenAI client with working configuration from test file
+        self.client = OpenAI(
+            api_key="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"
+        )
         self.ocel_data = None
         self.events_df = None
         self.stats = {}
@@ -119,7 +120,7 @@ class IntegratedAPAAnalyzer:
             """
 
             response = self.client.chat.completions.create(
-                model="gpt-4",
+                model="gpt-4o-mini",
                 messages=[
                     {"role": "system",
                      "content": "You are an expert process mining analyst. Analyze the OCEL log and provide insights."},
@@ -159,7 +160,92 @@ class IntegratedAPAAnalyzer:
         return figures
 
 
+def run_neo4j_import():
+    """Neo4j data import functionality"""
+    st.subheader("Neo4j Data Integration")
+
+    # Neo4j Configuration
+    with st.expander("Database Configuration", expanded=True):
+        col1, col2, col3 = st.columns(3)
+        with col1:
+            neo4j_uri = st.text_input("Neo4j URI", "bolt://localhost:7689")
+        with col2:
+            neo4j_user = st.text_input("Neo4j Username", "neo4j")
+        with col3:
+            neo4j_password = st.text_input("Neo4j Password", type="password")
+
+    # File Upload Section
+    col1, col2 = st.columns(2)
+
+    with col1:
+        st.markdown("### Process Data Files")
+        org_context_file = st.file_uploader(
+            "Upload Organizational Context (CSV)",
+            type=['csv'],
+            help="Upload CSV file containing organizational context"
+        )
+
+        guidelines_file = st.file_uploader(
+            "Upload Process Guidelines (CSV)",
+            type=['csv'],
+            help="Upload CSV file containing process guidelines"
+        )
+
+        ocel_file = st.file_uploader(
+            "Upload OCEL Process Log (JSON)",
+            type=['json'],
+            help="Upload OCEL format process log in JSON"
+        )
+
+    with col2:
+        st.markdown("### Database Operations")
+        if st.button("Test Neo4j Connection"):
+            try:
+                driver = GraphDatabase.driver(
+                    neo4j_uri,
+                    auth=(neo4j_user, neo4j_password)
+                )
+                with driver.session() as session:
+                    result = session.run("RETURN 1")
+                    result.single()
+                st.success("Successfully connected to Neo4j!")
+                driver.close()
+            except Exception as e:
+                st.error(f"Failed to connect to Neo4j: {str(e)}")
+
+        if st.button("Import Data to Neo4j"):
+            if not (org_context_file and guidelines_file and ocel_file):
+                st.warning("Please upload all required files first")
+            else:
+                try:
+                    from process_gap_analysis import ProcessGapAnalyzer
+                    analyzer = ProcessGapAnalyzer(
+                        neo4j_uri=neo4j_uri,
+                        neo4j_user=neo4j_user,
+                        neo4j_password=neo4j_password
+                    )
+
+                    with st.spinner("Setting up Neo4j database..."):
+                        analyzer.setup_database()
+
+                    with st.spinner("Importing organizational context..."):
+                        analyzer.load_org_context(org_context_file)
+
+                    with st.spinner("Importing guidelines..."):
+                        analyzer.load_guidelines(guidelines_file)
+
+                    with st.spinner("Importing OCEL events..."):
+                        analyzer.load_ocel_events(ocel_file)
+
+                    st.success("All data successfully imported to Neo4j!")
+
+                except Exception as e:
+                    st.error(f"Error during data import: {str(e)}")
+                    st.error(f"Detailed error:\n{traceback.format_exc()}")
+
+
 def run_unfairness_analysis():
+    """Run unfairness analysis"""
     st.subheader("Unfairness Analysis")
     ocel_path = st.session_state.get('ocel_path') or find_ocel_file()
 
@@ -169,7 +255,7 @@ def run_unfairness_analysis():
 
     try:
         analyzer = UnfairOCELAnalyzer(ocel_path)
-        analyzer.display_enhanced_analysis()  # Call as instance method
+        analyzer.display_enhanced_analysis()
     except Exception as e:
         st.error(f"Error in unfairness analysis: {str(e)}")
         st.error(f"Detailed error:\n{traceback.format_exc()}")
@@ -182,19 +268,6 @@ def find_ocel_file():
         "ocpm_data/process_data.json",
         os.path.join("ocpm_output", "process_data.json"),
         os.path.join("ocpm_data", "process_data.json")
-    ]
-
-    for path in possible_paths:
-        if os.path.exists(path):
-            return path
-    return None
-
-
-def find_ocel_file():
-    """Find the OCEL file in expected locations"""
-    possible_paths = [
-        "ocpm_output/process_data.json",
-        "ocpm_data/process_data.json"
     ]
 
     for path in possible_paths:

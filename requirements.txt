@@ -37,3 +37,4 @@ langchain-openai
 azure.identity
 azure-ai-inference
 kaleido
+neo4j-driver
