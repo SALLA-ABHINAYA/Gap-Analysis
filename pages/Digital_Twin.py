@@ -88,12 +88,85 @@ def handle_graph_analytics():
         st.warning("Please connect to Neo4j and import data first")
         return
 
-    if st.button("Run Analysis"):
-        try:
-            results = run_neo4j_analysis(st.session_state.neo4j_credentials)
-            display_analysis_results(results)
-        except Exception as e:
-            st.error(f"Analysis failed: {str(e)}")
+    analysis_tabs = st.tabs(["Process Flow", "Comprehensive Gap Analysis"])
+
+    with analysis_tabs[1]:
+        st.subheader("Comprehensive Gap Analysis")
+
+        credentials = st.session_state.neo4j_credentials
+
+        analysis_type = st.multiselect(
+            "Select Analysis Types",
+            ["Regulatory Compliance", "Process Execution", "Control Effectiveness"],
+            default=["Regulatory Compliance"]
+        )
+
+        if st.button("Run Comprehensive Analysis"):
+            try:
+                with st.spinner("Running comprehensive gap analysis..."):
+                    analyzer = FXTradingGapAnalyzer(
+                        uri=credentials['uri'],
+                        user=credentials['user'],
+                        password=credentials['password']
+                    )
+
+                    # Generate report
+                    report = analyzer.generate_gap_report()
+
+                    # Create visualizer
+                    visualizer = GapAnalysisVisualizer(report)
+                    dashboard = visualizer.generate_interactive_dashboard()
+
+                    # Display metrics
+                    col1, col2, col3, col4 = st.columns(4)
+                    with col1:
+                        st.metric("Total Gaps", report['summary']['total_gaps'])
+                    with col2:
+                        st.metric("High Severity", report['summary']['high_severity'])
+                    with col3:
+                        st.metric("Process Coverage",
+                                  f"{report['metrics']['operational']['process_adherence']:.1f}%")
+                    with col4:
+                        st.metric("Control Effectiveness",
+                                  f"{report['metrics']['risk']['control_coverage']:.1f}%")
+
+                    # Display AI Insights if available
+                    if 'ai_findings' in report:
+                        st.subheader("🤖 AI-Powered Insights")
+                        for finding in report['ai_findings']:
+                            with st.expander(f"{finding['category']} - {finding['severity']}"):
+                                st.write(f"**Description:** {finding['description']}")
+                                st.write(f"**Impact:** {finding['impact']}")
+                                if finding.get('related_controls'):
+                                    st.write("**Related Controls:**")
+                                    for control in finding['related_controls']:
+                                        st.write(f"- {control}")
+
+                    # Display visualizations in two columns
+                    st.subheader("Analysis Visualizations")
+                    col1, col2 = st.columns(2)
+
+                    with col1:
+                        st.plotly_chart(dashboard['severity_distribution'],
+                                        use_container_width=True)
+                        st.plotly_chart(dashboard['gap_heatmap'],
+                                        use_container_width=True)
+
+                    with col2:
+                        st.plotly_chart(dashboard['coverage_radar'],
+                                        use_container_width=True)
+                        st.plotly_chart(dashboard['timeline_view'],
+                                        use_container_width=True)
+
+                    # Display detailed recommendations
+                    st.subheader("Detailed Recommendations")
+                    visualizer.display_recommendations_table()
+
+                    analyzer.close()
+
+            except Exception as e:
+                st.error(f"Analysis failed: {str(e)}")
+                st.error(traceback.format_exc())
 
 def import_to_neo4j(credentials, org_file, guidelines_file, ocel_file):
     """Import data to Neo4j database"""
