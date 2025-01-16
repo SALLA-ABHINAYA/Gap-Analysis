@@ -1256,27 +1256,8 @@ def main():
     if 'current_page' not in st.session_state:
         st.session_state.current_page = 'APA Analytics'
 
-    st.sidebar.title("IRMAI")
-
-    current_page = st.sidebar.radio(
-        label="",
-        options=["APA Analytics", "Digital Twin"],
-        label_visibility="collapsed"
-    )
-
-    st.session_state.current_page = current_page
-
-    if st.session_state.current_page == "Digital Twin":
-        st.title("Digital Twin")
-        tab1, tab2 = st.tabs(["Import Data", "Graph Analytics"])
-
-        with tab1:
-            handle_data_import()
-        with tab2:
-            handle_graph_analytics()
-    else:
-        st.title("APA Analytics")
-        create_ocpm_ui()
+    st.title("APA Analytics")
+    create_ocpm_ui()
 
 
 if __name__ == "__main__":
