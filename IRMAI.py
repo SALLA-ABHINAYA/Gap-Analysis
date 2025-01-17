@@ -323,6 +323,7 @@ class GapAnalysisVisualizer:
         display_df = df[[
             'priority', 'description', 'target_date', 'status', 'impact', 'control_name'
         ]].copy()
+        
 
         # Apply styling
         styled_df = display_df.style.apply(lambda x: [
