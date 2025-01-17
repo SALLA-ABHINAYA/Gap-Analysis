@@ -5,6 +5,8 @@ import json
 import pandas as pd
 import os
 
+from IRMAI import FXTradingGapAnalyzer, GapAnalysisVisualizer
+
 st.set_page_config(
     page_title="Digital Twin",
     page_icon="👋",
