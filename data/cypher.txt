@@ -1,0 +1,267 @@
+// First clean up existing data
+MATCH ()-[r]-() DELETE r;
+MATCH (n) DELETE n;
+
+// Create Organization Context
+CREATE (org:Organization {
+    id: 'FX_TRADING_001',
+    name: 'Global FX Trading Ltd',
+    type: 'Investment Bank',
+    region: 'Global',
+    trading_volume: 'High'
+});
+
+// Create Department Nodes
+CREATE (trading:Department {id: 'TRADING_001', name: 'Trading Desk'})
+CREATE (risk:Department {id: 'RISK_001', name: 'Risk Management'})
+CREATE (compliance:Department {id: 'COMP_001', name: 'Compliance'});
+
+// Create Controls with detailed metrics
+CREATE (c1:Control {
+    id: 'CTL_001',
+    name: 'Pre-Trade Validation Control',
+    type: 'Preventive',
+    frequency: 'Per Trade',
+    required_frequency: 100,
+    effectiveness_score: 85,
+    last_assessment: datetime('2024-01-14')
+})
+CREATE (c2:Control {
+    id: 'CTL_002',
+    name: 'Market Risk Control',
+    type: 'Detective',
+    frequency: 'Continuous',
+    required_frequency: 100,
+    effectiveness_score: 92,
+    last_assessment: datetime('2024-01-14')
+})
+CREATE (c3:Control {
+    id: 'CTL_003',
+    name: 'Trade Reporting Control',
+    type: 'Monitoring',
+    frequency: 'Daily',
+    required_frequency: 100,
+    effectiveness_score: 78,
+    last_assessment: datetime('2024-01-14')
+});
+
+// Create Guidelines
+CREATE (g1:Guideline {
+    id: 'GL_001',
+    name: 'Pre-Trade Validation',
+    description: 'Mandatory validation of all trade parameters before execution',
+    type: 'Regulatory',
+    severity: 'High',
+    control_type: 'Preventive',
+    implementation_status: 'Partial'
+})
+CREATE (g2:Guideline {
+    id: 'GL_002',
+    name: 'Market Risk Assessment',
+    description: 'Real-time assessment of market risk exposure',
+    type: 'Risk',
+    severity: 'High',
+    control_type: 'Detective',
+    implementation_status: 'Full'
+})
+CREATE (g3:Guideline {
+    id: 'GL_003',
+    name: 'Trade Transparency',
+    description: 'All trades must be reported within specified timeframes',
+    type: 'Regulatory',
+    severity: 'Medium',
+    control_type: 'Monitoring',
+    implementation_status: 'Partial'
+});
+
+// Create Process Activities
+CREATE (a1:Activity {
+    id: 'ACT_001',
+    name: 'Trade Initiated',
+    description: 'Initial trade request received',
+    required_controls: ['Pre-Trade Validation'],
+    sla_minutes: 5,
+    avg_completion_time: 4.5,
+    completion_rate: 95
+})
+CREATE (a2:Activity {
+    id: 'ACT_002',
+    name: 'Market Data Validation',
+    description: 'Validate current market data',
+    required_controls: ['Market Risk Assessment'],
+    sla_minutes: 3,
+    avg_completion_time: 2.8,
+    completion_rate: 98
+})
+CREATE (a3:Activity {
+    id: 'ACT_003',
+    name: 'Trade Execution',
+    description: 'Execute trade in market',
+    required_controls: ['Trade Transparency'],
+    sla_minutes: 2,
+    avg_completion_time: 1.9,
+    completion_rate: 97
+});
+
+// Create OCEL Events
+CREATE (e1:Event {
+    id: 'Event_001',
+    activity: 'Trade Initiated',
+    timestamp: datetime('2024-01-14T10:00:00'),
+    resource: 'Trader_A',
+    case_id: 'Case_001',
+    object_type: 'Trade',
+    status: 'Completed',
+    duration_seconds: 180,
+    control_checks_passed: true
+})
+CREATE (e2:Event {
+    id: 'Event_002',
+    activity: 'Market Data Validation',
+    timestamp: datetime('2024-01-14T10:05:00'),
+    resource: 'System',
+    case_id: 'Case_001',
+    object_type: 'Market',
+    status: 'Completed',
+    duration_seconds: 120,
+    control_checks_passed: true
+})
+CREATE (e3:Event {
+    id: 'Event_003',
+    activity: 'Trade Execution',
+    timestamp: datetime('2024-01-14T10:10:00'),
+    resource: 'Trader_A',
+    case_id: 'Case_001',
+    object_type: 'Trade',
+    status: 'Completed',
+    duration_seconds: 90,
+    control_checks_passed: true
+});
+
+// Create Control Executions
+CREATE (ce1:ControlExecution {
+    id: 'CE_001',
+    timestamp: datetime('2024-01-14T10:01:00'),
+    result: 'Pass',
+    control_id: 'CTL_001',
+    execution_time: 1.5,
+    findings: 'None',
+    priority: 'High'
+})
+CREATE (ce2:ControlExecution {
+    id: 'CE_002',
+    timestamp: datetime('2024-01-14T10:06:00'),
+    result: 'Pass',
+    control_id: 'CTL_002',
+    execution_time: 0.8,
+    findings: 'None',
+    priority: 'Medium'
+})
+CREATE (ce3:ControlExecution {
+    id: 'CE_003',
+    timestamp: datetime('2024-01-14T10:11:00'),
+    result: 'Fail',
+    control_id: 'CTL_003',
+    execution_time: 2.1,
+    findings: 'Reporting delay detected',
+    priority: 'High'
+})
+CREATE (ce4:ControlExecution {
+    id: 'CE_004',
+    timestamp: datetime('2024-01-14T11:01:00'),
+    result: 'Pass',
+    control_id: 'CTL_001',
+    execution_time: 1.2,
+    findings: 'None',
+    priority: 'High'
+})
+CREATE (ce5:ControlExecution {
+    id: 'CE_005',
+    timestamp: datetime('2024-01-14T11:06:00'),
+    result: 'Pass',
+    control_id: 'CTL_002',
+    execution_time: 0.9,
+    findings: 'None',
+    priority: 'Medium'
+});
+
+// Create Recommendations
+CREATE (r1:Recommendation {
+    id: 'REC_001',
+    description: 'Implement automated pre-trade validation',
+    priority: 'High',
+    target_date: date('2024-02-01'),
+    status: 'Open',
+    impact: 'Critical'
+})
+CREATE (r2:Recommendation {
+    id: 'REC_002',
+    description: 'Enhance market data validation processes',
+    priority: 'Medium',
+    target_date: date('2024-02-15'),
+    status: 'Open',
+    impact: 'Significant'
+})
+CREATE (r3:Recommendation {
+    id: 'REC_003',
+    description: 'Improve trade reporting timeliness',
+    priority: 'High',
+    target_date: date('2024-02-01'),
+    status: 'Open',
+    impact: 'Critical'
+});
+
+// Create Relationships
+CREATE (trading)-[:REPORTS_TO]->(org)
+CREATE (risk)-[:REPORTS_TO]->(org)
+CREATE (compliance)-[:REPORTS_TO]->(org);
+
+// Guidelines to Activities
+CREATE (g1)-[:APPLIES_TO]->(a1)
+CREATE (g2)-[:APPLIES_TO]->(a2)
+CREATE (g3)-[:APPLIES_TO]->(a3);
+
+// Controls to Activities
+CREATE (c1)-[:MONITORS]->(a1)
+CREATE (c2)-[:MONITORS]->(a2)
+CREATE (c3)-[:MONITORS]->(a3);
+
+// Events to Activities
+CREATE (e1)-[:PERFORMS]->(a1)
+CREATE (e2)-[:PERFORMS]->(a2)
+CREATE (e3)-[:PERFORMS]->(a3);
+
+// Event Sequence
+CREATE (e1)-[:NEXT]->(e2)
+CREATE (e2)-[:NEXT]->(e3);
+
+// Control Executions to Controls
+WITH * // Add this to carry over all variables
+MATCH (ce:ControlExecution), (c:Control)
+WHERE ce.control_id = c.id
+CREATE (ce)-[:EXECUTES]->(c);
+
+// Control Executions to Events
+WITH * // Add this to carry over all variables
+CREATE (ce1)-[:VALIDATES]->(e1)
+CREATE (ce2)-[:VALIDATES]->(e2)
+CREATE (ce3)-[:VALIDATES]->(e3);
+
+// Recommendations to Controls
+WITH * // Add this to carry over all variables
+CREATE (r1)-[:IMPROVES]->(c1)
+CREATE (r2)-[:IMPROVES]->(c2)
+CREATE (r3)-[:IMPROVES]->(c3);
+
+
+MATCH (r:Recommendation), (c:Control)
+WHERE (
+    (r.id = 'REC_001' AND c.id = 'CTL_001') OR
+    (r.id = 'REC_002' AND c.id = 'CTL_002') OR
+    (r.id = 'REC_003' AND c.id = 'CTL_003')
+)
+CREATE (r)-[:IMPROVES]->(c);
+
+// Verify the relationships were created
+MATCH (r:Recommendation)-[rel:IMPROVES]->(c:Control)
+RETURN r.id as recommendation, c.id as control;
