@@ -4,6 +4,9 @@ import traceback
 import json
 import pandas as pd
 import os
+import logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 from IRMAI import FXTradingGapAnalyzer, GapAnalysisVisualizer
 
@@ -82,44 +85,40 @@ def handle_data_import():
             st.error(f"Import failed: {str(e)}")
             st.error(traceback.format_exc())
 
+
 def handle_graph_analytics():
-    """Handle graph analytics operations"""
-    st.subheader("Graph Analytics")
+    """Handle graph analytics operations with detailed logging and AI explanations"""
+    logger.info("Starting graph analytics handler")
+
+    st.subheader("Gap Analysis")
 
     if not hasattr(st.session_state, 'neo4j_connected') or not st.session_state.neo4j_connected:
+        logger.warning("Neo4j not connected")
         st.warning("Please connect to Neo4j and import data first")
         return
 
-    analysis_tabs = st.tabs(["Process Flow", "Comprehensive Gap Analysis"])
+    credentials = st.session_state.neo4j_credentials
+    logger.info("Found Neo4j credentials")
 
-    with analysis_tabs[1]:
-        st.subheader("Comprehensive Gap Analysis")
+    if st.button("Run Comprehensive Analysis"):
+        try:
+            logger.info("Starting comprehensive analysis")
+            with st.spinner("Running comprehensive gap analysis..."):
+                analyzer = FXTradingGapAnalyzer(
+                    uri=credentials['uri'],
+                    user=credentials['user'],
+                    password=credentials['password']
+                )
 
-        credentials = st.session_state.neo4j_credentials
+                report = analyzer.generate_gap_report()
+                visualizer = GapAnalysisVisualizer(report)
+                dashboard = visualizer.generate_dashboard()
 
-        analysis_type = st.multiselect(
-            "Select Analysis Types",
-            ["Regulatory Compliance", "Process Execution", "Control Effectiveness"],
-            default=["Regulatory Compliance"]
-        )
+                # Display Overview Metrics with AI Explanations
+                st.subheader("Overview Analysis")
+                metrics_col1, metrics_col2 = st.columns([2, 1])
 
-        if st.button("Run Comprehensive Analysis"):
-            try:
-                with st.spinner("Running comprehensive gap analysis..."):
-                    analyzer = FXTradingGapAnalyzer(
-                        uri=credentials['uri'],
-                        user=credentials['user'],
-                        password=credentials['password']
-                    )
-
-                    # Generate report
-                    report = analyzer.generate_gap_report()
-
-                    # Create visualizer
-                    visualizer = GapAnalysisVisualizer(report)
-                    dashboard = visualizer.generate_interactive_dashboard()
-
-                    # Display metrics
+                with metrics_col1:
                     col1, col2, col3, col4 = st.columns(4)
                     with col1:
                         st.metric("Total Gaps", report['summary']['total_gaps'])
@@ -132,43 +131,74 @@ def handle_graph_analytics():
                         st.metric("Control Effectiveness",
                                   f"{report['metrics']['risk']['control_coverage']:.1f}%")
 
-                    # Display AI Insights if available
-                    if 'ai_findings' in report:
-                        st.subheader("🤖 AI-Powered Insights")
-                        for finding in report['ai_findings']:
-                            with st.expander(f"{finding['category']} - {finding['severity']}"):
-                                st.write(f"**Description:** {finding['description']}")
-                                st.write(f"**Impact:** {finding['impact']}")
-                                if finding.get('related_controls'):
-                                    st.write("**Related Controls:**")
-                                    for control in finding['related_controls']:
-                                        st.write(f"- {control}")
+                with metrics_col2:
+                    st.markdown("### 🤖 AI Insights")
+                    st.markdown(dashboard['explanations'].get('overview', 'No overview analysis available'))
 
-                    # Display visualizations in two columns
-                    st.subheader("Analysis Visualizations")
-                    col1, col2 = st.columns(2)
+                # Display Visualizations with AI Explanations
+                st.subheader("Detailed Analysis")
 
-                    with col1:
-                        st.plotly_chart(dashboard['severity_distribution'],
-                                        use_container_width=True)
-                        st.plotly_chart(dashboard['gap_heatmap'],
-                                        use_container_width=True)
+                # Severity Distribution
+                viz_col1, viz_col2 = st.columns([2, 1])
+                with viz_col1:
+                    severity_fig = dashboard['figures'].get('severity_distribution')
+                    if severity_fig:
+                        st.plotly_chart(severity_fig, use_container_width=True)
+                with viz_col2:
+                    st.markdown("### 🤖 Severity Analysis")
+                    st.markdown(dashboard['explanations'].get('severity_distribution',
+                                                              'No severity analysis available'))
 
-                    with col2:
-                        st.plotly_chart(dashboard['coverage_radar'],
-                                        use_container_width=True)
-                        st.plotly_chart(dashboard['timeline_view'],
-                                        use_container_width=True)
+                # Coverage Analysis
+                viz_col3, viz_col4 = st.columns([2, 1])
+                with viz_col3:
+                    coverage_fig = dashboard['figures'].get('coverage_radar')
+                    if coverage_fig:
+                        st.plotly_chart(coverage_fig, use_container_width=True)
+                with viz_col4:
+                    st.markdown("### 🤖 Coverage Analysis")
+                    st.markdown(dashboard['explanations'].get('coverage_radar',
+                                                              'No coverage analysis available'))
 
-                    # Display detailed recommendations
-                    st.subheader("Detailed Recommendations")
-                    visualizer.display_recommendations_table()
+                # Gap Heatmap
+                viz_col5, viz_col6 = st.columns([2, 1])
+                with viz_col5:
+                    heatmap_fig = dashboard['figures'].get('gap_heatmap')
+                    if heatmap_fig:
+                        st.plotly_chart(heatmap_fig, use_container_width=True)
+                with viz_col6:
+                    st.markdown("### 🤖 Pattern Analysis")
+                    st.markdown(dashboard['explanations'].get('gap_heatmap',
+                                                              'No pattern analysis available'))
 
-                    analyzer.close()
+                # Timeline View
+                viz_col7, viz_col8 = st.columns([2, 1])
+                with viz_col7:
+                    timeline_fig = dashboard['figures'].get('timeline_view')
+                    if timeline_fig:
+                        st.plotly_chart(timeline_fig, use_container_width=True)
+                with viz_col8:
+                    st.markdown("### 🤖 Timeline Analysis")
+                    st.markdown(dashboard['explanations'].get('timeline_view',
+                                                              'No timeline analysis available'))
 
-            except Exception as e:
-                st.error(f"Analysis failed: {str(e)}")
-                st.error(traceback.format_exc())
+                # Recommendations Section
+                st.subheader("AI-Powered Recommendations")
+                if 'recommendations' in report:
+                    for idx, rec in enumerate(report['recommendations'], 1):
+                        with st.expander(f"Recommendation {idx}: {rec.get('description', 'No description')}"):
+                            st.markdown(f"**Priority:** {rec.get('priority', 'N/A')}")
+                            st.markdown(f"**Impact:** {rec.get('impact', 'N/A')}")
+                            st.markdown(f"**Timeline:** {rec.get('target_date', 'N/A')}")
+
+                logger.info("Analysis display completed")
+                analyzer.close()
+
+        except Exception as e:
+            logger.error(f"Analysis failed with error: {str(e)}")
+            logger.error(f"Traceback: {traceback.format_exc()}")
+            st.error(f"Analysis failed: {str(e)}")
+            st.error(traceback.format_exc())
 
 def import_to_neo4j(credentials, org_file, guidelines_file, ocel_file):
     """Import data to Neo4j database"""
@@ -273,7 +303,7 @@ def display_analysis_results(results):
 
 # Main page content
 st.title("Digital Twin")
-tab1, tab2 = st.tabs(["Import Data", "Graph Analytics"])
+tab1, tab2 = st.tabs(["Import Data", "Gap Analysis"])
 
 with tab1:
     handle_data_import()

@@ -15,7 +15,7 @@ from ai_ocel_analyzer import AIOCELAnalyzer
 import plotly.graph_objects as go
 from datetime import datetime, timedelta
 from dataclasses import dataclass
-from typing import Dict, List, Any, Optional
+from typing import Dict, List, Any, Optional, Tuple
 import plotly.express as px
 from collections import defaultdict
 import logging
@@ -23,6 +23,8 @@ import traceback
 from datetime import datetime
 from typing import Dict, List
 from neo4j import GraphDatabase
+
+from process_gap_analysis import VisualizationExplainer
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -42,63 +44,82 @@ class GapFindings:
 
 class AIGapAnalyzer:
     def __init__(self, api_key: str = None):
+        """Initialize analyzer with OpenAI API key"""
         self.api_key = api_key or st.secrets.get("OPENAI_API_KEY")
-        self.client = OpenAI(api_key=self.api_key)
+
+        try:
+            # Initialize OpenAI client
+            self.openai_client = OpenAI(
+                api_key="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"
+            )
+            logger.info("OpenAI client initialized successfully")
+        except Exception as e:
+            logger.error(f"Failed to initialize OpenAI client: {str(e)}")
+            raise
 
     def analyze_process_gaps(self, process_data: Dict, guidelines: Dict) -> Dict:
         """Use AI to analyze gaps between process and guidelines with error handling"""
         try:
-            # Prepare simplified context to avoid overwhelming the AI
             context = {
                 "process_summary": {
                     "total_activities": len(process_data.get('activities', [])),
-                    "total_events": 82736,  # From database stats
+                    "total_events": process_data.get('total_events', 0),
                     "activities": [a['name'] for a in process_data.get('activities', [])]
                 },
                 "guidelines_summary": {
                     "total_guidelines": len(guidelines.get('guidelines', [])),
-                    "guidelines": [
-                        {
-                            "name": g['name'],
-                            "type": g['type'],
-                            "status": g['implementation_status']
-                        }
-                        for g in guidelines.get('guidelines', [])
-                    ]
+                    "guidelines": [g['name'] for g in guidelines.get('guidelines', [])]
                 }
             }
 
-            response = self.client.chat.completions.create(
-                model="gpt-4",
+            logger.debug(f"Analysis context: {context}")
+
+            prompt = (
+                "Analyze this process data and provide gaps, recommendations, and metrics in JSON format.\n"
+                f"Context: {json.dumps(context, indent=2)}\n\n"
+                "Response must be valid JSON with this structure:\n"
+                "{\n"
+                '  "gaps": [{"category": "string", "severity": "string", "description": "string"}],\n'
+                '  "recommendations": [{"description": "string", "priority": "string"}],\n'
+                '  "metrics": {"coverage": number, "effectiveness": number}\n'
+                "}"
+            )
+
+            response = self.openai_client.chat.completions.create(
+                model="gpt-4o-mini",
                 messages=[
-                    {"role": "system", "content": """You are a process mining expert. 
-                       Return analysis in this exact JSON structure:
-                       {
-                         "gaps": [{"category": "string", "severity": "string", "description": "string"}],
-                         "recommendations": [{"description": "string", "priority": "string"}],
-                         "metrics": {"coverage": float, "effectiveness": float}
-                       }"""},
-                    {"role": "user",
-                     "content": f"Analyze this process data and provide gaps, recommendations, and metrics:\n{json.dumps(context, indent=2)}"}
+                    {
+                        "role": "system",
+                        "content": "You are a process mining expert. Always respond with valid JSON only."
+                    },
+                    {"role": "user", "content": prompt}
                 ],
                 temperature=0.7,
                 max_tokens=1000
             )
 
-            # Parse and validate response
+            response_text = response.choices[0].message.content
+
+            # Clean response text
+            if "```json" in response_text:
+                response_text = response_text.split("```json")[1].split("```")[0]
+            elif "```" in response_text:
+                response_text = response_text.split("```")[1]
+
+            response_text = response_text.strip()
+
             try:
-                analysis = json.loads(response.choices[0].message.content.strip())
-                required_keys = ['gaps', 'recommendations', 'metrics']
-                if not all(key in analysis for key in required_keys):
-                    self.logger.error("AI response missing required keys")
-                    return self._get_default_analysis()
+                analysis = json.loads(response_text)
+                logger.info("Successfully parsed AI analysis")
                 return analysis
-            except json.JSONDecodeError:
-                self.logger.error("Failed to parse AI response as JSON")
+            except json.JSONDecodeError as e:
+                logger.error(f"Failed to parse AI response: {str(e)}")
+                logger.error(f"Raw response: {response_text}")
                 return self._get_default_analysis()
 
         except Exception as e:
-            self.logger.error(f"Error in AI gap analysis: {str(e)}")
+            logger.error(f"Error in AI gap analysis: {str(e)}")
+            logger.error(traceback.format_exc())
             return self._get_default_analysis()
 
     def _get_default_analysis(self) -> Dict:
@@ -233,9 +254,54 @@ class GapAnalysisVisualizer:
         self.findings = pd.DataFrame(report.get('findings', []))
         self.metrics = pd.DataFrame.from_dict(report.get('metrics', {}), orient='index')
         self.logger = logging.getLogger(__name__)
+        # Initialize OpenAI client
+        self.openai_client = OpenAI(
+            api_key="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"
+        )
 
-    def create_severity_distribution(self) -> go.Figure:
-        """Create severity distribution chart"""
+    def get_ai_explanation(self, data: Dict, chart_type: str) -> str:
+        """Get AI explanation for a visualization"""
+        try:
+            chart_contexts = {
+                'overview': """Analyze the overall process metrics and identify key patterns.""",
+                'severity_distribution': """Analyze the distribution of gap severities and their implications.""",
+                'coverage_radar': """Analyze the coverage metrics across different dimensions.""",
+                'gap_heatmap': """Analyze the patterns and clusters in the gap distribution.""",
+                'timeline_view': """Analyze the implementation timeline and priority distribution."""
+            }
+
+            base_prompt = f"""
+            Analyze this {chart_type} data:
+            {json.dumps(data, indent=2)}
+
+            Context: {chart_contexts.get(chart_type, '')}
+
+            Provide a concise 2-3 sentence analysis focusing on:
+            1. Key patterns or trends
+            2. Business implications
+            3. Actionable insights
+
+            Keep the explanation business-friendly and actionable.
+            """
+
+            response = self.openai_client.chat.completions.create(
+                model="gpt-4o-mini",
+                messages=[
+                    {"role": "system", "content": "You are a process analytics expert."},
+                    {"role": "user", "content": base_prompt}
+                ],
+                temperature=0.7,
+                max_tokens=150
+            )
+
+            return response.choices[0].message.content
+
+        except Exception as e:
+            self.logger.error(f"Error getting AI explanation: {str(e)}")
+            return "AI analysis currently unavailable."
+
+    def create_severity_distribution(self) -> Tuple[go.Figure, str]:
+        """Create severity distribution chart with explanation"""
         summary = self.report.get('summary', {})
 
         fig = go.Figure(data=[
@@ -256,13 +322,13 @@ class GapAnalysisVisualizer:
             template='plotly_white'
         )
 
-        return fig
+        explanation = self.get_ai_explanation(summary, "severity distribution")
+        return fig, explanation
 
-    def create_coverage_radar(self) -> go.Figure:
-        """Create enhanced radar chart for coverage metrics"""
+    def create_coverage_radar(self) -> Tuple[go.Figure, str]:
+        """Create coverage radar chart with explanation"""
         metrics = self.report.get('metrics', {})
 
-        # Extract values with proper error handling
         values = [
             round(metrics.get('compliance', {}).get('regulatory_coverage', 0), 1),
             round(metrics.get('operational', {}).get('process_adherence', 0), 1),
@@ -273,7 +339,7 @@ class GapAnalysisVisualizer:
         categories = [
             'Regulatory Coverage',
             'Process Adherence',
-            'Control Effectiveness',
+            'Control Coverage',
             'Risk Assessment'
         ]
 
@@ -296,19 +362,14 @@ class GapAnalysisVisualizer:
             title='Coverage Analysis'
         )
 
-        return fig
+        explanation = self.get_ai_explanation(metrics, "coverage metrics")
+        return fig, explanation
 
-    def create_gap_heatmap(self) -> go.Figure:
-        """Create heatmap of gaps by category and severity"""
+    def create_gap_heatmap(self) -> Tuple[go.Figure, str]:
+        """Create gap heatmap with explanation"""
         if len(self.findings) == 0:
-            # Return empty heatmap if no findings
-            return go.Figure(data=go.Heatmap(
-                z=[[0]],
-                x=['No Data'],
-                y=['No Data']
-            ))
+            return go.Figure(), "No data available for heatmap analysis."
 
-        # Create heatmap data
         heatmap_data = pd.crosstab(
             index=self.findings.get('category', 'Unknown'),
             columns=self.findings.get('severity', 'Medium')
@@ -327,34 +388,22 @@ class GapAnalysisVisualizer:
             yaxis_title='Category'
         )
 
-        return fig
+        explanation = self.get_ai_explanation(
+            heatmap_data.to_dict(),
+            "gap distribution heatmap"
+        )
+        return fig, explanation
 
-    def create_timeline_view(self) -> go.Figure:
-        """Create timeline view of recommendations"""
+    def create_timeline_view(self) -> Tuple[go.Figure, str]:
+        """Create timeline view with explanation"""
         recommendations = self.report.get('recommendations', [])
 
         if not recommendations:
-            # Return empty timeline
-            fig = go.Figure()
-            fig.update_layout(
-                title='Recommendation Timeline',
-                xaxis_title='Timeline',
-                yaxis_title='Priority',
-                annotations=[{
-                    'text': 'No recommendations available',
-                    'xref': 'paper',
-                    'yref': 'paper',
-                    'x': 0.5,
-                    'y': 0.5,
-                    'showarrow': False
-                }]
-            )
-            return fig
+            return go.Figure(), "No timeline data available."
 
         # Convert recommendations to DataFrame
         df = pd.DataFrame(recommendations)
 
-        # Create timeline visualization
         fig = go.Figure()
 
         for priority in ['High', 'Medium', 'Low']:
@@ -378,7 +427,54 @@ class GapAnalysisVisualizer:
             yaxis_title='Priority'
         )
 
-        return fig
+        explanation = self.get_ai_explanation(
+            {"recommendations": recommendations},
+            "recommendation timeline"
+        )
+        return fig, explanation
+
+    def generate_dashboard(self) -> Dict[str, Any]:
+        """Generate complete dashboard with visualizations and AI explanations"""
+        try:
+            # Create visualizations
+            severity_fig, severity_expl = self.create_severity_distribution()
+            coverage_fig, coverage_expl = self.create_coverage_radar()
+            heatmap_fig, heatmap_expl = self.create_gap_heatmap()
+            timeline_fig, timeline_expl = self.create_timeline_view()
+
+            # Generate overview explanation
+            overview_data = {
+                'total_gaps': self.report['summary']['total_gaps'],
+                'high_severity': self.report['summary']['high_severity'],
+                'coverage': self.report['metrics']['operational']['process_adherence'],
+                'effectiveness': self.report['metrics']['risk']['control_coverage']
+            }
+            overview_expl = self.get_ai_explanation(overview_data, 'overview')
+
+            return {
+                'figures': {
+                    'severity_distribution': severity_fig,
+                    'coverage_radar': coverage_fig,
+                    'gap_heatmap': heatmap_fig,
+                    'timeline_view': timeline_fig
+                },
+                'explanations': {
+                    'overview': overview_expl,
+                    'severity_distribution': severity_expl,
+                    'coverage_radar': coverage_expl,
+                    'gap_heatmap': heatmap_expl,
+                    'timeline_view': timeline_expl
+                }
+            }
+
+        except Exception as e:
+            self.logger.error(f"Error generating dashboard: {str(e)}")
+            return {
+                'figures': {},
+                'explanations': {
+                    'error': f"Error generating visualizations: {str(e)}"
+                }
+            }
 
     def display_recommendations_table(self) -> None:
         """Display recommendations table with error handling"""
@@ -415,19 +511,35 @@ class GapAnalysisVisualizer:
             st.dataframe(styled_df)
 
         except Exception as e:
-            self.logger.error(f"Error displaying recommendations: {str(e)}")
+            logger.error(f"Error displaying recommendations: {str(e)}")
             st.error(f"Error displaying recommendations table: {str(e)}")
 
-    def generate_interactive_dashboard(self) -> Dict[str, go.Figure]:
-        """Generate all visualizations for dashboard"""
-        return {
-            'severity_distribution': self.create_severity_distribution(),
-            'coverage_radar': self.create_coverage_radar(),
-            'gap_heatmap': self.create_gap_heatmap(),
-            'timeline_view': self.create_timeline_view()
-        }
+    def generate_interactive_dashboard(self) -> Dict[str, Any]:
+        """Generate all visualizations for dashboard with explanations"""
+        try:
+            # Generate visualizations and explanations
+            severity_fig, severity_explanation = self.create_severity_distribution()
+            coverage_fig, coverage_explanation = self.create_coverage_radar()
+            gap_fig, gap_explanation = self.create_gap_heatmap()
+            timeline_fig, timeline_explanation = self.create_timeline_view()
 
-
+            return {
+                'figures': {
+                    'severity_distribution': severity_fig,
+                    'coverage_radar': coverage_fig,
+                    'gap_heatmap': gap_fig,
+                    'timeline_view': timeline_fig
+                },
+                'explanations': {
+                    'severity_distribution': severity_explanation,
+                    'coverage_radar': coverage_explanation,
+                    'gap_heatmap': gap_explanation,
+                    'timeline_view': timeline_explanation
+                }
+            }
+        except Exception as e:
+            self.logger.error(f"Error generating dashboard: {str(e)}")
+            return {}
 
 @dataclass
 class GapFindings:
@@ -440,13 +552,24 @@ class GapFindings:
     impact: str
     recommendations: List[str]
 
-
 class GapDataValidator:
     """Validates and generates gap analysis data"""
 
     def __init__(self, driver):
         self.driver = driver
-        self.logger = logging.getLogger(__name__)
+        logger = logging.getLogger(__name__)
+
+        try:
+            with self.driver.session() as session:
+                result = session.run("RETURN 1 as test")
+                test_value = result.single()
+                if test_value is None or test_value.get('test') != 1:
+                    raise Exception("Failed to verify Neo4j connection")
+                logger.info("Successfully initialized GapDataValidator with Neo4j connection")
+        except Exception as e:
+            logger.error(f"Error initializing GapDataValidator: {str(e)}")
+            logger.error(traceback.format_exc())
+            raise
 
     def validate_data_connections(self) -> Dict[str, bool]:
         """Validate if all required relationships exist"""
@@ -550,60 +673,103 @@ class GapDataValidator:
                 }) as gaps
             """).single()['gaps']
 
+    def _get_default_metrics(self) -> Dict:
+        """Get default metrics when query fails"""
+        return {
+            'regulatory_coverage': 0.0,
+            'process_adherence': 0.0,
+            'control_effectiveness': 0.0,
+            'risk_coverage': 0.0
+        }
+
     def get_gap_metrics(self) -> Dict:
-        """Get metrics based on actual Neo4j state"""
-        with self.driver.session() as session:
-            result = session.run("""
-                // Calculate requirement coverage
-                MATCH (r:Requirement)
-                WITH COUNT(r) as total_requirements,
-                     COUNT(r.status) as gap_requirements
+        """Get metrics based on actual Neo4j state with enhanced error handling"""
+        logger.info("Getting gap metrics from Neo4j")
 
-                // Calculate activity monitoring
-                MATCH (a:Activity)
-                WITH total_requirements, gap_requirements,
-                     COUNT(a) as total_activities,
-                     COUNT(a.monitored) as unmonitored_activities
+        try:
+            with self.driver.session() as session:
+                # Modified query to handle missing relationships
+                query_result = session.run("""
+                    // Calculate requirement coverage
+                    OPTIONAL MATCH (r:Requirement)
+                    WITH COALESCE(COUNT(r), 0) as total_requirements,
+                         COALESCE(COUNT(r.status), 0) as gap_requirements
 
-                // Calculate control effectiveness
-                MATCH (c:Control)-[:MONITORS]->(a:Activity)
-                WITH total_requirements, gap_requirements,
-                     total_activities, unmonitored_activities,
-                     COUNT(DISTINCT c) as active_controls
+                    // Calculate activity monitoring
+                    OPTIONAL MATCH (a:Activity)
+                    WITH total_requirements, gap_requirements,
+                         COALESCE(COUNT(a), 0) as total_activities,
+                         COALESCE(COUNT(a.monitored), 0) as unmonitored_activities
 
-                RETURN {
-                    regulatory_coverage: round(((total_requirements - gap_requirements) * 100.0) / 
-                                            CASE WHEN total_requirements > 0 THEN total_requirements ELSE 1 END, 1),
-                    process_adherence: round(((total_activities - unmonitored_activities) * 100.0) / 
-                                          CASE WHEN total_activities > 0 THEN total_activities ELSE 1 END, 1),
-                    control_effectiveness: round((active_controls * 100.0) / 8, 1), // We have 8 controls total
-                    risk_coverage: 75.0  // Base risk coverage
-                } as metrics
-            """).single()['metrics']
+                    // Calculate control effectiveness
+                    OPTIONAL MATCH (c:Control)-[:MONITORS]->(a:Activity)
+                    WITH total_requirements, gap_requirements,
+                         total_activities, unmonitored_activities,
+                         COALESCE(COUNT(DISTINCT c), 0) as active_controls
 
-            return result
+                    RETURN {
+                        regulatory_coverage: CASE 
+                            WHEN total_requirements > 0 
+                            THEN round(((total_requirements - gap_requirements) * 100.0) / total_requirements, 1)
+                            ELSE 0.0 
+                        END,
+                        process_adherence: CASE 
+                            WHEN total_activities > 0 
+                            THEN round(((total_activities - unmonitored_activities) * 100.0) / total_activities, 1)
+                            ELSE 0.0 
+                        END,
+                        control_effectiveness: CASE 
+                            WHEN active_controls > 0 
+                            THEN round((active_controls * 100.0) / 8, 1)
+                            ELSE 0.0 
+                        END,
+                        risk_coverage: 0.0
+                    } as metrics
+                """)
+
+                result = query_result.single()
+                if result is None:
+                    logger.error("No metrics returned from Neo4j query - query returned no results")
+                    return self._get_default_metrics()
+
+                metrics = result.get('metrics')
+                if metrics is None:
+                    logger.error("Metrics not found in query result")
+                    return self._get_default_metrics()
+
+                logger.info(f"Successfully retrieved metrics: {metrics}")
+                return metrics
+
+        except Exception as e:
+            logger.error(f"Error getting gap metrics: {str(e)}")
+            logger.error(traceback.format_exc())
+            return self._get_default_metrics()
 
 class FXTradingGapAnalyzer:
     """Comprehensive gap analyzer for FX trading processes"""
 
     def __init__(self, uri: str, user: str, password: str, api_key: str = None):
         """Initialize the analyzer with Neo4j and OpenAI credentials"""
-        self.logger = logging.getLogger(__name__)
+        logger = logging.getLogger(__name__)
         self.driver = GraphDatabase.driver(uri, auth=(user, password))
         self.findings = []
         self._initialize_metrics()
 
+        self.openai_client = OpenAI(
+            api_key="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"
+        )
+
         # Initialize AI analyzer with API key from environment or session state
         api_key = api_key or st.secrets.get("OPENAI_API_KEY")
         if not api_key:
-            self.logger.warning("No OpenAI API key found - AI analysis will be disabled")
+            logger.warning("No OpenAI API key found - AI analysis will be disabled")
             self.ai_analyzer = None
         else:
             try:
                 self.ai_analyzer = AIGapAnalyzer(api_key)
-                self.logger.info("AI analyzer initialized successfully")
+                logger.info("AI analyzer initialized successfully")
             except Exception as e:
-                self.logger.error(f"Failed to initialize AI analyzer: {str(e)}")
+                logger.error(f"Failed to initialize AI analyzer: {str(e)}")
                 self.ai_analyzer = None
 
     def _initialize_metrics(self):
@@ -692,8 +858,8 @@ class FXTradingGapAnalyzer:
                 })
 
         except Exception as e:
-            self.logger.error(f"Error calculating metrics: {str(e)}")
-            self.logger.error(traceback.format_exc())
+            logger.error(f"Error calculating metrics: {str(e)}")
+            logger.error(traceback.format_exc())
             self._initialize_metrics()
 
     def _get_guidelines_data(self) -> Dict:
@@ -750,7 +916,7 @@ class FXTradingGapAnalyzer:
                 """)
 
                 guidelines_data = result.single()['guidelines_data']
-                self.logger.info(f"Retrieved {len(guidelines_data['guidelines'])} guidelines")
+                logger.info(f"Retrieved {len(guidelines_data['guidelines'])} guidelines")
 
                 # Post-process gaps to provide more detailed analysis
                 for guideline in guidelines_data['guidelines']:
@@ -773,13 +939,13 @@ class FXTradingGapAnalyzer:
                                 ]
                             }]
                             guideline['gaps'] = formatted_gaps
-                            self.logger.info(f"Found {len(formatted_gaps)} gaps for {guideline['name']}")
+                            logger.info(f"Found {len(formatted_gaps)} gaps for {guideline['name']}")
 
                 return guidelines_data
 
         except Exception as e:
-            self.logger.error(f"Error retrieving guidelines data: {str(e)}")
-            self.logger.error(traceback.format_exc())
+            logger.error(f"Error retrieving guidelines data: {str(e)}")
+            logger.error(traceback.format_exc())
             return {'guidelines': []}
 
     def analyze_regulatory_compliance(self) -> List[GapFindings]:
@@ -819,8 +985,8 @@ class FXTradingGapAnalyzer:
                 return findings
 
         except Exception as e:
-            self.logger.error(f"Error in regulatory analysis: {str(e)}")
-            self.logger.error(traceback.format_exc())
+            logger.error(f"Error in regulatory analysis: {str(e)}")
+            logger.error(traceback.format_exc())
             raise
 
     def analyze_process_execution(self) -> List[GapFindings]:
@@ -855,8 +1021,8 @@ class FXTradingGapAnalyzer:
                 return findings
 
         except Exception as e:
-            self.logger.error(f"Error in process execution analysis: {str(e)}")
-            self.logger.error(traceback.format_exc())
+            logger.error(f"Error in process execution analysis: {str(e)}")
+            logger.error(traceback.format_exc())
             raise
 
     def _get_process_data(self) -> Dict:
@@ -878,8 +1044,8 @@ class FXTradingGapAnalyzer:
                 """)
                 return result.single()['process_data']
         except Exception as e:
-            self.logger.error(f"Error retrieving process data: {str(e)}")
-            self.logger.error(traceback.format_exc())
+            logger.error(f"Error retrieving process data: {str(e)}")
+            logger.error(traceback.format_exc())
             raise
 
     def calculate_metrics(self) -> None:
@@ -946,8 +1112,8 @@ class FXTradingGapAnalyzer:
                 })
 
         except Exception as e:
-            self.logger.error(f"Error calculating metrics: {str(e)}")
-            self.logger.error(traceback.format_exc())
+            logger.error(f"Error calculating metrics: {str(e)}")
+            logger.error(traceback.format_exc())
             self._initialize_metrics()
 
 
@@ -958,7 +1124,7 @@ class FXTradingGapAnalyzer:
             actual_activities = {a['name'] for a in process_data.get('activities', [])}
             return required_activities.issubset(actual_activities)
         except Exception as e:
-            self.logger.error(f"Error checking guideline implementation: {str(e)}")
+            logger.error(f"Error checking guideline implementation: {str(e)}")
             return False
 
     def generate_gap_report(self) -> Dict:
@@ -969,11 +1135,11 @@ class FXTradingGapAnalyzer:
 
             # Validate data connections
             connections = validator.validate_data_connections()
-            self.logger.info(f"Data connections validation: {connections}")
+            logger.info(f"Data connections validation: {connections}")
 
             # Ensure we have gap data
             gap_stats = validator.ensure_gap_data()
-            self.logger.info(f"Gap statistics: {gap_stats}")
+            logger.info(f"Gap statistics: {gap_stats}")
 
             # Get metrics
             metrics = validator.get_gap_metrics()
@@ -1038,13 +1204,13 @@ class FXTradingGapAnalyzer:
                     )
                     report['ai_insights'] = ai_analysis
                 except Exception as e:
-                    self.logger.error(f"AI analysis failed: {str(e)}")
+                    logger.error(f"AI analysis failed: {str(e)}")
 
             return report
 
         except Exception as e:
-            self.logger.error(f"Error generating gap report: {str(e)}")
-            self.logger.error(traceback.format_exc())
+            logger.error(f"Error generating gap report: {str(e)}")
+            logger.error(traceback.format_exc())
             raise
 
     def _generate_recommendations(self, gaps: List[Dict]) -> List[Dict]:
@@ -1075,7 +1241,7 @@ class FXTradingGapAnalyzer:
 
             return recommendations
         except Exception as e:
-            self.logger.error(f"Error generating recommendations: {str(e)}")
+            logger.error(f"Error generating recommendations: {str(e)}")
             return []
 
     def close(self):
@@ -1083,7 +1249,7 @@ class FXTradingGapAnalyzer:
         try:
             self.driver.close()
         except Exception as e:
-            self.logger.error(f"Error closing Neo4j connection: {str(e)}")
+            logger.error(f"Error closing Neo4j connection: {str(e)}")
 
 def handle_data_import():
     """Handle data import operations"""
@@ -1155,82 +1321,26 @@ def handle_data_import():
             st.error(traceback.format_exc())
 
 
-def handle_graph_analytics():
-    """Handle graph analytics operations"""
-    st.subheader("Graph Analytics")
+def display_visualization_section(fig: go.Figure, explanation: str, title: str):
+    """Display visualization with properly formatted explanation"""
+    st.plotly_chart(fig, use_container_width=True)
 
-    if not hasattr(st.session_state, 'neo4j_connected') or not st.session_state.neo4j_connected:
-        st.warning("Please connect to Neo4j and import data first")
-        return
-
-    analysis_tabs = st.tabs(["Process Flow", "Comprehensive Gap Analysis"])
-
-    with analysis_tabs[1]:
-        st.subheader("Comprehensive Gap Analysis")
-
-        credentials = st.session_state.neo4j_credentials
-
-        analysis_type = st.multiselect(
-            "Select Analysis Types",
-            ["Regulatory Compliance", "Process Execution", "Control Effectiveness"],
-            default=["Regulatory Compliance"]
+    # Display AI explanation in a visually distinct container
+    with st.container():
+        st.markdown("#### 🤖 AI Analysis")
+        st.markdown(
+            f"""
+            <div style="
+                background-color: rgba(255, 255, 255, 0.1);
+                padding: 15px;
+                border-radius: 5px;
+                border-left: 5px solid #00a0dc;
+                margin: 10px 0;">
+                {explanation}
+            </div>
+            """,
+            unsafe_allow_html=True
         )
-
-        if st.button("Run Comprehensive Analysis"):
-            try:
-                with st.spinner("Running comprehensive gap analysis..."):
-                    analyzer = FXTradingGapAnalyzer(
-                        uri=credentials['uri'],
-                        user=credentials['user'],
-                        password=credentials['password']
-                    )
-
-                    # Generate report with validated data
-                    report = analyzer.generate_gap_report()
-
-                    # Create visualizer
-                    visualizer = GapAnalysisVisualizer(report)
-                    dashboard = visualizer.generate_interactive_dashboard()
-
-                    # Display metrics
-                    col1, col2, col3, col4 = st.columns(4)
-                    with col1:
-                        st.metric("Total Gaps", report['summary']['total_gaps'])
-                    with col2:
-                        st.metric("High Severity", report['summary']['high_severity'])
-                    with col3:
-                        st.metric("Process Coverage",
-                                f"{report['metrics']['operational']['process_adherence']:.1f}%")
-                    with col4:
-                        st.metric("Control Effectiveness",
-                                f"{report['metrics']['risk']['control_coverage']:.1f}%")
-
-                    # Display visualizations in two columns
-                    st.subheader("Analysis Visualizations")
-                    col1, col2 = st.columns(2)
-
-                    with col1:
-                        st.plotly_chart(dashboard['severity_distribution'],
-                                      use_container_width=True)
-                        st.plotly_chart(dashboard['gap_heatmap'],
-                                      use_container_width=True)
-
-                    with col2:
-                        st.plotly_chart(dashboard['coverage_radar'],
-                                      use_container_width=True)
-                        st.plotly_chart(dashboard['timeline_view'],
-                                      use_container_width=True)
-
-                    # Display detailed recommendations
-                    st.subheader("Detailed Recommendations")
-                    visualizer.display_recommendations_table()
-
-                    analyzer.close()
-
-            except Exception as e:
-                st.error(f"Analysis failed: {str(e)}")
-                st.error(traceback.format_exc())
-
 
 def handle_unfairness_analysis():
     """Handle unfairness analysis operations"""

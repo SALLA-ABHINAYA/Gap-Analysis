@@ -1,4 +1,6 @@
 # process_gap_analysis.py
+from collections import defaultdict
+
 import streamlit as st
 import pandas as pd
 import json
@@ -17,6 +19,459 @@ logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 )
 logger = logging.getLogger(__name__)
+
+import streamlit as st
+import pandas as pd
+import json
+import logging
+from pathlib import Path
+import traceback
+from datetime import datetime
+from openai import OpenAI
+from neo4j import GraphDatabase
+from typing import Dict, List, Any, Union
+import io
+from collections import defaultdict
+
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
+logger = logging.getLogger(__name__)
+
+
+class VisualizationExplainer:
+    """AI-powered explainer for process analytics visualizations"""
+
+    def __init__(self, openai_client):
+        self.client = openai_client
+        self.logger = logging.getLogger(__name__)
+
+    def explain_severity_distribution(self, data: Dict) -> str:
+        """Explain severity distribution chart"""
+        try:
+            prompt = f"""
+            Analyze this severity distribution of process gaps:
+            High Severity: {data['high_severity']} gaps
+            Medium Severity: {data['medium_severity']} gaps
+            Low Severity: {data['low_severity']} gaps
+            Total Gaps: {data['total_gaps']} gaps
+
+            Provide a concise, 2-3 sentence explanation of:
+            1. The distribution pattern
+            2. What it indicates about process health
+            3. Key areas needing attention
+
+            Focus on business impact and actionable insights.
+            """
+
+            response = self.client.chat.completions.create(
+                model="gpt-4o-mini",
+                messages=[
+                    {"role": "system",
+                     "content": "You are an expert process analyst explaining gap severity patterns."},
+                    {"role": "user", "content": prompt}
+                ],
+                temperature=0.7,
+                max_tokens=150
+            )
+
+            return response.choices[0].message.content
+
+        except Exception as e:
+            self.logger.error(f"Error explaining severity distribution: {str(e)}")
+            return "Unable to generate explanation at this time."
+
+    def explain_coverage_metrics(self, metrics: Dict) -> str:
+        """Explain coverage radar chart"""
+        try:
+            prompt = f"""
+            Analyze these process coverage metrics:
+            Regulatory Coverage: {metrics['compliance']['regulatory_coverage']}%
+            Process Adherence: {metrics['operational']['process_adherence']}%
+            Control Coverage: {metrics['risk']['control_coverage']}%
+            Risk Assessment: {metrics['risk']['risk_assessment_completion']}%
+
+            Provide a concise, 2-3 sentence explanation of:
+            1. Overall coverage effectiveness
+            2. Areas of strength and weakness
+            3. Immediate improvement opportunities
+
+            Focus on practical implications and key priorities.
+            """
+
+            response = self.client.chat.completions.create(
+                model="gpt-4o-mini",
+                messages=[
+                    {"role": "system", "content": "You are an expert process analyst explaining coverage metrics."},
+                    {"role": "user", "content": prompt}
+                ],
+                temperature=0.7,
+                max_tokens=150
+            )
+
+            return response.choices[0].message.content
+
+        except Exception as e:
+            self.logger.error(f"Error explaining coverage metrics: {str(e)}")
+            return "Unable to generate explanation at this time."
+
+    def explain_gap_heatmap(self, data: Dict) -> str:
+        """Explain gap heatmap visualization"""
+        try:
+            categories = list(data.keys())
+            severities = ['High', 'Medium', 'Low']
+            distribution = {cat: {sev: data[cat].get(sev, 0) for sev in severities} for cat in categories}
+
+            prompt = f"""
+            Analyze this gap distribution heatmap across categories:
+            {json.dumps(distribution, indent=2)}
+
+            Provide a concise, 2-3 sentence explanation of:
+            1. Key patterns and clusters
+            2. Most critical gap areas
+            3. Notable category-severity relationships
+
+            Focus on meaningful patterns and their business implications.
+            """
+
+            response = self.client.chat.completions.create(
+                model="gpt-4o-mini",
+                messages=[
+                    {"role": "system",
+                     "content": "You are an expert process analyst explaining gap distribution patterns."},
+                    {"role": "user", "content": prompt}
+                ],
+                temperature=0.7,
+                max_tokens=150
+            )
+
+            return response.choices[0].message.content
+
+        except Exception as e:
+            self.logger.error(f"Error explaining gap heatmap: {str(e)}")
+            return "Unable to generate explanation at this time."
+
+    def explain_timeline_view(self, recommendations: List[Dict]) -> str:
+        """Explain timeline visualization"""
+        try:
+            priority_counts = defaultdict(int)
+            timeline_ranges = defaultdict(list)
+
+            for rec in recommendations:
+                priority_counts[rec['priority']] += 1
+                timeline_ranges[rec['priority']].append(rec['target_date'])
+
+            prompt = f"""
+            Analyze this recommendation timeline distribution:
+            Priority Distribution: {dict(priority_counts)}
+            Timeline Ranges: {dict(timeline_ranges)}
+
+            Provide a concise, 2-3 sentence explanation of:
+            1. Priority distribution pattern
+            2. Timeline clustering and phases
+            3. Critical implementation considerations
+
+            Focus on execution planning and resource allocation implications.
+            """
+
+            response = self.client.chat.completions.create(
+                model="gpt-4o-mini",
+                messages=[
+                    {"role": "system",
+                     "content": "You are an expert process analyst explaining implementation timelines."},
+                    {"role": "user", "content": prompt}
+                ],
+                temperature=0.7,
+                max_tokens=150
+            )
+
+            return response.choices[0].message.content
+
+        except Exception as e:
+            self.logger.error(f"Error explaining timeline view: {str(e)}")
+            return "Unable to generate explanation at this time."
+
+class GapAnalysisAI:
+    """AI-powered analysis for process gaps"""
+
+    def __init__(self, client):
+        """Initialize with OpenAI client"""
+        self.client = client
+        self.logger = logging.getLogger(__name__)
+
+    def analyze_gap_metrics(self, metrics: Dict) -> Dict:
+        """Generate AI analysis for gap metrics"""
+        try:
+            prompt = f"""
+            Analyze these process gap metrics:
+
+            Compliance Metrics:
+            - Regulatory Coverage: {metrics['compliance']['regulatory_coverage']}%
+            - Control Effectiveness: {metrics['compliance']['control_effectiveness']}%
+
+            Operational Metrics:
+            - Process Adherence: {metrics['operational']['process_adherence']}%
+            - Activity Completion: {metrics['operational']['activity_completion']}%
+
+            Risk Metrics:
+            - Control Coverage: {metrics['risk']['control_coverage']}%
+            - Risk Assessment Completion: {metrics['risk']['risk_assessment_completion']}%
+
+            Provide analysis in this format:
+            1. Key findings about compliance, operational efficiency, and risk management
+            2. Main areas of concern
+            3. Specific recommendations for improvement
+            4. Priority actions to address gaps
+
+            Format response as JSON with sections: findings, concerns, recommendations, and priorities.
+            """
+
+            response = self.client.chat.completions.create(
+                model="gpt-4o-mini",
+                messages=[
+                    {"role": "system", "content": "You are a process compliance and risk management expert."},
+                    {"role": "user", "content": prompt}
+                ],
+                temperature=0.7,
+                max_tokens=800
+            )
+
+            return json.loads(response.choices[0].message.content)
+
+        except Exception as e:
+            self.logger.error(f"Error in gap metrics analysis: {str(e)}")
+            return {
+                "error": f"Failed to analyze metrics: {str(e)}",
+                "findings": ["Analysis currently unavailable"],
+                "concerns": ["System error occurred"],
+                "recommendations": ["Retry analysis"],
+                "priorities": ["Check system status"]
+            }
+
+    def analyze_gap_patterns(self, gaps: List[Dict]) -> Dict:
+        """Generate AI analysis for identified gap patterns"""
+        try:
+            # Group gaps by category
+            categorized_gaps = defaultdict(list)
+            for gap in gaps:
+                categorized_gaps[gap['category']].append(gap)
+
+            prompt = f"""
+            Analyze these process gaps across categories:
+
+            {json.dumps(categorized_gaps, indent=2)}
+
+            Consider:
+            1. Common patterns across categories
+            2. Severity distribution
+            3. Potential root causes
+            4. Impact on business operations
+
+            Format response as JSON with sections:
+            - patterns: List of identified patterns
+            - root_causes: List of potential causes
+            - impact_analysis: Business impact assessment
+            - mitigation_strategies: Recommended actions
+            """
+
+            response = self.client.chat.completions.create(
+                model="gpt-4o-mini",
+                messages=[
+                    {"role": "system", "content": "You are a process mining and compliance expert."},
+                    {"role": "user", "content": prompt}
+                ],
+                temperature=0.7,
+                max_tokens=800
+            )
+
+            return json.loads(response.choices[0].message.content)
+
+        except Exception as e:
+            self.logger.error(f"Error in gap pattern analysis: {str(e)}")
+            return {
+                "patterns": ["Analysis unavailable"],
+                "root_causes": ["Error occurred"],
+                "impact_analysis": ["Unable to assess"],
+                "mitigation_strategies": ["System check required"]
+            }
+
+    def generate_detailed_recommendations(self, gap_report: Dict) -> List[Dict]:
+        """Generate detailed, AI-powered recommendations based on gap analysis"""
+        try:
+            prompt = f"""
+            Based on this gap analysis report:
+            {json.dumps(gap_report, indent=2)}
+
+            Generate detailed recommendations considering:
+            1. Implementation complexity
+            2. Resource requirements
+            3. Expected impact
+            4. Timeline for implementation
+            5. Dependencies and prerequisites
+
+            Format each recommendation as a JSON object with:
+            - description: Detailed description
+            - complexity: High/Medium/Low
+            - resources: Required resources
+            - impact: Expected benefits
+            - timeline: Implementation timeline
+            - dependencies: List of prerequisites
+            """
+
+            response = self.client.chat.completions.create(
+                model="gpt-4o-mini",
+                messages=[
+                    {"role": "system", "content": "You are a process improvement and implementation expert."},
+                    {"role": "user", "content": prompt}
+                ],
+                temperature=0.7,
+                max_tokens=1000
+            )
+
+            recommendations = json.loads(response.choices[0].message.content)
+
+            # Add unique IDs and timestamps
+            for i, rec in enumerate(recommendations):
+                rec['id'] = f"REC_{i + 1:03d}"
+                rec['timestamp'] = datetime.now().isoformat()
+
+            return recommendations
+
+        except Exception as e:
+            self.logger.error(f"Error generating recommendations: {str(e)}")
+            return [{"error": f"Failed to generate recommendations: {str(e)}"}]
+
+    def summarize_gap_report(self, report: Dict) -> Dict:
+        """Generate executive summary of gap analysis report"""
+        try:
+            prompt = f"""
+            Summarize this gap analysis report:
+            {json.dumps(report, indent=2)}
+
+            Provide:
+            1. Executive summary (2-3 sentences)
+            2. Key metrics summary
+            3. Critical findings
+            4. Urgent actions required
+
+            Format as JSON with these sections.
+            """
+
+            response = self.client.chat.completions.create(
+                model="gpt-4o-mini",
+                messages=[
+                    {"role": "system", "content": "You are a process analytics expert presenting to executives."},
+                    {"role": "user", "content": prompt}
+                ],
+                temperature=0.7,
+                max_tokens=500
+            )
+
+            return json.loads(response.choices[0].message.content)
+
+        except Exception as e:
+            self.logger.error(f"Error generating summary: {str(e)}")
+            return {
+                "executive_summary": f"Error generating summary: {str(e)}",
+                "key_metrics": [],
+                "critical_findings": [],
+                "urgent_actions": []
+            }
+
+
+def display_ai_insights(report: Dict):
+    """Display AI-powered insights in the gap analysis dashboard"""
+    if 'executive_summary' in report:
+        st.subheader("🤖 AI-Powered Executive Summary")
+        with st.expander("View Executive Summary", expanded=True):
+            st.write(report['executive_summary']['executive_summary'])
+
+            col1, col2 = st.columns(2)
+            with col1:
+                st.markdown("### Key Metrics")
+                for metric in report['executive_summary']['key_metrics']:
+                    st.write(f"• {metric}")
+
+            with col2:
+                st.markdown("### Critical Findings")
+                for finding in report['executive_summary']['critical_findings']:
+                    st.write(f"• {finding}")
+
+            st.markdown("### Urgent Actions")
+            for action in report['executive_summary']['urgent_actions']:
+                st.error(f"🚨 {action}")
+
+    if 'ai_metrics_analysis' in report:
+        st.subheader("📊 Metrics Analysis")
+        with st.expander("View Detailed Metrics Analysis"):
+            col1, col2 = st.columns(2)
+
+            with col1:
+                st.markdown("### Key Findings")
+                for finding in report['ai_metrics_analysis']['findings']:
+                    st.write(f"• {finding}")
+
+                st.markdown("### Areas of Concern")
+                for concern in report['ai_metrics_analysis']['concerns']:
+                    st.warning(f"⚠️ {concern}")
+
+            with col2:
+                st.markdown("### Recommendations")
+                for rec in report['ai_metrics_analysis']['recommendations']:
+                    st.write(f"• {rec}")
+
+                st.markdown("### Priority Actions")
+                for action in report['ai_metrics_analysis']['priorities']:
+                    st.error(f"🚨 {action}")
+
+    if 'ai_pattern_analysis' in report:
+        st.subheader("🔍 Pattern Analysis")
+        with st.expander("View Pattern Analysis"):
+            col1, col2 = st.columns(2)
+
+            with col1:
+                st.markdown("### Identified Patterns")
+                for pattern in report['ai_pattern_analysis']['patterns']:
+                    st.write(f"• {pattern}")
+
+                st.markdown("### Root Causes")
+                for cause in report['ai_pattern_analysis']['root_causes']:
+                    st.write(f"• {cause}")
+
+            with col2:
+                st.markdown("### Business Impact")
+                for impact in report['ai_pattern_analysis']['impact_analysis']:
+                    st.warning(f"📈 {impact}")
+
+                st.markdown("### Mitigation Strategies")
+                for strategy in report['ai_pattern_analysis']['mitigation_strategies']:
+                    st.success(f"🎯 {strategy}")
+
+    if 'ai_recommendations' in report:
+        st.subheader("💡 Detailed Recommendations")
+        with st.expander("View Detailed Recommendations"):
+            for rec in report['ai_recommendations']:
+                with st.container():
+                    st.markdown(f"### {rec['description']}")
+                    cols = st.columns(4)
+
+                    with cols[0]:
+                        st.metric("Complexity", rec['complexity'])
+                    with cols[1]:
+                        st.metric("Timeline", rec['timeline'])
+                    with cols[2]:
+                        st.metric("Impact", rec['impact'])
+                    with cols[3]:
+                        st.metric("Resources", len(rec['resources']))
+
+                    if rec['dependencies']:
+                        st.markdown("#### Dependencies")
+                        for dep in rec['dependencies']:
+                            st.write(f"• {dep}")
+
+                    st.markdown("---")
 
 class ProcessGapAnalyzer:
     """Process Gap Analysis using Neo4j and OpenAI"""
@@ -314,6 +769,7 @@ class ProcessGapAnalyzer:
                 'status': 'error'
             }
 
+
 def create_gap_analysis_ui():
     """Create Streamlit UI for gap analysis"""
     st.title("Process Gap Analysis")
@@ -386,6 +842,7 @@ def create_gap_analysis_ui():
         except Exception as e:
             st.error("Error during data import: " + str(e))
             st.error(f"Detailed error:\n{traceback.format_exc()}")
+
 
 if __name__ == "__main__":
     st.set_page_config(page_title="Process Gap Analysis", page_icon="📊", layout="wide")
