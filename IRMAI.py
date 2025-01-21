@@ -13,18 +13,11 @@ from Unfair_Advanced_Process_Logs_Analytics import UnfairOCELAnalyzer
 from ocpm_analysis import create_ocpm_ui
 from ai_ocel_analyzer import AIOCELAnalyzer
 import plotly.graph_objects as go
-from datetime import datetime, timedelta
+from datetime import datetime
 from dataclasses import dataclass
-from typing import Dict, List, Any, Optional, Tuple
+from typing import Dict, List, Any, Optional
 import plotly.express as px
 from collections import defaultdict
-import logging
-import traceback
-from datetime import datetime
-from typing import Dict, List
-from neo4j import GraphDatabase
-
-from process_gap_analysis import VisualizationExplainer
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -44,105 +37,59 @@ class GapFindings:
 
 class AIGapAnalyzer:
     def __init__(self, api_key: str = None):
-        """Initialize analyzer with OpenAI API key"""
         self.api_key = api_key or st.secrets.get("OPENAI_API_KEY")
-
-        try:
-            # Initialize OpenAI client
-            self.openai_client = OpenAI(
-                api_key="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"
-            )
-            logger.info("OpenAI client initialized successfully")
-        except Exception as e:
-            logger.error(f"Failed to initialize OpenAI client: {str(e)}")
-            raise
+        self.client = OpenAI(api_key=self.api_key)
 
     def analyze_process_gaps(self, process_data: Dict, guidelines: Dict) -> Dict:
-        """Use AI to analyze gaps between process and guidelines with error handling"""
+        """Use AI to analyze gaps between process and guidelines"""
         try:
-            context = {
-                "process_summary": {
-                    "total_activities": len(process_data.get('activities', [])),
-                    "total_events": process_data.get('total_events', 0),
-                    "activities": [a['name'] for a in process_data.get('activities', [])]
-                },
-                "guidelines_summary": {
-                    "total_guidelines": len(guidelines.get('guidelines', [])),
-                    "guidelines": [g['name'] for g in guidelines.get('guidelines', [])]
-                }
-            }
+            # Prepare context for AI analysis
+            context = f"""
+            Process Mining Expert Analysis Task:
 
-            logger.debug(f"Analysis context: {context}")
+            Current Process Data:
+            {json.dumps(process_data, indent=2)}
 
-            prompt = (
-                "Analyze this process data and provide gaps, recommendations, and metrics in JSON format.\n"
-                f"Context: {json.dumps(context, indent=2)}\n\n"
-                "Response must be valid JSON with this structure:\n"
-                "{\n"
-                '  "gaps": [{"category": "string", "severity": "string", "description": "string"}],\n'
-                '  "recommendations": [{"description": "string", "priority": "string"}],\n'
-                '  "metrics": {"coverage": number, "effectiveness": number}\n'
-                "}"
-            )
+            Process Guidelines:
+            {json.dumps(guidelines, indent=2)}
 
-            response = self.openai_client.chat.completions.create(
+            Task: Analyze the gaps between the current process and guidelines. Consider:
+            1. Regulatory compliance gaps
+            2. Process execution inefficiencies
+            3. Control effectiveness issues
+            4. Resource utilization problems
+            5. Risk management gaps
+
+            Provide analysis and recommendations in JSON format with:
+            - Identified gaps
+            - Severity levels
+            - Potential impacts
+            - Specific recommendations
+            - Implementation priorities
+            """
+
+            response = self.client.chat.completions.create(
                 model="gpt-4o-mini",
                 messages=[
-                    {
-                        "role": "system",
-                        "content": "You are a process mining expert. Always respond with valid JSON only."
-                    },
-                    {"role": "user", "content": prompt}
+                    {"role": "system",
+                     "content": "You are an expert process mining and regulatory compliance analyst."},
+                    {"role": "user", "content": context}
                 ],
                 temperature=0.7,
-                max_tokens=1000
+                max_tokens=2000
             )
 
-            response_text = response.choices[0].message.content
+            # Parse AI response
+            analysis = json.loads(response.choices[0].message.content)
 
-            # Clean response text
-            if "```json" in response_text:
-                response_text = response_text.split("```json")[1].split("```")[0]
-            elif "```" in response_text:
-                response_text = response_text.split("```")[1]
+            # Validate and structure the analysis
+            structured_analysis = self._structure_analysis(analysis)
 
-            response_text = response_text.strip()
-
-            try:
-                analysis = json.loads(response_text)
-                logger.info("Successfully parsed AI analysis")
-                return analysis
-            except json.JSONDecodeError as e:
-                logger.error(f"Failed to parse AI response: {str(e)}")
-                logger.error(f"Raw response: {response_text}")
-                return self._get_default_analysis()
+            return structured_analysis
 
         except Exception as e:
-            logger.error(f"Error in AI gap analysis: {str(e)}")
-            logger.error(traceback.format_exc())
-            return self._get_default_analysis()
-
-    def _get_default_analysis(self) -> Dict:
-        """Return default analysis structure when AI fails"""
-        return {
-            'gaps': [
-                {
-                    'category': 'Process Coverage',
-                    'severity': 'Medium',
-                    'description': 'Standard gap analysis based on process metrics'
-                }
-            ],
-            'recommendations': [
-                {
-                    'description': 'Review process completion rates and controls',
-                    'priority': 'High'
-                }
-            ],
-            'metrics': {
-                'coverage': 75.0,
-                'effectiveness': 70.0
-            }
-        }
+            logging.error(f"Error in AI gap analysis: {str(e)}")
+            raise
    
     def _structure_analysis(self, raw_analysis: Dict) -> Dict:
         """Structure and validate AI analysis output"""
@@ -245,72 +192,25 @@ class AIGapAnalyzer:
             })
         return structured
 
-
 class GapAnalysisVisualizer:
     """Visualization component for gap analysis results"""
 
     def __init__(self, report: Dict):
         self.report = report
-        self.findings = pd.DataFrame(report.get('findings', []))
-        self.metrics = pd.DataFrame.from_dict(report.get('metrics', {}), orient='index')
-        self.logger = logging.getLogger(__name__)
-        # Initialize OpenAI client
-        self.openai_client = OpenAI(
-            api_key="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"
-        )
+        self.findings = pd.DataFrame(report['findings'])
+        self.metrics = pd.DataFrame.from_dict(report['metrics'], orient='index')
 
-    def get_ai_explanation(self, data: Dict, chart_type: str) -> str:
-        """Get AI explanation for a visualization"""
-        try:
-            chart_contexts = {
-                'overview': """Analyze the overall process metrics and identify key patterns.""",
-                'severity_distribution': """Analyze the distribution of gap severities and their implications.""",
-                'coverage_radar': """Analyze the coverage metrics across different dimensions.""",
-                'gap_heatmap': """Analyze the patterns and clusters in the gap distribution.""",
-                'timeline_view': """Analyze the implementation timeline and priority distribution."""
-            }
-
-            base_prompt = f"""
-            Analyze this {chart_type} data:
-            {json.dumps(data, indent=2)}
-
-            Context: {chart_contexts.get(chart_type, '')}
-
-            Provide a concise 2-3 sentence analysis focusing on:
-            1. Key patterns or trends
-            2. Business implications
-            3. Actionable insights
-
-            Keep the explanation business-friendly and actionable.
-            """
-
-            response = self.openai_client.chat.completions.create(
-                model="gpt-4o-mini",
-                messages=[
-                    {"role": "system", "content": "You are a process analytics expert."},
-                    {"role": "user", "content": base_prompt}
-                ],
-                temperature=0.7,
-                max_tokens=150
-            )
-
-            return response.choices[0].message.content
-
-        except Exception as e:
-            self.logger.error(f"Error getting AI explanation: {str(e)}")
-            return "AI analysis currently unavailable."
-
-    def create_severity_distribution(self) -> Tuple[go.Figure, str]:
-        """Create severity distribution chart with explanation"""
-        summary = self.report.get('summary', {})
+    def create_severity_distribution(self) -> go.Figure:
+        """Create severity distribution chart"""
+        summary = self.report['summary']
 
         fig = go.Figure(data=[
             go.Bar(
                 name='Gaps',
                 x=['High', 'Medium', 'Low'],
-                y=[summary.get('high_severity', 0),
-                   summary.get('medium_severity', 0),
-                   summary.get('low_severity', 0)],
+                y=[summary['high_severity'],
+                   summary['medium_severity'],
+                   summary['low_severity']],
                 marker_color=['#ff4d4d', '#ffa64d', '#4da6ff']
             )
         ])
@@ -322,24 +222,24 @@ class GapAnalysisVisualizer:
             template='plotly_white'
         )
 
-        explanation = self.get_ai_explanation(summary, "severity distribution")
-        return fig, explanation
+        return fig
 
-    def create_coverage_radar(self) -> Tuple[go.Figure, str]:
-        """Create coverage radar chart with explanation"""
-        metrics = self.report.get('metrics', {})
+    def create_coverage_radar(self) -> go.Figure:
+        """Create enhanced radar chart for coverage metrics"""
+        metrics = self.report['metrics']
 
+        # Extract values with proper error handling
         values = [
-            round(metrics.get('compliance', {}).get('regulatory_coverage', 0), 1),
-            round(metrics.get('operational', {}).get('process_adherence', 0), 1),
-            round(metrics.get('risk', {}).get('control_coverage', 0), 1),
-            round(metrics.get('risk', {}).get('risk_assessment_completion', 0), 1)
+            round(metrics['compliance'].get('regulatory_coverage', 0), 1),
+            round(metrics['operational'].get('process_adherence', 0), 1),
+            round(metrics['risk'].get('control_coverage', 0), 1),
+            round(metrics['risk'].get('risk_assessment_completion', 0), 1)
         ]
 
         categories = [
             'Regulatory Coverage',
             'Process Adherence',
-            'Control Coverage',
+            'Control Effectiveness',
             'Risk Assessment'
         ]
 
@@ -359,28 +259,47 @@ class GapAnalysisVisualizer:
                 )
             ),
             showlegend=False,
-            title='Coverage Analysis'
+            title='Coverage Analysis',
+            height=400,
+            template='plotly_white'
         )
 
-        explanation = self.get_ai_explanation(metrics, "coverage metrics")
-        return fig, explanation
+        # Add percentage annotations
+        for i, value in enumerate(values):
+            angle = (i / len(values)) * 2 * np.pi
+            fig.add_annotation(
+                x=0.5 + 0.45 * np.cos(angle),
+                y=0.5 + 0.45 * np.sin(angle),
+                text=f'{value:.1f}%',
+                showarrow=False,
+                font=dict(size=12)
+            )
 
-    def create_gap_heatmap(self) -> Tuple[go.Figure, str]:
-        """Create gap heatmap with explanation"""
+        return fig
+
+    def create_gap_heatmap(self) -> go.Figure:
+        """Create heatmap of gaps by category and severity"""
         if len(self.findings) == 0:
-            return go.Figure(), "No data available for heatmap analysis."
+            # Create empty heatmap if no findings
+            fig = go.Figure(data=go.Heatmap(
+                z=[[0]],
+                x=['No Data'],
+                y=['No Data'],
+                colorscale='RdYlBu_r'
+            ))
+        else:
+            # Pivot findings data
+            heatmap_data = pd.crosstab(
+                self.findings['category'],
+                self.findings['severity']
+            ).fillna(0)
 
-        heatmap_data = pd.crosstab(
-            index=self.findings.get('category', 'Unknown'),
-            columns=self.findings.get('severity', 'Medium')
-        ).fillna(0)
-
-        fig = go.Figure(data=go.Heatmap(
-            z=heatmap_data.values,
-            x=heatmap_data.columns,
-            y=heatmap_data.index,
-            colorscale='RdYlBu_r'
-        ))
+            fig = go.Figure(data=go.Heatmap(
+                z=heatmap_data.values,
+                x=heatmap_data.columns,
+                y=heatmap_data.index,
+                colorscale='RdYlBu_r'
+            ))
 
         fig.update_layout(
             title='Gap Distribution Heatmap',
@@ -388,158 +307,165 @@ class GapAnalysisVisualizer:
             yaxis_title='Category'
         )
 
-        explanation = self.get_ai_explanation(
-            heatmap_data.to_dict(),
-            "gap distribution heatmap"
-        )
-        return fig, explanation
+        return fig
 
-    def create_timeline_view(self) -> Tuple[go.Figure, str]:
-        """Create timeline view with explanation"""
+    def display_recommendations_table(self) -> None:
+        """Display detailed recommendations table"""
         recommendations = self.report.get('recommendations', [])
 
         if not recommendations:
-            return go.Figure(), "No timeline data available."
+            st.info("No recommendations data available")
+            return
 
-        # Convert recommendations to DataFrame
         df = pd.DataFrame(recommendations)
 
-        fig = go.Figure()
+        # Format the DataFrame for display
+        display_df = df[[
+            'priority', 'description', 'target_date', 'status', 'impact', 'control_name'
+        ]].copy()
 
-        for priority in ['High', 'Medium', 'Low']:
-            mask = df['priority'] == priority
-            if any(mask):
-                fig.add_trace(go.Scatter(
-                    x=pd.to_datetime(df[mask]['target_date']),
-                    y=[priority] * sum(mask),
-                    mode='markers+text',
-                    name=priority,
-                    text=df[mask]['description'],
-                    marker=dict(
-                        size=10,
-                        symbol='circle'
-                    )
-                ))
+        # Apply styling
+        styled_df = display_df.style.apply(lambda x: [
+            'background-color: rgba(255,77,77,0.3)' if v == 'High' else
+            'background-color: rgba(255,166,77,0.3)' if v == 'Medium' else
+            'background-color: rgba(77,166,255,0.3)' if v == 'Low' else ''
+            for v in x
+        ], subset=['priority'])
 
-        fig.update_layout(
-            title='Recommendation Timeline',
-            xaxis_title='Target Date',
-            yaxis_title='Priority'
-        )
+        st.dataframe(styled_df)
 
-        explanation = self.get_ai_explanation(
-            {"recommendations": recommendations},
-            "recommendation timeline"
-        )
-        return fig, explanation
+    def create_timeline_view(self) -> go.Figure:
+        """Create enhanced timeline view of recommendations"""
+        recommendations = self.report.get('recommendations', [])
 
-    def generate_dashboard(self) -> Dict[str, Any]:
-        """Generate complete dashboard with visualizations and AI explanations"""
+        logging.info(f"Creating timeline view with {len(recommendations)} recommendations")
+
+        if not recommendations:
+            logging.warning("No recommendations data available for timeline")
+            fig = go.Figure()
+            fig.update_layout(
+                title='Recommendation Timeline (No Data)',
+                xaxis_title='Timeline',
+                yaxis_title='Priority',
+                height=400,
+                template='plotly_dark',
+                plot_bgcolor='rgba(0,0,0,0)',
+                paper_bgcolor='rgba(0,0,0,0)',
+                font=dict(color='white'),
+                showlegend=False,
+                annotations=[{
+                    'text': 'No recommendations data available',
+                    'xref': 'paper',
+                    'yref': 'paper',
+                    'x': 0.5,
+                    'y': 0.5,
+                    'showarrow': False,
+                    'font': dict(color='white', size=14)
+                }]
+            )
+            return fig
+
         try:
-            # Create visualizations
-            severity_fig, severity_expl = self.create_severity_distribution()
-            coverage_fig, coverage_expl = self.create_coverage_radar()
-            heatmap_fig, heatmap_expl = self.create_gap_heatmap()
-            timeline_fig, timeline_expl = self.create_timeline_view()
-
-            # Generate overview explanation
-            overview_data = {
-                'total_gaps': self.report['summary']['total_gaps'],
-                'high_severity': self.report['summary']['high_severity'],
-                'coverage': self.report['metrics']['operational']['process_adherence'],
-                'effectiveness': self.report['metrics']['risk']['control_coverage']
-            }
-            overview_expl = self.get_ai_explanation(overview_data, 'overview')
-
-            return {
-                'figures': {
-                    'severity_distribution': severity_fig,
-                    'coverage_radar': coverage_fig,
-                    'gap_heatmap': heatmap_fig,
-                    'timeline_view': timeline_fig
-                },
-                'explanations': {
-                    'overview': overview_expl,
-                    'severity_distribution': severity_expl,
-                    'coverage_radar': coverage_expl,
-                    'gap_heatmap': heatmap_expl,
-                    'timeline_view': timeline_expl
-                }
-            }
-
-        except Exception as e:
-            self.logger.error(f"Error generating dashboard: {str(e)}")
-            return {
-                'figures': {},
-                'explanations': {
-                    'error': f"Error generating visualizations: {str(e)}"
-                }
-            }
-
-    def display_recommendations_table(self) -> None:
-        """Display recommendations table with error handling"""
-        try:
-            recommendations = self.report.get('recommendations', [])
-
-            if not recommendations:
-                st.info("No recommendations data available")
-                return
-
-            # Create DataFrame with only available columns
             df = pd.DataFrame(recommendations)
-            display_columns = [
-                'priority', 'description', 'target_date', 'status', 'impact'
-            ]
+            logging.info(f"Created DataFrame with columns: {df.columns.tolist()}")
+            logging.info(f"DataFrame shape: {df.shape}")
 
-            # Filter to only include columns that exist
-            available_columns = [col for col in display_columns if col in df.columns]
+            # Ensure target_date is datetime
+            df['target_date'] = pd.to_datetime(df['target_date'])
 
-            if not available_columns:
-                st.warning("No valid columns found in recommendations data")
-                return
+            # Log unique priorities
+            logging.info(f"Unique priorities found: {df['priority'].unique().tolist()}")
 
-            display_df = df[available_columns]
-
-            # Apply styling
-            styled_df = display_df.style.apply(lambda x: [
-                'background-color: rgba(255,77,77,0.3)' if v == 'High' else
-                'background-color: rgba(255,166,77,0.3)' if v == 'Medium' else
-                'background-color: rgba(77,166,255,0.3)' if v == 'Low' else ''
-                for v in x
-            ], subset=['priority'] if 'priority' in available_columns else [])
-
-            st.dataframe(styled_df)
-
-        except Exception as e:
-            logger.error(f"Error displaying recommendations: {str(e)}")
-            st.error(f"Error displaying recommendations table: {str(e)}")
-
-    def generate_interactive_dashboard(self) -> Dict[str, Any]:
-        """Generate all visualizations for dashboard with explanations"""
-        try:
-            # Generate visualizations and explanations
-            severity_fig, severity_explanation = self.create_severity_distribution()
-            coverage_fig, coverage_explanation = self.create_coverage_radar()
-            gap_fig, gap_explanation = self.create_gap_heatmap()
-            timeline_fig, timeline_explanation = self.create_timeline_view()
-
-            return {
-                'figures': {
-                    'severity_distribution': severity_fig,
-                    'coverage_radar': coverage_fig,
-                    'gap_heatmap': gap_fig,
-                    'timeline_view': timeline_fig
-                },
-                'explanations': {
-                    'severity_distribution': severity_explanation,
-                    'coverage_radar': coverage_explanation,
-                    'gap_heatmap': gap_explanation,
-                    'timeline_view': timeline_explanation
-                }
+            color_map = {
+                'High': '#ff4d4d',
+                'Medium': '#ffa64d',
+                'Low': '#4da6ff'
             }
+
+            fig = go.Figure()
+
+            for priority in ['High', 'Medium', 'Low']:
+                mask = df['priority'] == priority
+                if any(mask):
+                    logging.info(f"Adding {sum(mask)} recommendations for priority {priority}")
+                    fig.add_trace(go.Scatter(
+                        x=df[mask]['target_date'],
+                        y=[priority] * sum(mask),
+                        mode='markers+text',
+                        name=priority,
+                        marker=dict(
+                            size=15,
+                            color=color_map[priority],
+                            symbol='circle'
+                        ),
+                        text=df[mask]['description'],
+                        textposition='middle right',
+                        hovertemplate=(
+                                '<b>%{text}</b><br>' +
+                                'Target Date: %{x|%Y-%m-%d}<br>' +
+                                'Priority: ' + priority + '<br>' +
+                                '<extra></extra>'
+                        )
+                    ))
+
+            fig.update_layout(
+                title='Recommendation Timeline',
+                xaxis_title='Target Date',
+                yaxis_title='Priority Level',
+                height=400,
+                template='plotly_dark',
+                plot_bgcolor='rgba(0,0,0,0)',
+                paper_bgcolor='rgba(0,0,0,0)',
+                font=dict(color='white'),
+                yaxis=dict(
+                    categoryorder='array',
+                    categoryarray=['Low', 'Medium', 'High']
+                ),
+                showlegend=True,
+                legend=dict(
+                    yanchor="top",
+                    y=0.99,
+                    xanchor="left",
+                    x=0.01,
+                    font=dict(color='white')
+                ),
+                margin=dict(r=250)
+            )
+
+            fig.update_xaxes(showgrid=True, gridwidth=1, gridcolor='rgba(128,128,128,0.2)')
+            fig.update_yaxes(showgrid=True, gridwidth=1, gridcolor='rgba(128,128,128,0.2)')
+
+            return fig
+
         except Exception as e:
-            self.logger.error(f"Error generating dashboard: {str(e)}")
-            return {}
+            logging.error(f"Error creating timeline visualization: {str(e)}")
+            logging.error(traceback.format_exc())
+            # Return empty figure with error message
+            fig = go.Figure()
+            fig.update_layout(
+                title='Error Creating Timeline',
+                annotations=[{
+                    'text': f'Error: {str(e)}',
+                    'xref': 'paper',
+                    'yref': 'paper',
+                    'x': 0.5,
+                    'y': 0.5,
+                    'showarrow': False,
+                    'font': dict(color='red', size=14)
+                }]
+            )
+            return fig
+
+    def generate_interactive_dashboard(self) -> Dict[str, go.Figure]:
+        """Generate all visualizations for dashboard"""
+        return {
+            'severity_distribution': self.create_severity_distribution(),
+            'coverage_radar': self.create_coverage_radar(),
+            'gap_heatmap': self.create_gap_heatmap(),
+            'timeline_view': self.create_timeline_view()
+        }
+
+
 
 @dataclass
 class GapFindings:
@@ -552,225 +478,119 @@ class GapFindings:
     impact: str
     recommendations: List[str]
 
-class GapDataValidator:
-    """Validates and generates gap analysis data"""
-
-    def __init__(self, driver):
-        self.driver = driver
-        logger = logging.getLogger(__name__)
-
-        try:
-            with self.driver.session() as session:
-                result = session.run("RETURN 1 as test")
-                test_value = result.single()
-                if test_value is None or test_value.get('test') != 1:
-                    raise Exception("Failed to verify Neo4j connection")
-                logger.info("Successfully initialized GapDataValidator with Neo4j connection")
-        except Exception as e:
-            logger.error(f"Error initializing GapDataValidator: {str(e)}")
-            logger.error(traceback.format_exc())
-            raise
-
-    def validate_data_connections(self) -> Dict[str, bool]:
-        """Validate if all required relationships exist"""
-        with self.driver.session() as session:
-            # Check principle-requirement connections
-            principle_req = session.run("""
-                MATCH (p:Principle)-[:HAS_REQUIREMENT]->(r:Requirement) 
-                RETURN COUNT(*) as count
-            """).single()['count']
-
-            # Check requirement-control connections
-            req_control = session.run("""
-                MATCH (r:Requirement)-[:IMPLEMENTED_BY]->(c:Control)
-                RETURN COUNT(*) as count
-            """).single()['count']
-
-            # Check control-activity connections
-            control_activity = session.run("""
-                MATCH (c:Control)-[:MONITORS]->(a:Activity)
-                RETURN COUNT(*) as count
-            """).single()['count']
-
-            return {
-                'principle_requirement_exists': principle_req > 0,
-                'requirement_control_exists': req_control > 0,
-                'control_activity_exists': control_activity > 0
-            }
-
-    def ensure_gap_data(self):
-        """Create realistic gap data matching existing Neo4j structure"""
-        with self.driver.session() as session:
-            # Reset existing mock data
-            session.run("""
-                MATCH (r:Requirement)
-                SET r.status = null,
-                    r.severity = null,
-                    r.gap_type = null
-            """)
-
-            # Create gaps for EXEC principles (we have 4)
-            session.run("""
-                MATCH (p:Principle)
-                WHERE p.code STARTS WITH 'EXEC'
-                WITH p
-                MATCH (p)-[:HAS_REQUIREMENT]->(r:Requirement)
-                WITH r, rand() as rnd
-                WHERE rnd < 0.6  // Create gaps for 60% of EXEC requirements
-                SET r.status = 'NOT_IMPLEMENTED',
-                    r.severity = CASE 
-                        WHEN rnd < 0.2 THEN 'High'   // 20% High
-                        WHEN rnd < 0.5 THEN 'Medium' // 30% Medium
-                        ELSE 'Low'                   // 10% Low
-                    END,
-                    r.gap_type = 'Regulatory Compliance'
-            """)
-
-            # Create gaps for RISK principles (we have 2)
-            session.run("""
-                MATCH (p:Principle)
-                WHERE p.code STARTS WITH 'RISK'
-                WITH p
-                MATCH (p)-[:HAS_REQUIREMENT]->(r:Requirement)
-                WITH r, rand() as rnd
-                WHERE rnd < 0.5  // Create gaps for 50% of RISK requirements
-                SET r.status = 'NOT_IMPLEMENTED',
-                    r.severity = CASE 
-                        WHEN rnd < 0.3 THEN 'High'   // 30% High
-                        WHEN rnd < 0.7 THEN 'Medium' // 40% Medium
-                        ELSE 'Low'                   // 30% Low
-                    END,
-                    r.gap_type = 'Risk Control'
-            """)
-
-            # Create unmonitored activities (out of 35 total)
-            session.run("""
-                MATCH (a:Activity)
-                WITH a, rand() as rnd
-                WHERE rnd < 0.3  // 30% of 35 activities = ~10 unmonitored
-                SET a.monitored = false,
-                    a.completion_rate = 0.6 + (rand() * 0.2)  // 60-80% completion
-            """)
-
-            # Modify control-activity relationships (8 controls)
-            session.run("""
-                MATCH (c:Control)-[r:MONITORS]->(a:Activity)
-                WITH c, r, a, rand() as rnd
-                WHERE rnd < 0.25  // Disconnect 25% of existing control relationships
-                DELETE r
-                SET a.control_gap = true
-            """)
-
-            # Return gap statistics
-            return session.run("""
-                MATCH (r:Requirement)
-                WHERE r.status = 'NOT_IMPLEMENTED'
-                WITH r.severity as severity, r.gap_type as type, COUNT(*) as count
-                RETURN collect({
-                    severity: severity,
-                    type: type,
-                    count: count
-                }) as gaps
-            """).single()['gaps']
-
-    def _get_default_metrics(self) -> Dict:
-        """Get default metrics when query fails"""
-        return {
-            'regulatory_coverage': 0.0,
-            'process_adherence': 0.0,
-            'control_effectiveness': 0.0,
-            'risk_coverage': 0.0
-        }
-
-    def get_gap_metrics(self) -> Dict:
-        """Get metrics based on actual Neo4j state with enhanced error handling"""
-        logger.info("Getting gap metrics from Neo4j")
-
-        try:
-            with self.driver.session() as session:
-                # Modified query to handle missing relationships
-                query_result = session.run("""
-                    // Calculate requirement coverage
-                    OPTIONAL MATCH (r:Requirement)
-                    WITH COALESCE(COUNT(r), 0) as total_requirements,
-                         COALESCE(COUNT(r.status), 0) as gap_requirements
-
-                    // Calculate activity monitoring
-                    OPTIONAL MATCH (a:Activity)
-                    WITH total_requirements, gap_requirements,
-                         COALESCE(COUNT(a), 0) as total_activities,
-                         COALESCE(COUNT(a.monitored), 0) as unmonitored_activities
-
-                    // Calculate control effectiveness
-                    OPTIONAL MATCH (c:Control)-[:MONITORS]->(a:Activity)
-                    WITH total_requirements, gap_requirements,
-                         total_activities, unmonitored_activities,
-                         COALESCE(COUNT(DISTINCT c), 0) as active_controls
-
-                    RETURN {
-                        regulatory_coverage: CASE 
-                            WHEN total_requirements > 0 
-                            THEN round(((total_requirements - gap_requirements) * 100.0) / total_requirements, 1)
-                            ELSE 0.0 
-                        END,
-                        process_adherence: CASE 
-                            WHEN total_activities > 0 
-                            THEN round(((total_activities - unmonitored_activities) * 100.0) / total_activities, 1)
-                            ELSE 0.0 
-                        END,
-                        control_effectiveness: CASE 
-                            WHEN active_controls > 0 
-                            THEN round((active_controls * 100.0) / 8, 1)
-                            ELSE 0.0 
-                        END,
-                        risk_coverage: 0.0
-                    } as metrics
-                """)
-
-                result = query_result.single()
-                if result is None:
-                    logger.error("No metrics returned from Neo4j query - query returned no results")
-                    return self._get_default_metrics()
-
-                metrics = result.get('metrics')
-                if metrics is None:
-                    logger.error("Metrics not found in query result")
-                    return self._get_default_metrics()
-
-                logger.info(f"Successfully retrieved metrics: {metrics}")
-                return metrics
-
-        except Exception as e:
-            logger.error(f"Error getting gap metrics: {str(e)}")
-            logger.error(traceback.format_exc())
-            return self._get_default_metrics()
 
 class FXTradingGapAnalyzer:
     """Comprehensive gap analyzer for FX trading processes"""
 
     def __init__(self, uri: str, user: str, password: str, api_key: str = None):
         """Initialize the analyzer with Neo4j and OpenAI credentials"""
-        logger = logging.getLogger(__name__)
         self.driver = GraphDatabase.driver(uri, auth=(user, password))
         self.findings = []
         self._initialize_metrics()
 
-        self.openai_client = OpenAI(
-            api_key="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"
-        )
-
         # Initialize AI analyzer with API key from environment or session state
         api_key = api_key or st.secrets.get("OPENAI_API_KEY")
         if not api_key:
-            logger.warning("No OpenAI API key found - AI analysis will be disabled")
+            logging.warning("No OpenAI API key found - AI analysis will be disabled")
             self.ai_analyzer = None
         else:
             try:
                 self.ai_analyzer = AIGapAnalyzer(api_key)
-                logger.info("AI analyzer initialized successfully")
+                logging.info("AI analyzer initialized successfully")
             except Exception as e:
-                logger.error(f"Failed to initialize AI analyzer: {str(e)}")
+                logging.error(f"Failed to initialize AI analyzer: {str(e)}")
                 self.ai_analyzer = None
+
+    def analyze_recommendations(self) -> List[Dict]:
+        """Analyze and fetch recommendations from Neo4j"""
+        try:
+            with self.driver.session() as session:
+                # Modified query to get all recommendations regardless of Control relationship
+                result = session.run("""
+                    MATCH (r:Recommendation)
+                    OPTIONAL MATCH (r)-[:IMPROVES]->(c:Control)
+                    RETURN 
+                        r.id as id,
+                        r.description as description,
+                        r.priority as priority,
+                        r.target_date as target_date,
+                        r.status as status,
+                        r.impact as impact,
+                        CASE WHEN c IS NOT NULL THEN c.name ELSE null END as control_name
+                    ORDER BY 
+                        CASE r.priority 
+                            WHEN 'High' THEN 1 
+                            WHEN 'Medium' THEN 2 
+                            ELSE 3 
+                        END,
+                        r.target_date
+                """)
+
+                recommendations = []
+                for record in result:
+                    recommendations.append({
+                        'id': record['id'],
+                        'description': record['description'],
+                        'priority': record['priority'],
+                        'target_date': record['target_date'].isoformat() if record['target_date'] else None,
+                        'status': record['status'],
+                        'impact': record['impact'],
+                        'control_name': record['control_name'] or 'No Control Associated'
+                    })
+
+                # Debug logging
+                logging.info(f"Found {len(recommendations)} recommendations")
+                for rec in recommendations:
+                    logging.info(f"Recommendation: {rec['id']} - {rec['description']} - {rec['target_date']}")
+
+                return recommendations
+
+        except Exception as e:
+            logging.error(f"Error analyzing recommendations: {str(e)}")
+            logging.error(traceback.format_exc())
+            return []
+
+    def calculate_metrics(self) -> None:
+        """Calculate actual metrics from Neo4j data"""
+        try:
+            with self.driver.session() as session:
+                # Calculate control effectiveness
+                control_result = session.run("""
+                    MATCH (c:Control)
+                    WITH avg(c.effectiveness_score) as avg_effectiveness
+                    RETURN avg_effectiveness
+                """)
+                control_effectiveness = control_result.single()['avg_effectiveness'] or 0.0
+
+                # Calculate process adherence
+                process_result = session.run("""
+                    MATCH (a:Activity)
+                    WITH avg(a.completion_rate) as avg_adherence
+                    RETURN avg_adherence
+                """)
+                process_adherence = process_result.single()['avg_adherence'] or 0.0
+
+                # Calculate regulatory coverage
+                regulatory_result = session.run("""
+                    MATCH (g:Guideline {type: 'Regulatory'})-[:APPLIES_TO]->(a:Activity)
+                    WITH count(DISTINCT a) as covered_activities
+                    MATCH (a:Activity)
+                    WITH covered_activities, count(a) as total_activities
+                    RETURN CASE WHEN total_activities > 0 
+                           THEN (toFloat(covered_activities) / total_activities) * 100 
+                           ELSE 0.0 END as coverage
+                """)
+                regulatory_coverage = regulatory_result.single()['coverage'] or 0.0
+
+                # Update metrics
+                self.metrics['compliance']['regulatory_coverage'] = regulatory_coverage
+                self.metrics['compliance']['control_effectiveness'] = control_effectiveness
+                self.metrics['operational']['process_adherence'] = process_adherence
+                self.metrics['risk']['control_coverage'] = control_effectiveness
+
+        except Exception as e:
+            logging.error(f"Error calculating metrics: {str(e)}")
+            raise
 
     def _initialize_metrics(self):
         """Initialize comprehensive analysis metrics"""
@@ -794,159 +614,40 @@ class FXTradingGapAnalyzer:
             }
         }
 
-    def calculate_metrics(self) -> None:
-        """Calculate metrics focusing on FX Global Code compliance"""
-        try:
-            with self.driver.session() as session:
-                result = session.run("""
-                    // Calculate overall compliance metrics
-                    MATCH (p:Principle)
-                    OPTIONAL MATCH (p)-[:HAS_REQUIREMENT]->(r:Requirement)
-                    OPTIONAL MATCH (r)-[:IMPLEMENTED_BY]->(c:Control)
-                    OPTIONAL MATCH (c)-[:MONITORS]->(a:Activity)
-                    WITH COUNT(DISTINCT r) as total_requirements,
-                         COUNT(DISTINCT c) as implemented_controls,
-                         COUNT(DISTINCT a) as monitored_activities,
-                         COUNT(DISTINCT p) as total_principles
-
-                    // Calculate Process Coverage
-                    MATCH (a:Activity)
-                    WITH total_requirements, implemented_controls, 
-                         monitored_activities, total_principles,
-                         COUNT(a) as total_activities
-
-                    RETURN {
-                        regulatory_coverage: CASE 
-                            WHEN total_requirements > 0 
-                            THEN toFloat(implemented_controls) / total_requirements * 100
-                            ELSE 0 
-                        END,
-                        process_adherence: CASE 
-                            WHEN total_activities > 0 
-                            THEN toFloat(monitored_activities) / total_activities * 100
-                            ELSE 0 
-                        END,
-                        control_effectiveness: CASE 
-                            WHEN implemented_controls > 0 
-                            THEN 75.0  // Base effectiveness score
-                            ELSE 0 
-                        END,
-                        risk_coverage: CASE 
-                            WHEN total_principles > 0 
-                            THEN toFloat(implemented_controls) / total_principles * 100
-                            ELSE 0 
-                        END
-                    } as metrics
-                """)
-
-                metrics = result.single()['metrics']
-
-                # Update metrics structure
-                self.metrics.update({
-                    'compliance': {
-                        'regulatory_coverage': metrics['regulatory_coverage'],
-                        'control_effectiveness': metrics['control_effectiveness']
-                    },
-                    'operational': {
-                        'process_adherence': metrics['process_adherence'],
-                        'activity_completion': metrics['process_adherence']
-                    },
-                    'risk': {
-                        'control_coverage': metrics['risk_coverage'],
-                        'risk_assessment_completion': metrics['regulatory_coverage']
-                    }
-                })
-
-        except Exception as e:
-            logger.error(f"Error calculating metrics: {str(e)}")
-            logger.error(traceback.format_exc())
-            self._initialize_metrics()
+    def _get_process_data(self) -> Dict:
+        """Retrieve process data from Neo4j"""
+        with self.driver.session() as session:
+            # Get activities and their relationships
+            result = session.run("""
+                MATCH (a:Activity)
+                OPTIONAL MATCH (a)-[:MONITORS]-(c:Control)
+                RETURN {
+                    activities: collect(distinct {
+                        id: a.id,
+                        name: a.name,
+                        completion_rate: a.completion_rate,
+                        controls: collect(c.name)
+                    })
+                } as process_data
+            """)
+            return result.single()['process_data']
 
     def _get_guidelines_data(self) -> Dict:
-        """Get guidelines data based on Principles with enhanced gap detection"""
-        try:
-            with self.driver.session() as session:
-                result = session.run("""
-                    // Match all principles and their requirements
-                    MATCH (p:Principle)
-                    OPTIONAL MATCH (p)-[:HAS_REQUIREMENT]->(r:Requirement)
-                    OPTIONAL MATCH (r)-[:IMPLEMENTED_BY]->(c:Control)
-                    OPTIONAL MATCH (c)-[:MONITORS]->(a:Activity)
-
-                    // Collect activity statistics
-                    WITH p, r, 
-                         COUNT(DISTINCT c) as control_count,
-                         COUNT(DISTINCT a) as monitored_activities,
-                         COLLECT(DISTINCT a.name) as activity_names
-
-                    // Calculate completion metrics
-                    WITH p,
-                         COUNT(r) as total_requirements,
-                         SUM(CASE WHEN control_count > 0 THEN 1 ELSE 0 END) as implemented_requirements,
-                         COLLECT({
-                             requirement: r.id,
-                             has_controls: control_count > 0,
-                             monitored_activities: monitored_activities,
-                             activities: activity_names
-                         }) as requirement_details
-
-                    RETURN {
-                        guidelines: COLLECT({
-                            id: p.code,
-                            name: p.name,
-                            description: p.description,
-                            type: CASE 
-                                WHEN p.code STARTS WITH 'RISK' THEN 'REGULATORY'
-                                ELSE 'OPERATIONAL'
-                            END,
-                            implementation_status: CASE 
-                                WHEN total_requirements = 0 THEN 'NO_REQUIREMENTS'
-                                WHEN implemented_requirements = 0 THEN 'NOT_IMPLEMENTED'
-                                WHEN implemented_requirements < total_requirements THEN 'PARTIALLY_IMPLEMENTED'
-                                ELSE 'FULLY_IMPLEMENTED'
-                            END,
-                            coverage: CASE 
-                                WHEN total_requirements > 0 
-                                THEN toFloat(implemented_requirements) / total_requirements * 100
-                                ELSE 0
-                            END,
-                            gaps: requirement_details
-                        })
-                    } as guidelines_data
-                """)
-
-                guidelines_data = result.single()['guidelines_data']
-                logger.info(f"Retrieved {len(guidelines_data['guidelines'])} guidelines")
-
-                # Post-process gaps to provide more detailed analysis
-                for guideline in guidelines_data['guidelines']:
-                    if guideline['implementation_status'] != 'FULLY_IMPLEMENTED':
-                        unimplemented_reqs = [
-                            req for req in guideline['gaps']
-                            if not req['has_controls']
-                        ]
-
-                        if unimplemented_reqs:
-                            formatted_gaps = [{
-                                'category': 'Implementation Gap',
-                                'severity': 'High' if guideline['type'] == 'REGULATORY' else 'Medium',
-                                'description': f"Missing controls for {len(unimplemented_reqs)} requirements in {guideline['name']}",
-                                'impact': 'Regulatory/Operational Risk',
-                                'recommendations': [
-                                    'Implement missing controls',
-                                    'Review control framework',
-                                    'Update documentation'
-                                ]
-                            }]
-                            guideline['gaps'] = formatted_gaps
-                            logger.info(f"Found {len(formatted_gaps)} gaps for {guideline['name']}")
-
-                return guidelines_data
-
-        except Exception as e:
-            logger.error(f"Error retrieving guidelines data: {str(e)}")
-            logger.error(traceback.format_exc())
-            return {'guidelines': []}
+        """Retrieve guidelines data from Neo4j"""
+        with self.driver.session() as session:
+            result = session.run("""
+                MATCH (g:Guideline)
+                RETURN {
+                    guidelines: collect({
+                        id: g.id,
+                        name: g.name,
+                        type: g.type,
+                        severity: g.severity,
+                        implementation_status: g.implementation_status
+                    })
+                } as guidelines_data
+            """)
+            return result.single()['guidelines_data']
 
     def analyze_regulatory_compliance(self) -> List[GapFindings]:
         """Analyze regulatory compliance gaps"""
@@ -982,17 +683,38 @@ class FXTradingGapAnalyzer:
                             ]
                         ))
 
-                return findings
+                # Update metrics
+                total_guidelines = session.run("""
+                    MATCH (g:Guideline {type: 'Regulatory'})
+                    RETURN count(*) as total
+                """).single()['total']
 
+                if total_guidelines > 0:
+                    compliant_count = total_guidelines - len(findings)
+                    self.metrics['compliance']['regulatory_coverage'] = (compliant_count / total_guidelines) * 100
+
+                return findings
         except Exception as e:
             logger.error(f"Error in regulatory analysis: {str(e)}")
-            logger.error(traceback.format_exc())
             raise
 
     def analyze_process_execution(self) -> List[GapFindings]:
         """Analyze process execution gaps"""
         try:
             with self.driver.session() as session:
+                # Calculate process coverage
+                process_metrics = session.run("""
+                    MATCH (a:Activity)
+                    WITH count(a) as total_activities
+                    MATCH (a:Activity)
+                    WHERE a.completion_rate >= 95
+                    WITH count(a) as compliant_activities, total_activities
+                    RETURN toFloat(compliant_activities) / total_activities * 100 as coverage
+                """).single()
+
+                self.metrics['operational']['process_adherence'] = process_metrics['coverage']
+
+                # Analyze SLA breaches
                 result = session.run("""
                     MATCH (e:Event)-[:PERFORMS]->(a:Activity)
                     WHERE e.duration_seconds > (a.sla_minutes * 60)
@@ -1019,237 +741,181 @@ class FXTradingGapAnalyzer:
                     ))
 
                 return findings
-
         except Exception as e:
             logger.error(f"Error in process execution analysis: {str(e)}")
-            logger.error(traceback.format_exc())
             raise
 
-    def _get_process_data(self) -> Dict:
-        """Retrieve process data from Neo4j"""
+    def analyze_control_effectiveness(self) -> List[GapFindings]:
+        """Analyze control effectiveness gaps"""
         try:
             with self.driver.session() as session:
+                # Calculate overall control effectiveness
+                effectiveness_result = session.run("""
+                    MATCH (c:Control)
+                    WITH collect(c.effectiveness_score) as scores
+                    RETURN reduce(s = 0, x IN scores | s + x) / size(scores) as avg_effectiveness
+                """).single()
+
+                self.metrics['risk']['control_effectiveness'] = effectiveness_result['avg_effectiveness']
+
+                # Analyze control execution gaps
                 result = session.run("""
-                    MATCH (a:Activity)
-                    OPTIONAL MATCH (a)-[:MONITORS]-(c:Control)
-                    WITH a, COLLECT(DISTINCT c.name) as control_names
-                    RETURN {
-                        activities: COLLECT({
-                            id: a.id,
-                            name: a.name,
-                            completion_rate: a.completion_rate,
-                            controls: control_names
-                        })
-                    } as process_data
+                    MATCH (c:Control)
+                    OPTIONAL MATCH (ce:ControlExecution)-[:EXECUTES]->(c)
+                    WITH c, 
+                         count(ce) as execution_count,
+                         sum(CASE WHEN ce.result = 'Pass' THEN 1 ELSE 0 END) as passed_count,
+                         c.effectiveness_score as effectiveness_score
+                    WHERE execution_count = 0 OR (passed_count / toFloat(execution_count)) < 0.8
+                    RETURN c.name as control_name,
+                           c.type as control_type,
+                           execution_count,
+                           effectiveness_score,
+                           CASE WHEN execution_count > 0 
+                                THEN toFloat(passed_count) / execution_count * 100 
+                                ELSE 0 END as success_rate
                 """)
-                return result.single()['process_data']
+
+                findings = []
+                for record in result:
+                    findings.append(GapFindings(
+                        category='Control Effectiveness',
+                        severity='High',
+                        description=f"Ineffective control: {record['control_name']}",
+                        current_state=(f"Success rate: {record['success_rate']:.1f}%, "
+                                       f"Effectiveness score: {record['effectiveness_score']}"),
+                        expected_state="Success rate >= 80% and Effectiveness score >= 85",
+                        impact='High - Control Risk',
+                        recommendations=[
+                            'Review control design',
+                            'Implement automated controls',
+                            'Enhance monitoring capabilities'
+                        ]
+                    ))
+
+                return findings
+
         except Exception as e:
-            logger.error(f"Error retrieving process data: {str(e)}")
-            logger.error(traceback.format_exc())
+            logger.error(f"Error in control effectiveness analysis: {str(e)}")
             raise
 
-    def calculate_metrics(self) -> None:
-        """Calculate metrics focusing on FX Global Code compliance"""
+    def get_recommendations(self) -> List[Dict]:
+        """Get prioritized recommendations"""
         try:
             with self.driver.session() as session:
                 result = session.run("""
-                    // Calculate overall compliance metrics
-                    MATCH (p:Principle)
-                    OPTIONAL MATCH (p)-[:HAS_REQUIREMENT]->(r:Requirement)
-                    OPTIONAL MATCH (r)-[:IMPLEMENTED_BY]->(c:Control)
-                    OPTIONAL MATCH (c)-[:MONITORS]->(a:Activity)
-                    WITH COUNT(DISTINCT r) as total_requirements,
-                         COUNT(DISTINCT c) as implemented_controls,
-                         COUNT(DISTINCT a) as monitored_activities,
-                         COUNT(DISTINCT p) as total_principles
-
-                    // Calculate Process Coverage
-                    MATCH (a:Activity)
-                    WITH total_requirements, implemented_controls, 
-                         monitored_activities, total_principles,
-                         COUNT(a) as total_activities
-
-                    RETURN {
-                        regulatory_coverage: CASE 
-                            WHEN total_requirements > 0 
-                            THEN toFloat(implemented_controls) / total_requirements * 100
-                            ELSE 0 
-                        END,
-                        process_adherence: CASE 
-                            WHEN total_activities > 0 
-                            THEN toFloat(monitored_activities) / total_activities * 100
-                            ELSE 0 
-                        END,
-                        control_effectiveness: CASE 
-                            WHEN implemented_controls > 0 
-                            THEN 75.0  // Base effectiveness score
-                            ELSE 0 
-                        END,
-                        risk_coverage: CASE 
-                            WHEN total_principles > 0 
-                            THEN toFloat(implemented_controls) / total_principles * 100
-                            ELSE 0 
+                    MATCH (r:Recommendation)
+                    RETURN r.description as description,
+                           r.priority as priority,
+                           r.target_date as target_date,
+                           r.impact as impact
+                    ORDER BY 
+                        CASE r.priority 
+                            WHEN 'High' THEN 1 
+                            WHEN 'Medium' THEN 2 
+                            ELSE 3 
                         END
-                    } as metrics
                 """)
 
-                metrics = result.single()['metrics']
+                recommendations = []
+                for record in result:
+                    recommendations.append({
+                        'description': record['description'],
+                        'priority': record['priority'],
+                        'target_date': record['target_date'],
+                        'impact': record['impact']
+                    })
 
-                # Update metrics structure
-                self.metrics.update({
-                    'compliance': {
-                        'regulatory_coverage': metrics['regulatory_coverage'],
-                        'control_effectiveness': metrics['control_effectiveness']
-                    },
-                    'operational': {
-                        'process_adherence': metrics['process_adherence'],
-                        'activity_completion': metrics['process_adherence']
-                    },
-                    'risk': {
-                        'control_coverage': metrics['risk_coverage'],
-                        'risk_assessment_completion': metrics['regulatory_coverage']
-                    }
-                })
-
+                return recommendations
         except Exception as e:
-            logger.error(f"Error calculating metrics: {str(e)}")
-            logger.error(traceback.format_exc())
-            self._initialize_metrics()
+            logger.error(f"Error getting recommendations: {str(e)}")
+            return []
 
-
-    def _is_guideline_implemented(self, guideline: Dict, process_data: Dict) -> bool:
-        """Check if guideline is implemented in process"""
+    def calculate_stp_rate(self) -> float:
+        """Calculate Straight Through Processing rate"""
         try:
-            required_activities = set(guideline.get('required_activities', []))
-            actual_activities = {a['name'] for a in process_data.get('activities', [])}
-            return required_activities.issubset(actual_activities)
+            with self.driver.session() as session:
+                result = session.run("""
+                    MATCH p=(:Event)-[:NEXT*]->(:Event)
+                    WITH length(p) as path_length,
+                         count(*) as path_count
+                    WHERE path_length >= 2
+                    RETURN sum(path_count) as total_paths,
+                           sum(CASE WHEN path_length = 2 THEN path_count ELSE 0 END) as direct_paths
+                """).single()
+
+                if result['total_paths'] > 0:
+                    return (result['direct_paths'] / result['total_paths']) * 100
+                return 0.0
         except Exception as e:
-            logger.error(f"Error checking guideline implementation: {str(e)}")
-            return False
+            logger.error(f"Error calculating STP rate: {str(e)}")
+            return 0.0
 
     def generate_gap_report(self) -> Dict:
-        """Generate comprehensive gap analysis report with process visualization"""
+        """Generate comprehensive gap analysis report with optional AI insights"""
         try:
-            # Initialize validator
-            validator = GapDataValidator(self.driver)
+            # Calculate base metrics and findings
+            self.calculate_metrics()
+            regulatory_findings = self.analyze_regulatory_compliance()
 
-            # Validate data connections
-            connections = validator.validate_data_connections()
-            logger.info(f"Data connections validation: {connections}")
-
-            # Ensure we have gap data
-            gap_stats = validator.ensure_gap_data()
-            logger.info(f"Gap statistics: {gap_stats}")
-
-            # Get metrics
-            metrics = validator.get_gap_metrics()
-
-            # Structure high-level gaps
-            gaps = []
-            high_severity = 0
-            medium_severity = 0
-            low_severity = 0
-
-            for stat in gap_stats:
-                severity = stat.get('severity', 'Medium')
-                count = stat.get('count', 0)
-
-                if severity == 'High':
-                    high_severity = count
-                elif severity == 'Medium':
-                    medium_severity = count
-                elif severity == 'Low':
-                    low_severity = count
-
-                gaps.append({
-                    'category': 'Implementation Gap',
-                    'severity': severity,
-                    'description': f"Missing controls for {count} requirements",
-                    'impact': 'Regulatory/Operational Risk'
-                })
-
-            # Structure report
+            # Initialize report structure
             report = {
                 'summary': {
-                    'total_gaps': len(gaps),
-                    'high_severity': high_severity,
-                    'medium_severity': medium_severity,
-                    'low_severity': low_severity
+                    'total_gaps': len(regulatory_findings),
+                    'high_severity': len([f for f in regulatory_findings if f.severity == 'High']),
+                    'medium_severity': len([f for f in regulatory_findings if f.severity == 'Medium']),
+                    'low_severity': len([f for f in regulatory_findings if f.severity == 'Low'])
                 },
-                'metrics': {
-                    'compliance': {
-                        'regulatory_coverage': metrics['regulatory_coverage'],
-                        'control_effectiveness': metrics['control_effectiveness']
-                    },
-                    'operational': {
-                        'process_adherence': metrics['process_adherence'],
-                        'activity_completion': metrics['process_adherence']
-                    },
-                    'risk': {
-                        'control_coverage': metrics['risk_coverage'],
-                        'risk_assessment_completion': metrics['regulatory_coverage']
-                    }
-                },
-                'findings': gaps,
-                'recommendations': self._generate_recommendations(gaps),
+                'metrics': self.metrics,
+                'findings': [self._format_finding(f) for f in regulatory_findings],
+                'recommendations': self.analyze_recommendations(),
                 'timestamp': datetime.now().isoformat()
             }
 
             # Add AI insights if available
             if self.ai_analyzer:
                 try:
-                    ai_analysis = self.ai_analyzer.analyze_process_gaps(
-                        {'gaps': gaps},
-                        {'metrics': metrics}
+                    process_data = self._get_process_data()
+                    guidelines = self._get_guidelines_data()
+                    ai_analysis = self.ai_analyzer.analyze_process_gaps(process_data, guidelines)
+
+                    report['ai_findings'] = ai_analysis['gaps']
+                    report['metrics']['ai_insights'] = ai_analysis['metrics']
+
+                    # Merge AI recommendations with existing ones
+                    ai_recommendations = self.ai_analyzer.analyze_recommendations(
+                        report['findings']
                     )
-                    report['ai_insights'] = ai_analysis
+                    report['recommendations'].extend(ai_recommendations)
+
                 except Exception as e:
-                    logger.error(f"AI analysis failed: {str(e)}")
+                    logging.error(f"AI analysis failed: {str(e)}")
+                    # Continue without AI insights
+                    pass
 
             return report
 
         except Exception as e:
-            logger.error(f"Error generating gap report: {str(e)}")
-            logger.error(traceback.format_exc())
+            logging.error(f"Error generating gap report: {str(e)}")
             raise
 
-    def _generate_recommendations(self, gaps: List[Dict]) -> List[Dict]:
-        """Generate recommendations based on identified gaps"""
-        try:
-            recommendations = []
-            for i, gap in enumerate(gaps):
-                recommendation = {
-                    'id': f"REC_{i:03d}",
-                    'description': f"Address {gap['description']}",
-                    'priority': gap['severity'],
-                    'target_date': (datetime.now() + timedelta(days=30)).isoformat(),
-                    'status': 'Open',
-                    'impact': gap.get('impact', 'Unknown')
-                }
-                recommendations.append(recommendation)
-
-            if not recommendations:
-                # Add default recommendation if none generated
-                recommendations.append({
-                    'id': 'REC_DEFAULT',
-                    'description': 'Review process controls and documentation',
-                    'priority': 'Medium',
-                    'target_date': (datetime.now() + timedelta(days=30)).isoformat(),
-                    'status': 'Open',
-                    'impact': 'Process Improvement'
-                })
-
-            return recommendations
-        except Exception as e:
-            logger.error(f"Error generating recommendations: {str(e)}")
-            return []
+    def _format_finding(self, finding: GapFindings) -> Dict:
+        """Format finding for report"""
+        return {
+            'category': finding.category,
+            'severity': finding.severity,
+            'description': finding.description,
+            'gap': {
+                'current': finding.current_state,
+                'expected': finding.expected_state
+            },
+            'impact': finding.impact,
+            'recommendations': finding.recommendations
+        }
 
     def close(self):
         """Close Neo4j connection"""
-        try:
-            self.driver.close()
-        except Exception as e:
-            logger.error(f"Error closing Neo4j connection: {str(e)}")
+        self.driver.close()
 
 def handle_data_import():
     """Handle data import operations"""
@@ -1321,26 +987,94 @@ def handle_data_import():
             st.error(traceback.format_exc())
 
 
-def display_visualization_section(fig: go.Figure, explanation: str, title: str):
-    """Display visualization with properly formatted explanation"""
-    st.plotly_chart(fig, use_container_width=True)
+def handle_graph_analytics():
+    """Handle graph analytics operations"""
+    st.subheader("Graph Analytics")
 
-    # Display AI explanation in a visually distinct container
-    with st.container():
-        st.markdown("#### 🤖 AI Analysis")
-        st.markdown(
-            f"""
-            <div style="
-                background-color: rgba(255, 255, 255, 0.1);
-                padding: 15px;
-                border-radius: 5px;
-                border-left: 5px solid #00a0dc;
-                margin: 10px 0;">
-                {explanation}
-            </div>
-            """,
-            unsafe_allow_html=True
+    if not hasattr(st.session_state, 'neo4j_connected') or not st.session_state.neo4j_connected:
+        st.warning("Please connect to Neo4j and import data first")
+        return
+
+    analysis_tabs = st.tabs(["Process Flow", "Comprehensive Gap Analysis"])
+
+    with analysis_tabs[1]:
+        st.subheader("Comprehensive Gap Analysis")
+
+        credentials = st.session_state.neo4j_credentials
+
+        analysis_type = st.multiselect(
+            "Select Analysis Types",
+            ["Regulatory Compliance", "Process Execution", "Control Effectiveness"],
+            default=["Regulatory Compliance"]
         )
+
+        if st.button("Run Comprehensive Analysis"):
+            try:
+                with st.spinner("Running comprehensive gap analysis..."):
+                    analyzer = FXTradingGapAnalyzer(
+                        uri=credentials['uri'],
+                        user=credentials['user'],
+                        password=credentials['password']
+                    )
+
+                    # Generate report
+                    report = analyzer.generate_gap_report()
+
+                    # Create visualizer
+                    visualizer = GapAnalysisVisualizer(report)
+                    dashboard = visualizer.generate_interactive_dashboard()
+
+                    # Display metrics
+                    col1, col2, col3, col4 = st.columns(4)
+                    with col1:
+                        st.metric("Total Gaps", report['summary']['total_gaps'])
+                    with col2:
+                        st.metric("High Severity", report['summary']['high_severity'])
+                    with col3:
+                        st.metric("Process Coverage",
+                                  f"{report['metrics']['operational']['process_adherence']:.1f}%")
+                    with col4:
+                        st.metric("Control Effectiveness",
+                                  f"{report['metrics']['risk']['control_coverage']:.1f}%")
+
+                    # Display AI Insights if available
+                    if 'ai_findings' in report:
+                        st.subheader("🤖 AI-Powered Insights")
+                        for finding in report['ai_findings']:
+                            with st.expander(f"{finding['category']} - {finding['severity']}"):
+                                st.write(f"**Description:** {finding['description']}")
+                                st.write(f"**Impact:** {finding['impact']}")
+                                if finding.get('related_controls'):
+                                    st.write("**Related Controls:**")
+                                    for control in finding['related_controls']:
+                                        st.write(f"- {control}")
+
+                    # Display visualizations in two columns
+                    st.subheader("Analysis Visualizations")
+                    col1, col2 = st.columns(2)
+
+                    with col1:
+                        st.plotly_chart(dashboard['severity_distribution'],
+                                        use_container_width=True)
+                        st.plotly_chart(dashboard['gap_heatmap'],
+                                        use_container_width=True)
+
+                    with col2:
+                        st.plotly_chart(dashboard['coverage_radar'],
+                                        use_container_width=True)
+                        st.plotly_chart(dashboard['timeline_view'],
+                                        use_container_width=True)
+
+                    # Display detailed recommendations
+                    st.subheader("Detailed Recommendations")
+                    visualizer.display_recommendations_table()
+
+                    analyzer.close()
+
+            except Exception as e:
+                st.error(f"Analysis failed: {str(e)}")
+                st.error(traceback.format_exc())
+
 
 def handle_unfairness_analysis():
     """Handle unfairness analysis operations"""
