@@ -1521,9 +1521,33 @@ def main():
 
     if 'current_page' not in st.session_state:
         st.session_state.current_page = 'APA Analytics'
-
-    st.title("APA Analytics")
-    create_ocpm_ui()
+    # Header and Introduction
+    st.title("🔍 IRMAI - Intelligent Risk Management & AI")
+    
+    # Main description with markdown formatting
+    st.markdown("""
+    ### Welcome to IRMAI Analytics Platform
+    
+    IRMAI is a comprehensive process analytics tool that combines advanced process mining techniques 
+    with artificial intelligence to provide deep insights into your business processes.
+    
+    #### Key Features:
+    * **Process Gap Analysis**: Identify and analyze gaps in your process implementation
+    * **AI-Powered Insights**: Leverage advanced AI models for process understanding
+    * **Interactive Visualizations**: Explore process data through dynamic dashboards
+    * **Unfairness Detection**: Identify and analyze potential biases in process execution
+    
+    #### Getting Started
+    1. Configure your Neo4j database connection
+    2. Import your process data files
+    3. Explore insights through our interactive analysis tools
+    
+    Select your analysis option from the sections below to begin exploring your process data.
+    """)
+    
+    # Add a separator for visual clarity
+    st.markdown("---")
+    
 
 
 if __name__ == "__main__":
