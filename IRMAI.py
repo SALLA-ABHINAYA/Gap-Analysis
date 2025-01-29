@@ -9,7 +9,7 @@ from openai import OpenAI
 from pathlib import Path
 import os
 from Unfair_Advanced_Process_Logs_Analytics import UnfairOCELAnalyzer
-from fmea_analyzer import OCELFMEAAnalyzer
+
 from ocpm_analysis import create_ocpm_ui
 from ai_ocel_analyzer import AIOCELAnalyzer
 import plotly.graph_objects as go
@@ -24,6 +24,7 @@ from datetime import datetime
 from typing import Dict, List
 from neo4j import GraphDatabase
 
+from pages.FMEA_Analysis import display_fmea_analysis
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -1510,16 +1511,12 @@ def display_analysis_results(results):
         if results.get('resources'):
             st.dataframe(pd.DataFrame(results['resources']))
 
-
-
 def main():
     st.set_page_config(
         page_title="IRMAI Process Analytics",
         page_icon="👋",
         layout="wide"
     )
-
-
 
 
 if __name__ == "__main__":
