@@ -2,14 +2,14 @@ import logging
 
 import numpy as np
 import streamlit as st
-from neo4j import GraphDatabase
-import traceback
+
 import json
 import pandas as pd
 from openai import OpenAI
 from pathlib import Path
 import os
 from Unfair_Advanced_Process_Logs_Analytics import UnfairOCELAnalyzer
+from fmea_analyzer import OCELFMEAAnalyzer
 from ocpm_analysis import create_ocpm_ui
 from ai_ocel_analyzer import AIOCELAnalyzer
 import plotly.graph_objects as go
@@ -24,7 +24,6 @@ from datetime import datetime
 from typing import Dict, List
 from neo4j import GraphDatabase
 
-from process_gap_analysis import VisualizationExplainer
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -1512,6 +1511,7 @@ def display_analysis_results(results):
             st.dataframe(pd.DataFrame(results['resources']))
 
 
+
 def main():
     st.set_page_config(
         page_title="IRMAI Process Analytics",
@@ -1519,11 +1519,7 @@ def main():
         layout="wide"
     )
 
-    if 'current_page' not in st.session_state:
-        st.session_state.current_page = 'APA Analytics'
 
-    st.title("APA Analytics")
-    create_ocpm_ui()
 
 
 if __name__ == "__main__":

@@ -283,7 +283,6 @@ class FXProcessMining:
 
         return self.advanced_analyzer.detailed_performance_analysis()
 
-
     def _identify_bottlenecks(self, dfg) -> List[Dict]:
         """Helper method to identify process bottlenecks"""
         bottlenecks = []
