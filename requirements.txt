@@ -1,4 +1,5 @@
-pm4py
+pm4py==2.7.2
+psutil==5.9.5
 requests
 pyvis
 jsonschema
@@ -21,7 +22,6 @@ streamlit
 plotly
 spacy
 PyPDF2
-psutil
 statsmodels>=0.14.0
 r2r
 asyncpg
