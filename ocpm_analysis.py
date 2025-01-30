@@ -1,11 +1,13 @@
 # ocpm_analysis.py
+
 import pandas as pd
 import networkx as nx
 from typing import Dict, List, Optional, Tuple
 from dataclasses import dataclass
+from collections import defaultdict
+import streamlit as st
 import plotly.graph_objects as go
-
-
+import numpy as np
 import os
 
 # Add this at the start of your script, before any other imports
@@ -91,8 +93,6 @@ class OCPMAnalyzer:
                     objects_map[obj_id] = True
 
         return ocel_data
-
-    # In OCPMAnalyzer class
 
     def save_ocel(self, output_path: str = "ocpm_output/process_data.json") -> str:
         """Save OCPM data in OCEL format."""
@@ -359,23 +359,6 @@ class OCPMVisualizer:
         ]))
 
         return figures
-
-
-import pandas as pd
-import networkx as nx
-import matplotlib.pyplot as plt
-from datetime import datetime
-from typing import Dict, List, Optional, Tuple
-import pm4py
-from dataclasses import dataclass
-from collections import defaultdict
-import streamlit as st
-import plotly.graph_objects as go
-import numpy as np
-from pathlib import Path
-import io
-from PIL import Image
-import pydot
 
 """Modified create_ocpm_ui to generate OCEL files."""
 

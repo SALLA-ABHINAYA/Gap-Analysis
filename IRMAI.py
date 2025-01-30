@@ -1,34 +1,24 @@
-import logging
-
-import numpy as np
 import streamlit as st
-
 import json
 import pandas as pd
 from openai import OpenAI
-from pathlib import Path
 import os
 from Unfair_Advanced_Process_Logs_Analytics import UnfairOCELAnalyzer
-
-from ocpm_analysis import create_ocpm_ui
 from ai_ocel_analyzer import AIOCELAnalyzer
 import plotly.graph_objects as go
 from datetime import datetime, timedelta
 from dataclasses import dataclass
 from typing import Dict, List, Any, Optional, Tuple
-import plotly.express as px
-from collections import defaultdict
 import logging
 import traceback
 from datetime import datetime
 from typing import Dict, List
 from neo4j import GraphDatabase
 
-from pages.FMEA_Analysis import display_fmea_analysis
-
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
 
 @dataclass
 class GapFindings:
@@ -541,6 +531,7 @@ class GapAnalysisVisualizer:
             self.logger.error(f"Error generating dashboard: {str(e)}")
             return {}
 
+
 @dataclass
 class GapFindings:
     """Data class for gap analysis findings"""
@@ -551,6 +542,7 @@ class GapFindings:
     expected_state: Any
     impact: str
     recommendations: List[str]
+
 
 class GapDataValidator:
     """Validates and generates gap analysis data"""
@@ -744,6 +736,7 @@ class GapDataValidator:
             logger.error(f"Error getting gap metrics: {str(e)}")
             logger.error(traceback.format_exc())
             return self._get_default_metrics()
+
 
 class FXTradingGapAnalyzer:
     """Comprehensive gap analyzer for FX trading processes"""
@@ -1251,6 +1244,7 @@ class FXTradingGapAnalyzer:
         except Exception as e:
             logger.error(f"Error closing Neo4j connection: {str(e)}")
 
+
 def handle_data_import():
     """Handle data import operations"""
     st.subheader("Data Import")
@@ -1341,6 +1335,7 @@ def display_visualization_section(fig: go.Figure, explanation: str, title: str):
             """,
             unsafe_allow_html=True
         )
+
 
 def handle_unfairness_analysis():
     """Handle unfairness analysis operations"""
@@ -1511,6 +1506,7 @@ def display_analysis_results(results):
         if results.get('resources'):
             st.dataframe(pd.DataFrame(results['resources']))
 
+
 def main():
     st.set_page_config(
         page_title="IRMAI Process Analytics",
@@ -1521,3 +1517,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

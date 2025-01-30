@@ -18,7 +18,6 @@ import warnings
 import logging
 from pathlib import Path
 
-
 warnings.filterwarnings('ignore')
 
 # Configure logging
@@ -27,7 +26,6 @@ logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 )
 logger = logging.getLogger(__name__)
-
 
 @dataclass
 class OutlierMetrics:
@@ -71,7 +69,8 @@ class UnfairOCELAnalyzer:
 
             # Process data efficiently
             self._process_data()
-            self._process_outliers()
+
+            # self._process_outliers() #Note : _process_outliers is already getting called in _process_data above
 
             logger.info("UnfairOCELAnalyzer initialization completed successfully")
 
@@ -344,39 +343,147 @@ class UnfairOCELAnalyzer:
             raise
 
     def _detect_duration_outliers(self) -> Dict[str, OutlierMetrics]:
-        # Convert timestamps to minutes for better granularity
-        duration_data = self.relationships_df.groupby(['activity', 'case_id']).agg({
-            'timestamp': lambda x: (x.max() - x.min()).total_seconds() / 60  # Converting to minutes
-        }).reset_index()
+        """
+        Detect outliers in activity durations across process instances with enhanced error handling
+        and data validation.
 
-        # Add activity-wise business thresholds (in minutes)
-        business_thresholds = {
-            'Trade Initiated': 30,
-            'Market Data Validation': 45,
-            'Quote Provided': 20,
-            # Add other activities...
-        }
+        Returns:
+            Dict[str, OutlierMetrics]: Mapping of activities to their outlier metrics
+        """
+        try:
+            # First, validate the input DataFrame
+            required_columns = ['case_id', 'activity', 'timestamp']
+            for col in required_columns:
+                if col not in self.relationships_df.columns:
+                    logger.error(f"Missing required column: {col}")
+                    logger.debug(f"Available columns: {self.relationships_df.columns.tolist()}")
+                    raise ValueError(f"Missing required column: {col}")
 
-        outliers = {}
-        for activity in duration_data['activity'].unique():
-            durations = duration_data[duration_data['activity'] == activity]['timestamp']
-            if len(durations) > 1:
-                z_scores = np.abs(stats.zscore(durations))
-                threshold = business_thresholds.get(activity, 60)  # Default 60 min
+            # Convert timestamp to datetime if not already
+            if not pd.api.types.is_datetime64_any_dtype(self.relationships_df['timestamp']):
+                self.relationships_df['timestamp'] = pd.to_datetime(self.relationships_df['timestamp'])
 
-                outliers[activity] = OutlierMetrics(
-                    z_score=float(np.mean(z_scores)),
-                    is_outlier=any(durations > threshold),
-                    details={
-                        'mean_duration_minutes': float(np.mean(durations)),
-                        'outlier_cases': duration_data[
-                            (duration_data['activity'] == activity) &
-                            (durations > threshold)
-                            ]['case_id'].tolist(),
-                        'threshold_minutes': threshold
-                    }
-                )
-        return outliers
+            # Sort and prepare case data
+            case_data = self.relationships_df.sort_values(['case_id', 'timestamp'])
+
+            # Initialize list to store duration records
+            duration_records = []
+
+            # Process each case
+            for case_id, case_group in case_data.groupby('case_id'):
+                # Get the activities in this case in chronological order
+                activities = case_group['activity'].tolist()
+                timestamps = case_group['timestamp'].tolist()
+
+                # Track activity timing
+                activity_timing = {}
+
+                # Process events in sequence
+                for i in range(len(activities)):
+                    current_activity = activities[i]
+
+                    # If this is the first occurrence of the activity in this case
+                    if current_activity not in activity_timing:
+                        activity_timing[current_activity] = {
+                            'start': timestamps[i],
+                            'last_seen': timestamps[i]
+                        }
+                    else:
+                        # Calculate duration for this activity instance
+                        duration = (timestamps[i] - activity_timing[current_activity]['last_seen']).total_seconds() / 60
+
+                        # Only record if duration is > 0
+                        if duration > 0:
+                            duration_records.append({
+                                'case_id': case_id,
+                                'activity': current_activity,
+                                'duration': duration,
+                                'start_time': activity_timing[current_activity]['last_seen'],
+                                'end_time': timestamps[i]
+                            })
+
+                        # Update last seen timestamp
+                        activity_timing[current_activity]['last_seen'] = timestamps[i]
+
+            # Convert records to DataFrame
+            if not duration_records:
+                logger.warning("No duration records found")
+                return {}
+
+            duration_df = pd.DataFrame(duration_records)
+            logger.debug(f"Created duration DataFrame with shape {duration_df.shape}")
+            logger.debug(f"Columns: {duration_df.columns.tolist()}")
+
+            # Define business thresholds (in minutes)
+            business_thresholds = {
+                'Trade Initiated': 30,
+                'Market Data Validation': 45,
+                'Quote Provided': 20,
+                'Trade Execution': 15,
+                'Risk Assessment': 60,
+                'Settlement Processing': 120,
+                'Position Reconciliation': 90
+            }
+
+            outliers = {}
+
+            # Process each activity
+            for activity in duration_df['activity'].unique():
+                activity_durations = duration_df[duration_df['activity'] == activity]['duration']
+
+                if len(activity_durations) > 1:
+                    # Calculate statistical measures with error handling
+                    try:
+                        z_scores = np.abs(stats.zscore(activity_durations))
+                        mean_duration = float(np.mean(activity_durations))
+                        median_duration = float(np.median(activity_durations))
+                        std_duration = float(np.std(activity_durations))
+
+                        # Get business threshold with fallback to statistical
+                        threshold = business_thresholds.get(
+                            activity,
+                            float(np.percentile(activity_durations, 75) +
+                                  1.5 * (np.percentile(activity_durations, 75) - np.percentile(activity_durations, 25)))
+                        )
+
+                        # Identify outlier cases
+                        outlier_mask = duration_df['duration'] > threshold
+                        outlier_cases = duration_df[
+                            (duration_df['activity'] == activity) & outlier_mask
+                            ]['case_id'].unique().tolist()
+
+                        # Calculate outlier percentage
+                        outlier_percentage = (len(outlier_cases) / len(activity_durations)) * 100
+
+                        outliers[activity] = OutlierMetrics(
+                            z_score=float(np.mean(z_scores)),
+                            is_outlier=len(outlier_cases) > 0,
+                            details={
+                                'mean_duration_minutes': mean_duration,
+                                'median_duration_minutes': median_duration,
+                                'std_duration_minutes': std_duration,
+                                'outlier_cases': outlier_cases,
+                                'threshold_minutes': threshold,
+                                'outlier_percentage': outlier_percentage,
+                                'total_instances': len(activity_durations),
+                                'statistical_summary': {
+                                    'q1': float(np.percentile(activity_durations, 25)),
+                                    'q3': float(np.percentile(activity_durations, 75)),
+                                    'min': float(np.min(activity_durations)),
+                                    'max': float(np.max(activity_durations))
+                                }
+                            }
+                        )
+                    except Exception as e:
+                        logger.error(f"Error processing activity {activity}: {str(e)}")
+                        continue
+
+            return outliers
+
+        except Exception as e:
+            logger.error(f"Error in duration outlier detection: {str(e)}")
+            logger.error(traceback.format_exc())
+            return {}
 
     def _detect_resource_outliers(self) -> Dict[str, OutlierMetrics]:
         """Detect resource workload outliers"""

@@ -9,11 +9,6 @@ from openai import OpenAI
 import pandas as pd
 import plotly.express as px
 import json
-from typing import Dict, List
-import plotly.graph_objects as go
-import numpy as np
-import matplotlib.pyplot as plt
-import seaborn as sns
 from neo4j import GraphDatabase
 
 
