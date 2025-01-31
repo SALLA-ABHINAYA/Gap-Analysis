@@ -1453,41 +1453,6 @@ def import_to_neo4j(credentials, org_file, guidelines_file, ocel_file):
         driver.close()
 
 
-def run_neo4j_analysis(credentials):
-    """Run analysis queries in Neo4j"""
-    driver = GraphDatabase.driver(
-        credentials['uri'],
-        auth=(credentials['user'], credentials['password'])
-    )
-
-    try:
-        results = {}
-        with driver.session() as session:
-            # Process flow analysis
-            process_flow = session.run("""
-                MATCH (e1:Event)-[r:NEXT]->(e2:Event)
-                RETURN e1.activity as source, 
-                       e2.activity as target, 
-                       count(*) as frequency
-                ORDER BY frequency DESC
-            """)
-            results['process_flow'] = process_flow.data()
-
-            # Resource analysis
-            resource_analysis = session.run("""
-                MATCH (e:Event)
-                WITH e.resource as resource, count(*) as events
-                RETURN resource, events
-                ORDER BY events DESC
-            """)
-            results['resources'] = resource_analysis.data()
-
-        return results
-
-    finally:
-        driver.close()
-
-
 def display_analysis_results(results):
     """Display analysis results"""
     if not results:
