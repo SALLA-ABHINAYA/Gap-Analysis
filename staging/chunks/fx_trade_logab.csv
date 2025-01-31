@@ -1,4 +1,4 @@
- Scalping;;;;;;;;;
+case_id;activity;timestamp;resource;currency_pair;option_type;booking_system;client_type;trading_strategy;strike_price;premium;notional_amount;delta;gamma;vega;theta;risk_score;limit_usage
 Case_1251;Volatility Surface Analysis;2024-11-03 20:28:10.513227;Hedge Desk C;EUR/GBP;Risk Reversal;Murex;Corporate;Gamma Scalping;;;;;;;;;
 Case_1251;Trade Execution;2024-11-03 20:36:10.513227;Hedge Desk C;EUR/GBP;Risk Reversal;Murex;Corporate;Gamma Scalping;0.9399;0.0024;39459114.0;;;;;;
 Case_1251;Trade Allocation;2024-11-03 21:30:10.513227;Hedge Desk C;EUR/GBP;Risk Reversal;Murex;Corporate;Gamma Scalping;;;;;;;;;
@@ -7735,4 +7735,3 @@ Case_1505;Client Limit Validation;2024-10-23 08:21:10.537950;Client Desk D;EUR/G
 Case_1505;Credit Check;2024-10-23 10:42:10.537950;Client Desk D;EUR/GBP;Vanilla Put;Summit;Hedge Fund;Delta Hedge;;;;;;;;;
 Case_1505;Exercise Decision;2024-10-23 11:27:10.537950;Client Desk D;EUR/GBP;Vanilla Put;Summit;Hedge Fund;Delta Hedge;;;;;;;;;
 Case_1505;KYC Refresh Check;2024-10-23 13:18:10.537950;Client Desk D;EUR/GBP;Vanilla Put;Summit;Hedge Fund;Delta Hedge;;;;;;;;;
-Case_1505;Position Reconciliation;2024-10-23 13:42:10.537950;Client Desk

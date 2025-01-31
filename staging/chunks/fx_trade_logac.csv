@@ -1,4 +1,4 @@
- D;EUR/GBP;Vanilla Put;Summit;Hedge Fund;Delta Hedge;;;;;;;;;
+case_id;activity;timestamp;resource;currency_pair;option_type;booking_system;client_type;trading_strategy;strike_price;premium;notional_amount;delta;gamma;vega;theta;risk_score;limit_usage
 Case_1505;Regulatory Reporting Generation;2024-10-23 19:08:10.537950;Client Desk D;EUR/GBP;Vanilla Put;Summit;Hedge Fund;Delta Hedge;;;;;;;;;
 Case_1506;Trade Initiated;2024-10-26 19:18:10.538962;Options Desk A;GBP/USD;Strangle;Summit;Corporate;Vega Trading;;;;;;;;;
 Case_1506;Volatility Surface Analysis;2024-10-26 19:52:10.538962;Options Desk A;GBP/USD;Strangle;Summit;Corporate;Vega Trading;;;;;;;;;
@@ -7750,4 +7750,3 @@ Case_1756;Greeks Calculation;2024-11-07 07:33:10.567356;Market Maker B;AUD/USD;R
 Case_1756;ISDA Master Agreement Check;2024-11-07 07:42:10.567356;Market Maker B;AUD/USD;Risk Reversal;Murex;Hedge Fund;Gamma Scalping;;;;;;;;;
 Case_1756;Trade Matching;2024-11-07 08:33:10.567356;Market Maker B;AUD/USD;Risk Reversal;Murex;Hedge Fund;Gamma Scalping;;;;;;;;;
 Case_1756;Trade Allocation;2024-11-07 08:50:10.567356;Market Maker B;AUD/USD;Risk Reversal;Murex;Hedge Fund;Gamma Scalping;;;;;;;;;
-Case_1756;Position Reconciliation;2024-11-07 08:52:10.567356;Mark
