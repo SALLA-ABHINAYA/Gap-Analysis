@@ -1607,7 +1607,7 @@ class UnfairOCELAnalyzer:
                 with col1:
                     # Create case outlier visualization
                     case_data = []
-                    case_outliers = {}
+                    case_details = {}  # Store all cases data
 
                     for case_id, metrics in self.outliers['case_complexity'].items():
                         case_data.append({
@@ -1618,8 +1618,8 @@ class UnfairOCELAnalyzer:
                             'Activity Count': metrics.details['metrics']['activity_variety']
                         })
 
-                        if metrics.is_outlier:
-                            case_outliers[case_id] = metrics.details
+                        # Store details for all cases
+                        case_details[case_id] = metrics.details
 
                     # Create case plot
                     fig = px.scatter(
@@ -1643,15 +1643,26 @@ class UnfairOCELAnalyzer:
                     )
                     st.plotly_chart(fig, use_container_width=True)
 
-                    # Show outlier details if any selected
-                    if case_outliers:
+                    # Show case details for any selected case
+                    if case_details:
                         selected_case = st.selectbox(
                             "Select case for details",
-                            options=list(case_outliers.keys())
+                            options=list(case_details.keys())
                         )
                         if selected_case:
-                            details = case_outliers[selected_case]
+                            details = case_details[selected_case]
                             st.write("### Case Details")
+
+                            # Add outlier indicator
+                            if case_data[next(i for i, x in enumerate(case_data) if x['Case'] == selected_case)][
+                                'Is Outlier']:
+                                st.warning("⚠️ This case is identified as an outlier")
+
+                            # Show metrics
+                            cols = st.columns(3)
+                            cols[0].metric("Total Events", details['metrics']['total_events'])
+                            cols[1].metric("Activities", details['metrics']['activity_variety'])
+                            cols[2].metric("Duration (hrs)", f"{details['temporal']['duration_hours']:.1f}")
 
                             # Show timeline
                             events_df = self._get_events_dataframe(details['events']['all_events'])
@@ -1662,17 +1673,27 @@ class UnfairOCELAnalyzer:
                                     x='timestamp',
                                     y='activity',
                                     color='resource',
-                                    title='Case Timeline'
+                                    title=f'Case Timeline - {selected_case}',
+                                    labels={'timestamp': 'Time', 'activity': 'Activity', 'resource': 'Resource'}
+                                )
+                                timeline_fig.update_layout(
+                                    height=400,
+                                    showlegend=True,
+                                    hovermode='closest'
                                 )
                                 st.plotly_chart(timeline_fig)
-                                st.dataframe(events_df)
+
+                                # Show event details table
+                                st.write("### Event Details")
+                                st.dataframe(events_df.style.highlight_max(subset=['timestamp']))
 
                 with col2:
                     case_metrics = {
-                        'complex_cases': len([c for c in case_outliers.values() if c['metrics']['total_events'] > 10]),
-                        'timestamp_cases': len(
-                            [c for c in case_outliers.values() if c['temporal']['duration_hours'] > 24]),
-                        'object_cases': len(case_outliers)
+                        'complex_cases': len([c for c in self.outliers['case_complexity'].values() if
+                                              c.details['metrics']['total_events'] > 10]),
+                        'timestamp_cases': len([c for c in self.outliers['case_complexity'].values() if
+                                                c.details['temporal']['duration_hours'] > 24]),
+                        'object_cases': len(self.outliers['case_complexity'])
                     }
                     st.markdown("### Understanding Case Complexity")
                     explanation = self.get_explanation('case', case_metrics)
