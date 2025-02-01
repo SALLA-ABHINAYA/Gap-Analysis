@@ -155,90 +155,6 @@ class IntegratedAPAAnalyzer:
         return figures
 
 
-def run_neo4j_import():
-    """Neo4j data import functionality"""
-    st.subheader("Neo4j Data Integration")
-
-    # Neo4j Configuration
-    with st.expander("Database Configuration", expanded=True):
-        col1, col2, col3 = st.columns(3)
-        with col1:
-            neo4j_uri = st.text_input("Neo4j URI", "bolt://localhost:7689")
-        with col2:
-            neo4j_user = st.text_input("Neo4j Username", "neo4j")
-        with col3:
-            neo4j_password = st.text_input("Neo4j Password", type="password")
-
-    # File Upload Section
-    col1, col2 = st.columns(2)
-
-    with col1:
-        st.markdown("### Process Data Files")
-        org_context_file = st.file_uploader(
-            "Upload Organizational Context (CSV)",
-            type=['csv'],
-            help="Upload CSV file containing organizational context"
-        )
-
-        guidelines_file = st.file_uploader(
-            "Upload Process Guidelines (CSV)",
-            type=['csv'],
-            help="Upload CSV file containing process guidelines"
-        )
-
-        ocel_file = st.file_uploader(
-            "Upload OCEL Process Log (JSON)",
-            type=['json'],
-            help="Upload OCEL format process log in JSON"
-        )
-
-    with col2:
-        st.markdown("### Database Operations")
-        if st.button("Test Neo4j Connection"):
-            try:
-                driver = GraphDatabase.driver(
-                    neo4j_uri,
-                    auth=(neo4j_user, neo4j_password)
-                )
-                with driver.session() as session:
-                    result = session.run("RETURN 1")
-                    result.single()
-                st.success("Successfully connected to Neo4j!")
-                driver.close()
-            except Exception as e:
-                st.error(f"Failed to connect to Neo4j: {str(e)}")
-
-        if st.button("Import Data to Neo4j"):
-            if not (org_context_file and guidelines_file and ocel_file):
-                st.warning("Please upload all required files first")
-            else:
-                try:
-                    from process_gap_analysis import ProcessGapAnalyzer
-                    analyzer = ProcessGapAnalyzer(
-                        neo4j_uri=neo4j_uri,
-                        neo4j_user=neo4j_user,
-                        neo4j_password=neo4j_password
-                    )
-
-                    with st.spinner("Setting up Neo4j database..."):
-                        analyzer.setup_database()
-
-                    with st.spinner("Importing organizational context..."):
-                        analyzer.load_org_context(org_context_file)
-
-                    with st.spinner("Importing guidelines..."):
-                        analyzer.load_guidelines(guidelines_file)
-
-                    with st.spinner("Importing OCEL events..."):
-                        analyzer.load_ocel_events(ocel_file)
-
-                    st.success("All data successfully imported to Neo4j!")
-
-                except Exception as e:
-                    st.error(f"Error during data import: {str(e)}")
-                    st.error(f"Detailed error:\n{traceback.format_exc()}")
-
-
 def run_unfairness_analysis():
     """Run unfairness analysis"""
     st.subheader("Unfairness Analysis")
@@ -247,7 +163,6 @@ def run_unfairness_analysis():
     if not ocel_path or not os.path.exists(ocel_path):
         st.warning("⚠️ Please process data in the Process Analysis tab first.")
         return
-
     try:
         analyzer = UnfairOCELAnalyzer(ocel_path)
         analyzer.display_enhanced_analysis()

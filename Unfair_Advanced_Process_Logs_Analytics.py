@@ -1,4 +1,5 @@
 import traceback
+from collections import defaultdict, Counter
 
 import streamlit as st
 import json
@@ -33,6 +34,246 @@ class OutlierMetrics:
     is_outlier: bool
     details: Dict[str, Any]
 
+
+class OutlierVisualizer:
+    """Component for creating interactive visualizations with OCEL traceability"""
+
+    def __init__(self, analyzer):
+        self.analyzer = analyzer
+        self.ocel_data = analyzer.ocel_data
+
+    def create_activity_duration_plot(self) -> go.Figure:
+        """Create duration outlier plot with detailed event tracing"""
+        duration_data = []
+        outlier_details = {}
+
+        # Process duration outliers
+        for activity, metrics in self.analyzer.outliers['duration'].items():
+            outlier_events = metrics.details.get('outlier_events', {})
+
+            duration_data.append({
+                'Activity': activity,
+                'Z-Score': metrics.z_score,
+                'Is Outlier': metrics.is_outlier,
+                'Total Events': metrics.details['total_events'],
+                'Outside Hours': len(outlier_events.get('outside_hours', [])),
+                'Sequence Issues': len(outlier_events.get('sequence_position', [])),
+                'Timing Gaps': len(outlier_events.get('timing_gap', []))
+            })
+
+            # Store detailed event mappings for tooltips
+            if metrics.is_outlier:
+                outlier_details[activity] = {
+                    'events': outlier_events,
+                    'metrics': metrics.details.get('activity_stats', {})
+                }
+
+        df = pd.DataFrame(duration_data)
+
+        fig = px.scatter(
+            df,
+            x='Activity',
+            y='Z-Score',
+            size='Total Events',
+            color='Is Outlier',
+            custom_data=['Outside Hours', 'Sequence Issues', 'Timing Gaps']
+        )
+
+        # Add detailed tooltips
+        fig.update_traces(
+            hovertemplate=(
+                    "<b>%{x}</b><br>" +
+                    "Z-Score: %{y:.2f}<br>" +
+                    "Total Events: %{marker.size}<br>" +
+                    "Outside Hours: %{customdata[0]}<br>" +
+                    "Sequence Issues: %{customdata[1]}<br>" +
+                    "Timing Gaps: %{customdata[2]}<br>" +
+                    "<extra></extra>"
+            )
+        )
+
+        # Store outlier details for drilldown
+        fig.outlier_details = outlier_details
+
+        return fig
+
+    def get_outlier_details(self, activity: str) -> Dict:
+        """Get detailed OCEL data for outlier events"""
+        if activity not in self.analyzer.outliers['duration']:
+            return {}
+
+        metrics = self.analyzer.outliers['duration'][activity]
+        if not metrics.is_outlier:
+            return {}
+
+        outlier_events = metrics.details['outlier_events']
+
+        # Get full OCEL context for each outlier event
+        event_details = defaultdict(list)
+
+        for violation_type, events in outlier_events.items():
+            for event in events:
+                event_id = event['event_id']
+                ocel_event = next((e for e in self.ocel_data['ocel:events']
+                                   if e['ocel:id'] == event_id), None)
+
+                if ocel_event:
+                    event_details[violation_type].append({
+                        'event_id': event_id,
+                        'timestamp': ocel_event['ocel:timestamp'],
+                        'activity': ocel_event['ocel:activity'],
+                        'case_id': ocel_event.get('ocel:attributes', {}).get('case_id'),
+                        'resource': ocel_event.get('ocel:attributes', {}).get('resource'),
+                        'objects': [obj['id'] for obj in ocel_event.get('ocel:objects', [])],
+                        'violation_details': event.get('details', {})
+                    })
+
+        return {
+            'summary': {
+                'total_violations': len([e for events in event_details.values() for e in events]),
+                'violation_types': dict(Counter(event_details.keys())),
+                'activity_stats': metrics.details.get('activity_stats', {})
+            },
+            'violations': dict(event_details)
+        }
+
+    def create_resource_workload_plot(self) -> Tuple[go.Figure, Dict]:
+        """Create resource workload plot with event tracing"""
+        workload_data = []
+        outlier_details = {}
+
+        for resource, metrics in self.analyzer.outliers['resource_load'].items():
+            workload_data.append({
+                'Resource': resource,
+                'Z-Score': metrics.z_score,
+                'Is Outlier': metrics.is_outlier,
+                'Total Events': metrics.details['metrics']['total_events'],
+                'Cases': len(metrics.details['events']['cases']),
+                'Activities': len(metrics.details['events']['activities'])
+            })
+
+            if metrics.is_outlier:
+                outlier_details[resource] = {
+                    'events': metrics.details['events'],
+                    'metrics': metrics.details['metrics'],
+                    'patterns': metrics.details['outlier_patterns']
+                }
+
+        df = pd.DataFrame(workload_data)
+
+        fig = px.scatter(
+            df,
+            x='Resource',
+            y='Z-Score',
+            size='Total Events',
+            color='Is Outlier',
+            custom_data=['Cases', 'Activities']
+        )
+
+        fig.update_traces(
+            hovertemplate=(
+                    "<b>%{x}</b><br>" +
+                    "Z-Score: %{y:.2f}<br>" +
+                    "Total Events: %{marker.size}<br>" +
+                    "Cases: %{customdata[0]}<br>" +
+                    "Activities: %{customdata[1]}<br>" +
+                    "<extra></extra>"
+            )
+        )
+
+        # Return both figure and outlier details
+        return fig, outlier_details
+
+    def create_case_complexity_plot(self) -> go.Figure:
+        """Create case complexity plot with event tracing"""
+        case_data = []
+        outlier_details = {}
+
+        for case_id, metrics in self.analyzer.outliers['case_complexity'].items():
+            case_data.append({
+                'Case': case_id,
+                'Z-Score': metrics.z_score,
+                'Is Outlier': metrics.is_outlier,
+                'Total Events': metrics.details['metrics']['total_events'],
+                'Activities': metrics.details['metrics']['activity_variety'],
+                'Duration': metrics.details['temporal']['duration_hours']
+            })
+
+            if metrics.is_outlier:
+                outlier_details[case_id] = {
+                    'events': metrics.details['events'],
+                    'temporal': metrics.details['temporal'],
+                    'patterns': metrics.details['outlier_patterns']
+                }
+
+        df = pd.DataFrame(case_data)
+
+        fig = px.scatter(
+            df,
+            x='Case',
+            y='Z-Score',
+            size='Total Events',
+            color='Is Outlier',
+            custom_data=['Activities', 'Duration']
+        )
+
+        fig.update_traces(
+            hovertemplate=(
+                    "<b>%{x}</b><br>" +
+                    "Z-Score: %{y:.2f}<br>" +
+                    "Total Events: %{marker.size}<br>" +
+                    "Activities: %{customdata[0]}<br>" +
+                    "Duration (hrs): %{customdata[1]:.1f}<br>" +
+                    "<extra></extra>"
+            )
+        )
+
+        fig.outlier_details = outlier_details
+        return fig
+
+    def display_outlier_drilldown(self, outlier_type: str, selected_item: str):
+        """Display detailed OCEL data for selected outlier"""
+        if outlier_type == 'duration':
+            details = self.get_outlier_details(selected_item)
+            if not details:
+                st.warning("No outlier details available")
+                return
+
+            # Summary metrics
+            st.subheader("Outlier Summary")
+            col1, col2, col3 = st.columns(3)
+            with col1:
+                st.metric("Total Violations", details['summary']['total_violations'])
+            with col2:
+                st.metric("Violation Types", len(details['summary']['violation_types']))
+            with col3:
+                st.metric("Activity Completion Rate",
+                          f"{details['summary']['activity_stats'].get('completion_rate', 0):.1f}%")
+
+            # Violation details
+            st.subheader("Violation Details")
+            tabs = st.tabs(list(details['violations'].keys()))
+
+            for tab, (violation_type, events) in zip(tabs, details['violations'].items()):
+                with tab:
+                    st.markdown(f"**{violation_type.replace('_', ' ').title()}**")
+                    st.markdown(f"Found {len(events)} violations")
+
+                    # Create event timeline
+                    timeline_data = pd.DataFrame(events)
+                    if not timeline_data.empty:
+                        timeline_data['timestamp'] = pd.to_datetime(timeline_data['timestamp'])
+                        fig = px.scatter(
+                            timeline_data,
+                            x='timestamp',
+                            y='case_id',
+                            color='resource',
+                            hover_data=['event_id', 'violation_details']
+                        )
+                        st.plotly_chart(fig)
+
+                    # Show event details table
+                    st.dataframe(timeline_data)
 
 class UnfairOCELAnalyzer:
     """Enhanced analyzer for identifying unfairness and outliers in process mining"""
@@ -365,33 +606,25 @@ class UnfairOCELAnalyzer:
             raise
 
     def _detect_duration_outliers(self) -> Dict[str, OutlierMetrics]:
-        """
-        Detect duration-related outliers in OCPM event log by analyzing:
-        1. Time gaps between consecutive events for the same object
-        2. Timing patterns relative to case lifecycle
-        3. Activity timing relative to expected business hours
-
-        Returns:
-            Dict mapping activities to their OutlierMetrics including timing analysis
-        """
+        """Enhanced duration outlier detection with full event traceability"""
         try:
-            # Convert events DataFrame to include required columns
             events_df = pd.DataFrame([{
                 'event_id': event['ocel:id'],
                 'timestamp': pd.to_datetime(event['ocel:timestamp']),
                 'activity': event['ocel:activity'],
                 'case_id': event.get('ocel:attributes', {}).get('case_id', 'Unknown'),
-                'object_ids': [obj['id'] for obj in event.get('ocel:objects', [])]
+                'resource': event.get('ocel:attributes', {}).get('resource', 'Unknown'),
+                'object_ids': [obj['id'] for obj in event.get('ocel:objects', [])],
+                'object_types': list(set(obj.get('type', 'Unknown') for obj in event.get('ocel:objects', [])))
             } for event in self.ocel_data['ocel:events']])
 
-            # Sort by timestamp
             events_df = events_df.sort_values('timestamp')
 
-            # Define business hour boundaries (e.g., 9 AM to 5 PM)
+            # Business hour boundaries
             business_start = pd.Timestamp.now().replace(hour=9, minute=0)
             business_end = pd.Timestamp.now().replace(hour=17, minute=0)
 
-            # Activity-specific timing thresholds (in minutes)
+            # Activity-specific timing thresholds (minutes)
             timing_thresholds = {
                 'Trade Initiated': 15,
                 'Market Data Validation': 30,
@@ -403,85 +636,124 @@ class UnfairOCELAnalyzer:
             }
 
             outliers = {}
-
             for activity in events_df['activity'].unique():
                 activity_events = events_df[events_df['activity'] == activity]
 
-                # Initialize metrics for this activity
+                # Initialize detailed tracking
+                outlier_events = {
+                    'outside_hours': [],
+                    'sequence_position': [],
+                    'timing_gap': [],
+                    'resource_handover': []
+                }
+
                 metrics = {
                     'total_events': len(activity_events),
                     'outside_hours_count': 0,
-                    'threshold_violations': 0,
-                    'object_timing_violations': 0,
-                    'timing_patterns': []
+                    'sequence_violations': 0,
+                    'timing_violations': 0,
+                    'resource_violations': 0
                 }
 
-                # 1. Check for events outside business hours
-                for _, event in activity_events.iterrows():
+                # Track events outside business hours
+                for idx, event in activity_events.iterrows():
                     event_time = event['timestamp'].replace(year=business_start.year,
                                                             month=business_start.month,
                                                             day=business_start.day)
                     if event_time < business_start or event_time > business_end:
                         metrics['outside_hours_count'] += 1
-                        metrics['timing_patterns'].append({
+                        outlier_events['outside_hours'].append({
                             'event_id': event['event_id'],
                             'timestamp': event['timestamp'],
-                            'violation_type': 'outside_hours'
+                            'case_id': event['case_id'],
+                            'resource': event['resource'],
+                            'objects': event['object_ids'],
+                            'violation_type': 'outside_hours',
+                            'details': {
+                                'expected_window': f"{business_start.strftime('%H:%M')} - {business_end.strftime('%H:%M')}",
+                                'actual_time': event_time.strftime('%H:%M')
+                            }
                         })
 
-                # 2. Check timing relative to case progression
+                # Track sequence position violations
                 case_events = events_df.groupby('case_id')
                 for case_id, case_data in case_events:
                     case_activities = case_data['activity'].tolist()
                     if activity in case_activities:
                         activity_index = case_activities.index(activity)
                         expected_index = self._get_expected_activity_index(activity)
+
                         if expected_index is not None and abs(activity_index - expected_index) > 2:
-                            metrics['threshold_violations'] += 1
-                            metrics['timing_patterns'].append({
+                            metrics['sequence_violations'] += 1
+                            relevant_event = activity_events[activity_events['case_id'] == case_id].iloc[0]
+                            outlier_events['sequence_position'].append({
+                                'event_id': relevant_event['event_id'],
                                 'case_id': case_id,
+                                'timestamp': relevant_event['timestamp'],
+                                'resource': relevant_event['resource'],
+                                'objects': relevant_event['object_ids'],
                                 'violation_type': 'sequence_position',
-                                'expected_index': expected_index,
-                                'actual_index': activity_index
+                                'details': {
+                                    'expected_position': expected_index,
+                                    'actual_position': activity_index,
+                                    'case_sequence': case_activities
+                                }
                             })
 
-                # 3. Check timing for related objects
-                for _, event in activity_events.iterrows():
+                # Track timing gaps between related events
+                for idx, event in activity_events.iterrows():
                     for obj_id in event['object_ids']:
                         obj_events = events_df[events_df['object_ids'].apply(lambda x: obj_id in x)]
                         if len(obj_events) > 1:
                             obj_timeline = obj_events['timestamp'].tolist()
                             current_index = obj_timeline.index(event['timestamp'])
+
                             if current_index > 0:
-                                time_since_last = (obj_timeline[current_index] -
-                                                   obj_timeline[current_index - 1]).total_seconds() / 60
+                                time_gap = (obj_timeline[current_index] -
+                                            obj_timeline[current_index - 1]).total_seconds() / 60
                                 threshold = timing_thresholds.get(activity, 30)
-                                if time_since_last > threshold:
-                                    metrics['object_timing_violations'] += 1
-                                    metrics['timing_patterns'].append({
+
+                                if time_gap > threshold:
+                                    metrics['timing_violations'] += 1
+                                    outlier_events['timing_gap'].append({
                                         'event_id': event['event_id'],
+                                        'case_id': event['case_id'],
+                                        'timestamp': event['timestamp'],
+                                        'resource': event['resource'],
                                         'object_id': obj_id,
-                                        'violation_type': 'object_timing',
-                                        'time_gap': time_since_last,
-                                        'threshold': threshold
+                                        'objects': event['object_ids'],
+                                        'violation_type': 'timing_gap',
+                                        'details': {
+                                            'time_gap_minutes': time_gap,
+                                            'threshold_minutes': threshold,
+                                            'previous_event': obj_events.iloc[current_index - 1]['event_id'],
+                                            'related_objects': [oid for oid in event['object_ids'] if oid != obj_id]
+                                        }
                                     })
 
-                # Calculate outlier score based on violations
-                total_checks = metrics['total_events'] * 3  # Three types of checks per event
+                # Calculate violation score
+                total_checks = metrics['total_events'] * 3
                 violation_score = (
                                           metrics['outside_hours_count'] +
-                                          metrics['threshold_violations'] +
-                                          metrics['object_timing_violations']
+                                          metrics['sequence_violations'] +
+                                          metrics['timing_violations']
                                   ) / total_checks if total_checks > 0 else 0
 
                 outliers[activity] = OutlierMetrics(
-                    z_score=float(violation_score * 10),  # Scale to 0-10
-                    is_outlier=violation_score > 0.3,  # More than 30% violations
+                    z_score=float(violation_score * 10),
+                    is_outlier=violation_score > 0.3,
                     details={
                         'metrics': metrics,
-                        'timing_patterns': metrics['timing_patterns'][:10],  # Limit to top 10 patterns
+                        'outlier_events': outlier_events,
                         'violation_rate': violation_score,
-                        'total_events': metrics['total_events']
+                        'total_events': metrics['total_events'],
+                        'activity_stats': {
+                            'avg_duration': float(activity_events.groupby('case_id')['timestamp']
+                                                  .agg(lambda x: (x.max() - x.min()).total_seconds() / 60).mean()),
+                            'resource_distribution': activity_events['resource'].value_counts().to_dict(),
+                            'object_type_distribution': pd.Series([ot for ots in activity_events['object_types']
+                                                                   for ot in ots]).value_counts().to_dict()
+                        }
                     }
                 )
 
@@ -512,149 +784,366 @@ class UnfairOCELAnalyzer:
             return None
 
     def _detect_resource_outliers(self) -> Dict[str, OutlierMetrics]:
-        """Detect resource workload outliers"""
-        resource_loads = self.relationships_df.groupby('resource').size()
-        if len(resource_loads) > 1:
-            z_scores = np.abs(stats.zscore(resource_loads))
+        """Optimized resource outlier detection with full event traceability"""
+        try:
+            # Pre-process events into a DataFrame for faster analysis
+            events_df = pd.DataFrame([{
+                'event_id': event['ocel:id'],
+                'timestamp': pd.to_datetime(event['ocel:timestamp']),
+                'resource': event.get('ocel:attributes', {}).get('resource', 'Unknown'),
+                'activity': event['ocel:activity'],
+                'case_id': event.get('ocel:attributes', {}).get('case_id', 'Unknown'),
+                'object_types': [obj.get('type', 'Unknown') for obj in event.get('ocel:objects', [])]
+            } for event in self.ocel_data['ocel:events']])
+
+            # Calculate metrics using vectorized operations
+            workload_metrics = events_df.groupby('resource').agg({
+                'event_id': 'count',
+                'case_id': 'nunique',
+                'activity': 'nunique',
+                'object_types': lambda x: len(set([item for sublist in x for item in sublist]))
+            }).rename(columns={
+                'event_id': 'total_events',
+                'case_id': 'unique_cases',
+                'activity': 'activity_variety',
+                'object_types': 'object_variety'
+            })
+
+            # Calculate z-scores for all metrics at once using vectorized operations
+            z_scores = pd.DataFrame()
+            for col in workload_metrics.columns:
+                z_scores[col] = (workload_metrics[col] - workload_metrics[col].mean()) / workload_metrics[col].std()
+
+            # Calculate composite z-scores
+            composite_z = np.abs(z_scores).mean(axis=1)
 
             outliers = {}
-            for resource, workload in resource_loads.items():
-                z_score = z_scores[resource]
+            for resource in workload_metrics.index:
+                # Get resource specific events
+                resource_events = events_df[events_df['resource'] == resource]
+
                 outliers[resource] = OutlierMetrics(
-                    z_score=float(z_score),
-                    is_outlier=z_score > 3,
+                    z_score=float(composite_z[resource]),
+                    is_outlier=composite_z[resource] > 3,
                     details={
-                        'workload': int(workload),  # Changed from 'load'
-                        'percentage': float(workload / len(self.relationships_df) * 100),
-                        'avg_duration': float(self.relationships_df[
-                                                  self.relationships_df['resource'] == resource
-                                                  ].groupby('case_id')['timestamp'].agg(
-                            lambda x: (x.max() - x.min()).total_seconds() / 3600
-                        ).mean())
+                        'metrics': workload_metrics.loc[resource].to_dict(),
+                        'events': {
+                            'all_events': resource_events['event_id'].tolist(),
+                            'cases': resource_events['case_id'].unique().tolist(),
+                            'activities': resource_events['activity'].unique().tolist(),
+                            'object_types': list(set([t for types in resource_events['object_types'] for t in types]))
+                        },
+                        'outlier_patterns': {
+                            'high_workload': workload_metrics.loc[resource, 'total_events'] > workload_metrics[
+                                'total_events'].mean() + 2 * workload_metrics['total_events'].std(),
+                            'high_variety': workload_metrics.loc[resource, 'activity_variety'] > workload_metrics[
+                                'activity_variety'].mean() + 2 * workload_metrics['activity_variety'].std(),
+                        }
                     }
                 )
 
             return outliers
-        return {}
+
+        except Exception as e:
+            logger.error(f"Error in resource outlier detection: {str(e)}")
+            logger.error(traceback.format_exc())
+            return {}
 
     def _detect_case_outliers(self) -> Dict[str, OutlierMetrics]:
-        case_metrics = self.relationships_df.groupby('case_id').agg({
-            'activity': 'nunique',  # Changed from lambda
-            'resource': 'nunique',
-            'timestamp': lambda x: (x.max() - x.min()).total_seconds() / 3600,
-            'object_type': 'nunique'
-        })
+        """Optimized case complexity outlier detection"""
+        try:
+            # Pre-process events into a DataFrame for faster analysis
+            events_df = pd.DataFrame([{
+                'event_id': event['ocel:id'],
+                'timestamp': pd.to_datetime(event['ocel:timestamp']),
+                'case_id': event.get('ocel:attributes', {}).get('case_id', 'Unknown'),
+                'activity': event['ocel:activity'],
+                'resource': event.get('ocel:attributes', {}).get('resource', 'Unknown'),
+                'object_types': [obj.get('type', 'Unknown') for obj in event.get('ocel:objects', [])]
+            } for event in self.ocel_data['ocel:events']])
 
-        # Adjusted thresholds based on OCEL log patterns
-        thresholds = {
-            'activity': 10,  # Changed from activities
-            'resource': 3,
-            'timestamp': 24,
-            'object_type': 2
-        }
+            # Calculate case metrics using vectorized operations
+            case_metrics = events_df.groupby('case_id').agg({
+                'event_id': 'count',
+                'activity': 'nunique',
+                'resource': 'nunique',
+                'timestamp': lambda x: (x.max() - x.min()).total_seconds() / 3600,
+                'object_types': lambda x: len(set([item for sublist in x for item in sublist]))
+            }).rename(columns={
+                'event_id': 'total_events',
+                'activity': 'activity_variety',
+                'resource': 'resource_variety',
+                'timestamp': 'duration_hours',
+                'object_types': 'object_variety'
+            })
 
-        outliers = {}
-        for metric in case_metrics.columns:  # Using actual DataFrame columns
-            data = case_metrics[metric]
-            threshold = thresholds.get(metric, np.percentile(data, 95))
+            # Calculate z-scores for all metrics at once
+            z_scores = pd.DataFrame()
+            for col in case_metrics.columns:
+                z_scores[col] = (case_metrics[col] - case_metrics[col].mean()) / case_metrics[col].std()
 
-            outliers[f'case_{metric}'] = OutlierMetrics(
-                z_score=float(np.mean(data > threshold)),
-                is_outlier=any(data > threshold),
-                details={
-                    'outlier_cases': case_metrics[data > threshold].index.tolist(),
-                    'threshold': threshold,
-                    'max_value': float(data.max()),
-                    'complexity_level': 'High' if data.max() > threshold * 1.5 else 'Medium'
-                }
-            )
-        return outliers
+            # Calculate composite z-scores
+            composite_z = np.abs(z_scores).mean(axis=1)
+
+            outliers = {}
+            for case_id in case_metrics.index:
+                # Get case specific events
+                case_events = events_df[events_df['case_id'] == case_id]
+
+                outliers[case_id] = OutlierMetrics(
+                    z_score=float(composite_z[case_id]),
+                    is_outlier=composite_z[case_id] > 3,
+                    details={
+                        'metrics': case_metrics.loc[case_id].to_dict(),
+                        'events': {
+                            'all_events': case_events['event_id'].tolist(),
+                            'activity_sequence': case_events.sort_values('timestamp')['activity'].tolist(),
+                            'resource_sequence': case_events.sort_values('timestamp')['resource'].tolist(),
+                            'object_types': list(set([t for types in case_events['object_types'] for t in types]))
+                        },
+                        'temporal': {
+                            'start_time': case_events['timestamp'].min(),
+                            'end_time': case_events['timestamp'].max(),
+                            'duration_hours': case_metrics.loc[case_id, 'duration_hours']
+                        },
+                        'outlier_patterns': {
+                            'high_complexity': case_metrics.loc[case_id, 'total_events'] > case_metrics[
+                                'total_events'].mean() + 2 * case_metrics['total_events'].std(),
+                            'high_variety': case_metrics.loc[case_id, 'activity_variety'] > case_metrics[
+                                'activity_variety'].mean() + 2 * case_metrics['activity_variety'].std(),
+                            'long_duration': case_metrics.loc[case_id, 'duration_hours'] > case_metrics[
+                                'duration_hours'].mean() + 2 * case_metrics['duration_hours'].std()
+                        }
+                    }
+                )
+
+            return outliers
+
+        except Exception as e:
+            logger.error(f"Error in case outlier detection: {str(e)}")
+            logger.error(traceback.format_exc())
+            return {}
 
     def _detect_failure_patterns(self) -> Dict[str, Any]:
-        """Enhanced failure pattern detection including all types"""
-        expected_flow = {
-            'Trade': ['Trade Initiated', 'Market Data Validation', 'Quote Provided'],
-            'Market': ['Quote Requested', 'Market Making', 'Quote Provided'],
-            'Risk': ['Risk Assessment', 'Risk Validation', 'Risk Report']
-        }
+        """Enhanced failure pattern detection with full event traceability"""
+        try:
+            expected_flow = {
+                'Trade': [
+                    'Trade Initiated',
+                    'Market Data Validation',
+                    'Volatility Surface Analysis',
+                    'Quote Provided',
+                    'Exercise Decision',
+                    'Trade Transparency Assessment',
+                    'Premium Calculation',
+                    'Strategy Validation'
+                ],
+                'Market': [
+                    'Quote Requested',
+                    'Market Data Validation',
+                    'Quote Provided'
+                ],
+                'Risk': [
+                    'Risk Assessment',
+                    'Trade Validation',
+                    'Position Reconciliation'
+                ]
+            }
 
-        failures = {
-            'incomplete_cases': [],
-            'long_running': [],
-            'resource_switches': [],
-            'rework_activities': [],
-            'sequence_violations': []
-        }
+            # Enhanced timing thresholds (in hours)
+            timing_thresholds = {
+                'Trade': {
+                    'total_duration': 24,
+                    'activity_gaps': {
+                        'Market Data Validation': 0.5,
+                        'Quote Provided': 1,
+                        'Exercise Decision': 2
+                    }
+                },
+                'Market': {
+                    'total_duration': 12,
+                    'activity_gaps': {
+                        'Quote Provided': 0.5
+                    }
+                },
+                'Risk': {
+                    'total_duration': 48,
+                    'activity_gaps': {
+                        'Trade Validation': 4,
+                        'Position Reconciliation': 8
+                    }
+                }
+            }
 
-        # Enhanced timing thresholds (in hours)
-        timing_thresholds = {
-            'Trade': 24,
-            'Market': 12,
-            'Risk': 48
-        }
+            failures = {
+                'sequence_violations': [],
+                'incomplete_cases': [],
+                'long_running': [],
+                'resource_switches': [],
+                'rework_activities': [],
+                'timing_violations': []
+            }
 
-        # Process each case
-        for case_id in self.relationships_df['case_id'].unique():
-            case_data = self.relationships_df[self.relationships_df['case_id'] == case_id]
-            case_activities = case_data['activity'].tolist()
-            case_resources = case_data['resource'].tolist()
-            object_types = case_data['object_type'].unique()
+            # Process each case
+            for case_id, case_events in self.case_events.items():
+                case_data = pd.DataFrame([
+                    {
+                        'event_id': event['ocel:id'],
+                        'timestamp': pd.to_datetime(event['ocel:timestamp']),
+                        'activity': event['ocel:activity'],
+                        'resource': event.get('ocel:attributes', {}).get('resource', 'Unknown'),
+                        'object_types': [obj.get('type', 'Unknown') for obj in event.get('ocel:objects', [])],
+                        'object_ids': [obj['id'] for obj in event.get('ocel:objects', [])]
+                    }
+                    for event in self.ocel_data['ocel:events']
+                    if event.get('ocel:attributes', {}).get('case_id') == case_id
+                ]).sort_values('timestamp')
 
-            # 1. Check sequence violations
-            for obj_type, expected_sequence in expected_flow.items():
-                if obj_type in object_types:
-                    actual_sequence = [act for act in case_activities if act in expected_sequence]
-                    if actual_sequence != expected_sequence:
-                        failures['sequence_violations'].append({
-                            'case_id': case_id,
-                            'object_type': obj_type,
-                            'expected': expected_sequence,
-                            'actual': actual_sequence
-                        })
+                # Track sequence violations
+                for obj_type, expected_sequence in expected_flow.items():
+                    if obj_type in set().union(*case_data['object_types']):
+                        actual_sequence = case_data[case_data['object_types'].apply(lambda x: obj_type in x)][
+                            'activity'].tolist()
 
-            # 2. Check incomplete cases
-            for obj_type, required_sequence in expected_flow.items():
-                if obj_type in object_types:
-                    missing_activities = [act for act in required_sequence if act not in case_activities]
-                    if missing_activities:
-                        failures['incomplete_cases'].append({
-                            'case_id': case_id,
-                            'object_type': obj_type,
-                            'missing_activities': missing_activities
-                        })
+                        if actual_sequence != expected_sequence:
+                            sequence_violation = {
+                                'case_id': case_id,
+                                'object_type': obj_type,
+                                'expected_sequence': expected_sequence,
+                                'actual_sequence': actual_sequence,
+                                'events': case_data[case_data['object_types'].apply(lambda x: obj_type in x)][
+                                    'event_id'].tolist(),
+                                'first_violation': None,
+                                'missing_activities': [],
+                                'wrong_order_activities': []
+                            }
 
-            # 3. Check long running cases
-            case_duration = (case_data['timestamp'].max() - case_data['timestamp'].min()).total_seconds() / 3600
-            for obj_type, threshold in timing_thresholds.items():
-                if obj_type in object_types and case_duration > threshold:
-                    failures['long_running'].append({
+                            # Find first violation and missing activities
+                            expected_set = set(expected_sequence)
+                            actual_set = set(actual_sequence)
+                            sequence_violation['missing_activities'] = list(expected_set - actual_set)
+
+                            # Find wrong order activities
+                            for i in range(len(actual_sequence)):
+                                if i < len(expected_sequence) and actual_sequence[i] != expected_sequence[i]:
+                                    sequence_violation['wrong_order_activities'].append({
+                                        'position': i,
+                                        'expected': expected_sequence[i],
+                                        'actual': actual_sequence[i],
+                                        'event_id': case_data.iloc[i]['event_id']
+                                    })
+                                    if sequence_violation['first_violation'] is None:
+                                        sequence_violation['first_violation'] = {
+                                            'event_id': case_data.iloc[i]['event_id'],
+                                            'timestamp': case_data.iloc[i]['timestamp'],
+                                            'resource': case_data.iloc[i]['resource']
+                                        }
+
+                            failures['sequence_violations'].append(sequence_violation)
+
+                # Track incomplete cases
+                for obj_type, required_sequence in expected_flow.items():
+                    if obj_type in set().union(*case_data['object_types']):
+                        missing_activities = [act for act in required_sequence
+                                              if act not in case_data['activity'].tolist()]
+                        if missing_activities:
+                            failures['incomplete_cases'].append({
+                                'case_id': case_id,
+                                'object_type': obj_type,
+                                'missing_activities': missing_activities,
+                                'completed_activities': case_data['activity'].tolist(),
+                                'events': case_data['event_id'].tolist(),
+                                'last_event': {
+                                    'event_id': case_data.iloc[-1]['event_id'],
+                                    'activity': case_data.iloc[-1]['activity'],
+                                    'timestamp': case_data.iloc[-1]['timestamp'],
+                                    'resource': case_data.iloc[-1]['resource']
+                                }
+                            })
+
+                # Track timing violations
+                for obj_type, timing_rules in timing_thresholds.items():
+                    obj_type_events = case_data[case_data['object_types'].apply(lambda x: obj_type in x)]
+                    if not obj_type_events.empty:
+                        case_duration = (obj_type_events['timestamp'].max() -
+                                         obj_type_events['timestamp'].min()).total_seconds() / 3600
+
+                        if case_duration > timing_rules['total_duration']:
+                            timing_violation = {
+                                'case_id': case_id,
+                                'object_type': obj_type,
+                                'actual_duration': case_duration,
+                                'threshold': timing_rules['total_duration'],
+                                'events': obj_type_events['event_id'].tolist(),
+                                'activity_gaps': []
+                            }
+
+                            # Check activity-specific gaps
+                            for activity, max_gap in timing_rules['activity_gaps'].items():
+                                activity_events = obj_type_events[obj_type_events['activity'] == activity]
+                                if len(activity_events) > 1:
+                                    gaps = activity_events['timestamp'].diff().fillna(pd.Timedelta(seconds=0))
+                                    large_gaps = gaps[gaps > pd.Timedelta(hours=max_gap)]
+
+                                    if not large_gaps.empty:
+                                        for idx in large_gaps.index:
+                                            timing_violation['activity_gaps'].append({
+                                                'activity': activity,
+                                                'gap_hours': float(large_gaps[idx].total_seconds() / 3600),
+                                                'threshold_hours': max_gap,
+                                                'event_id': activity_events.loc[idx, 'event_id'],
+                                                'previous_event_id':
+                                                    activity_events.iloc[activity_events.index.get_loc(idx) - 1][
+                                                        'event_id']
+                                            })
+
+                            failures['timing_violations'].append(timing_violation)
+
+                # Track resource switches
+                resource_sequence = case_data['resource'].tolist()
+                resource_changes = [(i, resource_sequence[i], resource_sequence[i + 1])
+                                    for i in range(len(resource_sequence) - 1)
+                                    if resource_sequence[i] != resource_sequence[i + 1]]
+
+                if len(resource_changes) > 0:
+                    failures['resource_switches'].append({
                         'case_id': case_id,
-                        'object_type': obj_type,
-                        'duration': case_duration,
-                        'threshold': threshold
+                        'total_switches': len(resource_changes),
+                        'switches': [{
+                            'position': pos,
+                            'from_resource': res1,
+                            'to_resource': res2,
+                            'event_id': case_data.iloc[pos + 1]['event_id'],
+                            'activity': case_data.iloc[pos + 1]['activity'],
+                            'timestamp': case_data.iloc[pos + 1]['timestamp']
+                        } for pos, res1, res2 in resource_changes],
+                        'events': case_data['event_id'].tolist()
                     })
 
-            # 4. Check resource switches
-            resource_changes = [i for i in range(len(case_resources) - 1) if case_resources[i] != case_resources[i + 1]]
-            if len(resource_changes) > 0:
-                failures['resource_switches'].append({
-                    'case_id': case_id,
-                    'switches': len(resource_changes),
-                    'resources_involved': list(set(case_resources))
-                })
+                # Track rework activities
+                activity_counts = case_data['activity'].value_counts()
+                rework = activity_counts[activity_counts > 1]
+                if not rework.empty:
+                    failures['rework_activities'].append({
+                        'case_id': case_id,
+                        'rework_activities': {
+                            activity: {
+                                'count': count,
+                                'events': case_data[case_data['activity'] == activity]['event_id'].tolist(),
+                                'timestamps': case_data[case_data['activity'] == activity]['timestamp'].tolist(),
+                                'resources': case_data[case_data['activity'] == activity]['resource'].tolist()
+                            }
+                            for activity, count in rework.items()
+                        },
+                        'events': case_data['event_id'].tolist()
+                    })
 
-            # 5. Check rework activities
-            activity_counts = {}
-            for activity in case_activities:
-                activity_counts[activity] = activity_counts.get(activity, 0) + 1
-            rework = {act: count for act, count in activity_counts.items() if count > 1}
-            if rework:
-                failures['rework_activities'].append({
-                    'case_id': case_id,
-                    'rework_activities': rework
-                })
+            return failures
 
-        return failures
+        except Exception as e:
+            logger.error(f"Error in failure pattern detection: {str(e)}")
+            logger.error(traceback.format_exc())
+            return {}
 
     def create_failure_pattern_visualization(self, failures: Dict) -> go.Figure:
         """Create enhanced visualization for all failure patterns"""
@@ -935,8 +1424,7 @@ class UnfairOCELAnalyzer:
             }
 
     def display_enhanced_analysis(self):
-        """Display enhanced analysis with comprehensive logging and error handling"""
-        logger.info("Starting display_enhanced_analysis")
+        """Display enhanced analysis with comprehensive outlier tracing"""
         try:
             # Create tabs for different analyses
             tabs = st.tabs(["Resource Analysis", "Time Analysis", "Case Analysis", "Failure Patterns"])
@@ -945,76 +1433,351 @@ class UnfairOCELAnalyzer:
             with tabs[0]:
                 logger.debug("Processing Resource Analysis tab")
                 col1, col2 = st.columns([2, 1])
+
                 with col1:
-                    if 'resource_outliers' in self.outlier_plots:
-                        st.plotly_chart(self.outlier_plots['resource_outliers'], use_container_width=True)
+                    # Create resource workload visualization
+                    workload_data = []
+                    outlier_details = {}
+
+                    for resource, metrics in self.outliers['resource_load'].items():
+                        workload_data.append({
+                            'Resource': resource,
+                            'Z-Score': metrics.z_score,
+                            'Is Outlier': metrics.is_outlier,
+                            'Total Events': metrics.details['metrics']['total_events'],
+                            'Cases': len(metrics.details['events']['cases']),
+                            'Activities': len(metrics.details['events']['activities'])
+                        })
+
+                        if metrics.is_outlier:
+                            outlier_details[resource] = metrics.details
+
+                    # Create resource plot
+                    fig = px.scatter(
+                        pd.DataFrame(workload_data),
+                        x='Resource',
+                        y='Z-Score',
+                        size='Total Events',
+                        color='Is Outlier',
+                        title='Resource Workload Distribution',
+                        custom_data=['Cases', 'Activities']
+                    )
+
+                    fig.update_traces(
+                        hovertemplate=(
+                                "<b>%{x}</b><br>" +
+                                "Z-Score: %{y:.2f}<br>" +
+                                "Total Events: %{marker.size}<br>" +
+                                "Cases: %{customdata[0]}<br>" +
+                                "Activities: %{customdata[1]}<br>" +
+                                "<extra></extra>"
+                        )
+                    )
+                    st.plotly_chart(fig, use_container_width=True)
+
+                    # Show outlier details if any selected
+                    if outlier_details:
+                        selected_resource = st.selectbox(
+                            "Select resource for details",
+                            options=list(outlier_details.keys())
+                        )
+                        if selected_resource:
+                            details = outlier_details[selected_resource]
+                            st.write("### Resource Details")
+
+                            # Show metrics
+                            cols = st.columns(3)
+                            cols[0].metric("Total Events", details['metrics']['total_events'])
+                            cols[1].metric("Unique Cases", len(details['events']['cases']))
+                            cols[2].metric("Activities", len(details['events']['activities']))
+
+                            # Show events table
+                            st.write("### Events")
+                            events_df = self._get_events_dataframe(details['events']['all_events'])
+                            if not events_df.empty:
+                                st.dataframe(events_df)
+
                 with col2:
                     workload_metrics = {
                         'market_maker_b': len(self.resource_events.get('Market Maker B', [])),
                         'client_desk_d': len(self.resource_events.get('Client Desk D', [])),
                         'options_desk_a': len(self.resource_events.get('Options Desk A', []))
                     }
-                    logger.debug(f"Resource workload metrics: {workload_metrics}")
                     st.markdown("### Understanding Resource Distribution")
                     explanation = self.get_explanation('resource', workload_metrics)
-                    st.write(explanation)
+                    st.write(explanation.get('summary', ''))
+
+                    if explanation.get('insights'):
+                        st.write("#### Key Insights")
+                        for insight in explanation['insights']:
+                            st.write(f"• {insight}")
+
+                    if explanation.get('recommendations'):
+                        st.write("#### Recommendations")
+                        for rec in explanation['recommendations']:
+                            st.write(f"• {rec}")
 
             # Time Analysis Tab
             with tabs[1]:
                 logger.debug("Processing Time Analysis tab")
                 col1, col2 = st.columns([2, 1])
+
                 with col1:
-                    if 'duration_outliers' in self.outlier_plots:
-                        st.plotly_chart(self.outlier_plots['duration_outliers'], use_container_width=True)
+                    # Create duration outlier visualization
+                    duration_data = []
+                    duration_outliers = {}
+
+                    for activity, metrics in self.outliers['duration'].items():
+                        duration_data.append({
+                            'Activity': activity,
+                            'Z-Score': metrics.z_score,
+                            'Is Outlier': metrics.is_outlier,
+                            'Total Events': metrics.details['total_events'],
+                            'Violation Count': len(metrics.details.get('outlier_events', {}).get('timing_gap', [])),
+                        })
+
+                        if metrics.is_outlier:
+                            duration_outliers[activity] = metrics.details
+
+                    # Create duration plot
+                    fig = px.scatter(
+                        pd.DataFrame(duration_data),
+                        x='Activity',
+                        y='Z-Score',
+                        size='Total Events',
+                        color='Is Outlier',
+                        title='Activity Duration Distribution',
+                        custom_data=['Violation Count']
+                    )
+
+                    fig.update_traces(
+                        hovertemplate=(
+                                "<b>%{x}</b><br>" +
+                                "Z-Score: %{y:.2f}<br>" +
+                                "Total Events: %{marker.size}<br>" +
+                                "Violations: %{customdata[0]}<br>" +
+                                "<extra></extra>"
+                        )
+                    )
+                    st.plotly_chart(fig, use_container_width=True)
+
+                    # Show outlier details if any selected
+                    if duration_outliers:
+                        selected_activity = st.selectbox(
+                            "Select activity for details",
+                            options=list(duration_outliers.keys())
+                        )
+                        if selected_activity:
+                            details = duration_outliers[selected_activity]
+                            st.write("### Activity Details")
+
+                            # Show violation details
+                            for violation_type, violations in details.get('outlier_events', {}).items():
+                                if violations:
+                                    with st.expander(f"{violation_type.replace('_', ' ').title()} ({len(violations)})"):
+                                        events_df = self._get_events_dataframe([v['event_id'] for v in violations])
+                                        if not events_df.empty:
+                                            st.dataframe(events_df)
+
                 with col2:
                     timing_metrics = {
                         'avg_duration': f"{np.mean([len(events) for events in self.case_events.values()]):.2f}",
-                        'outlier_count': len(self.outliers.get('duration', {})),
+                        'outlier_count': len([m for m in self.outliers['duration'].values() if m.is_outlier]),
                         'typical_duration': "2-4 hours"
                     }
-                    logger.debug(f"Timing metrics: {timing_metrics}")
                     st.markdown("### Understanding Time Patterns")
                     explanation = self.get_explanation('time', timing_metrics)
-                    st.write(explanation)
+                    st.write(explanation.get('summary', ''))
+
+                    if explanation.get('insights'):
+                        st.write("#### Key Insights")
+                        for insight in explanation['insights']:
+                            st.write(f"• {insight}")
+
+                    if explanation.get('recommendations'):
+                        st.write("#### Recommendations")
+                        for rec in explanation['recommendations']:
+                            st.write(f"• {rec}")
 
             # Case Analysis Tab
             with tabs[2]:
                 logger.debug("Processing Case Analysis tab")
                 col1, col2 = st.columns([2, 1])
+
                 with col1:
-                    if 'case_outliers' in self.outlier_plots:
-                        st.plotly_chart(self.outlier_plots['case_outliers'], use_container_width=True)
+                    # Create case outlier visualization
+                    case_data = []
+                    case_outliers = {}
+
+                    for case_id, metrics in self.outliers['case_complexity'].items():
+                        case_data.append({
+                            'Case': case_id,
+                            'Z-Score': metrics.z_score,
+                            'Is Outlier': metrics.is_outlier,
+                            'Total Events': metrics.details['metrics']['total_events'],
+                            'Activity Count': metrics.details['metrics']['activity_variety']
+                        })
+
+                        if metrics.is_outlier:
+                            case_outliers[case_id] = metrics.details
+
+                    # Create case plot
+                    fig = px.scatter(
+                        pd.DataFrame(case_data),
+                        x='Case',
+                        y='Z-Score',
+                        size='Total Events',
+                        color='Is Outlier',
+                        title='Case Complexity Distribution',
+                        custom_data=['Activity Count']
+                    )
+
+                    fig.update_traces(
+                        hovertemplate=(
+                                "<b>%{x}</b><br>" +
+                                "Z-Score: %{y:.2f}<br>" +
+                                "Total Events: %{marker.size}<br>" +
+                                "Activities: %{customdata[0]}<br>" +
+                                "<extra></extra>"
+                        )
+                    )
+                    st.plotly_chart(fig, use_container_width=True)
+
+                    # Show outlier details if any selected
+                    if case_outliers:
+                        selected_case = st.selectbox(
+                            "Select case for details",
+                            options=list(case_outliers.keys())
+                        )
+                        if selected_case:
+                            details = case_outliers[selected_case]
+                            st.write("### Case Details")
+
+                            # Show timeline
+                            events_df = self._get_events_dataframe(details['events']['all_events'])
+                            if not events_df.empty:
+                                events_df['timestamp'] = pd.to_datetime(events_df['timestamp'])
+                                timeline_fig = px.scatter(
+                                    events_df,
+                                    x='timestamp',
+                                    y='activity',
+                                    color='resource',
+                                    title='Case Timeline'
+                                )
+                                st.plotly_chart(timeline_fig)
+                                st.dataframe(events_df)
+
                 with col2:
                     case_metrics = {
-                        'complex_cases': len([c for c in self.case_events.values() if len(c) > 10]),
-                        'timestamp_cases': 869,  # From screenshots
-                        'object_cases': 3000  # From screenshots
+                        'complex_cases': len([c for c in case_outliers.values() if c['metrics']['total_events'] > 10]),
+                        'timestamp_cases': len(
+                            [c for c in case_outliers.values() if c['temporal']['duration_hours'] > 24]),
+                        'object_cases': len(case_outliers)
                     }
-                    logger.debug(f"Case metrics: {case_metrics}")
                     st.markdown("### Understanding Case Complexity")
                     explanation = self.get_explanation('case', case_metrics)
-                    st.write(explanation)
+                    st.write(explanation.get('summary', ''))
+
+                    if explanation.get('insights'):
+                        st.write("#### Key Insights")
+                        for insight in explanation['insights']:
+                            st.write(f"• {insight}")
+
+                    if explanation.get('recommendations'):
+                        st.write("#### Recommendations")
+                        for rec in explanation['recommendations']:
+                            st.write(f"• {rec}")
 
             # Failure Patterns Tab
             with tabs[3]:
                 logger.debug("Processing Failure Patterns tab")
                 col1, col2 = st.columns([2, 1])
+
                 with col1:
-                    if 'failure_patterns' in self.outlier_plots:
-                        st.plotly_chart(self.outlier_plots['failure_patterns'], use_container_width=True)
+                    failure_counts = {
+                        'Sequence Violations': len(self.outliers['failures']['sequence_violations']),
+                        'Incomplete Cases': len(self.outliers['failures']['incomplete_cases']),
+                        'Long Running': len(self.outliers['failures']['long_running']),
+                        'Resource Switches': len(self.outliers['failures']['resource_switches']),
+                        'Rework Activities': len(self.outliers['failures']['rework_activities'])
+                    }
+
+                    fig = go.Figure(data=[
+                        go.Bar(
+                            x=list(failure_counts.keys()),
+                            y=list(failure_counts.values()),
+                            text=list(failure_counts.values()),
+                            textposition='auto',
+                        )
+                    ])
+
+                    fig.update_layout(
+                        title='Process Failure Patterns Distribution',
+                        xaxis_title='Failure Pattern Type',
+                        yaxis_title='Count',
+                        showlegend=False
+                    )
+                    st.plotly_chart(fig)
+
+                    # Show failure details in expandable sections
+                    for pattern, failures in self.outliers['failures'].items():
+                        if failures:
+                            with st.expander(f"{pattern.replace('_', ' ').title()} ({len(failures)})"):
+                                failure_df = pd.DataFrame(failures)
+                                st.dataframe(failure_df)
+
                 with col2:
                     failure_metrics = {
-                        'sequence_violations': 6016,  # From screenshots
-                        'incomplete_cases': 6000,  # From screenshots
-                        'long_running': 3863  # From screenshots
+                        'sequence_violations': len(self.outliers['failures']['sequence_violations']),
+                        'incomplete_cases': len(self.outliers['failures']['incomplete_cases']),
+                        'long_running': len(self.outliers['failures']['long_running'])
                     }
-                    logger.debug(f"Failure metrics: {failure_metrics}")
                     st.markdown("### Understanding Failure Patterns")
                     explanation = self.get_explanation('failure', failure_metrics)
-                    st.write(explanation)
+                    st.write(explanation.get('summary', ''))
+
+                    if explanation.get('insights'):
+                        st.write("#### Key Insights")
+                        for insight in explanation['insights']:
+                            st.write(f"• {insight}")
+
+                    if explanation.get('recommendations'):
+                        st.write("#### Recommendations")
+                        for rec in explanation['recommendations']:
+                            st.write(f"• {rec}")
 
         except Exception as e:
             logger.error(f"Error in display_enhanced_analysis: {str(e)}")
             logger.error(traceback.format_exc())
             st.error("Error analyzing process patterns. Check logs for details.")
+
+    def _get_events_dataframe(self, event_ids: List[str]) -> pd.DataFrame:
+        """Helper method to create DataFrame from event IDs"""
+        events_data = []
+        for event_id in event_ids:
+            event = next((e for e in self.ocel_data['ocel:events'] if e['ocel:id'] == event_id), None)
+            if event:
+                events_data.append({
+                    'event_id': event_id,
+                    'timestamp': event['ocel:timestamp'],
+                    'activity': event['ocel:activity'],
+                    'resource': event.get('ocel:attributes', {}).get('resource', 'Unknown'),
+                    'case_id': event.get('ocel:attributes', {}).get('case_id', 'Unknown'),
+                    'objects': ', '.join(obj['id'] for obj in event.get('ocel:objects', []))
+                })
+        return pd.DataFrame(events_data)
+
+    def _get_event_details(self, event_id: str) -> Dict:
+        """Helper method to get event details from OCEL data"""
+        event = next((e for e in self.ocel_data['ocel:events'] if e['ocel:id'] == event_id), None)
+        if event:
+            return {
+                'Event ID': event_id,
+                'Timestamp': event['ocel:timestamp'],
+                'Activity': event['ocel:activity'],
+                'Resource': event.get('ocel:attributes', {}).get('resource', 'Unknown'),
+                'Case ID': event.get('ocel:attributes', {}).get('case_id', 'Unknown'),
+                'Objects': [obj['id'] for obj in event.get('ocel:objects', [])]
+            }
+        return {}
 
