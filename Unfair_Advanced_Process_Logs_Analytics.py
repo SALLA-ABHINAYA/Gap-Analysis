@@ -1437,7 +1437,7 @@ class UnfairOCELAnalyzer:
                 with col1:
                     # Create resource workload visualization
                     workload_data = []
-                    outlier_details = {}
+                    resource_details = {}
 
                     for resource, metrics in self.outliers['resource_load'].items():
                         workload_data.append({
@@ -1449,8 +1449,12 @@ class UnfairOCELAnalyzer:
                             'Activities': len(metrics.details['events']['activities'])
                         })
 
-                        if metrics.is_outlier:
-                            outlier_details[resource] = metrics.details
+                        # Store all details for traceability
+                        resource_details[resource] = {
+                            'metrics': metrics.details['metrics'],
+                            'events': metrics.details['events'],
+                            'patterns': metrics.details.get('outlier_patterns', {})
+                        }
 
                     # Create resource plot
                     fig = px.scatter(
@@ -1475,27 +1479,70 @@ class UnfairOCELAnalyzer:
                     )
                     st.plotly_chart(fig, use_container_width=True)
 
-                    # Show outlier details if any selected
-                    if outlier_details:
+                    # Show resource details
+                    if resource_details:
                         selected_resource = st.selectbox(
                             "Select resource for details",
-                            options=list(outlier_details.keys())
+                            options=list(resource_details.keys())
                         )
                         if selected_resource:
-                            details = outlier_details[selected_resource]
+                            details = resource_details[selected_resource]
                             st.write("### Resource Details")
+
+                            # Show if resource is an outlier
+                            if workload_data[
+                                next(i for i, x in enumerate(workload_data) if x['Resource'] == selected_resource)][
+                                'Is Outlier']:
+                                st.warning("⚠️ This resource is identified as an outlier")
 
                             # Show metrics
                             cols = st.columns(3)
                             cols[0].metric("Total Events", details['metrics']['total_events'])
-                            cols[1].metric("Unique Cases", len(details['events']['cases']))
+                            cols[1].metric("Cases", len(details['events']['cases']))
                             cols[2].metric("Activities", len(details['events']['activities']))
 
-                            # Show events table
-                            st.write("### Events")
+                            # Show activity distribution
+                            st.write("### Activity Distribution")
                             events_df = self._get_events_dataframe(details['events']['all_events'])
                             if not events_df.empty:
-                                st.dataframe(events_df)
+                                activity_counts = events_df['activity'].value_counts()
+                                activity_fig = px.bar(
+                                    x=activity_counts.index,
+                                    y=activity_counts.values,
+                                    title=f'Activities Performed by {selected_resource}',
+                                    labels={'x': 'Activity', 'y': 'Count'}
+                                )
+                                st.plotly_chart(activity_fig)
+
+                            # Show case involvement timeline
+                            st.write("### Case Timeline")
+                            events_df['timestamp'] = pd.to_datetime(events_df['timestamp'])
+                            timeline_fig = px.scatter(
+                                events_df,
+                                x='timestamp',
+                                y='case_id',
+                                color='activity',
+                                title=f'Case Involvement Timeline - {selected_resource}',
+                                labels={'timestamp': 'Time', 'case_id': 'Case', 'activity': 'Activity'}
+                            )
+                            timeline_fig.update_layout(height=400)
+                            st.plotly_chart(timeline_fig)
+
+                            # Show objects handled
+                            st.write("### Objects Handled")
+                            object_series = pd.Series(
+                                [obj.strip() for obj in events_df['objects'].str.split(',').explode()])
+                            object_counts = object_series.value_counts()
+                            object_fig = px.pie(
+                                values=object_counts.values,
+                                names=object_counts.index,
+                                title=f'Object Types Handled by {selected_resource}'
+                            )
+                            st.plotly_chart(object_fig)
+
+                            # Show detailed event table
+                            st.write("### Event Details")
+                            st.dataframe(events_df.sort_values('timestamp'))
 
                 with col2:
                     workload_metrics = {
