@@ -1,4 +1,5 @@
 # APA_Analytics.py
+import shutil
 import traceback
 import streamlit as st
 from Unfair_Advanced_Process_Logs_Analytics import UnfairOCELAnalyzer
@@ -153,7 +154,6 @@ class IntegratedAPAAnalyzer:
         figures['resource_distribution'] = fig_resources
 
         return figures
-
 
 def run_unfairness_analysis():
     """Run unfairness analysis"""

@@ -1,0 +1,145 @@
+{
+  "Trade": {
+    "name": "Trade",
+    "activities": [
+      "Exercise Decision",
+      "Final Settlement",
+      "Premium Settlement",
+      "Settlement Instructions",
+      "Trade Allocation",
+      "Trade Confirmation",
+      "Trade Execution",
+      "Trade Initiated",
+      "Trade Matching",
+      "Trade Reconciliation",
+      "Trade Transparency Assessment",
+      "Trade Validation"
+    ],
+    "attributes": [
+      "booking_system",
+      "case_id",
+      "client_type",
+      "currency_pair",
+      "notional_amount",
+      "option_type",
+      "premium",
+      "strike_price",
+      "trading_strategy"
+    ],
+    "relationships": [
+      "Client",
+      "MarketData",
+      "Order",
+      "Position"
+    ]
+  },
+  "Order": {
+    "name": "Order",
+    "activities": [
+      "Best Execution Validation",
+      "CSA Verification",
+      "Client Limit Validation",
+      "Credit Check",
+      "Exercise Decision",
+      "ISDA Master Agreement Check",
+      "Premium Calculation",
+      "Quote Provided",
+      "Quote Requested",
+      "Settlement Instructions",
+      "Strategy Validation"
+    ],
+    "attributes": [
+      "booking_system",
+      "case_id",
+      "client_type",
+      "currency_pair",
+      "notional_amount",
+      "option_type",
+      "premium",
+      "strike_price",
+      "trading_strategy"
+    ],
+    "relationships": [
+      "Client",
+      "MarketData",
+      "Trade"
+    ]
+  },
+  "Position": {
+    "name": "Position",
+    "activities": [
+      "Collateral Management",
+      "Initial Margin Calculation",
+      "Position Reconciliation",
+      "Risk Assessment",
+      "Risk Transfer Executed"
+    ],
+    "attributes": [
+      "case_id",
+      "currency_pair",
+      "delta",
+      "gamma",
+      "limit_usage",
+      "risk_score",
+      "theta",
+      "vega"
+    ],
+    "relationships": [
+      "Client",
+      "MarketData",
+      "Trade"
+    ]
+  },
+  "MarketData": {
+    "name": "MarketData",
+    "activities": [
+      "Greeks Calculation",
+      "Market Data Validation",
+      "Market Making Spread Calculation",
+      "Regulatory Reporting Generation",
+      "Skew Calibration",
+      "Surface Construction",
+      "Transaction Reporting Check",
+      "Volatility Smile Analysis",
+      "Volatility Surface Analysis"
+    ],
+    "attributes": [
+      "booking_system",
+      "case_id",
+      "client_type",
+      "currency_pair",
+      "option_type",
+      "trading_strategy"
+    ],
+    "relationships": [
+      "Order",
+      "Position",
+      "Trade"
+    ]
+  },
+  "Client": {
+    "name": "Client",
+    "activities": [
+      "CSA Verification",
+      "Client Limit Validation",
+      "Credit Check",
+      "ISDA Master Agreement Check",
+      "KYC Refresh Check",
+      "Regulatory Reporting Generation",
+      "Settlement Instructions",
+      "Trade Transparency Assessment",
+      "Transaction Reporting Check"
+    ],
+    "attributes": [
+      "booking_system",
+      "case_id",
+      "client_type",
+      "trading_strategy"
+    ],
+    "relationships": [
+      "Order",
+      "Position",
+      "Trade"
+    ]
+  }
+}

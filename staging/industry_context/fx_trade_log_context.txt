@@ -1,0 +1,147 @@
+# Foreign Exchange (FX) Trading Industry Context for Object-Centric Process Mining
+
+Foreign exchange trading involves the simultaneous buying of one currency and selling of another currency. The process encompasses multiple interacting objects, complex workflows, and various stakeholders, making it an ideal candidate for object-centric process mining analysis.
+
+## Core Business Objects and Their Interactions
+
+The FX trading environment consists of several key business objects that interact throughout the trading lifecycle:
+
+### Trade Object
+A Trade represents the fundamental transaction unit in FX trading. Each trade moves through multiple stages from initiation to settlement, involving various counterparties and systems. Trades can be spot trades (settling within two business days) or forward trades (settling at a future date). Each trade carries essential attributes such as:
+- Currency pair (e.g., EUR/USD, GBP/JPY)
+- Trade amount in base currency
+- Exchange rate
+- Value date (settlement date)
+- Trade status
+- Trading venue or execution method
+
+### Order Object
+Orders represent client instructions that may result in one or multiple trades. An order maintains its own lifecycle and can be:
+- Market orders (execute immediately at current market price)
+- Limit orders (execute when price reaches specified level)
+- Stop orders (triggers when market reaches certain level)
+Orders can have multiple child trades and interact with various pricing and execution systems.
+
+### Position Object
+Positions represent the accumulated risk exposure for a particular currency pair or trading book. Positions are affected by:
+- New trades
+- Trade modifications
+- Settlement events
+- Risk transfers between books
+Positions must be continuously monitored and reconciled throughout the trading day.
+
+### Market Data Object
+Market data feeds provide essential pricing information and include:
+- Real-time currency pair quotes
+- Reference rates
+- Yield curves
+- Volatility surfaces
+Market data objects interact with trading decisions, risk calculations, and position valuations.
+
+### Client Object
+Clients initiate trading activity and maintain ongoing relationships. Client objects contain:
+- Trading permissions
+- Credit limits
+- Preferred execution venues
+- Settlement instructions
+- Compliance requirements
+
+## Key Process Flows and Object Interactions
+
+### Pre-Trade Process
+1. Client submits trading interest
+2. System checks trading limits and permissions
+3. Market data provides pricing information
+4. Trading algorithms may analyze execution strategies
+5. Order object is created with initial parameters
+
+### Trade Execution Process
+1. Order triggers trade execution
+2. Market data influences execution price
+3. Position objects are updated
+4. Trade object is created and validated
+5. Client receives execution confirmation
+
+### Post-Trade Process
+1. Trade details are enriched
+2. Risk systems update position calculations
+3. Trade is matched with counterparty
+4. Settlement instructions are generated
+5. Trade moves to settlement phase
+
+### Settlement Process
+1. Position updates are confirmed
+2. Payment instructions are generated
+3. Nostro accounts are updated
+4. Settlement confirmation is received
+5. Trade status is updated to settled
+
+## Critical Business Rules and Relationships
+
+The FX trading environment operates under specific business rules that affect object interactions:
+
+1. Trade Validation Rules:
+   - Trade size must be within client limits
+   - Currency pair must be permitted for client
+   - Trade must be within market hours
+   - Price must be within tolerance bands
+
+2. Position Management Rules:
+   - Position limits per currency pair
+   - Intraday exposure limits
+   - End-of-day position reconciliation
+   - Risk transfer rules between books
+
+3. Settlement Rules:
+   - Cut-off times for different currencies
+   - Holiday calendar dependencies
+   - Funding requirements
+   - Nostro account management
+
+## Event Patterns and Attributes
+
+Common event patterns that should be captured in process mining:
+
+1. Trade Lifecycle Events:
+   - Quote Requested
+   - Order Created
+   - Trade Executed
+   - Trade Confirmed
+   - Trade Settled
+   - Trade Cancelled
+
+2. Position Events:
+   - Position Updated
+   - Risk Limit Checked
+   - Position Reconciled
+   - Risk Transfer Executed
+
+3. Market Data Events:
+   - Price Update
+   - Reference Rate Published
+   - Market Status Change
+   - Trading Hours Update
+
+## Process Mining Considerations
+
+For effective object-centric process mining in FX trading:
+
+1. Object Relationships:
+   - Track relationships between trades and orders
+   - Monitor position changes from trades
+   - Link client activities across multiple trades
+   - Connect market data influences on execution
+
+2. Temporal Dependencies:
+   - Consider different time zones
+   - Track intraday vs. end-of-day processes
+   - Monitor settlement timing requirements
+   - Track market hours and trading windows
+
+3. Performance Indicators:
+   - Execution quality metrics
+   - Settlement efficiency
+   - Risk limit utilization
+   - Client activity patterns
+
+This context helps identify process bottlenecks, compliance issues, and optimization opportunities while maintaining the complex relationships between different objects in the FX trading ecosystem.

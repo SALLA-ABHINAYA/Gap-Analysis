@@ -1,10 +1,10 @@
+import os
+import shutil
+
 import streamlit as st
 import json
 import pandas as pd
 from openai import OpenAI
-import os
-from Unfair_Advanced_Process_Logs_Analytics import UnfairOCELAnalyzer
-from ai_ocel_analyzer import AIOCELAnalyzer
 import plotly.graph_objects as go
 from datetime import datetime, timedelta
 from dataclasses import dataclass
@@ -1245,12 +1245,26 @@ class FXTradingGapAnalyzer:
             logger.error(f"Error closing Neo4j connection: {str(e)}")
 
 
+def delete_all_files(directory="ocpm_output"):
+    if os.path.exists(directory):
+        for file in os.listdir(directory):
+            file_path = os.path.join(directory, file)
+            if os.path.isfile(file_path):
+                os.remove(file_path)
+            elif os.path.isdir(file_path):
+                shutil.rmtree(file_path)  # Deletes subdirectories as well
+        print(f"All files and subdirectories in '{directory}' have been deleted.")
+    else:
+        print(f"Directory '{directory}' does not exist.")
+
 def main():
     st.set_page_config(
         page_title="IRMAI Process Analytics",
         page_icon="👋",
         layout="wide"
     )
+
+    delete_all_files()
 
 
 if __name__ == "__main__":

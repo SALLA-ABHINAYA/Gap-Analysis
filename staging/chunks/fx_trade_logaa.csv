@@ -7758,6 +7758,3 @@ Case_1250;Credit Check;2024-10-31 11:26:10.513227;Market Maker B;GBP/USD;Straddl
 Case_1250;Surface Construction;2024-10-31 11:44:10.513227;Market Maker B;GBP/USD;Straddle;Internal;Hedge Fund;Vega Trading;;;;;;;;;
 Case_1250;Volatility Smile Analysis;2024-10-31 18:42:10.513227;Market Maker B;GBP/USD;Straddle;Internal;Hedge Fund;Vega Trading;;;;;;;;;
 Case_1250;Market Making Spread Calculation;2024-10-31 19:48:10.513227;Market Maker B;GBP/USD;Straddle;Internal;Hedge Fund;Vega Trading;;;;;;;;;
-Case_1251;Trade Initiated;2024-11-03 19:18:10.513227;Hedge Desk C;EUR/GBP;Risk Reversal;Murex;Corporate;Gamma Scalping;;;;;;;;;
-Case_1251;Premium Calculation;2024-11-03 19:57:10.513227;Hedge Desk C;EUR/GBP;Risk Reversal;Murex;Corporate;Gamma Scalping;;;;;;;;;
-Case_1251;Market Data Validation;2024-11-03 20:18:10.513227;Hedge Desk C;EUR/GBP;Risk Reversal;Murex;Corporate;Gamma
