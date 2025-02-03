@@ -251,7 +251,7 @@ def setup_apa_page():
     os.makedirs("ocpm_output", exist_ok=True)
 
     # Create tabs for different analyses
-    main_tabs = st.tabs(["Process Analysis", "Unfairness Analysis", "AI Insights"])
+    main_tabs = st.tabs(["Process Analysis", "Outlier Analysis", "AI Insights"])
 
     with main_tabs[0]:
         create_ocpm_ui()

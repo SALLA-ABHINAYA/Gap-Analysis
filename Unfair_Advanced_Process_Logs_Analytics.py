@@ -28,6 +28,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+
 @dataclass
 class OutlierMetrics:
     z_score: float
@@ -274,6 +275,7 @@ class OutlierVisualizer:
 
                     # Show event details table
                     st.dataframe(timeline_data)
+
 
 class UnfairOCELAnalyzer:
     """Enhanced analyzer for identifying unfairness and outliers in process mining"""
@@ -1427,7 +1429,7 @@ class UnfairOCELAnalyzer:
         """Display enhanced analysis with comprehensive outlier tracing"""
         try:
             # Create tabs for different analyses
-            tabs = st.tabs(["Resource Analysis", "Time Analysis", "Case Analysis", "Failure Patterns"])
+            tabs = st.tabs(["Resource Outlier", "Time Outlier", "Case Outlier       ", "Failure Patterns"])
 
             # Resource Analysis Tab
             with tabs[0]:
@@ -1564,13 +1566,12 @@ class UnfairOCELAnalyzer:
                         for rec in explanation['recommendations']:
                             st.write(f"• {rec}")
 
-            # Time Analysis Tab
-            with tabs[1]:
-                logger.debug("Processing Time Analysis tab")
+            # Inside Time Analysis Tab section of display_enhanced_analysis method
+            with tabs[1]:  # Time Analysis Tab
                 col1, col2 = st.columns([2, 1])
 
                 with col1:
-                    # Create duration outlier visualization
+                    # Keep existing duration outlier visualization
                     duration_data = []
                     duration_outliers = {}
 
@@ -1586,7 +1587,7 @@ class UnfairOCELAnalyzer:
                         if metrics.is_outlier:
                             duration_outliers[activity] = metrics.details
 
-                    # Create duration plot
+                    # Original scatter plot visualization
                     fig = px.scatter(
                         pd.DataFrame(duration_data),
                         x='Activity',
@@ -1608,25 +1609,56 @@ class UnfairOCELAnalyzer:
                     )
                     st.plotly_chart(fig, use_container_width=True)
 
-                    # Show outlier details if any selected
-                    if duration_outliers:
-                        selected_activity = st.selectbox(
-                            "Select activity for details",
-                            options=list(duration_outliers.keys())
-                        )
-                        if selected_activity:
-                            details = duration_outliers[selected_activity]
-                            st.write("### Activity Details")
+                    # Add new timing gap analysis section
+                    st.subheader("Timing Gap Details")
+                    timing_gaps = []
+                    for activity, metrics in self.outliers['duration'].items():
+                        for violation in metrics.details.get('outlier_events', {}).get('timing_gap', []):
+                            # Get previous event details
+                            prev_event = self._get_event_details(violation['details']['previous_event'])
 
-                            # Show violation details
-                            for violation_type, violations in details.get('outlier_events', {}).items():
-                                if violations:
-                                    with st.expander(f"{violation_type.replace('_', ' ').title()} ({len(violations)})"):
-                                        events_df = self._get_events_dataframe([v['event_id'] for v in violations])
-                                        if not events_df.empty:
-                                            st.dataframe(events_df)
+                            timing_gaps.append({
+                                'Current Activity': activity,
+                                'Previous Activity': prev_event.get('Activity', 'Unknown'),
+                                'Gap (Minutes)': violation['details']['time_gap_minutes'],
+                                'Threshold': violation['details']['threshold_minutes'],
+                                'Case ID': violation['case_id'],
+                                'Object ID': violation['object_id']
+                            })
+
+                    if timing_gaps:
+                        df = pd.DataFrame(timing_gaps)
+
+                        # Create timing gap table
+                        gap_table = go.Figure(data=[go.Table(
+                            header=dict(
+                                values=['Case ID', 'Current Activity', 'Previous Activity',
+                                        'Gap (Minutes)', 'Threshold'],
+                                fill_color='paleturquoise',
+                                align='left'
+                            ),
+                            cells=dict(
+                                values=[
+                                    df['Case ID'],
+                                    df['Current Activity'],
+                                    df['Previous Activity'],
+                                    df['Gap (Minutes)'].round(2),
+                                    df['Threshold']
+                                ],
+                                fill_color=[['pink' if gap > thresh else 'lightgreen'
+                                             for gap, thresh in zip(df['Gap (Minutes)'], df['Threshold'])]],
+                                align='left'
+                            )
+                        )])
+
+                        gap_table.update_layout(
+                            title="Detailed Timing Gap Analysis",
+                            height=400
+                        )
+                        st.plotly_chart(gap_table, use_container_width=True)
 
                 with col2:
+                    # Keep existing explanation section
                     timing_metrics = {
                         'avg_duration': f"{np.mean([len(events) for events in self.case_events.values()]):.2f}",
                         'outlier_count': len([m for m in self.outliers['duration'].values() if m.is_outlier]),
