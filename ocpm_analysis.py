@@ -9,6 +9,7 @@ import streamlit as st
 import plotly.graph_objects as go
 import numpy as np
 import os
+from azure_processor import process_log_file
 
 # Add this at the start of your script, before any other imports
 os.environ["PATH"] += os.pathsep + r"C:\samadhi\technology\Graphviz\bin"
@@ -132,29 +133,50 @@ class OCPMAnalyzer:
             raise
 
     def _preprocess_event_log(self, df: pd.DataFrame) -> pd.DataFrame:
-        """Preprocess event log to ensure consistent format"""
-        # Print incoming dataframe info for debugging
+        """
+        Preprocess event log to ensure consistent format.
+        Handles both traditional process mining formats and custom business formats.
+        Required columns: case_id (or Case id), timestamp (or Timestamp)
+        """
         print("Input DataFrame Info:")
         print(df.info())
 
-        # Define all possible column mappings
+        # Create a copy to avoid modifying the original
+        df = df.copy()
+
+        # Define all possible column mappings - both traditional and new format
         column_mappings = {
+            # Traditional process mining formats
             'case:concept:name': 'case_id',
             'concept:name': 'activity',
             'time:timestamp': 'timestamp',
-            'Case_': 'case_id',  # For synthetic data format
+            'Case_': 'case_id',
             'Activity': 'activity',
             'Timestamp': 'timestamp',
             'case': 'case_id',
             'event': 'activity',
             'start_timestamp': 'timestamp',
-            'case_id': 'case_id',  # Already correct format
-            'activity': 'activity',  # Already correct format
-            'timestamp': 'timestamp'  # Already correct format
+            
+            # New business format
+            'Case id': 'case_id',
+            'Activity name': 'activity',
+            
+            # Already correct format
+            'case_id': 'case_id',
+            'activity': 'activity',
+            'timestamp': 'timestamp',
+            
+            # Additional business columns
+            'Resource': 'resource',
+            'User type': 'user_type',
+            'Resource name': 'resource_name',
+            'Product name': 'product_name',
+            'Product description': 'product_description',
+            'Order value': 'order_value',
+            'Business unit': 'business_unit',
+            'Customer name': 'customer_name',
+            'Customer payment history': 'payment_history'
         }
-
-        # Create a copy to avoid modifying the original
-        df = df.copy()
 
         # Try to identify and rename columns
         for old_col, new_col in column_mappings.items():
@@ -162,9 +184,10 @@ class OCPMAnalyzer:
                 df = df.rename(columns={old_col: new_col})
 
         # Special handling for case_id if it has a numeric prefix
-        case_id_columns = [col for col in df.columns if 'case' in col.lower()]
-        if case_id_columns and 'case_id' not in df.columns:
-            df = df.rename(columns={case_id_columns[0]: 'case_id'})
+        if 'case_id' not in df.columns:
+            case_id_columns = [col for col in df.columns if 'case' in col.lower()]
+            if case_id_columns:
+                df = df.rename(columns={case_id_columns[0]: 'case_id'})
 
         # Special handling for synthetic data format
         if 'case_id' not in df.columns and 'case:concept:name' in df.columns:
@@ -175,29 +198,90 @@ class OCPMAnalyzer:
             df['timestamp'] = df['time:timestamp']
 
         # Check required columns
-        required_columns = ['case_id', 'activity', 'timestamp']
+        required_columns = ['case_id', 'timestamp']
         missing_columns = [col for col in required_columns if col not in df.columns]
         if missing_columns:
             print("Available columns:", df.columns.tolist())
             raise ValueError(f"Missing required columns: {missing_columns}")
 
-        # Convert timestamp to datetime if needed
-        if not pd.api.types.is_datetime64_any_dtype(df['timestamp']):
-            df['timestamp'] = pd.to_datetime(df['timestamp'])
+        # If activity column is not present, create it from Activity name or set to default
+        if 'activity' not in df.columns:
+            if 'Activity name' in df.columns:
+                df['activity'] = df['Activity name']
+            else:
+                df['activity'] = 'Unknown Activity'
 
-        # Print final dataframe info for verification
+        # Try multiple timestamp formats
+        if not pd.api.types.is_datetime64_any_dtype(df['timestamp']):
+            timestamp_formats = [
+                '%d/%m/%Y %H:%M',  # New business format
+                '%Y-%m-%d %H:%M:%S',  # Traditional format
+                '%Y/%m/%d %H:%M:%S',
+                '%d-%m-%Y %H:%M:%S'
+            ]
+            
+            for timestamp_format in timestamp_formats:
+                try:
+                    df['timestamp'] = pd.to_datetime(df['timestamp'], format=timestamp_format)
+                    break
+                except ValueError:
+                    continue
+            
+            # If none of the specific formats work, try pandas default parser
+            if not pd.api.types.is_datetime64_any_dtype(df['timestamp']):
+                df['timestamp'] = pd.to_datetime(df['timestamp'])
+
+        # Handle numeric fields
+        if 'order_value' in df.columns:
+            df['order_value'] = pd.to_numeric(df['order_value'], errors='coerce')
+
+        # Set default values for optional columns
+        default_values = {
+            'activity': 'Unknown Activity',
+            'resource': 'Unknown Resource',
+            'user_type': 'Unknown',
+            'resource_name': 'Unknown',
+            'product_name': 'Unknown Product',
+            'product_description': 'No Description',
+            'business_unit': 'Unknown Unit',
+            'customer_name': '',
+            'payment_history': 'unknown'
+        }
+
+        # Only fill default values for columns that exist
+        for col, default_val in default_values.items():
+            if col in df.columns:
+                df[col] = df[col].fillna(default_val)
+
         print("\nProcessed DataFrame Info:")
         print(df.info())
         return df
 
-    def _initialize_object_types(self) -> Dict[str, ObjectType]:
-        """Initialize predefined object types for FX trading"""
+
+    def _initialize_object_types(self, use_azure: bool = True) -> Dict[str, ObjectType]:
+        """Initialize object types, optionally using Azure OpenAI"""
+        try:
+            if use_azure:
+                # Process directly with Azure
+                azure_types = process_log_file(df=self.event_log,chunk_size=1000)
+                
+                return azure_types
+                    
+            return self._get_default_object_types()
+            
+        except Exception as e:
+            print(f"Error in object type initialization: {str(e)}")
+            return self._get_default_object_types()
+
+    def _get_default_object_types(self) -> Dict[str, ObjectType]:
+        """Return default object types"""
+        print("Using default object types")
         return {
             'Trade': ObjectType(
                 name='Trade',
                 activities=[
                     'Trade Initiated', 'Trade Executed', 'Trade Allocated',
-                    'Trade Settled', 'Trade Canceled'  # Match synthetic data activities
+                    'Trade Settled', 'Trade Canceled'
                 ],
                 attributes=['currency_pair', 'notional_amount'],
                 relationships=['Market', 'Risk', 'Settlement']
@@ -237,12 +321,18 @@ class OCPMAnalyzer:
         return mapping
 
     def convert_to_ocpm_format(self) -> pd.DataFrame:
-        """Convert regular event log to OCPM format"""
+        """Convert regular event log to OCPM format"""  
         ocpm_events = []
+
+        default_object_type = next(iter(self.object_types.keys())) if self.object_types else None
+        if not default_object_type:
+            raise ValueError("No object types available for conversion")
+
+        print(f"Using default object type: {default_object_type}")
 
         for _, row in self.event_log.iterrows():
             activity = row['activity']
-            related_objects = self.activity_object_mapping.get(activity, ['Trade'])
+            related_objects = self.activity_object_mapping.get(activity, [default_object_type])
 
             for obj_type in related_objects:
                 event = {
@@ -286,10 +376,13 @@ class OCPMAnalyzer:
         for obj_type in self.object_types.keys():
             obj_data = ocpm_df[ocpm_df['object_type'] == obj_type]
 
+            unique_objects = len(obj_data['object_id'].unique())
+            avg_activities = len(obj_data) / unique_objects if unique_objects > 0 else 1
+
             metrics[obj_type] = {
                 'total_instances': len(obj_data['object_id'].unique()),
                 'total_activities': len(obj_data['activity'].unique()),
-                'avg_activities_per_instance': len(obj_data) / len(obj_data['object_id'].unique()),
+                'avg_activities_per_instance': avg_activities,
                 'top_activities': obj_data['activity'].value_counts().head(3).to_dict(),
                 'interaction_count': len(self.object_relationships[obj_type])
             }
@@ -363,6 +456,52 @@ class OCPMVisualizer:
 """Modified create_ocpm_ui to generate OCEL files."""
 
 
+def read_csv_with_detection(file):
+    """Read CSV file with automatic separator detection"""
+    # First, let's peek at the file content
+    try:
+        # Read first few lines to detect the format
+        file_content = file.read(1024).decode('utf-8')
+        file.seek(0)  # Reset file pointer
+        
+        # Print first few lines for debugging
+        print("First few lines of file:")
+        print(file_content[:200])
+        
+        # Count potential separators
+        separators = {
+            ',': file_content.count(','),
+            ';': file_content.count(';'),
+            '\t': file_content.count('\t'),
+            '|': file_content.count('|')
+        }
+        
+        print("Detected separator counts:", separators)
+        
+        # Try separators in order of frequency
+        for sep, count in sorted(separators.items(), key=lambda x: x[1], reverse=True):
+            try:
+                print(f"Trying separator: '{sep}'")
+                df = pd.read_csv(file, sep=sep)
+                print(f"Successfully read with separator: '{sep}'")
+                print("Columns found:", df.columns.tolist())
+                return df
+            except Exception as e:
+                print(f"Failed with separator '{sep}': {str(e)}")
+                file.seek(0)  # Reset file pointer for next attempt
+        
+        # If no separator worked, try pandas' automatic detection
+        print("Trying pandas automatic detection...")
+        file.seek(0)
+        df = pd.read_csv(file, engine='python')
+        print("Successfully read with automatic detection")
+        print("Columns found:", df.columns.tolist())
+        return df
+        
+    except Exception as e:
+        raise Exception(f"Failed to read CSV file: {str(e)}")
+
+
 def create_ocpm_ui():
     """Create Streamlit UI components for OCPM analysis"""
     st.subheader("Object-Centric Process Analytics Analysis")
@@ -374,14 +513,7 @@ def create_ocpm_ui():
 
     if uploaded_file is not None:
         try:
-            # Read the CSV file with multiple possible separators
-            try:
-                df = pd.read_csv(uploaded_file, sep=';')
-            except:
-                try:
-                    df = pd.read_csv(uploaded_file, sep=',')
-                except:
-                    df = pd.read_csv(uploaded_file, sep='\t')
+            df = read_csv_with_detection(uploaded_file)
 
             # Initialize analyzer
             analyzer = OCPMAnalyzer(df)
