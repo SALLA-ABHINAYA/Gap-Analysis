@@ -1,5 +1,3 @@
-import shutil
-
 from openai import AzureOpenAI
 import os
 import json

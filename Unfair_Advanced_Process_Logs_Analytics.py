@@ -666,8 +666,9 @@ class UnfairOCELAnalyzer:
             raise
 
     def _detect_duration_outliers(self) -> Dict[str, OutlierMetrics]:
-        """Enhanced duration outlier detection with full event traceability"""
+        """Enhanced duration outlier detection using OCPM model and thresholds"""
         try:
+            # Create events DataFrame (same as before)
             events_df = pd.DataFrame([{
                 'event_id': event['ocel:id'],
                 'timestamp': pd.to_datetime(event['ocel:timestamp']),
@@ -680,26 +681,14 @@ class UnfairOCELAnalyzer:
 
             events_df = events_df.sort_values('timestamp')
 
-            # Business hour boundaries
-            business_start = pd.Timestamp.now().replace(hour=9, minute=0)
-            business_end = pd.Timestamp.now().replace(hour=17, minute=0)
-
-            # Activity-specific timing thresholds (minutes)
-            timing_thresholds = {
-                'Trade Initiated': 15,
-                'Market Data Validation': 30,
-                'Volatility Surface Analysis': 45,
-                'Quote Provided': 20,
-                'Exercise Decision': 25,
-                'Premium Calculation': 35,
-                'Strategy Validation': 40
-            }
+            # Get timing thresholds from OCPM validator
+            timing_rules = self.process_validator.get_timing_thresholds()
 
             outliers = {}
             for activity in events_df['activity'].unique():
                 activity_events = events_df[events_df['activity'] == activity]
 
-                # Initialize detailed tracking
+                # Initialize tracking (same as before)
                 outlier_events = {
                     'outside_hours': [],
                     'sequence_position': [],
@@ -715,89 +704,64 @@ class UnfairOCELAnalyzer:
                     'resource_violations': 0
                 }
 
-                # Track events outside business hours
+                # Process each event
                 for idx, event in activity_events.iterrows():
-                    event_time = event['timestamp'].replace(year=business_start.year,
-                                                            month=business_start.month,
-                                                            day=business_start.day)
-                    if event_time < business_start or event_time > business_end:
-                        metrics['outside_hours_count'] += 1
-                        outlier_events['outside_hours'].append({
-                            'event_id': event['event_id'],
-                            'timestamp': event['timestamp'],
-                            'case_id': event['case_id'],
-                            'resource': event['resource'],
-                            'objects': event['object_ids'],
-                            'violation_type': 'outside_hours',
-                            'details': {
-                                'expected_window': f"{business_start.strftime('%H:%M')} - {business_end.strftime('%H:%M')}",
-                                'actual_time': event_time.strftime('%H:%M')
-                            }
-                        })
+                    for obj_type in event['object_types']:
+                        if obj_type in timing_rules:
+                            thresholds = timing_rules[obj_type]
+                            activity_threshold = thresholds['activity_gaps'].get(
+                                activity,
+                                thresholds.get('default_gap_hours', 1)
+                            )
 
-                # Track sequence position violations
-                case_events = events_df.groupby('case_id')
-                for case_id, case_data in case_events:
-                    case_activities = case_data['activity'].tolist()
-                    if activity in case_activities:
-                        activity_index = case_activities.index(activity)
-                        expected_index = self._get_expected_activity_index(activity)
+                            prev_events = events_df[
+                                (events_df['case_id'] == event['case_id']) &
+                                (events_df['object_types'].apply(lambda x: obj_type in x)) &
+                                (events_df.index < idx)
+                                ]
 
-                        if expected_index is not None and abs(activity_index - expected_index) > 2:
-                            metrics['sequence_violations'] += 1
-                            relevant_event = activity_events[activity_events['case_id'] == case_id].iloc[0]
-                            outlier_events['sequence_position'].append({
-                                'event_id': relevant_event['event_id'],
-                                'case_id': case_id,
-                                'timestamp': relevant_event['timestamp'],
-                                'resource': relevant_event['resource'],
-                                'objects': relevant_event['object_ids'],
-                                'violation_type': 'sequence_position',
-                                'details': {
-                                    'expected_position': expected_index,
-                                    'actual_position': activity_index,
-                                    'case_sequence': case_activities
-                                }
-                            })
+                            if not prev_events.empty:
+                                last_event = prev_events.iloc[-1]
+                                gap_hours = (event['timestamp'] -
+                                             last_event['timestamp']).total_seconds() / 3600
 
-                # Track timing gaps between related events
-                for idx, event in activity_events.iterrows():
-                    for obj_id in event['object_ids']:
-                        obj_events = events_df[events_df['object_ids'].apply(lambda x: obj_id in x)]
-                        if len(obj_events) > 1:
-                            obj_timeline = obj_events['timestamp'].tolist()
-                            current_index = obj_timeline.index(event['timestamp'])
-
-                            if current_index > 0:
-                                time_gap = (obj_timeline[current_index] -
-                                            obj_timeline[current_index - 1]).total_seconds() / 60
-                                threshold = timing_thresholds.get(activity, 30)
-
-                                if time_gap > threshold:
-                                    metrics['timing_violations'] += 1
+                                if gap_hours > activity_threshold:
+                                    # Modified structure to match display expectations
                                     outlier_events['timing_gap'].append({
                                         'event_id': event['event_id'],
                                         'case_id': event['case_id'],
                                         'timestamp': event['timestamp'],
-                                        'resource': event['resource'],
-                                        'object_id': obj_id,
-                                        'objects': event['object_ids'],
-                                        'violation_type': 'timing_gap',
-                                        'details': {
-                                            'time_gap_minutes': time_gap,
-                                            'threshold_minutes': threshold,
-                                            'previous_event': obj_events.iloc[current_index - 1]['event_id'],
-                                            'related_objects': [oid for oid in event['object_ids'] if oid != obj_id]
-                                        }
+                                        'details': {  # Add details structure
+                                            'time_gap_minutes': gap_hours * 60,
+                                            'threshold_minutes': activity_threshold * 60,
+                                            'previous_event': last_event['event_id'],
+                                            'related_objects': event['object_ids']
+                                        },
+                                        'object_id': event['object_ids'][0] if event['object_ids'] else None,
+                                        'objects': event['object_ids']
                                     })
+                                    metrics['timing_violations'] += 1
 
-                # Calculate violation score
-                total_checks = metrics['total_events'] * 3
-                violation_score = (
-                                          metrics['outside_hours_count'] +
-                                          metrics['sequence_violations'] +
-                                          metrics['timing_violations']
-                                  ) / total_checks if total_checks > 0 else 0
+                            # Sequence position check (modified to match expected structure)
+                            expected_pos = self._get_expected_activity_index(activity, obj_type)
+                            if expected_pos is not None:
+                                actual_pos = len(prev_events)
+                                if abs(actual_pos - expected_pos) > 1:
+                                    outlier_events['sequence_position'].append({
+                                        'event_id': event['event_id'],
+                                        'case_id': event['case_id'],
+                                        'details': {  # Add details structure
+                                            'expected_position': expected_pos,
+                                            'actual_position': actual_pos,
+                                            'sequence_context': prev_events['activity'].tolist()
+                                        },
+                                        'object_type': obj_type
+                                    })
+                                    metrics['sequence_violations'] += 1
+
+                # Calculate violation score (same as before)
+                violation_score = sum(metrics.values()) / (metrics['total_events'] * 3) if metrics[
+                                                                                               'total_events'] > 0 else 0
 
                 outliers[activity] = OutlierMetrics(
                     z_score=float(violation_score * 10),
@@ -807,7 +771,7 @@ class UnfairOCELAnalyzer:
                         'outlier_events': outlier_events,
                         'violation_rate': violation_score,
                         'total_events': metrics['total_events'],
-                        'activity_stats': {
+                        'activity_stats': {  # Added to match expected structure
                             'avg_duration': float(activity_events.groupby('case_id')['timestamp']
                                                   .agg(lambda x: (x.max() - x.min()).total_seconds() / 60).mean()),
                             'resource_distribution': activity_events['resource'].value_counts().to_dict(),
@@ -824,22 +788,24 @@ class UnfairOCELAnalyzer:
             logger.error(traceback.format_exc())
             return {}
 
-    def _get_expected_activity_index(self, activity: str) -> Optional[int]:
-        """Helper method to determine expected position of activity in process"""
-        # Define expected sequence of activities
-        expected_sequence = [
-            'Trade Initiated',
-            'Market Data Validation',
-            'Volatility Surface Analysis',
-            'Quote Provided',
-            'Exercise Decision',
-            'Trade Transparency Assessment',
-            'Premium Calculation',
-            'Strategy Validation'
-        ]
+    def _get_expected_activity_index(self, activity: str, object_type: str) -> Optional[int]:
+        """
+        Determine expected position of activity in process based on OCPM model.
 
+        Args:
+            activity: The activity name to find
+            object_type: The object type this activity belongs to
+
+        Returns:
+            Optional[int]: Index of activity in sequence, or None if not found
+        """
         try:
-            return expected_sequence.index(activity)
+            # Get activity sequence from OCPM model
+            activities = self.process_validator.get_expected_flow().get(object_type, [])
+            if not activities:
+                return None
+
+            return activities.index(activity)
         except ValueError:
             return None
 

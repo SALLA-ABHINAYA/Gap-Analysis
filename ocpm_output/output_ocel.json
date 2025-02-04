@@ -53,16 +53,13 @@
       "CSA Verification",
       "Client Limit Validation",
       "Credit Check",
-      "Exercise Decision",
       "ISDA Master Agreement Check",
-      "KYC Refresh Check",
+      "Initial Margin Calculation",
       "Premium Calculation",
       "Quote Provided",
       "Quote Requested",
       "Settlement Instructions",
-      "Strategy Validation",
-      "Trade Allocation",
-      "Trade Transparency Assessment"
+      "Strategy Validation"
     ],
     "attributes": [
       "booking_system",
@@ -84,6 +81,7 @@
   "Position": {
     "name": "Position",
     "activities": [
+      "CSA Verification",
       "Collateral Management",
       "Initial Margin Calculation",
       "Position Reconciliation",
@@ -91,9 +89,7 @@
       "Risk Transfer Executed"
     ],
     "attributes": [
-      "booking_system",
       "case_id",
-      "client_type",
       "currency_pair",
       "delta",
       "gamma",
@@ -101,7 +97,6 @@
       "option_type",
       "risk_score",
       "theta",
-      "trading_strategy",
       "vega"
     ],
     "relationships": [

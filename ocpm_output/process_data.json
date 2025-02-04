@@ -351,12 +351,12 @@
       "ocel:attributes": {
         "resource": "Client Desk D",
         "case_id": "Case_1",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1",
-          "type": "Position"
+          "id": "Order_Case_1",
+          "type": "Order"
         }
       ]
     },
@@ -742,12 +742,12 @@
       "ocel:attributes": {
         "resource": "Client Desk D",
         "case_id": "Case_10",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_10",
-          "type": "Position"
+          "id": "Order_Case_10",
+          "type": "Order"
         }
       ]
     },
@@ -1388,12 +1388,12 @@
       "ocel:attributes": {
         "resource": "Client Desk D",
         "case_id": "Case_100",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_100",
-          "type": "Position"
+          "id": "Order_Case_100",
+          "type": "Order"
         }
       ]
     },
@@ -1881,12 +1881,12 @@
       "ocel:attributes": {
         "resource": "Hedge Desk C",
         "case_id": "Case_1000",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1000",
-          "type": "Position"
+          "id": "Order_Case_1000",
+          "type": "Order"
         }
       ]
     },
@@ -2187,12 +2187,12 @@
       "ocel:attributes": {
         "resource": "Market Maker B",
         "case_id": "Case_1001",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1001",
-          "type": "Position"
+          "id": "Order_Case_1001",
+          "type": "Order"
         }
       ]
     },
@@ -2833,12 +2833,12 @@
       "ocel:attributes": {
         "resource": "Options Desk A",
         "case_id": "Case_1002",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1002",
-          "type": "Position"
+          "id": "Order_Case_1002",
+          "type": "Order"
         }
       ]
     },
@@ -3275,12 +3275,12 @@
       "ocel:attributes": {
         "resource": "Market Maker B",
         "case_id": "Case_1003",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1003",
-          "type": "Position"
+          "id": "Order_Case_1003",
+          "type": "Order"
         }
       ]
     },
@@ -3513,12 +3513,12 @@
       "ocel:attributes": {
         "resource": "Hedge Desk C",
         "case_id": "Case_1004",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1004",
-          "type": "Position"
+          "id": "Order_Case_1004",
+          "type": "Order"
         }
       ]
     },
@@ -4210,12 +4210,12 @@
       "ocel:attributes": {
         "resource": "Options Desk A",
         "case_id": "Case_1005",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1005",
-          "type": "Position"
+          "id": "Order_Case_1005",
+          "type": "Order"
         }
       ]
     },
@@ -4499,12 +4499,12 @@
       "ocel:attributes": {
         "resource": "Client Desk D",
         "case_id": "Case_1006",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1006",
-          "type": "Position"
+          "id": "Order_Case_1006",
+          "type": "Order"
         }
       ]
     },
@@ -5043,12 +5043,12 @@
       "ocel:attributes": {
         "resource": "Market Maker B",
         "case_id": "Case_1007",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1007",
-          "type": "Position"
+          "id": "Order_Case_1007",
+          "type": "Order"
         }
       ]
     },
@@ -5570,12 +5570,12 @@
       "ocel:attributes": {
         "resource": "Market Maker B",
         "case_id": "Case_1008",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1008",
-          "type": "Position"
+          "id": "Order_Case_1008",
+          "type": "Order"
         }
       ]
     },
@@ -5995,12 +5995,12 @@
       "ocel:attributes": {
         "resource": "Options Desk A",
         "case_id": "Case_1009",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1009",
-          "type": "Position"
+          "id": "Order_Case_1009",
+          "type": "Order"
         }
       ]
     },
@@ -6573,12 +6573,12 @@
       "ocel:attributes": {
         "resource": "Hedge Desk C",
         "case_id": "Case_101",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_101",
-          "type": "Position"
+          "id": "Order_Case_101",
+          "type": "Order"
         }
       ]
     },
@@ -7151,12 +7151,12 @@
       "ocel:attributes": {
         "resource": "Market Maker B",
         "case_id": "Case_1010",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1010",
-          "type": "Position"
+          "id": "Order_Case_1010",
+          "type": "Order"
         }
       ]
     },
@@ -7661,12 +7661,12 @@
       "ocel:attributes": {
         "resource": "Options Desk A",
         "case_id": "Case_1011",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1011",
-          "type": "Position"
+          "id": "Order_Case_1011",
+          "type": "Order"
         }
       ]
     },
@@ -8137,12 +8137,12 @@
       "ocel:attributes": {
         "resource": "Market Maker B",
         "case_id": "Case_1012",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1012",
-          "type": "Position"
+          "id": "Order_Case_1012",
+          "type": "Order"
         }
       ]
     },
@@ -8647,12 +8647,12 @@
       "ocel:attributes": {
         "resource": "Client Desk D",
         "case_id": "Case_1013",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1013",
-          "type": "Position"
+          "id": "Order_Case_1013",
+          "type": "Order"
         }
       ]
     },
@@ -9174,12 +9174,12 @@
       "ocel:attributes": {
         "resource": "Client Desk D",
         "case_id": "Case_1014",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1014",
-          "type": "Position"
+          "id": "Order_Case_1014",
+          "type": "Order"
         }
       ]
     },
@@ -9565,12 +9565,12 @@
       "ocel:attributes": {
         "resource": "Market Maker B",
         "case_id": "Case_1015",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1015",
-          "type": "Position"
+          "id": "Order_Case_1015",
+          "type": "Order"
         }
       ]
     },
@@ -10058,12 +10058,12 @@
       "ocel:attributes": {
         "resource": "Hedge Desk C",
         "case_id": "Case_1016",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1016",
-          "type": "Position"
+          "id": "Order_Case_1016",
+          "type": "Order"
         }
       ]
     },
@@ -10381,12 +10381,12 @@
       "ocel:attributes": {
         "resource": "Client Desk D",
         "case_id": "Case_1017",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1017",
-          "type": "Position"
+          "id": "Order_Case_1017",
+          "type": "Order"
         }
       ]
     },
@@ -10772,12 +10772,12 @@
       "ocel:attributes": {
         "resource": "Options Desk A",
         "case_id": "Case_1018",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1018",
-          "type": "Position"
+          "id": "Order_Case_1018",
+          "type": "Order"
         }
       ]
     },
@@ -11384,12 +11384,12 @@
       "ocel:attributes": {
         "resource": "Market Maker B",
         "case_id": "Case_1019",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1019",
-          "type": "Position"
+          "id": "Order_Case_1019",
+          "type": "Order"
         }
       ]
     },
@@ -12115,12 +12115,12 @@
       "ocel:attributes": {
         "resource": "Market Maker B",
         "case_id": "Case_102",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_102",
-          "type": "Position"
+          "id": "Order_Case_102",
+          "type": "Order"
         }
       ]
     },
@@ -12438,12 +12438,12 @@
       "ocel:attributes": {
         "resource": "Options Desk A",
         "case_id": "Case_1020",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1020",
-          "type": "Position"
+          "id": "Order_Case_1020",
+          "type": "Order"
         }
       ]
     },
@@ -12880,12 +12880,12 @@
       "ocel:attributes": {
         "resource": "Market Maker B",
         "case_id": "Case_1021",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1021",
-          "type": "Position"
+          "id": "Order_Case_1021",
+          "type": "Order"
         }
       ]
     },
@@ -13509,12 +13509,12 @@
       "ocel:attributes": {
         "resource": "Hedge Desk C",
         "case_id": "Case_1022",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1022",
-          "type": "Position"
+          "id": "Order_Case_1022",
+          "type": "Order"
         }
       ]
     },
@@ -14053,12 +14053,12 @@
       "ocel:attributes": {
         "resource": "Hedge Desk C",
         "case_id": "Case_1023",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1023",
-          "type": "Position"
+          "id": "Order_Case_1023",
+          "type": "Order"
         }
       ]
     },
@@ -14529,12 +14529,12 @@
       "ocel:attributes": {
         "resource": "Hedge Desk C",
         "case_id": "Case_1024",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1024",
-          "type": "Position"
+          "id": "Order_Case_1024",
+          "type": "Order"
         }
       ]
     },
@@ -15107,12 +15107,12 @@
       "ocel:attributes": {
         "resource": "Market Maker B",
         "case_id": "Case_1025",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1025",
-          "type": "Position"
+          "id": "Order_Case_1025",
+          "type": "Order"
         }
       ]
     },
@@ -15430,12 +15430,12 @@
       "ocel:attributes": {
         "resource": "Hedge Desk C",
         "case_id": "Case_1026",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1026",
-          "type": "Position"
+          "id": "Order_Case_1026",
+          "type": "Order"
         }
       ]
     },
@@ -15855,12 +15855,12 @@
       "ocel:attributes": {
         "resource": "Client Desk D",
         "case_id": "Case_1027",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1027",
-          "type": "Position"
+          "id": "Order_Case_1027",
+          "type": "Order"
         }
       ]
     },
@@ -16433,12 +16433,12 @@
       "ocel:attributes": {
         "resource": "Options Desk A",
         "case_id": "Case_1028",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1028",
-          "type": "Position"
+          "id": "Order_Case_1028",
+          "type": "Order"
         }
       ]
     },
@@ -17147,12 +17147,12 @@
       "ocel:attributes": {
         "resource": "Market Maker B",
         "case_id": "Case_1029",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1029",
-          "type": "Position"
+          "id": "Order_Case_1029",
+          "type": "Order"
         }
       ]
     },
@@ -17555,12 +17555,12 @@
       "ocel:attributes": {
         "resource": "Options Desk A",
         "case_id": "Case_103",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_103",
-          "type": "Position"
+          "id": "Order_Case_103",
+          "type": "Order"
         }
       ]
     },
@@ -17895,12 +17895,12 @@
       "ocel:attributes": {
         "resource": "Hedge Desk C",
         "case_id": "Case_1030",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1030",
-          "type": "Position"
+          "id": "Order_Case_1030",
+          "type": "Order"
         }
       ]
     },
@@ -18252,12 +18252,12 @@
       "ocel:attributes": {
         "resource": "Client Desk D",
         "case_id": "Case_1031",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1031",
-          "type": "Position"
+          "id": "Order_Case_1031",
+          "type": "Order"
         }
       ]
     },
@@ -18796,12 +18796,12 @@
       "ocel:attributes": {
         "resource": "Market Maker B",
         "case_id": "Case_1032",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1032",
-          "type": "Position"
+          "id": "Order_Case_1032",
+          "type": "Order"
         }
       ]
     },
@@ -19442,12 +19442,12 @@
       "ocel:attributes": {
         "resource": "Client Desk D",
         "case_id": "Case_1033",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1033",
-          "type": "Position"
+          "id": "Order_Case_1033",
+          "type": "Order"
         }
       ]
     },
@@ -19952,12 +19952,12 @@
       "ocel:attributes": {
         "resource": "Hedge Desk C",
         "case_id": "Case_1034",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1034",
-          "type": "Position"
+          "id": "Order_Case_1034",
+          "type": "Order"
         }
       ]
     },
@@ -20428,12 +20428,12 @@
       "ocel:attributes": {
         "resource": "Options Desk A",
         "case_id": "Case_1035",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1035",
-          "type": "Position"
+          "id": "Order_Case_1035",
+          "type": "Order"
         }
       ]
     },
@@ -20751,12 +20751,12 @@
       "ocel:attributes": {
         "resource": "Market Maker B",
         "case_id": "Case_1036",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1036",
-          "type": "Position"
+          "id": "Order_Case_1036",
+          "type": "Order"
         }
       ]
     },
@@ -21261,12 +21261,12 @@
       "ocel:attributes": {
         "resource": "Market Maker B",
         "case_id": "Case_1037",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1037",
-          "type": "Position"
+          "id": "Order_Case_1037",
+          "type": "Order"
         }
       ]
     },
@@ -21771,12 +21771,12 @@
       "ocel:attributes": {
         "resource": "Hedge Desk C",
         "case_id": "Case_1038",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1038",
-          "type": "Position"
+          "id": "Order_Case_1038",
+          "type": "Order"
         }
       ]
     },
@@ -22230,12 +22230,12 @@
       "ocel:attributes": {
         "resource": "Options Desk A",
         "case_id": "Case_1039",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1039",
-          "type": "Position"
+          "id": "Order_Case_1039",
+          "type": "Order"
         }
       ]
     },
@@ -22740,12 +22740,12 @@
       "ocel:attributes": {
         "resource": "Client Desk D",
         "case_id": "Case_104",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_104",
-          "type": "Position"
+          "id": "Order_Case_104",
+          "type": "Order"
         }
       ]
     },
@@ -23114,12 +23114,12 @@
       "ocel:attributes": {
         "resource": "Options Desk A",
         "case_id": "Case_1040",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1040",
-          "type": "Position"
+          "id": "Order_Case_1040",
+          "type": "Order"
         }
       ]
     },
@@ -23403,12 +23403,12 @@
       "ocel:attributes": {
         "resource": "Market Maker B",
         "case_id": "Case_1041",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1041",
-          "type": "Position"
+          "id": "Order_Case_1041",
+          "type": "Order"
         }
       ]
     },
@@ -23845,12 +23845,12 @@
       "ocel:attributes": {
         "resource": "Market Maker B",
         "case_id": "Case_1042",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1042",
-          "type": "Position"
+          "id": "Order_Case_1042",
+          "type": "Order"
         }
       ]
     },
@@ -24270,12 +24270,12 @@
       "ocel:attributes": {
         "resource": "Client Desk D",
         "case_id": "Case_1043",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1043",
-          "type": "Position"
+          "id": "Order_Case_1043",
+          "type": "Order"
         }
       ]
     },
@@ -25052,12 +25052,12 @@
       "ocel:attributes": {
         "resource": "Hedge Desk C",
         "case_id": "Case_1044",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1044",
-          "type": "Position"
+          "id": "Order_Case_1044",
+          "type": "Order"
         }
       ]
     },
@@ -25358,12 +25358,12 @@
       "ocel:attributes": {
         "resource": "Hedge Desk C",
         "case_id": "Case_1045",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1045",
-          "type": "Position"
+          "id": "Order_Case_1045",
+          "type": "Order"
         }
       ]
     },
@@ -25783,12 +25783,12 @@
       "ocel:attributes": {
         "resource": "Market Maker B",
         "case_id": "Case_1046",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1046",
-          "type": "Position"
+          "id": "Order_Case_1046",
+          "type": "Order"
         }
       ]
     },
@@ -26361,12 +26361,12 @@
       "ocel:attributes": {
         "resource": "Client Desk D",
         "case_id": "Case_1047",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1047",
-          "type": "Position"
+          "id": "Order_Case_1047",
+          "type": "Order"
         }
       ]
     },
@@ -26497,12 +26497,12 @@
       "ocel:attributes": {
         "resource": "Options Desk A",
         "case_id": "Case_1048",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1048",
-          "type": "Position"
+          "id": "Order_Case_1048",
+          "type": "Order"
         }
       ]
     },
@@ -27126,12 +27126,12 @@
       "ocel:attributes": {
         "resource": "Options Desk A",
         "case_id": "Case_1049",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1049",
-          "type": "Position"
+          "id": "Order_Case_1049",
+          "type": "Order"
         }
       ]
     },
@@ -27449,12 +27449,12 @@
       "ocel:attributes": {
         "resource": "Options Desk A",
         "case_id": "Case_105",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_105",
-          "type": "Position"
+          "id": "Order_Case_105",
+          "type": "Order"
         }
       ]
     },
@@ -27942,12 +27942,12 @@
       "ocel:attributes": {
         "resource": "Options Desk A",
         "case_id": "Case_1050",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1050",
-          "type": "Position"
+          "id": "Order_Case_1050",
+          "type": "Order"
         }
       ]
     },
@@ -28452,12 +28452,12 @@
       "ocel:attributes": {
         "resource": "Client Desk D",
         "case_id": "Case_1051",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1051",
-          "type": "Position"
+          "id": "Order_Case_1051",
+          "type": "Order"
         }
       ]
     },
@@ -28843,12 +28843,12 @@
       "ocel:attributes": {
         "resource": "Options Desk A",
         "case_id": "Case_1052",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1052",
-          "type": "Position"
+          "id": "Order_Case_1052",
+          "type": "Order"
         }
       ]
     },
@@ -29098,12 +29098,12 @@
       "ocel:attributes": {
         "resource": "Client Desk D",
         "case_id": "Case_1053",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1053",
-          "type": "Position"
+          "id": "Order_Case_1053",
+          "type": "Order"
         }
       ]
     },
@@ -29744,12 +29744,12 @@
       "ocel:attributes": {
         "resource": "Market Maker B",
         "case_id": "Case_1054",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1054",
-          "type": "Position"
+          "id": "Order_Case_1054",
+          "type": "Order"
         }
       ]
     },
@@ -30237,12 +30237,12 @@
       "ocel:attributes": {
         "resource": "Hedge Desk C",
         "case_id": "Case_1055",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1055",
-          "type": "Position"
+          "id": "Order_Case_1055",
+          "type": "Order"
         }
       ]
     },
@@ -30492,12 +30492,12 @@
       "ocel:attributes": {
         "resource": "Market Maker B",
         "case_id": "Case_1056",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1056",
-          "type": "Position"
+          "id": "Order_Case_1056",
+          "type": "Order"
         }
       ]
     },
@@ -31138,12 +31138,12 @@
       "ocel:attributes": {
         "resource": "Client Desk D",
         "case_id": "Case_1057",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1057",
-          "type": "Position"
+          "id": "Order_Case_1057",
+          "type": "Order"
         }
       ]
     },
@@ -31682,12 +31682,12 @@
       "ocel:attributes": {
         "resource": "Hedge Desk C",
         "case_id": "Case_1058",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1058",
-          "type": "Position"
+          "id": "Order_Case_1058",
+          "type": "Order"
         }
       ]
     },
@@ -32141,12 +32141,12 @@
       "ocel:attributes": {
         "resource": "Options Desk A",
         "case_id": "Case_1059",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1059",
-          "type": "Position"
+          "id": "Order_Case_1059",
+          "type": "Order"
         }
       ]
     },
@@ -32685,12 +32685,12 @@
       "ocel:attributes": {
         "resource": "Options Desk A",
         "case_id": "Case_106",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_106",
-          "type": "Position"
+          "id": "Order_Case_106",
+          "type": "Order"
         }
       ]
     },
@@ -33076,12 +33076,12 @@
       "ocel:attributes": {
         "resource": "Client Desk D",
         "case_id": "Case_1060",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1060",
-          "type": "Position"
+          "id": "Order_Case_1060",
+          "type": "Order"
         }
       ]
     },
@@ -33382,12 +33382,12 @@
       "ocel:attributes": {
         "resource": "Client Desk D",
         "case_id": "Case_1061",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1061",
-          "type": "Position"
+          "id": "Order_Case_1061",
+          "type": "Order"
         }
       ]
     },
@@ -34249,12 +34249,12 @@
       "ocel:attributes": {
         "resource": "Market Maker B",
         "case_id": "Case_1062",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1062",
-          "type": "Position"
+          "id": "Order_Case_1062",
+          "type": "Order"
         }
       ]
     },
@@ -34606,12 +34606,12 @@
       "ocel:attributes": {
         "resource": "Options Desk A",
         "case_id": "Case_1063",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1063",
-          "type": "Position"
+          "id": "Order_Case_1063",
+          "type": "Order"
         }
       ]
     },
@@ -35082,12 +35082,12 @@
       "ocel:attributes": {
         "resource": "Hedge Desk C",
         "case_id": "Case_1064",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1064",
-          "type": "Position"
+          "id": "Order_Case_1064",
+          "type": "Order"
         }
       ]
     },
@@ -35354,12 +35354,12 @@
       "ocel:attributes": {
         "resource": "Hedge Desk C",
         "case_id": "Case_1065",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1065",
-          "type": "Position"
+          "id": "Order_Case_1065",
+          "type": "Order"
         }
       ]
     },
@@ -35847,12 +35847,12 @@
       "ocel:attributes": {
         "resource": "Client Desk D",
         "case_id": "Case_1066",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1066",
-          "type": "Position"
+          "id": "Order_Case_1066",
+          "type": "Order"
         }
       ]
     },
@@ -36340,12 +36340,12 @@
       "ocel:attributes": {
         "resource": "Market Maker B",
         "case_id": "Case_1067",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1067",
-          "type": "Position"
+          "id": "Order_Case_1067",
+          "type": "Order"
         }
       ]
     },
@@ -36969,12 +36969,12 @@
       "ocel:attributes": {
         "resource": "Client Desk D",
         "case_id": "Case_1068",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1068",
-          "type": "Position"
+          "id": "Order_Case_1068",
+          "type": "Order"
         }
       ]
     },
@@ -37309,12 +37309,12 @@
       "ocel:attributes": {
         "resource": "Options Desk A",
         "case_id": "Case_1069",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1069",
-          "type": "Position"
+          "id": "Order_Case_1069",
+          "type": "Order"
         }
       ]
     },
@@ -37870,12 +37870,12 @@
       "ocel:attributes": {
         "resource": "Market Maker B",
         "case_id": "Case_107",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_107",
-          "type": "Position"
+          "id": "Order_Case_107",
+          "type": "Order"
         }
       ]
     },
@@ -38278,12 +38278,12 @@
       "ocel:attributes": {
         "resource": "Client Desk D",
         "case_id": "Case_1070",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1070",
-          "type": "Position"
+          "id": "Order_Case_1070",
+          "type": "Order"
         }
       ]
     },
@@ -38720,12 +38720,12 @@
       "ocel:attributes": {
         "resource": "Options Desk A",
         "case_id": "Case_1071",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1071",
-          "type": "Position"
+          "id": "Order_Case_1071",
+          "type": "Order"
         }
       ]
     },
@@ -39026,12 +39026,12 @@
       "ocel:attributes": {
         "resource": "Hedge Desk C",
         "case_id": "Case_1072",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1072",
-          "type": "Position"
+          "id": "Order_Case_1072",
+          "type": "Order"
         }
       ]
     },
@@ -39570,12 +39570,12 @@
       "ocel:attributes": {
         "resource": "Hedge Desk C",
         "case_id": "Case_1073",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1073",
-          "type": "Position"
+          "id": "Order_Case_1073",
+          "type": "Order"
         }
       ]
     },
@@ -40029,12 +40029,12 @@
       "ocel:attributes": {
         "resource": "Market Maker B",
         "case_id": "Case_1074",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1074",
-          "type": "Position"
+          "id": "Order_Case_1074",
+          "type": "Order"
         }
       ]
     },
@@ -40488,12 +40488,12 @@
       "ocel:attributes": {
         "resource": "Market Maker B",
         "case_id": "Case_1075",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1075",
-          "type": "Position"
+          "id": "Order_Case_1075",
+          "type": "Order"
         }
       ]
     },
@@ -40930,12 +40930,12 @@
       "ocel:attributes": {
         "resource": "Options Desk A",
         "case_id": "Case_1076",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1076",
-          "type": "Position"
+          "id": "Order_Case_1076",
+          "type": "Order"
         }
       ]
     },
@@ -41406,12 +41406,12 @@
       "ocel:attributes": {
         "resource": "Market Maker B",
         "case_id": "Case_1077",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1077",
-          "type": "Position"
+          "id": "Order_Case_1077",
+          "type": "Order"
         }
       ]
     },
@@ -42205,12 +42205,12 @@
       "ocel:attributes": {
         "resource": "Hedge Desk C",
         "case_id": "Case_1078",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1078",
-          "type": "Position"
+          "id": "Order_Case_1078",
+          "type": "Order"
         }
       ]
     },
@@ -42664,12 +42664,12 @@
       "ocel:attributes": {
         "resource": "Client Desk D",
         "case_id": "Case_1079",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1079",
-          "type": "Position"
+          "id": "Order_Case_1079",
+          "type": "Order"
         }
       ]
     },
@@ -43038,12 +43038,12 @@
       "ocel:attributes": {
         "resource": "Options Desk A",
         "case_id": "Case_108",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_108",
-          "type": "Position"
+          "id": "Order_Case_108",
+          "type": "Order"
         }
       ]
     },
@@ -43361,12 +43361,12 @@
       "ocel:attributes": {
         "resource": "Options Desk A",
         "case_id": "Case_1080",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1080",
-          "type": "Position"
+          "id": "Order_Case_1080",
+          "type": "Order"
         }
       ]
     },
@@ -43803,12 +43803,12 @@
       "ocel:attributes": {
         "resource": "Client Desk D",
         "case_id": "Case_1081",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1081",
-          "type": "Position"
+          "id": "Order_Case_1081",
+          "type": "Order"
         }
       ]
     },
@@ -44279,12 +44279,12 @@
       "ocel:attributes": {
         "resource": "Client Desk D",
         "case_id": "Case_1082",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1082",
-          "type": "Position"
+          "id": "Order_Case_1082",
+          "type": "Order"
         }
       ]
     },
@@ -44789,12 +44789,12 @@
       "ocel:attributes": {
         "resource": "Market Maker B",
         "case_id": "Case_1083",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1083",
-          "type": "Position"
+          "id": "Order_Case_1083",
+          "type": "Order"
         }
       ]
     },
@@ -45401,12 +45401,12 @@
       "ocel:attributes": {
         "resource": "Client Desk D",
         "case_id": "Case_1084",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1084",
-          "type": "Position"
+          "id": "Order_Case_1084",
+          "type": "Order"
         }
       ]
     },
@@ -45928,12 +45928,12 @@
       "ocel:attributes": {
         "resource": "Client Desk D",
         "case_id": "Case_1085",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1085",
-          "type": "Position"
+          "id": "Order_Case_1085",
+          "type": "Order"
         }
       ]
     },
@@ -46183,12 +46183,12 @@
       "ocel:attributes": {
         "resource": "Market Maker B",
         "case_id": "Case_1086",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1086",
-          "type": "Position"
+          "id": "Order_Case_1086",
+          "type": "Order"
         }
       ]
     },
@@ -46659,12 +46659,12 @@
       "ocel:attributes": {
         "resource": "Client Desk D",
         "case_id": "Case_1087",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1087",
-          "type": "Position"
+          "id": "Order_Case_1087",
+          "type": "Order"
         }
       ]
     },
@@ -47118,12 +47118,12 @@
       "ocel:attributes": {
         "resource": "Market Maker B",
         "case_id": "Case_1088",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1088",
-          "type": "Position"
+          "id": "Order_Case_1088",
+          "type": "Order"
         }
       ]
     },
@@ -47543,12 +47543,12 @@
       "ocel:attributes": {
         "resource": "Market Maker B",
         "case_id": "Case_1089",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1089",
-          "type": "Position"
+          "id": "Order_Case_1089",
+          "type": "Order"
         }
       ]
     },
@@ -48155,12 +48155,12 @@
       "ocel:attributes": {
         "resource": "Client Desk D",
         "case_id": "Case_109",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_109",
-          "type": "Position"
+          "id": "Order_Case_109",
+          "type": "Order"
         }
       ]
     },
@@ -48733,12 +48733,12 @@
       "ocel:attributes": {
         "resource": "Client Desk D",
         "case_id": "Case_1090",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1090",
-          "type": "Position"
+          "id": "Order_Case_1090",
+          "type": "Order"
         }
       ]
     },
@@ -48971,12 +48971,12 @@
       "ocel:attributes": {
         "resource": "Market Maker B",
         "case_id": "Case_1091",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1091",
-          "type": "Position"
+          "id": "Order_Case_1091",
+          "type": "Order"
         }
       ]
     },
@@ -49787,12 +49787,12 @@
       "ocel:attributes": {
         "resource": "Market Maker B",
         "case_id": "Case_1092",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1092",
-          "type": "Position"
+          "id": "Order_Case_1092",
+          "type": "Order"
         }
       ]
     },
@@ -50127,12 +50127,12 @@
       "ocel:attributes": {
         "resource": "Hedge Desk C",
         "case_id": "Case_1093",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1093",
-          "type": "Position"
+          "id": "Order_Case_1093",
+          "type": "Order"
         }
       ]
     },
@@ -50450,12 +50450,12 @@
       "ocel:attributes": {
         "resource": "Options Desk A",
         "case_id": "Case_1094",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1094",
-          "type": "Position"
+          "id": "Order_Case_1094",
+          "type": "Order"
         }
       ]
     },
@@ -51011,12 +51011,12 @@
       "ocel:attributes": {
         "resource": "Hedge Desk C",
         "case_id": "Case_1095",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1095",
-          "type": "Position"
+          "id": "Order_Case_1095",
+          "type": "Order"
         }
       ]
     },
@@ -51572,12 +51572,12 @@
       "ocel:attributes": {
         "resource": "Market Maker B",
         "case_id": "Case_1096",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1096",
-          "type": "Position"
+          "id": "Order_Case_1096",
+          "type": "Order"
         }
       ]
     },
@@ -52099,12 +52099,12 @@
       "ocel:attributes": {
         "resource": "Market Maker B",
         "case_id": "Case_1097",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1097",
-          "type": "Position"
+          "id": "Order_Case_1097",
+          "type": "Order"
         }
       ]
     },
@@ -52354,12 +52354,12 @@
       "ocel:attributes": {
         "resource": "Market Maker B",
         "case_id": "Case_1098",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1098",
-          "type": "Position"
+          "id": "Order_Case_1098",
+          "type": "Order"
         }
       ]
     },
@@ -52677,12 +52677,12 @@
       "ocel:attributes": {
         "resource": "Options Desk A",
         "case_id": "Case_1099",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1099",
-          "type": "Position"
+          "id": "Order_Case_1099",
+          "type": "Order"
         }
       ]
     },
@@ -53170,12 +53170,12 @@
       "ocel:attributes": {
         "resource": "Market Maker B",
         "case_id": "Case_11",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_11",
-          "type": "Position"
+          "id": "Order_Case_11",
+          "type": "Order"
         }
       ]
     },
@@ -53731,12 +53731,12 @@
       "ocel:attributes": {
         "resource": "Market Maker B",
         "case_id": "Case_110",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_110",
-          "type": "Position"
+          "id": "Order_Case_110",
+          "type": "Order"
         }
       ]
     },
@@ -54241,12 +54241,12 @@
       "ocel:attributes": {
         "resource": "Options Desk A",
         "case_id": "Case_1100",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1100",
-          "type": "Position"
+          "id": "Order_Case_1100",
+          "type": "Order"
         }
       ]
     },
@@ -54904,12 +54904,12 @@
       "ocel:attributes": {
         "resource": "Client Desk D",
         "case_id": "Case_1101",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1101",
-          "type": "Position"
+          "id": "Order_Case_1101",
+          "type": "Order"
         }
       ]
     },
@@ -55142,12 +55142,12 @@
       "ocel:attributes": {
         "resource": "Client Desk D",
         "case_id": "Case_1102",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1102",
-          "type": "Position"
+          "id": "Order_Case_1102",
+          "type": "Order"
         }
       ]
     },
@@ -55720,12 +55720,12 @@
       "ocel:attributes": {
         "resource": "Client Desk D",
         "case_id": "Case_1103",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1103",
-          "type": "Position"
+          "id": "Order_Case_1103",
+          "type": "Order"
         }
       ]
     },
@@ -56094,12 +56094,12 @@
       "ocel:attributes": {
         "resource": "Hedge Desk C",
         "case_id": "Case_1104",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1104",
-          "type": "Position"
+          "id": "Order_Case_1104",
+          "type": "Order"
         }
       ]
     },
@@ -56825,12 +56825,12 @@
       "ocel:attributes": {
         "resource": "Market Maker B",
         "case_id": "Case_1105",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1105",
-          "type": "Position"
+          "id": "Order_Case_1105",
+          "type": "Order"
         }
       ]
     },
@@ -57080,12 +57080,12 @@
       "ocel:attributes": {
         "resource": "Client Desk D",
         "case_id": "Case_1106",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1106",
-          "type": "Position"
+          "id": "Order_Case_1106",
+          "type": "Order"
         }
       ]
     },
@@ -57522,12 +57522,12 @@
       "ocel:attributes": {
         "resource": "Market Maker B",
         "case_id": "Case_1107",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1107",
-          "type": "Position"
+          "id": "Order_Case_1107",
+          "type": "Order"
         }
       ]
     },
@@ -57964,12 +57964,12 @@
       "ocel:attributes": {
         "resource": "Market Maker B",
         "case_id": "Case_1108",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1108",
-          "type": "Position"
+          "id": "Order_Case_1108",
+          "type": "Order"
         }
       ]
     },
@@ -58576,12 +58576,12 @@
       "ocel:attributes": {
         "resource": "Client Desk D",
         "case_id": "Case_1109",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1109",
-          "type": "Position"
+          "id": "Order_Case_1109",
+          "type": "Order"
         }
       ]
     },
@@ -59154,12 +59154,12 @@
       "ocel:attributes": {
         "resource": "Client Desk D",
         "case_id": "Case_111",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_111",
-          "type": "Position"
+          "id": "Order_Case_111",
+          "type": "Order"
         }
       ]
     },
@@ -59698,12 +59698,12 @@
       "ocel:attributes": {
         "resource": "Hedge Desk C",
         "case_id": "Case_1110",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1110",
-          "type": "Position"
+          "id": "Order_Case_1110",
+          "type": "Order"
         }
       ]
     },
@@ -59936,12 +59936,12 @@
       "ocel:attributes": {
         "resource": "Options Desk A",
         "case_id": "Case_1111",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1111",
-          "type": "Position"
+          "id": "Order_Case_1111",
+          "type": "Order"
         }
       ]
     },
@@ -60412,12 +60412,12 @@
       "ocel:attributes": {
         "resource": "Options Desk A",
         "case_id": "Case_1112",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1112",
-          "type": "Position"
+          "id": "Order_Case_1112",
+          "type": "Order"
         }
       ]
     },
@@ -60854,12 +60854,12 @@
       "ocel:attributes": {
         "resource": "Options Desk A",
         "case_id": "Case_1113",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1113",
-          "type": "Position"
+          "id": "Order_Case_1113",
+          "type": "Order"
         }
       ]
     },
@@ -61211,12 +61211,12 @@
       "ocel:attributes": {
         "resource": "Client Desk D",
         "case_id": "Case_1114",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1114",
-          "type": "Position"
+          "id": "Order_Case_1114",
+          "type": "Order"
         }
       ]
     },
@@ -61823,12 +61823,12 @@
       "ocel:attributes": {
         "resource": "Market Maker B",
         "case_id": "Case_1115",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1115",
-          "type": "Position"
+          "id": "Order_Case_1115",
+          "type": "Order"
         }
       ]
     },
@@ -62333,12 +62333,12 @@
       "ocel:attributes": {
         "resource": "Options Desk A",
         "case_id": "Case_1116",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1116",
-          "type": "Position"
+          "id": "Order_Case_1116",
+          "type": "Order"
         }
       ]
     },
@@ -62758,12 +62758,12 @@
       "ocel:attributes": {
         "resource": "Options Desk A",
         "case_id": "Case_1117",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1117",
-          "type": "Position"
+          "id": "Order_Case_1117",
+          "type": "Order"
         }
       ]
     },
@@ -63285,12 +63285,12 @@
       "ocel:attributes": {
         "resource": "Hedge Desk C",
         "case_id": "Case_1118",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1118",
-          "type": "Position"
+          "id": "Order_Case_1118",
+          "type": "Order"
         }
       ]
     },
@@ -63625,12 +63625,12 @@
       "ocel:attributes": {
         "resource": "Options Desk A",
         "case_id": "Case_1119",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1119",
-          "type": "Position"
+          "id": "Order_Case_1119",
+          "type": "Order"
         }
       ]
     },
@@ -63931,12 +63931,12 @@
       "ocel:attributes": {
         "resource": "Options Desk A",
         "case_id": "Case_112",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_112",
-          "type": "Position"
+          "id": "Order_Case_112",
+          "type": "Order"
         }
       ]
     },
@@ -64611,12 +64611,12 @@
       "ocel:attributes": {
         "resource": "Market Maker B",
         "case_id": "Case_1120",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1120",
-          "type": "Position"
+          "id": "Order_Case_1120",
+          "type": "Order"
         }
       ]
     },
@@ -65138,12 +65138,12 @@
       "ocel:attributes": {
         "resource": "Options Desk A",
         "case_id": "Case_1121",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1121",
-          "type": "Position"
+          "id": "Order_Case_1121",
+          "type": "Order"
         }
       ]
     },
@@ -65359,12 +65359,12 @@
       "ocel:attributes": {
         "resource": "Market Maker B",
         "case_id": "Case_1122",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1122",
-          "type": "Position"
+          "id": "Order_Case_1122",
+          "type": "Order"
         }
       ]
     },
@@ -66141,12 +66141,12 @@
       "ocel:attributes": {
         "resource": "Client Desk D",
         "case_id": "Case_1123",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1123",
-          "type": "Position"
+          "id": "Order_Case_1123",
+          "type": "Order"
         }
       ]
     },
@@ -66617,12 +66617,12 @@
       "ocel:attributes": {
         "resource": "Market Maker B",
         "case_id": "Case_1124",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1124",
-          "type": "Position"
+          "id": "Order_Case_1124",
+          "type": "Order"
         }
       ]
     },
@@ -66838,12 +66838,12 @@
       "ocel:attributes": {
         "resource": "Client Desk D",
         "case_id": "Case_1125",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1125",
-          "type": "Position"
+          "id": "Order_Case_1125",
+          "type": "Order"
         }
       ]
     },
@@ -67603,12 +67603,12 @@
       "ocel:attributes": {
         "resource": "Market Maker B",
         "case_id": "Case_1126",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1126",
-          "type": "Position"
+          "id": "Order_Case_1126",
+          "type": "Order"
         }
       ]
     },
@@ -67841,12 +67841,12 @@
       "ocel:attributes": {
         "resource": "Options Desk A",
         "case_id": "Case_1127",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1127",
-          "type": "Position"
+          "id": "Order_Case_1127",
+          "type": "Order"
         }
       ]
     },
@@ -68181,12 +68181,12 @@
       "ocel:attributes": {
         "resource": "Client Desk D",
         "case_id": "Case_1128",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1128",
-          "type": "Position"
+          "id": "Order_Case_1128",
+          "type": "Order"
         }
       ]
     },
@@ -68623,12 +68623,12 @@
       "ocel:attributes": {
         "resource": "Hedge Desk C",
         "case_id": "Case_1129",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1129",
-          "type": "Position"
+          "id": "Order_Case_1129",
+          "type": "Order"
         }
       ]
     },
@@ -69167,12 +69167,12 @@
       "ocel:attributes": {
         "resource": "Hedge Desk C",
         "case_id": "Case_113",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_113",
-          "type": "Position"
+          "id": "Order_Case_113",
+          "type": "Order"
         }
       ]
     },
@@ -69388,12 +69388,12 @@
       "ocel:attributes": {
         "resource": "Client Desk D",
         "case_id": "Case_1130",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1130",
-          "type": "Position"
+          "id": "Order_Case_1130",
+          "type": "Order"
         }
       ]
     },
@@ -69949,12 +69949,12 @@
       "ocel:attributes": {
         "resource": "Options Desk A",
         "case_id": "Case_1131",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1131",
-          "type": "Position"
+          "id": "Order_Case_1131",
+          "type": "Order"
         }
       ]
     },
@@ -70476,12 +70476,12 @@
       "ocel:attributes": {
         "resource": "Options Desk A",
         "case_id": "Case_1132",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1132",
-          "type": "Position"
+          "id": "Order_Case_1132",
+          "type": "Order"
         }
       ]
     },
@@ -70782,12 +70782,12 @@
       "ocel:attributes": {
         "resource": "Client Desk D",
         "case_id": "Case_1133",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1133",
-          "type": "Position"
+          "id": "Order_Case_1133",
+          "type": "Order"
         }
       ]
     },
@@ -71190,12 +71190,12 @@
       "ocel:attributes": {
         "resource": "Market Maker B",
         "case_id": "Case_1134",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1134",
-          "type": "Position"
+          "id": "Order_Case_1134",
+          "type": "Order"
         }
       ]
     },
@@ -71921,12 +71921,12 @@
       "ocel:attributes": {
         "resource": "Market Maker B",
         "case_id": "Case_1135",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1135",
-          "type": "Position"
+          "id": "Order_Case_1135",
+          "type": "Order"
         }
       ]
     },
@@ -72635,12 +72635,12 @@
       "ocel:attributes": {
         "resource": "Hedge Desk C",
         "case_id": "Case_1136",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1136",
-          "type": "Position"
+          "id": "Order_Case_1136",
+          "type": "Order"
         }
       ]
     },
@@ -73179,12 +73179,12 @@
       "ocel:attributes": {
         "resource": "Market Maker B",
         "case_id": "Case_1137",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1137",
-          "type": "Position"
+          "id": "Order_Case_1137",
+          "type": "Order"
         }
       ]
     },
@@ -73366,12 +73366,12 @@
       "ocel:attributes": {
         "resource": "Client Desk D",
         "case_id": "Case_1138",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1138",
-          "type": "Position"
+          "id": "Order_Case_1138",
+          "type": "Order"
         }
       ]
     },
@@ -73944,12 +73944,12 @@
       "ocel:attributes": {
         "resource": "Hedge Desk C",
         "case_id": "Case_1139",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1139",
-          "type": "Position"
+          "id": "Order_Case_1139",
+          "type": "Order"
         }
       ]
     },
@@ -74335,12 +74335,12 @@
       "ocel:attributes": {
         "resource": "Hedge Desk C",
         "case_id": "Case_114",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_114",
-          "type": "Position"
+          "id": "Order_Case_114",
+          "type": "Order"
         }
       ]
     },
@@ -74879,12 +74879,12 @@
       "ocel:attributes": {
         "resource": "Client Desk D",
         "case_id": "Case_1140",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1140",
-          "type": "Position"
+          "id": "Order_Case_1140",
+          "type": "Order"
         }
       ]
     },
@@ -75253,12 +75253,12 @@
       "ocel:attributes": {
         "resource": "Options Desk A",
         "case_id": "Case_1141",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1141",
-          "type": "Position"
+          "id": "Order_Case_1141",
+          "type": "Order"
         }
       ]
     },
@@ -75780,12 +75780,12 @@
       "ocel:attributes": {
         "resource": "Hedge Desk C",
         "case_id": "Case_1142",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1142",
-          "type": "Position"
+          "id": "Order_Case_1142",
+          "type": "Order"
         }
       ]
     },
@@ -76273,12 +76273,12 @@
       "ocel:attributes": {
         "resource": "Hedge Desk C",
         "case_id": "Case_1143",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1143",
-          "type": "Position"
+          "id": "Order_Case_1143",
+          "type": "Order"
         }
       ]
     },
@@ -76596,12 +76596,12 @@
       "ocel:attributes": {
         "resource": "Client Desk D",
         "case_id": "Case_1144",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1144",
-          "type": "Position"
+          "id": "Order_Case_1144",
+          "type": "Order"
         }
       ]
     },
@@ -77055,12 +77055,12 @@
       "ocel:attributes": {
         "resource": "Hedge Desk C",
         "case_id": "Case_1145",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1145",
-          "type": "Position"
+          "id": "Order_Case_1145",
+          "type": "Order"
         }
       ]
     },
@@ -77616,12 +77616,12 @@
       "ocel:attributes": {
         "resource": "Market Maker B",
         "case_id": "Case_1146",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1146",
-          "type": "Position"
+          "id": "Order_Case_1146",
+          "type": "Order"
         }
       ]
     },
@@ -78109,12 +78109,12 @@
       "ocel:attributes": {
         "resource": "Hedge Desk C",
         "case_id": "Case_1147",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1147",
-          "type": "Position"
+          "id": "Order_Case_1147",
+          "type": "Order"
         }
       ]
     },
@@ -78483,12 +78483,12 @@
       "ocel:attributes": {
         "resource": "Options Desk A",
         "case_id": "Case_1148",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1148",
-          "type": "Position"
+          "id": "Order_Case_1148",
+          "type": "Order"
         }
       ]
     },
@@ -79061,12 +79061,12 @@
       "ocel:attributes": {
         "resource": "Market Maker B",
         "case_id": "Case_1149",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1149",
-          "type": "Position"
+          "id": "Order_Case_1149",
+          "type": "Order"
         }
       ]
     },
@@ -79469,12 +79469,12 @@
       "ocel:attributes": {
         "resource": "Options Desk A",
         "case_id": "Case_115",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_115",
-          "type": "Position"
+          "id": "Order_Case_115",
+          "type": "Order"
         }
       ]
     },
@@ -79809,12 +79809,12 @@
       "ocel:attributes": {
         "resource": "Options Desk A",
         "case_id": "Case_1150",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1150",
-          "type": "Position"
+          "id": "Order_Case_1150",
+          "type": "Order"
         }
       ]
     },
@@ -80268,12 +80268,12 @@
       "ocel:attributes": {
         "resource": "Market Maker B",
         "case_id": "Case_1151",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1151",
-          "type": "Position"
+          "id": "Order_Case_1151",
+          "type": "Order"
         }
       ]
     },
@@ -80676,12 +80676,12 @@
       "ocel:attributes": {
         "resource": "Options Desk A",
         "case_id": "Case_1152",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1152",
-          "type": "Position"
+          "id": "Order_Case_1152",
+          "type": "Order"
         }
       ]
     },
@@ -81288,12 +81288,12 @@
       "ocel:attributes": {
         "resource": "Client Desk D",
         "case_id": "Case_1153",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1153",
-          "type": "Position"
+          "id": "Order_Case_1153",
+          "type": "Order"
         }
       ]
     },
@@ -81900,12 +81900,12 @@
       "ocel:attributes": {
         "resource": "Market Maker B",
         "case_id": "Case_1154",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1154",
-          "type": "Position"
+          "id": "Order_Case_1154",
+          "type": "Order"
         }
       ]
     },
@@ -82070,12 +82070,12 @@
       "ocel:attributes": {
         "resource": "Client Desk D",
         "case_id": "Case_1155",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1155",
-          "type": "Position"
+          "id": "Order_Case_1155",
+          "type": "Order"
         }
       ]
     },
@@ -82852,12 +82852,12 @@
       "ocel:attributes": {
         "resource": "Options Desk A",
         "case_id": "Case_1156",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1156",
-          "type": "Position"
+          "id": "Order_Case_1156",
+          "type": "Order"
         }
       ]
     },
@@ -83328,12 +83328,12 @@
       "ocel:attributes": {
         "resource": "Options Desk A",
         "case_id": "Case_1157",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1157",
-          "type": "Position"
+          "id": "Order_Case_1157",
+          "type": "Order"
         }
       ]
     },
@@ -83498,12 +83498,12 @@
       "ocel:attributes": {
         "resource": "Hedge Desk C",
         "case_id": "Case_1158",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1158",
-          "type": "Position"
+          "id": "Order_Case_1158",
+          "type": "Order"
         }
       ]
     },
@@ -84314,12 +84314,12 @@
       "ocel:attributes": {
         "resource": "Hedge Desk C",
         "case_id": "Case_1159",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1159",
-          "type": "Position"
+          "id": "Order_Case_1159",
+          "type": "Order"
         }
       ]
     },
@@ -84535,12 +84535,12 @@
       "ocel:attributes": {
         "resource": "Market Maker B",
         "case_id": "Case_116",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_116",
-          "type": "Position"
+          "id": "Order_Case_116",
+          "type": "Order"
         }
       ]
     },
@@ -85045,12 +85045,12 @@
       "ocel:attributes": {
         "resource": "Hedge Desk C",
         "case_id": "Case_1160",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1160",
-          "type": "Position"
+          "id": "Order_Case_1160",
+          "type": "Order"
         }
       ]
     },
@@ -85623,12 +85623,12 @@
       "ocel:attributes": {
         "resource": "Hedge Desk C",
         "case_id": "Case_1161",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1161",
-          "type": "Position"
+          "id": "Order_Case_1161",
+          "type": "Order"
         }
       ]
     },
@@ -85946,12 +85946,12 @@
       "ocel:attributes": {
         "resource": "Options Desk A",
         "case_id": "Case_1162",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1162",
-          "type": "Position"
+          "id": "Order_Case_1162",
+          "type": "Order"
         }
       ]
     },
@@ -86541,12 +86541,12 @@
       "ocel:attributes": {
         "resource": "Options Desk A",
         "case_id": "Case_1163",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1163",
-          "type": "Position"
+          "id": "Order_Case_1163",
+          "type": "Order"
         }
       ]
     },
@@ -86898,12 +86898,12 @@
       "ocel:attributes": {
         "resource": "Market Maker B",
         "case_id": "Case_1164",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1164",
-          "type": "Position"
+          "id": "Order_Case_1164",
+          "type": "Order"
         }
       ]
     },
@@ -87425,12 +87425,12 @@
       "ocel:attributes": {
         "resource": "Market Maker B",
         "case_id": "Case_1165",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1165",
-          "type": "Position"
+          "id": "Order_Case_1165",
+          "type": "Order"
         }
       ]
     },
@@ -87918,12 +87918,12 @@
       "ocel:attributes": {
         "resource": "Options Desk A",
         "case_id": "Case_1166",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1166",
-          "type": "Position"
+          "id": "Order_Case_1166",
+          "type": "Order"
         }
       ]
     },
@@ -88615,12 +88615,12 @@
       "ocel:attributes": {
         "resource": "Client Desk D",
         "case_id": "Case_1167",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1167",
-          "type": "Position"
+          "id": "Order_Case_1167",
+          "type": "Order"
         }
       ]
     },
@@ -88853,12 +88853,12 @@
       "ocel:attributes": {
         "resource": "Client Desk D",
         "case_id": "Case_1168",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1168",
-          "type": "Position"
+          "id": "Order_Case_1168",
+          "type": "Order"
         }
       ]
     },
@@ -89567,12 +89567,12 @@
       "ocel:attributes": {
         "resource": "Hedge Desk C",
         "case_id": "Case_1169",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1169",
-          "type": "Position"
+          "id": "Order_Case_1169",
+          "type": "Order"
         }
       ]
     },
@@ -89958,12 +89958,12 @@
       "ocel:attributes": {
         "resource": "Hedge Desk C",
         "case_id": "Case_117",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_117",
-          "type": "Position"
+          "id": "Order_Case_117",
+          "type": "Order"
         }
       ]
     },
@@ -90383,12 +90383,12 @@
       "ocel:attributes": {
         "resource": "Market Maker B",
         "case_id": "Case_1170",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1170",
-          "type": "Position"
+          "id": "Order_Case_1170",
+          "type": "Order"
         }
       ]
     },
@@ -90961,12 +90961,12 @@
       "ocel:attributes": {
         "resource": "Hedge Desk C",
         "case_id": "Case_1171",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1171",
-          "type": "Position"
+          "id": "Order_Case_1171",
+          "type": "Order"
         }
       ]
     },
@@ -91216,12 +91216,12 @@
       "ocel:attributes": {
         "resource": "Options Desk A",
         "case_id": "Case_1172",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1172",
-          "type": "Position"
+          "id": "Order_Case_1172",
+          "type": "Order"
         }
       ]
     },
@@ -91930,12 +91930,12 @@
       "ocel:attributes": {
         "resource": "Options Desk A",
         "case_id": "Case_1173",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1173",
-          "type": "Position"
+          "id": "Order_Case_1173",
+          "type": "Order"
         }
       ]
     },
@@ -92270,12 +92270,12 @@
       "ocel:attributes": {
         "resource": "Hedge Desk C",
         "case_id": "Case_1174",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1174",
-          "type": "Position"
+          "id": "Order_Case_1174",
+          "type": "Order"
         }
       ]
     },
@@ -92610,12 +92610,12 @@
       "ocel:attributes": {
         "resource": "Client Desk D",
         "case_id": "Case_1175",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1175",
-          "type": "Position"
+          "id": "Order_Case_1175",
+          "type": "Order"
         }
       ]
     },
@@ -93188,12 +93188,12 @@
       "ocel:attributes": {
         "resource": "Options Desk A",
         "case_id": "Case_1176",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1176",
-          "type": "Position"
+          "id": "Order_Case_1176",
+          "type": "Order"
         }
       ]
     },
@@ -93664,12 +93664,12 @@
       "ocel:attributes": {
         "resource": "Client Desk D",
         "case_id": "Case_1177",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1177",
-          "type": "Position"
+          "id": "Order_Case_1177",
+          "type": "Order"
         }
       ]
     },
@@ -94191,12 +94191,12 @@
       "ocel:attributes": {
         "resource": "Market Maker B",
         "case_id": "Case_1178",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1178",
-          "type": "Position"
+          "id": "Order_Case_1178",
+          "type": "Order"
         }
       ]
     },
@@ -94480,12 +94480,12 @@
       "ocel:attributes": {
         "resource": "Options Desk A",
         "case_id": "Case_1179",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1179",
-          "type": "Position"
+          "id": "Order_Case_1179",
+          "type": "Order"
         }
       ]
     },
@@ -94990,12 +94990,12 @@
       "ocel:attributes": {
         "resource": "Client Desk D",
         "case_id": "Case_118",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_118",
-          "type": "Position"
+          "id": "Order_Case_118",
+          "type": "Order"
         }
       ]
     },
@@ -95364,12 +95364,12 @@
       "ocel:attributes": {
         "resource": "Client Desk D",
         "case_id": "Case_1180",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1180",
-          "type": "Position"
+          "id": "Order_Case_1180",
+          "type": "Order"
         }
       ]
     },
@@ -95857,12 +95857,12 @@
       "ocel:attributes": {
         "resource": "Hedge Desk C",
         "case_id": "Case_1181",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1181",
-          "type": "Position"
+          "id": "Order_Case_1181",
+          "type": "Order"
         }
       ]
     },
@@ -96367,12 +96367,12 @@
       "ocel:attributes": {
         "resource": "Hedge Desk C",
         "case_id": "Case_1182",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1182",
-          "type": "Position"
+          "id": "Order_Case_1182",
+          "type": "Order"
         }
       ]
     },
@@ -96605,12 +96605,12 @@
       "ocel:attributes": {
         "resource": "Market Maker B",
         "case_id": "Case_1183",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1183",
-          "type": "Position"
+          "id": "Order_Case_1183",
+          "type": "Order"
         }
       ]
     },
@@ -97234,12 +97234,12 @@
       "ocel:attributes": {
         "resource": "Hedge Desk C",
         "case_id": "Case_1184",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1184",
-          "type": "Position"
+          "id": "Order_Case_1184",
+          "type": "Order"
         }
       ]
     },
@@ -97540,12 +97540,12 @@
       "ocel:attributes": {
         "resource": "Hedge Desk C",
         "case_id": "Case_1185",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1185",
-          "type": "Position"
+          "id": "Order_Case_1185",
+          "type": "Order"
         }
       ]
     },
@@ -98067,12 +98067,12 @@
       "ocel:attributes": {
         "resource": "Options Desk A",
         "case_id": "Case_1186",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1186",
-          "type": "Position"
+          "id": "Order_Case_1186",
+          "type": "Order"
         }
       ]
     },
@@ -98764,12 +98764,12 @@
       "ocel:attributes": {
         "resource": "Hedge Desk C",
         "case_id": "Case_1187",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1187",
-          "type": "Position"
+          "id": "Order_Case_1187",
+          "type": "Order"
         }
       ]
     },
@@ -99087,12 +99087,12 @@
       "ocel:attributes": {
         "resource": "Client Desk D",
         "case_id": "Case_1188",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1188",
-          "type": "Position"
+          "id": "Order_Case_1188",
+          "type": "Order"
         }
       ]
     },
@@ -99291,12 +99291,12 @@
       "ocel:attributes": {
         "resource": "Hedge Desk C",
         "case_id": "Case_1189",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1189",
-          "type": "Position"
+          "id": "Order_Case_1189",
+          "type": "Order"
         }
       ]
     },
@@ -99903,12 +99903,12 @@
       "ocel:attributes": {
         "resource": "Hedge Desk C",
         "case_id": "Case_119",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_119",
-          "type": "Position"
+          "id": "Order_Case_119",
+          "type": "Order"
         }
       ]
     },
@@ -100379,12 +100379,12 @@
       "ocel:attributes": {
         "resource": "Market Maker B",
         "case_id": "Case_1190",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1190",
-          "type": "Position"
+          "id": "Order_Case_1190",
+          "type": "Order"
         }
       ]
     },
@@ -101161,12 +101161,12 @@
       "ocel:attributes": {
         "resource": "Market Maker B",
         "case_id": "Case_1191",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1191",
-          "type": "Position"
+          "id": "Order_Case_1191",
+          "type": "Order"
         }
       ]
     },
@@ -101654,12 +101654,12 @@
       "ocel:attributes": {
         "resource": "Market Maker B",
         "case_id": "Case_1192",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1192",
-          "type": "Position"
+          "id": "Order_Case_1192",
+          "type": "Order"
         }
       ]
     },
@@ -102181,12 +102181,12 @@
       "ocel:attributes": {
         "resource": "Market Maker B",
         "case_id": "Case_1193",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1193",
-          "type": "Position"
+          "id": "Order_Case_1193",
+          "type": "Order"
         }
       ]
     },
@@ -102623,12 +102623,12 @@
       "ocel:attributes": {
         "resource": "Market Maker B",
         "case_id": "Case_1194",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1194",
-          "type": "Position"
+          "id": "Order_Case_1194",
+          "type": "Order"
         }
       ]
     },
@@ -103201,12 +103201,12 @@
       "ocel:attributes": {
         "resource": "Hedge Desk C",
         "case_id": "Case_1195",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1195",
-          "type": "Position"
+          "id": "Order_Case_1195",
+          "type": "Order"
         }
       ]
     },
@@ -103456,12 +103456,12 @@
       "ocel:attributes": {
         "resource": "Market Maker B",
         "case_id": "Case_1196",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1196",
-          "type": "Position"
+          "id": "Order_Case_1196",
+          "type": "Order"
         }
       ]
     },
@@ -104272,12 +104272,12 @@
       "ocel:attributes": {
         "resource": "Client Desk D",
         "case_id": "Case_1197",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1197",
-          "type": "Position"
+          "id": "Order_Case_1197",
+          "type": "Order"
         }
       ]
     },
@@ -104697,12 +104697,12 @@
       "ocel:attributes": {
         "resource": "Hedge Desk C",
         "case_id": "Case_1198",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1198",
-          "type": "Position"
+          "id": "Order_Case_1198",
+          "type": "Order"
         }
       ]
     },
@@ -104986,12 +104986,12 @@
       "ocel:attributes": {
         "resource": "Options Desk A",
         "case_id": "Case_1199",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1199",
-          "type": "Position"
+          "id": "Order_Case_1199",
+          "type": "Order"
         }
       ]
     },
@@ -105309,12 +105309,12 @@
       "ocel:attributes": {
         "resource": "Hedge Desk C",
         "case_id": "Case_12",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_12",
-          "type": "Position"
+          "id": "Order_Case_12",
+          "type": "Order"
         }
       ]
     },
@@ -106091,12 +106091,12 @@
       "ocel:attributes": {
         "resource": "Client Desk D",
         "case_id": "Case_120",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_120",
-          "type": "Position"
+          "id": "Order_Case_120",
+          "type": "Order"
         }
       ]
     },
@@ -106244,12 +106244,12 @@
       "ocel:attributes": {
         "resource": "Hedge Desk C",
         "case_id": "Case_1200",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1200",
-          "type": "Position"
+          "id": "Order_Case_1200",
+          "type": "Order"
         }
       ]
     },
@@ -106907,12 +106907,12 @@
       "ocel:attributes": {
         "resource": "Client Desk D",
         "case_id": "Case_1201",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1201",
-          "type": "Position"
+          "id": "Order_Case_1201",
+          "type": "Order"
         }
       ]
     },
@@ -107298,12 +107298,12 @@
       "ocel:attributes": {
         "resource": "Hedge Desk C",
         "case_id": "Case_1202",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1202",
-          "type": "Position"
+          "id": "Order_Case_1202",
+          "type": "Order"
         }
       ]
     },
@@ -107706,12 +107706,12 @@
       "ocel:attributes": {
         "resource": "Client Desk D",
         "case_id": "Case_1203",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1203",
-          "type": "Position"
+          "id": "Order_Case_1203",
+          "type": "Order"
         }
       ]
     },
@@ -108029,12 +108029,12 @@
       "ocel:attributes": {
         "resource": "Hedge Desk C",
         "case_id": "Case_1204",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1204",
-          "type": "Position"
+          "id": "Order_Case_1204",
+          "type": "Order"
         }
       ]
     },
@@ -108573,12 +108573,12 @@
       "ocel:attributes": {
         "resource": "Client Desk D",
         "case_id": "Case_1205",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1205",
-          "type": "Position"
+          "id": "Order_Case_1205",
+          "type": "Order"
         }
       ]
     },
@@ -109202,12 +109202,12 @@
       "ocel:attributes": {
         "resource": "Options Desk A",
         "case_id": "Case_1206",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1206",
-          "type": "Position"
+          "id": "Order_Case_1206",
+          "type": "Order"
         }
       ]
     },
@@ -109542,12 +109542,12 @@
       "ocel:attributes": {
         "resource": "Client Desk D",
         "case_id": "Case_1207",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1207",
-          "type": "Position"
+          "id": "Order_Case_1207",
+          "type": "Order"
         }
       ]
     },
@@ -110018,12 +110018,12 @@
       "ocel:attributes": {
         "resource": "Market Maker B",
         "case_id": "Case_1208",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1208",
-          "type": "Position"
+          "id": "Order_Case_1208",
+          "type": "Order"
         }
       ]
     },
@@ -110392,12 +110392,12 @@
       "ocel:attributes": {
         "resource": "Options Desk A",
         "case_id": "Case_1209",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1209",
-          "type": "Position"
+          "id": "Order_Case_1209",
+          "type": "Order"
         }
       ]
     },
@@ -111038,12 +111038,12 @@
       "ocel:attributes": {
         "resource": "Client Desk D",
         "case_id": "Case_121",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_121",
-          "type": "Position"
+          "id": "Order_Case_121",
+          "type": "Order"
         }
       ]
     },
@@ -111361,12 +111361,12 @@
       "ocel:attributes": {
         "resource": "Client Desk D",
         "case_id": "Case_1210",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1210",
-          "type": "Position"
+          "id": "Order_Case_1210",
+          "type": "Order"
         }
       ]
     },
@@ -111769,12 +111769,12 @@
       "ocel:attributes": {
         "resource": "Hedge Desk C",
         "case_id": "Case_1211",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1211",
-          "type": "Position"
+          "id": "Order_Case_1211",
+          "type": "Order"
         }
       ]
     },
@@ -112143,12 +112143,12 @@
       "ocel:attributes": {
         "resource": "Options Desk A",
         "case_id": "Case_1212",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1212",
-          "type": "Position"
+          "id": "Order_Case_1212",
+          "type": "Order"
         }
       ]
     },
@@ -112432,12 +112432,12 @@
       "ocel:attributes": {
         "resource": "Hedge Desk C",
         "case_id": "Case_1213",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1213",
-          "type": "Position"
+          "id": "Order_Case_1213",
+          "type": "Order"
         }
       ]
     },
@@ -113061,12 +113061,12 @@
       "ocel:attributes": {
         "resource": "Client Desk D",
         "case_id": "Case_1214",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1214",
-          "type": "Position"
+          "id": "Order_Case_1214",
+          "type": "Order"
         }
       ]
     },
@@ -113367,12 +113367,12 @@
       "ocel:attributes": {
         "resource": "Hedge Desk C",
         "case_id": "Case_1215",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1215",
-          "type": "Position"
+          "id": "Order_Case_1215",
+          "type": "Order"
         }
       ]
     },
@@ -114098,12 +114098,12 @@
       "ocel:attributes": {
         "resource": "Hedge Desk C",
         "case_id": "Case_1216",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1216",
-          "type": "Position"
+          "id": "Order_Case_1216",
+          "type": "Order"
         }
       ]
     },
@@ -114404,12 +114404,12 @@
       "ocel:attributes": {
         "resource": "Market Maker B",
         "case_id": "Case_1217",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1217",
-          "type": "Position"
+          "id": "Order_Case_1217",
+          "type": "Order"
         }
       ]
     },
@@ -114846,12 +114846,12 @@
       "ocel:attributes": {
         "resource": "Client Desk D",
         "case_id": "Case_1218",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1218",
-          "type": "Position"
+          "id": "Order_Case_1218",
+          "type": "Order"
         }
       ]
     },
@@ -115203,12 +115203,12 @@
       "ocel:attributes": {
         "resource": "Market Maker B",
         "case_id": "Case_1219",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1219",
-          "type": "Position"
+          "id": "Order_Case_1219",
+          "type": "Order"
         }
       ]
     },
@@ -115798,12 +115798,12 @@
       "ocel:attributes": {
         "resource": "Options Desk A",
         "case_id": "Case_122",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_122",
-          "type": "Position"
+          "id": "Order_Case_122",
+          "type": "Order"
         }
       ]
     },
@@ -116308,12 +116308,12 @@
       "ocel:attributes": {
         "resource": "Hedge Desk C",
         "case_id": "Case_1220",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1220",
-          "type": "Position"
+          "id": "Order_Case_1220",
+          "type": "Order"
         }
       ]
     },
@@ -116988,12 +116988,12 @@
       "ocel:attributes": {
         "resource": "Hedge Desk C",
         "case_id": "Case_1221",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1221",
-          "type": "Position"
+          "id": "Order_Case_1221",
+          "type": "Order"
         }
       ]
     },
@@ -117226,12 +117226,12 @@
       "ocel:attributes": {
         "resource": "Options Desk A",
         "case_id": "Case_1222",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1222",
-          "type": "Position"
+          "id": "Order_Case_1222",
+          "type": "Order"
         }
       ]
     },
@@ -117498,12 +117498,12 @@
       "ocel:attributes": {
         "resource": "Market Maker B",
         "case_id": "Case_1223",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1223",
-          "type": "Position"
+          "id": "Order_Case_1223",
+          "type": "Order"
         }
       ]
     },
@@ -118263,12 +118263,12 @@
       "ocel:attributes": {
         "resource": "Market Maker B",
         "case_id": "Case_1224",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1224",
-          "type": "Position"
+          "id": "Order_Case_1224",
+          "type": "Order"
         }
       ]
     },
@@ -118450,12 +118450,12 @@
       "ocel:attributes": {
         "resource": "Hedge Desk C",
         "case_id": "Case_1225",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1225",
-          "type": "Position"
+          "id": "Order_Case_1225",
+          "type": "Order"
         }
       ]
     },
@@ -119130,12 +119130,12 @@
       "ocel:attributes": {
         "resource": "Client Desk D",
         "case_id": "Case_1226",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1226",
-          "type": "Position"
+          "id": "Order_Case_1226",
+          "type": "Order"
         }
       ]
     },
@@ -119725,12 +119725,12 @@
       "ocel:attributes": {
         "resource": "Hedge Desk C",
         "case_id": "Case_1227",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1227",
-          "type": "Position"
+          "id": "Order_Case_1227",
+          "type": "Order"
         }
       ]
     },
@@ -120048,12 +120048,12 @@
       "ocel:attributes": {
         "resource": "Client Desk D",
         "case_id": "Case_1228",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1228",
-          "type": "Position"
+          "id": "Order_Case_1228",
+          "type": "Order"
         }
       ]
     },
@@ -120405,12 +120405,12 @@
       "ocel:attributes": {
         "resource": "Hedge Desk C",
         "case_id": "Case_1229",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1229",
-          "type": "Position"
+          "id": "Order_Case_1229",
+          "type": "Order"
         }
       ]
     },
@@ -120915,12 +120915,12 @@
       "ocel:attributes": {
         "resource": "Hedge Desk C",
         "case_id": "Case_123",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_123",
-          "type": "Position"
+          "id": "Order_Case_123",
+          "type": "Order"
         }
       ]
     },
@@ -121357,12 +121357,12 @@
       "ocel:attributes": {
         "resource": "Hedge Desk C",
         "case_id": "Case_1230",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1230",
-          "type": "Position"
+          "id": "Order_Case_1230",
+          "type": "Order"
         }
       ]
     },
@@ -121731,12 +121731,12 @@
       "ocel:attributes": {
         "resource": "Options Desk A",
         "case_id": "Case_1231",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1231",
-          "type": "Position"
+          "id": "Order_Case_1231",
+          "type": "Order"
         }
       ]
     },
@@ -122071,12 +122071,12 @@
       "ocel:attributes": {
         "resource": "Client Desk D",
         "case_id": "Case_1232",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1232",
-          "type": "Position"
+          "id": "Order_Case_1232",
+          "type": "Order"
         }
       ]
     },
@@ -122564,12 +122564,12 @@
       "ocel:attributes": {
         "resource": "Options Desk A",
         "case_id": "Case_1233",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1233",
-          "type": "Position"
+          "id": "Order_Case_1233",
+          "type": "Order"
         }
       ]
     },
@@ -123006,12 +123006,12 @@
       "ocel:attributes": {
         "resource": "Client Desk D",
         "case_id": "Case_1234",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1234",
-          "type": "Position"
+          "id": "Order_Case_1234",
+          "type": "Order"
         }
       ]
     },
@@ -123618,12 +123618,12 @@
       "ocel:attributes": {
         "resource": "Options Desk A",
         "case_id": "Case_1235",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1235",
-          "type": "Position"
+          "id": "Order_Case_1235",
+          "type": "Order"
         }
       ]
     },
@@ -123975,12 +123975,12 @@
       "ocel:attributes": {
         "resource": "Hedge Desk C",
         "case_id": "Case_1236",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1236",
-          "type": "Position"
+          "id": "Order_Case_1236",
+          "type": "Order"
         }
       ]
     },
@@ -124570,12 +124570,12 @@
       "ocel:attributes": {
         "resource": "Options Desk A",
         "case_id": "Case_1237",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1237",
-          "type": "Position"
+          "id": "Order_Case_1237",
+          "type": "Order"
         }
       ]
     },
@@ -124876,12 +124876,12 @@
       "ocel:attributes": {
         "resource": "Market Maker B",
         "case_id": "Case_1238",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1238",
-          "type": "Position"
+          "id": "Order_Case_1238",
+          "type": "Order"
         }
       ]
     },
@@ -125386,12 +125386,12 @@
       "ocel:attributes": {
         "resource": "Options Desk A",
         "case_id": "Case_1239",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1239",
-          "type": "Position"
+          "id": "Order_Case_1239",
+          "type": "Order"
         }
       ]
     },
@@ -125760,12 +125760,12 @@
       "ocel:attributes": {
         "resource": "Market Maker B",
         "case_id": "Case_124",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_124",
-          "type": "Position"
+          "id": "Order_Case_124",
+          "type": "Order"
         }
       ]
     },
@@ -126355,12 +126355,12 @@
       "ocel:attributes": {
         "resource": "Options Desk A",
         "case_id": "Case_1240",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1240",
-          "type": "Position"
+          "id": "Order_Case_1240",
+          "type": "Order"
         }
       ]
     },
@@ -126916,12 +126916,12 @@
       "ocel:attributes": {
         "resource": "Client Desk D",
         "case_id": "Case_1241",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1241",
-          "type": "Position"
+          "id": "Order_Case_1241",
+          "type": "Order"
         }
       ]
     },
@@ -127409,12 +127409,12 @@
       "ocel:attributes": {
         "resource": "Client Desk D",
         "case_id": "Case_1242",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1242",
-          "type": "Position"
+          "id": "Order_Case_1242",
+          "type": "Order"
         }
       ]
     },
@@ -128021,12 +128021,12 @@
       "ocel:attributes": {
         "resource": "Market Maker B",
         "case_id": "Case_1243",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1243",
-          "type": "Position"
+          "id": "Order_Case_1243",
+          "type": "Order"
         }
       ]
     },
@@ -128429,12 +128429,12 @@
       "ocel:attributes": {
         "resource": "Hedge Desk C",
         "case_id": "Case_1244",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1244",
-          "type": "Position"
+          "id": "Order_Case_1244",
+          "type": "Order"
         }
       ]
     },
@@ -128905,12 +128905,12 @@
       "ocel:attributes": {
         "resource": "Market Maker B",
         "case_id": "Case_1245",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1245",
-          "type": "Position"
+          "id": "Order_Case_1245",
+          "type": "Order"
         }
       ]
     },
@@ -129279,12 +129279,12 @@
       "ocel:attributes": {
         "resource": "Client Desk D",
         "case_id": "Case_1246",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1246",
-          "type": "Position"
+          "id": "Order_Case_1246",
+          "type": "Order"
         }
       ]
     },
@@ -129585,12 +129585,12 @@
       "ocel:attributes": {
         "resource": "Options Desk A",
         "case_id": "Case_1247",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1247",
-          "type": "Position"
+          "id": "Order_Case_1247",
+          "type": "Order"
         }
       ]
     },
@@ -130299,12 +130299,12 @@
       "ocel:attributes": {
         "resource": "Market Maker B",
         "case_id": "Case_1248",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1248",
-          "type": "Position"
+          "id": "Order_Case_1248",
+          "type": "Order"
         }
       ]
     },
@@ -130554,12 +130554,12 @@
       "ocel:attributes": {
         "resource": "Market Maker B",
         "case_id": "Case_1249",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1249",
-          "type": "Position"
+          "id": "Order_Case_1249",
+          "type": "Order"
         }
       ]
     },
@@ -131268,12 +131268,12 @@
       "ocel:attributes": {
         "resource": "Options Desk A",
         "case_id": "Case_125",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_125",
-          "type": "Position"
+          "id": "Order_Case_125",
+          "type": "Order"
         }
       ]
     },
@@ -131676,12 +131676,12 @@
       "ocel:attributes": {
         "resource": "Market Maker B",
         "case_id": "Case_1250",
-        "object_type": "Position"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Position_Case_1250",
-          "type": "Position"
+          "id": "Order_Case_1250",
+          "type": "Order"
         }
       ]
     },
@@ -132437,24 +132437,6 @@
       }
     },
     {
-      "ocel:id": "Order_Exercise Decision",
-      "ocel:type": "Order",
-      "ocel:attributes": {
-        "activity": "Exercise Decision",
-        "attributes": [
-          "booking_system",
-          "case_id",
-          "client_type",
-          "currency_pair",
-          "notional_amount",
-          "option_type",
-          "premium",
-          "strike_price",
-          "trading_strategy"
-        ]
-      }
-    },
-    {
       "ocel:id": "Order_ISDA Master Agreement Check",
       "ocel:type": "Order",
       "ocel:attributes": {
@@ -132473,10 +132455,10 @@
       }
     },
     {
-      "ocel:id": "Order_KYC Refresh Check",
+      "ocel:id": "Order_Initial Margin Calculation",
       "ocel:type": "Order",
       "ocel:attributes": {
-        "activity": "KYC Refresh Check",
+        "activity": "Initial Margin Calculation",
         "attributes": [
           "booking_system",
           "case_id",
@@ -132581,38 +132563,20 @@
       }
     },
     {
-      "ocel:id": "Order_Trade Allocation",
-      "ocel:type": "Order",
+      "ocel:id": "Position_CSA Verification",
+      "ocel:type": "Position",
       "ocel:attributes": {
-        "activity": "Trade Allocation",
+        "activity": "CSA Verification",
         "attributes": [
-          "booking_system",
           "case_id",
-          "client_type",
           "currency_pair",
-          "notional_amount",
+          "delta",
+          "gamma",
+          "limit_usage",
           "option_type",
-          "premium",
-          "strike_price",
-          "trading_strategy"
-        ]
-      }
-    },
-    {
-      "ocel:id": "Order_Trade Transparency Assessment",
-      "ocel:type": "Order",
-      "ocel:attributes": {
-        "activity": "Trade Transparency Assessment",
-        "attributes": [
-          "booking_system",
-          "case_id",
-          "client_type",
-          "currency_pair",
-          "notional_amount",
-          "option_type",
-          "premium",
-          "strike_price",
-          "trading_strategy"
+          "risk_score",
+          "theta",
+          "vega"
         ]
       }
     },
@@ -132622,9 +132586,7 @@
       "ocel:attributes": {
         "activity": "Collateral Management",
         "attributes": [
-          "booking_system",
           "case_id",
-          "client_type",
           "currency_pair",
           "delta",
           "gamma",
@@ -132632,7 +132594,6 @@
           "option_type",
           "risk_score",
           "theta",
-          "trading_strategy",
           "vega"
         ]
       }
@@ -132643,9 +132604,7 @@
       "ocel:attributes": {
         "activity": "Initial Margin Calculation",
         "attributes": [
-          "booking_system",
           "case_id",
-          "client_type",
           "currency_pair",
           "delta",
           "gamma",
@@ -132653,7 +132612,6 @@
           "option_type",
           "risk_score",
           "theta",
-          "trading_strategy",
           "vega"
         ]
       }
@@ -132664,9 +132622,7 @@
       "ocel:attributes": {
         "activity": "Position Reconciliation",
         "attributes": [
-          "booking_system",
           "case_id",
-          "client_type",
           "currency_pair",
           "delta",
           "gamma",
@@ -132674,7 +132630,6 @@
           "option_type",
           "risk_score",
           "theta",
-          "trading_strategy",
           "vega"
         ]
       }
@@ -132685,9 +132640,7 @@
       "ocel:attributes": {
         "activity": "Risk Assessment",
         "attributes": [
-          "booking_system",
           "case_id",
-          "client_type",
           "currency_pair",
           "delta",
           "gamma",
@@ -132695,7 +132648,6 @@
           "option_type",
           "risk_score",
           "theta",
-          "trading_strategy",
           "vega"
         ]
       }
@@ -132706,9 +132658,7 @@
       "ocel:attributes": {
         "activity": "Risk Transfer Executed",
         "attributes": [
-          "booking_system",
           "case_id",
-          "client_type",
           "currency_pair",
           "delta",
           "gamma",
@@ -132716,7 +132666,6 @@
           "option_type",
           "risk_score",
           "theta",
-          "trading_strategy",
           "vega"
         ]
       }
