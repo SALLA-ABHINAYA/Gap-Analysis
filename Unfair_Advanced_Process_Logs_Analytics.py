@@ -1081,23 +1081,73 @@ class UnfairOCELAnalyzer:
                             }
 
                             # Check activity-specific gaps
-                            for activity, max_gap in timing_rules['activity_gaps'].items():
-                                activity_events = obj_type_events[obj_type_events['activity'] == activity]
-                                if len(activity_events) > 1:
-                                    gaps = activity_events['timestamp'].diff().fillna(pd.Timedelta(seconds=0))
-                                    large_gaps = gaps[gaps > pd.Timedelta(hours=max_gap)]
+                            # Track timing violations
+                            for obj_type, timing_rules in timing_thresholds.items():
+                                # First, get all events for this case and object type
+                                obj_type_events = case_data[case_data['object_types'].apply(lambda x: obj_type in x)]
 
-                                    if not large_gaps.empty:
-                                        for idx in large_gaps.index:
-                                            timing_violation['activity_gaps'].append({
-                                                'activity': activity,
-                                                'gap_hours': float(large_gaps[idx].total_seconds() / 3600),
-                                                'threshold_hours': max_gap,
-                                                'event_id': activity_events.loc[idx, 'event_id'],
-                                                'previous_event_id':
-                                                    activity_events.iloc[activity_events.index.get_loc(idx) - 1][
-                                                        'event_id']
-                                            })
+                                if not obj_type_events.empty:
+                                    # Check total duration for this case
+                                    case_duration = (obj_type_events['timestamp'].max() -
+                                                     obj_type_events['timestamp'].min()).total_seconds() / 3600
+
+                                    timing_violation = None
+                                    if case_duration > timing_rules['total_duration']:
+                                        # Initialize violation record if we exceed total duration
+                                        timing_violation = {
+                                            'case_id': case_id,  # Important: Tracking which case had the violation
+                                            'object_type': obj_type,
+                                            'actual_duration': case_duration,
+                                            'threshold': timing_rules['total_duration'],
+                                            'events': obj_type_events['event_id'].tolist(),
+                                            'activity_gaps': []
+                                        }
+
+                                    # Check gaps between activities in the sequence
+                                    for activity, max_gap in timing_rules['activity_gaps'].items():
+                                        # Find all occurrences of this activity
+                                        activity_events = obj_type_events[obj_type_events['activity'] == activity]
+
+                                        for idx in activity_events.index:
+                                            # Get all events that happened before this activity in this case
+                                            previous_events = obj_type_events[obj_type_events.index < idx]
+
+                                            if not previous_events.empty:
+                                                # Get the most recent previous event
+                                                previous_event = previous_events.iloc[-1]
+                                                current_event = obj_type_events.loc[idx]
+
+                                                # Calculate gap between previous activity and current activity
+                                                gap_hours = (current_event['timestamp'] -
+                                                             previous_event['timestamp']).total_seconds() / 3600
+
+                                                if gap_hours > max_gap:
+                                                    # Create timing violation if we haven't already
+                                                    if timing_violation is None:
+                                                        timing_violation = {
+                                                            'case_id': case_id,
+                                                            'object_type': obj_type,
+                                                            'actual_duration': case_duration,
+                                                            'threshold': timing_rules['total_duration'],
+                                                            'events': obj_type_events['event_id'].tolist(),
+                                                            'activity_gaps': []
+                                                        }
+
+                                                    # Record the gap violation
+                                                    timing_violation['activity_gaps'].append({
+                                                        'activity': activity,
+                                                        'previous_activity': previous_event['activity'],
+                                                        'gap_hours': gap_hours,
+                                                        'threshold_hours': max_gap,
+                                                        'current_event_id': current_event['event_id'],
+                                                        'previous_event_id': previous_event['event_id'],
+                                                        'current_timestamp': current_event['timestamp'],
+                                                        'previous_timestamp': previous_event['timestamp']
+                                                    })
+
+                                    # If we found any violations, add to the failures list
+                                    if timing_violation is not None:
+                                        failures['timing_violations'].append(timing_violation)
 
                             failures['timing_violations'].append(timing_violation)
 

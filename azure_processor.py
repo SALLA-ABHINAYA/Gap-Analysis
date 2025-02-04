@@ -180,20 +180,20 @@ def save_enhanced_prompt(prompt: str):
 
 def create_enhanced_prompt(log_summary: LogSummary, industry_context: str) -> str:
     """
-    Creates an enhanced prompt for converting traditional event logs to OCPM format.
+    Creates an enhanced prompt for converting traditional event logs to OCEL format.
 
     Args:
         log_summary: Summary statistics of the event log
         industry_context: Domain-specific context for better object identification
 
     Returns:
-        A detailed prompt string for AI model to extract OCPM objects
+        A detailed prompt string for AI model to extract OCEL objects
     """
     activities_str = json.dumps(log_summary.unique_activities, indent=2)
     case_resources_str = json.dumps(dict(list(log_summary.case_resources.items())[:5]), indent=2)
     activity_attrs_str = json.dumps(log_summary.activity_attributes, indent=2)
 
-    # Create a separate string for the example JSON with detailed comments
+    # Example JSON structure for reference
     example_json = '''
 {
     "Trade": {
@@ -208,7 +208,7 @@ def create_enhanced_prompt(log_summary: LogSummary, industry_context: str) -> st
     }
 }'''
 
-    return f"""Based on the provided event log analysis and industry context, identify object types and their relationships for Object-Centric Process Mining (OCPM) conversion.
+    return f"""Based on the provided event log analysis and industry context, identify object types and their relationships to activities/events for conversion into the Object-Centric Event Log (OCEL) format.
 
 Industry Context:
 {industry_context}
@@ -221,56 +221,57 @@ Log Analysis Details:
 - Available Columns: {list(log_summary.column_values.keys())}
 
 Object Identification Guidelines:
-1. Analyze activities to identify potential business objects:
-   - Look for nouns that activities are performed on
-   - Consider business entities that persist across multiple activities
-   - Identify objects that have their own lifecycle
+1. **Analyze Activities to Identify Potential Business Objects:**
+   - Focus on nouns within activity descriptions that represent business entities.
+   - Consider entities that persist across multiple activities and have distinct lifecycles.
+   - Identify objects that are created, modified, or referenced by activities.
 
-2. Activity-Object Association Rules:
-   - Each activity should be associated with at least one object type
-   - Activities like "Create X" or "Modify X" typically indicate X is an object
-   - Consider which objects are created, modified, or referenced by each activity
+2. **Activity-Object Association Rules:**
+   - Associate each activity with relevant object types based on its context.
+   - Activities such as "Create X" or "Update X" typically indicate that 'X' is an object.
+   - Ensure that each activity is linked to at least one object type.
 
-3. Attribute Identification Guidelines:
-   - Include all relevant columns as attributes for appropriate objects
-   - Convert case attributes to object attributes based on their context
-   - Ensure timestamp and resource are properly mapped
-   - Include identifiers (e.g., ID fields) as attributes
+3. **Attribute Identification Guidelines:**
+   - Map relevant columns from the event log to object attributes.
+   - Convert case attributes to object attributes where appropriate.
+   - Ensure proper mapping of timestamps and resources.
+   - Include unique identifiers (e.g., IDs) as attributes for corresponding objects.
 
-4. Relationship Guidelines:
-   - Identify objects that interact during activities
-   - Consider parent-child relationships between objects
-   - Look for objects that share common activities
-   - Include relationships implied by foreign key references
+4. **Relationship Identification Guidelines:**
+   - Determine how objects interact during activities.
+   - Identify parent-child or hierarchical relationships between objects.
+   - Look for objects that share common activities or are frequently associated.
+   - Consider relationships implied by foreign key references or data linkages.
 
 Output Requirements:
-1. Return a JSON object where each key is an object type name
-2. Each object type MUST contain exactly these fields:
-   - "activities": list of activities that create/modify/reference this object
-   - "attributes": list of data fields belonging to this object
-   - "relationships": list of other object types this object interacts with
+1. **JSON Structure:**
+   - Each key represents an object type name.
+   - Each object type contains the following fields:
+     - "activities": List of activities that create, modify, or reference this object.
+     - "attributes": List of data fields associated with this object.
+     - "relationships": List of other object types this object interacts with.
 
-3. Naming Conventions:
-   - Use PascalCase for object type names (e.g., "Trade", "Order")
-   - Use original activity names from the log
-   - Use lowercase with underscores for attributes
-   - Keep relationship names consistent with object type names
+2. **Naming Conventions:**
+   - Use PascalCase for object type names (e.g., "Trade", "Order").
+   - Retain original activity names from the log.
+   - Use lowercase with underscores for attribute names.
+   - Ensure consistency in relationship naming aligned with object type names.
 
 Example Output Format:
 {example_json}
 
 Additional Instructions:
-- Ensure all activities from the log are mapped to at least one object type
-- Include all relevant attributes from the available columns
-- Define clear and meaningful relationships between objects
-- Validate that object types form a connected graph through relationships
-- Consider the industry context when defining object types and relationships
+- Ensure comprehensive mapping of all activities to relevant object types.
+- Include all pertinent attributes from the available columns.
+- Define clear and meaningful relationships between objects.
+- Validate that object types form a connected graph through their relationships.
+- Incorporate industry-specific context when defining object types and relationships.
 
 Your response must:
-1. Follow the exact JSON format shown in the example
-2. Include all identified object types with their complete activities, attributes, and relationships
-3. Ensure consistency in naming and structure
-4. Cover all activities and relevant attributes from the log"""
+1. Adhere to the exact JSON format provided in the example.
+2. Include all identified object types with their complete activities, attributes, and relationships.
+3. Maintain consistency in naming conventions and structure.
+4. Cover all activities and relevant attributes from the event log comprehensively."""
 
     return prompt
 
