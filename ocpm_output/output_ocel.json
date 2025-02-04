@@ -27,13 +27,17 @@
       "case_id",
       "client_type",
       "currency_pair",
+      "delta",
+      "gamma",
       "limit_usage",
       "notional_amount",
       "option_type",
       "premium",
       "risk_score",
       "strike_price",
-      "trading_strategy"
+      "theta",
+      "trading_strategy",
+      "vega"
     ],
     "relationships": [
       "Client",
@@ -49,20 +53,26 @@
       "CSA Verification",
       "Client Limit Validation",
       "Credit Check",
+      "Exercise Decision",
       "ISDA Master Agreement Check",
+      "KYC Refresh Check",
       "Premium Calculation",
       "Quote Provided",
       "Quote Requested",
       "Settlement Instructions",
       "Strategy Validation",
-      "Trade Allocation"
+      "Trade Allocation",
+      "Trade Transparency Assessment"
     ],
     "attributes": [
       "booking_system",
       "case_id",
       "client_type",
       "currency_pair",
+      "notional_amount",
       "option_type",
+      "premium",
+      "strike_price",
       "trading_strategy"
     ],
     "relationships": [
@@ -74,7 +84,6 @@
   "Position": {
     "name": "Position",
     "activities": [
-      "CSA Verification",
       "Collateral Management",
       "Initial Margin Calculation",
       "Position Reconciliation",
@@ -82,7 +91,9 @@
       "Risk Transfer Executed"
     ],
     "attributes": [
+      "booking_system",
       "case_id",
+      "client_type",
       "currency_pair",
       "delta",
       "gamma",
@@ -90,6 +101,7 @@
       "option_type",
       "risk_score",
       "theta",
+      "trading_strategy",
       "vega"
     ],
     "relationships": [
@@ -104,7 +116,6 @@
       "Greeks Calculation",
       "Market Data Validation",
       "Market Making Spread Calculation",
-      "Premium Calculation",
       "Skew Calibration",
       "Surface Construction",
       "Volatility Smile Analysis",
@@ -133,7 +144,6 @@
     "activities": [
       "CSA Verification",
       "Client Limit Validation",
-      "Collateral Management",
       "Credit Check",
       "ISDA Master Agreement Check",
       "KYC Refresh Check",

@@ -1,4 +1,5 @@
 # ocpm_analysis.py
+import traceback
 
 import pandas as pd
 import networkx as nx
@@ -9,6 +10,10 @@ import streamlit as st
 import plotly.graph_objects as go
 import numpy as np
 import os
+import json
+
+from openai import AzureOpenAI
+
 from azure_processor import process_log_file
 
 # Add this at the start of your script, before any other imports
@@ -257,6 +262,91 @@ class OCPMAnalyzer:
         print(df.info())
         return df
 
+    def generate_timing_thresholds(self) -> Dict:
+        """
+        Generates timing thresholds based on OCEL object model.
+        This method should be called after process_log_file has generated output_ocel.json
+        """
+        try:
+            # First load the existing OCEL model
+            with open('ocpm_output/output_ocel.json', 'r') as f:
+                ocel_model = json.load(f)
+
+            # Initialize OpenAI client
+            client = AzureOpenAI(
+                api_key="5GLXXNjNjhjRKunOEVm8v7HIk335V4E9myCFNdFvpUmuezUG3hzbJQQJ99BAACYeBjFXJ3w3AAABACOGBfoy",
+                api_version="2024-02-01",
+                azure_endpoint="https://smartcall.openai.azure.com/"
+            )
+
+            # Create prompt for timing threshold generation
+            prompt = f"""
+            Based on this OCEL object model, generate appropriate timing thresholds for a financial trading system:
+
+            {json.dumps(ocel_model, indent=2)}
+
+            Generate timing thresholds following these rules:
+            1. Each object type needs:
+               - Total maximum duration for all activities (in hours)
+               - Default maximum gap between consecutive activities (in hours)
+               - Activity-specific thresholds for processing time and gaps
+
+            2. Consider these factors:
+               - Trading activities should have shorter durations (typically < 1 hour)
+               - Risk and compliance activities can have longer durations
+               - Market data activities should be near real-time
+               - Settlement activities can span multiple hours
+
+            Return only valid JSON following this exact structure:
+            {{
+              "ObjectType": {{
+                "total_duration_hours": number,
+                "default_gap_hours": number,
+                "activity_thresholds": {{
+                  "activity_name": {{
+                    "max_duration_hours": number,
+                    "max_gap_after_hours": number
+                  }}
+                }}
+              }}
+            }}
+            """
+
+            # Get threshold recommendations from OpenAI
+            response = client.chat.completions.create(
+                model="gpt-4o",
+                messages=[
+                    {
+                        "role": "system",
+                        "content": "You are an expert in financial trading processes and regulatory compliance. Provide timing thresholds that reflect real-world trading operations."
+                    },
+                    {"role": "user", "content": prompt}
+                ],
+                temperature=0,
+                response_format={"type": "json_object"}
+            )
+
+            # Parse and validate the response
+            thresholds = json.loads(response.choices[0].message.content)
+
+            # Validate the structure matches our requirements
+            for obj_type, config in thresholds.items():
+                required_keys = {'total_duration_hours', 'default_gap_hours', 'activity_thresholds'}
+                if not all(key in config for key in required_keys):
+                    raise ValueError(f"Missing required keys in threshold config for {obj_type}")
+
+            # Save the thresholds
+            os.makedirs('ocpm_output', exist_ok=True)
+            with open('ocpm_output/output_ocel_threshold.json', 'w') as f:
+                json.dump(thresholds, f, indent=2)
+
+            return thresholds
+
+        except Exception as e:
+            print(f"Error generating timing thresholds: {str(e)}")
+            print(traceback.format_exc())
+            raise
+
 
     def _initialize_object_types(self, use_azure: bool = True) -> Dict[str, ObjectType]:
         """Initialize object types, optionally using Azure OpenAI"""
@@ -264,6 +354,9 @@ class OCPMAnalyzer:
             if use_azure:
                 # Process directly with Azure
                 azure_types = process_log_file(df=self.event_log,chunk_size=1000)
+
+                # Generate timing thresholds based on the object model
+                self.generate_timing_thresholds()
                 
                 return azure_types
                     

@@ -277,6 +277,62 @@ class OutlierVisualizer:
                     st.dataframe(timeline_data)
 
 
+class OCPMProcessValidator:
+    """Handles validation of process execution using OCPM model and thresholds"""
+
+    def __init__(self):
+        """Initialize validator with OCPM model and thresholds"""
+        try:
+            # Load OCPM model
+            with open('ocpm_output/output_ocel.json', 'r') as f:
+                self.ocpm_model = json.load(f)
+
+            # Load timing thresholds
+            with open('ocpm_output/output_ocel_threshold.json', 'r') as f:
+                self.thresholds = json.load(f)
+
+            # Validate both files exist and have required structure
+            self._validate_loaded_data()
+
+        except Exception as e:
+            logger.error(f"Error initializing OCPMProcessValidator: {str(e)}")
+            raise
+
+    def _validate_loaded_data(self):
+        """Validates that loaded data has required structure"""
+        # Validate OCPM model
+        for obj_type, data in self.ocpm_model.items():
+            required_keys = {'activities', 'attributes', 'relationships'}
+            if not all(key in data for key in required_keys):
+                raise ValueError(f"Invalid OCPM model structure for {obj_type}")
+
+        # Validate thresholds
+        for obj_type, data in self.thresholds.items():
+            required_keys = {'total_duration_hours', 'default_gap_hours', 'activity_thresholds'}
+            if not all(key in data for key in required_keys):
+                raise ValueError(f"Invalid threshold structure for {obj_type}")
+
+    def get_expected_flow(self) -> Dict[str, List[str]]:
+        """Convert OCPM model to expected flow"""
+        return {
+            obj_type: data['activities']
+            for obj_type, data in self.ocpm_model.items()
+        }
+
+    def get_timing_thresholds(self) -> Dict[str, Dict]:
+        """Convert OCPM thresholds to timing rules"""
+        return {
+            obj_type: {
+                'total_duration': data['total_duration_hours'],
+                'activity_gaps': {
+                    activity: thresholds['max_gap_after_hours']
+                    for activity, thresholds in data['activity_thresholds'].items()
+                }
+            }
+            for obj_type, data in self.thresholds.items()
+        }
+
+
 class UnfairOCELAnalyzer:
     """Enhanced analyzer for identifying unfairness and outliers in process mining"""
 
@@ -292,6 +348,8 @@ class UnfairOCELAnalyzer:
                 api_key="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"
             )
             logger.info("OpenAI client initialized")
+
+            self.process_validator = OCPMProcessValidator()
 
             # Load OCEL data
             with open(ocel_path, 'r', encoding='utf-8') as f:
@@ -929,53 +987,8 @@ class UnfairOCELAnalyzer:
     def _detect_failure_patterns(self) -> Dict[str, Any]:
         """Enhanced failure pattern detection with full event traceability"""
         try:
-            expected_flow = {
-                'Trade': [
-                    'Trade Initiated',
-                    'Market Data Validation',
-                    'Volatility Surface Analysis',
-                    'Quote Provided',
-                    'Exercise Decision',
-                    'Trade Transparency Assessment',
-                    'Premium Calculation',
-                    'Strategy Validation'
-                ],
-                'Market': [
-                    'Quote Requested',
-                    'Market Data Validation',
-                    'Quote Provided'
-                ],
-                'Risk': [
-                    'Risk Assessment',
-                    'Trade Validation',
-                    'Position Reconciliation'
-                ]
-            }
-
-            # Enhanced timing thresholds (in hours)
-            timing_thresholds = {
-                'Trade': {
-                    'total_duration': 24,
-                    'activity_gaps': {
-                        'Market Data Validation': 0.5,
-                        'Quote Provided': 1,
-                        'Exercise Decision': 2
-                    }
-                },
-                'Market': {
-                    'total_duration': 12,
-                    'activity_gaps': {
-                        'Quote Provided': 0.5
-                    }
-                },
-                'Risk': {
-                    'total_duration': 48,
-                    'activity_gaps': {
-                        'Trade Validation': 4,
-                        'Position Reconciliation': 8
-                    }
-                }
-            }
+            expected_flow = self.process_validator.get_expected_flow()
+            timing_thresholds = self.process_validator.get_timing_thresholds()
 
             failures = {
                 'sequence_violations': [],

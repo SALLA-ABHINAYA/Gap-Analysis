@@ -363,6 +363,7 @@ def process_chunk(chunk: pd.DataFrame, enhanced_prompt: str, client: AzureOpenAI
         print(f"Error details: {str(e)}")
         return None
 
+
 def save_enhanced_prompt(prompt: str):
     """
     Saves the enhanced prompt to a file with timestamp in the filename.

@@ -131918,13 +131918,17 @@
           "case_id",
           "client_type",
           "currency_pair",
+          "delta",
+          "gamma",
           "limit_usage",
           "notional_amount",
           "option_type",
           "premium",
           "risk_score",
           "strike_price",
-          "trading_strategy"
+          "theta",
+          "trading_strategy",
+          "vega"
         ]
       }
     },
@@ -131938,13 +131942,17 @@
           "case_id",
           "client_type",
           "currency_pair",
+          "delta",
+          "gamma",
           "limit_usage",
           "notional_amount",
           "option_type",
           "premium",
           "risk_score",
           "strike_price",
-          "trading_strategy"
+          "theta",
+          "trading_strategy",
+          "vega"
         ]
       }
     },
@@ -131958,13 +131966,17 @@
           "case_id",
           "client_type",
           "currency_pair",
+          "delta",
+          "gamma",
           "limit_usage",
           "notional_amount",
           "option_type",
           "premium",
           "risk_score",
           "strike_price",
-          "trading_strategy"
+          "theta",
+          "trading_strategy",
+          "vega"
         ]
       }
     },
@@ -131978,13 +131990,17 @@
           "case_id",
           "client_type",
           "currency_pair",
+          "delta",
+          "gamma",
           "limit_usage",
           "notional_amount",
           "option_type",
           "premium",
           "risk_score",
           "strike_price",
-          "trading_strategy"
+          "theta",
+          "trading_strategy",
+          "vega"
         ]
       }
     },
@@ -131998,13 +132014,17 @@
           "case_id",
           "client_type",
           "currency_pair",
+          "delta",
+          "gamma",
           "limit_usage",
           "notional_amount",
           "option_type",
           "premium",
           "risk_score",
           "strike_price",
-          "trading_strategy"
+          "theta",
+          "trading_strategy",
+          "vega"
         ]
       }
     },
@@ -132018,13 +132038,17 @@
           "case_id",
           "client_type",
           "currency_pair",
+          "delta",
+          "gamma",
           "limit_usage",
           "notional_amount",
           "option_type",
           "premium",
           "risk_score",
           "strike_price",
-          "trading_strategy"
+          "theta",
+          "trading_strategy",
+          "vega"
         ]
       }
     },
@@ -132038,13 +132062,17 @@
           "case_id",
           "client_type",
           "currency_pair",
+          "delta",
+          "gamma",
           "limit_usage",
           "notional_amount",
           "option_type",
           "premium",
           "risk_score",
           "strike_price",
-          "trading_strategy"
+          "theta",
+          "trading_strategy",
+          "vega"
         ]
       }
     },
@@ -132058,13 +132086,17 @@
           "case_id",
           "client_type",
           "currency_pair",
+          "delta",
+          "gamma",
           "limit_usage",
           "notional_amount",
           "option_type",
           "premium",
           "risk_score",
           "strike_price",
-          "trading_strategy"
+          "theta",
+          "trading_strategy",
+          "vega"
         ]
       }
     },
@@ -132078,13 +132110,17 @@
           "case_id",
           "client_type",
           "currency_pair",
+          "delta",
+          "gamma",
           "limit_usage",
           "notional_amount",
           "option_type",
           "premium",
           "risk_score",
           "strike_price",
-          "trading_strategy"
+          "theta",
+          "trading_strategy",
+          "vega"
         ]
       }
     },
@@ -132098,13 +132134,17 @@
           "case_id",
           "client_type",
           "currency_pair",
+          "delta",
+          "gamma",
           "limit_usage",
           "notional_amount",
           "option_type",
           "premium",
           "risk_score",
           "strike_price",
-          "trading_strategy"
+          "theta",
+          "trading_strategy",
+          "vega"
         ]
       }
     },
@@ -132118,13 +132158,17 @@
           "case_id",
           "client_type",
           "currency_pair",
+          "delta",
+          "gamma",
           "limit_usage",
           "notional_amount",
           "option_type",
           "premium",
           "risk_score",
           "strike_price",
-          "trading_strategy"
+          "theta",
+          "trading_strategy",
+          "vega"
         ]
       }
     },
@@ -132138,13 +132182,17 @@
           "case_id",
           "client_type",
           "currency_pair",
+          "delta",
+          "gamma",
           "limit_usage",
           "notional_amount",
           "option_type",
           "premium",
           "risk_score",
           "strike_price",
-          "trading_strategy"
+          "theta",
+          "trading_strategy",
+          "vega"
         ]
       }
     },
@@ -132158,13 +132206,17 @@
           "case_id",
           "client_type",
           "currency_pair",
+          "delta",
+          "gamma",
           "limit_usage",
           "notional_amount",
           "option_type",
           "premium",
           "risk_score",
           "strike_price",
-          "trading_strategy"
+          "theta",
+          "trading_strategy",
+          "vega"
         ]
       }
     },
@@ -132178,13 +132230,17 @@
           "case_id",
           "client_type",
           "currency_pair",
+          "delta",
+          "gamma",
           "limit_usage",
           "notional_amount",
           "option_type",
           "premium",
           "risk_score",
           "strike_price",
-          "trading_strategy"
+          "theta",
+          "trading_strategy",
+          "vega"
         ]
       }
     },
@@ -132198,13 +132254,17 @@
           "case_id",
           "client_type",
           "currency_pair",
+          "delta",
+          "gamma",
           "limit_usage",
           "notional_amount",
           "option_type",
           "premium",
           "risk_score",
           "strike_price",
-          "trading_strategy"
+          "theta",
+          "trading_strategy",
+          "vega"
         ]
       }
     },
@@ -132218,13 +132278,17 @@
           "case_id",
           "client_type",
           "currency_pair",
+          "delta",
+          "gamma",
           "limit_usage",
           "notional_amount",
           "option_type",
           "premium",
           "risk_score",
           "strike_price",
-          "trading_strategy"
+          "theta",
+          "trading_strategy",
+          "vega"
         ]
       }
     },
@@ -132238,13 +132302,17 @@
           "case_id",
           "client_type",
           "currency_pair",
+          "delta",
+          "gamma",
           "limit_usage",
           "notional_amount",
           "option_type",
           "premium",
           "risk_score",
           "strike_price",
-          "trading_strategy"
+          "theta",
+          "trading_strategy",
+          "vega"
         ]
       }
     },
@@ -132258,13 +132326,17 @@
           "case_id",
           "client_type",
           "currency_pair",
+          "delta",
+          "gamma",
           "limit_usage",
           "notional_amount",
           "option_type",
           "premium",
           "risk_score",
           "strike_price",
-          "trading_strategy"
+          "theta",
+          "trading_strategy",
+          "vega"
         ]
       }
     },
@@ -132278,13 +132350,17 @@
           "case_id",
           "client_type",
           "currency_pair",
+          "delta",
+          "gamma",
           "limit_usage",
           "notional_amount",
           "option_type",
           "premium",
           "risk_score",
           "strike_price",
-          "trading_strategy"
+          "theta",
+          "trading_strategy",
+          "vega"
         ]
       }
     },
@@ -132298,7 +132374,10 @@
           "case_id",
           "client_type",
           "currency_pair",
+          "notional_amount",
           "option_type",
+          "premium",
+          "strike_price",
           "trading_strategy"
         ]
       }
@@ -132313,7 +132392,10 @@
           "case_id",
           "client_type",
           "currency_pair",
+          "notional_amount",
           "option_type",
+          "premium",
+          "strike_price",
           "trading_strategy"
         ]
       }
@@ -132328,7 +132410,10 @@
           "case_id",
           "client_type",
           "currency_pair",
+          "notional_amount",
           "option_type",
+          "premium",
+          "strike_price",
           "trading_strategy"
         ]
       }
@@ -132343,7 +132428,28 @@
           "case_id",
           "client_type",
           "currency_pair",
+          "notional_amount",
           "option_type",
+          "premium",
+          "strike_price",
+          "trading_strategy"
+        ]
+      }
+    },
+    {
+      "ocel:id": "Order_Exercise Decision",
+      "ocel:type": "Order",
+      "ocel:attributes": {
+        "activity": "Exercise Decision",
+        "attributes": [
+          "booking_system",
+          "case_id",
+          "client_type",
+          "currency_pair",
+          "notional_amount",
+          "option_type",
+          "premium",
+          "strike_price",
           "trading_strategy"
         ]
       }
@@ -132358,7 +132464,28 @@
           "case_id",
           "client_type",
           "currency_pair",
+          "notional_amount",
           "option_type",
+          "premium",
+          "strike_price",
+          "trading_strategy"
+        ]
+      }
+    },
+    {
+      "ocel:id": "Order_KYC Refresh Check",
+      "ocel:type": "Order",
+      "ocel:attributes": {
+        "activity": "KYC Refresh Check",
+        "attributes": [
+          "booking_system",
+          "case_id",
+          "client_type",
+          "currency_pair",
+          "notional_amount",
+          "option_type",
+          "premium",
+          "strike_price",
           "trading_strategy"
         ]
       }
@@ -132373,7 +132500,10 @@
           "case_id",
           "client_type",
           "currency_pair",
+          "notional_amount",
           "option_type",
+          "premium",
+          "strike_price",
           "trading_strategy"
         ]
       }
@@ -132388,7 +132518,10 @@
           "case_id",
           "client_type",
           "currency_pair",
+          "notional_amount",
           "option_type",
+          "premium",
+          "strike_price",
           "trading_strategy"
         ]
       }
@@ -132403,7 +132536,10 @@
           "case_id",
           "client_type",
           "currency_pair",
+          "notional_amount",
           "option_type",
+          "premium",
+          "strike_price",
           "trading_strategy"
         ]
       }
@@ -132418,7 +132554,10 @@
           "case_id",
           "client_type",
           "currency_pair",
+          "notional_amount",
           "option_type",
+          "premium",
+          "strike_price",
           "trading_strategy"
         ]
       }
@@ -132433,7 +132572,10 @@
           "case_id",
           "client_type",
           "currency_pair",
+          "notional_amount",
           "option_type",
+          "premium",
+          "strike_price",
           "trading_strategy"
         ]
       }
@@ -132448,26 +132590,29 @@
           "case_id",
           "client_type",
           "currency_pair",
+          "notional_amount",
           "option_type",
+          "premium",
+          "strike_price",
           "trading_strategy"
         ]
       }
     },
     {
-      "ocel:id": "Position_CSA Verification",
-      "ocel:type": "Position",
+      "ocel:id": "Order_Trade Transparency Assessment",
+      "ocel:type": "Order",
       "ocel:attributes": {
-        "activity": "CSA Verification",
+        "activity": "Trade Transparency Assessment",
         "attributes": [
+          "booking_system",
           "case_id",
+          "client_type",
           "currency_pair",
-          "delta",
-          "gamma",
-          "limit_usage",
+          "notional_amount",
           "option_type",
-          "risk_score",
-          "theta",
-          "vega"
+          "premium",
+          "strike_price",
+          "trading_strategy"
         ]
       }
     },
@@ -132477,7 +132622,9 @@
       "ocel:attributes": {
         "activity": "Collateral Management",
         "attributes": [
+          "booking_system",
           "case_id",
+          "client_type",
           "currency_pair",
           "delta",
           "gamma",
@@ -132485,6 +132632,7 @@
           "option_type",
           "risk_score",
           "theta",
+          "trading_strategy",
           "vega"
         ]
       }
@@ -132495,7 +132643,9 @@
       "ocel:attributes": {
         "activity": "Initial Margin Calculation",
         "attributes": [
+          "booking_system",
           "case_id",
+          "client_type",
           "currency_pair",
           "delta",
           "gamma",
@@ -132503,6 +132653,7 @@
           "option_type",
           "risk_score",
           "theta",
+          "trading_strategy",
           "vega"
         ]
       }
@@ -132513,7 +132664,9 @@
       "ocel:attributes": {
         "activity": "Position Reconciliation",
         "attributes": [
+          "booking_system",
           "case_id",
+          "client_type",
           "currency_pair",
           "delta",
           "gamma",
@@ -132521,6 +132674,7 @@
           "option_type",
           "risk_score",
           "theta",
+          "trading_strategy",
           "vega"
         ]
       }
@@ -132531,7 +132685,9 @@
       "ocel:attributes": {
         "activity": "Risk Assessment",
         "attributes": [
+          "booking_system",
           "case_id",
+          "client_type",
           "currency_pair",
           "delta",
           "gamma",
@@ -132539,6 +132695,7 @@
           "option_type",
           "risk_score",
           "theta",
+          "trading_strategy",
           "vega"
         ]
       }
@@ -132549,7 +132706,9 @@
       "ocel:attributes": {
         "activity": "Risk Transfer Executed",
         "attributes": [
+          "booking_system",
           "case_id",
+          "client_type",
           "currency_pair",
           "delta",
           "gamma",
@@ -132557,6 +132716,7 @@
           "option_type",
           "risk_score",
           "theta",
+          "trading_strategy",
           "vega"
         ]
       }
@@ -132604,25 +132764,6 @@
       "ocel:type": "MarketData",
       "ocel:attributes": {
         "activity": "Market Making Spread Calculation",
-        "attributes": [
-          "booking_system",
-          "case_id",
-          "client_type",
-          "currency_pair",
-          "delta",
-          "gamma",
-          "option_type",
-          "theta",
-          "trading_strategy",
-          "vega"
-        ]
-      }
-    },
-    {
-      "ocel:id": "MarketData_Premium Calculation",
-      "ocel:type": "MarketData",
-      "ocel:attributes": {
-        "activity": "Premium Calculation",
         "attributes": [
           "booking_system",
           "case_id",
@@ -132731,19 +132872,6 @@
       "ocel:type": "Client",
       "ocel:attributes": {
         "activity": "Client Limit Validation",
-        "attributes": [
-          "booking_system",
-          "case_id",
-          "client_type",
-          "trading_strategy"
-        ]
-      }
-    },
-    {
-      "ocel:id": "Client_Collateral Management",
-      "ocel:type": "Client",
-      "ocel:attributes": {
-        "activity": "Collateral Management",
         "attributes": [
           "booking_system",
           "case_id",
