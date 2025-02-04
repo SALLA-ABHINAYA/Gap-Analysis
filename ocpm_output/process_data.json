@@ -470,12 +470,12 @@
       "ocel:attributes": {
         "resource": "Client Desk D",
         "case_id": "Case_1",
-        "object_type": "Trade"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Trade_Case_1",
-          "type": "Trade"
+          "id": "Order_Case_1",
+          "type": "Order"
         }
       ]
     },
@@ -980,12 +980,12 @@
       "ocel:attributes": {
         "resource": "Client Desk D",
         "case_id": "Case_10",
-        "object_type": "Trade"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Trade_Case_10",
-          "type": "Trade"
+          "id": "Order_Case_10",
+          "type": "Order"
         }
       ]
     },
@@ -1864,12 +1864,12 @@
       "ocel:attributes": {
         "resource": "Hedge Desk C",
         "case_id": "Case_1000",
-        "object_type": "Trade"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Trade_Case_1000",
-          "type": "Trade"
+          "id": "Order_Case_1000",
+          "type": "Order"
         }
       ]
     },
@@ -2884,12 +2884,12 @@
       "ocel:attributes": {
         "resource": "Options Desk A",
         "case_id": "Case_1002",
-        "object_type": "Trade"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Trade_Case_1002",
-          "type": "Trade"
+          "id": "Order_Case_1002",
+          "type": "Order"
         }
       ]
     },
@@ -3836,12 +3836,12 @@
       "ocel:attributes": {
         "resource": "Hedge Desk C",
         "case_id": "Case_1004",
-        "object_type": "Trade"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Trade_Case_1004",
-          "type": "Trade"
+          "id": "Order_Case_1004",
+          "type": "Order"
         }
       ]
     },
@@ -4193,12 +4193,12 @@
       "ocel:attributes": {
         "resource": "Options Desk A",
         "case_id": "Case_1005",
-        "object_type": "Trade"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Trade_Case_1005",
-          "type": "Trade"
+          "id": "Order_Case_1005",
+          "type": "Order"
         }
       ]
     },
@@ -4839,12 +4839,12 @@
       "ocel:attributes": {
         "resource": "Client Desk D",
         "case_id": "Case_1006",
-        "object_type": "Trade"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Trade_Case_1006",
-          "type": "Trade"
+          "id": "Order_Case_1006",
+          "type": "Order"
         }
       ]
     },
@@ -5366,12 +5366,12 @@
       "ocel:attributes": {
         "resource": "Market Maker B",
         "case_id": "Case_1007",
-        "object_type": "Trade"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Trade_Case_1007",
-          "type": "Trade"
+          "id": "Order_Case_1007",
+          "type": "Order"
         }
       ]
     },
@@ -6692,12 +6692,12 @@
       "ocel:attributes": {
         "resource": "Hedge Desk C",
         "case_id": "Case_101",
-        "object_type": "Trade"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Trade_Case_101",
-          "type": "Trade"
+          "id": "Order_Case_101",
+          "type": "Order"
         }
       ]
     },
@@ -7270,12 +7270,12 @@
       "ocel:attributes": {
         "resource": "Market Maker B",
         "case_id": "Case_1010",
-        "object_type": "Trade"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Trade_Case_1010",
-          "type": "Trade"
+          "id": "Order_Case_1010",
+          "type": "Order"
         }
       ]
     },
@@ -7950,12 +7950,12 @@
       "ocel:attributes": {
         "resource": "Market Maker B",
         "case_id": "Case_1012",
-        "object_type": "Trade"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Trade_Case_1012",
-          "type": "Trade"
+          "id": "Order_Case_1012",
+          "type": "Order"
         }
       ]
     },
@@ -10228,12 +10228,12 @@
       "ocel:attributes": {
         "resource": "Hedge Desk C",
         "case_id": "Case_1016",
-        "object_type": "Trade"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Trade_Case_1016",
-          "type": "Trade"
+          "id": "Order_Case_1016",
+          "type": "Order"
         }
       ]
     },
@@ -10704,12 +10704,12 @@
       "ocel:attributes": {
         "resource": "Client Desk D",
         "case_id": "Case_1017",
-        "object_type": "Trade"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Trade_Case_1017",
-          "type": "Trade"
+          "id": "Order_Case_1017",
+          "type": "Order"
         }
       ]
     },
@@ -11231,12 +11231,12 @@
       "ocel:attributes": {
         "resource": "Options Desk A",
         "case_id": "Case_1018",
-        "object_type": "Trade"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Trade_Case_1018",
-          "type": "Trade"
+          "id": "Order_Case_1018",
+          "type": "Order"
         }
       ]
     },
@@ -12251,12 +12251,12 @@
       "ocel:attributes": {
         "resource": "Market Maker B",
         "case_id": "Case_102",
-        "object_type": "Trade"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Trade_Case_102",
-          "type": "Trade"
+          "id": "Order_Case_102",
+          "type": "Order"
         }
       ]
     },
@@ -13169,12 +13169,12 @@
       "ocel:attributes": {
         "resource": "Market Maker B",
         "case_id": "Case_1021",
-        "object_type": "Trade"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Trade_Case_1021",
-          "type": "Trade"
+          "id": "Order_Case_1021",
+          "type": "Order"
         }
       ]
     },
@@ -14019,12 +14019,12 @@
       "ocel:attributes": {
         "resource": "Hedge Desk C",
         "case_id": "Case_1023",
-        "object_type": "Trade"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Trade_Case_1023",
-          "type": "Trade"
+          "id": "Order_Case_1023",
+          "type": "Order"
         }
       ]
     },
@@ -15600,12 +15600,12 @@
       "ocel:attributes": {
         "resource": "Hedge Desk C",
         "case_id": "Case_1026",
-        "object_type": "Trade"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Trade_Case_1026",
-          "type": "Trade"
+          "id": "Order_Case_1026",
+          "type": "Order"
         }
       ]
     },
@@ -17011,12 +17011,12 @@
       "ocel:attributes": {
         "resource": "Market Maker B",
         "case_id": "Case_1029",
-        "object_type": "Trade"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Trade_Case_1029",
-          "type": "Trade"
+          "id": "Order_Case_1029",
+          "type": "Order"
         }
       ]
     },
@@ -18116,12 +18116,12 @@
       "ocel:attributes": {
         "resource": "Hedge Desk C",
         "case_id": "Case_1030",
-        "object_type": "Trade"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Trade_Case_1030",
-          "type": "Trade"
+          "id": "Order_Case_1030",
+          "type": "Order"
         }
       ]
     },
@@ -19544,12 +19544,12 @@
       "ocel:attributes": {
         "resource": "Client Desk D",
         "case_id": "Case_1033",
-        "object_type": "Trade"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Trade_Case_1033",
-          "type": "Trade"
+          "id": "Order_Case_1033",
+          "type": "Order"
         }
       ]
     },
@@ -20071,12 +20071,12 @@
       "ocel:attributes": {
         "resource": "Hedge Desk C",
         "case_id": "Case_1034",
-        "object_type": "Trade"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Trade_Case_1034",
-          "type": "Trade"
+          "id": "Order_Case_1034",
+          "type": "Order"
         }
       ]
     },
@@ -22604,12 +22604,12 @@
       "ocel:attributes": {
         "resource": "Client Desk D",
         "case_id": "Case_104",
-        "object_type": "Trade"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Trade_Case_104",
-          "type": "Trade"
+          "id": "Order_Case_104",
+          "type": "Order"
         }
       ]
     },
@@ -24678,12 +24678,12 @@
       "ocel:attributes": {
         "resource": "Client Desk D",
         "case_id": "Case_1043",
-        "object_type": "Trade"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Trade_Case_1043",
-          "type": "Trade"
+          "id": "Order_Case_1043",
+          "type": "Order"
         }
       ]
     },
@@ -29404,12 +29404,12 @@
       "ocel:attributes": {
         "resource": "Client Desk D",
         "case_id": "Case_1053",
-        "object_type": "Trade"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Trade_Case_1053",
-          "type": "Trade"
+          "id": "Order_Case_1053",
+          "type": "Order"
         }
       ]
     },
@@ -31087,12 +31087,12 @@
       "ocel:attributes": {
         "resource": "Client Desk D",
         "case_id": "Case_1057",
-        "object_type": "Trade"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Trade_Case_1057",
-          "type": "Trade"
+          "id": "Order_Case_1057",
+          "type": "Order"
         }
       ]
     },
@@ -31784,12 +31784,12 @@
       "ocel:attributes": {
         "resource": "Hedge Desk C",
         "case_id": "Case_1058",
-        "object_type": "Trade"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Trade_Case_1058",
-          "type": "Trade"
+          "id": "Order_Case_1058",
+          "type": "Order"
         }
       ]
     },
@@ -32736,12 +32736,12 @@
       "ocel:attributes": {
         "resource": "Options Desk A",
         "case_id": "Case_106",
-        "object_type": "Trade"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Trade_Case_106",
-          "type": "Trade"
+          "id": "Order_Case_106",
+          "type": "Order"
         }
       ]
     },
@@ -33178,12 +33178,12 @@
       "ocel:attributes": {
         "resource": "Client Desk D",
         "case_id": "Case_1060",
-        "object_type": "Trade"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Trade_Case_1060",
-          "type": "Trade"
+          "id": "Order_Case_1060",
+          "type": "Order"
         }
       ]
     },
@@ -33807,12 +33807,12 @@
       "ocel:attributes": {
         "resource": "Client Desk D",
         "case_id": "Case_1061",
-        "object_type": "Trade"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Trade_Case_1061",
-          "type": "Trade"
+          "id": "Order_Case_1061",
+          "type": "Order"
         }
       ]
     },
@@ -34181,12 +34181,12 @@
       "ocel:attributes": {
         "resource": "Market Maker B",
         "case_id": "Case_1062",
-        "object_type": "Trade"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Trade_Case_1062",
-          "type": "Trade"
+          "id": "Order_Case_1062",
+          "type": "Order"
         }
       ]
     },
@@ -34776,12 +34776,12 @@
       "ocel:attributes": {
         "resource": "Options Desk A",
         "case_id": "Case_1063",
-        "object_type": "Trade"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Trade_Case_1063",
-          "type": "Trade"
+          "id": "Order_Case_1063",
+          "type": "Order"
         }
       ]
     },
@@ -37921,12 +37921,12 @@
       "ocel:attributes": {
         "resource": "Market Maker B",
         "case_id": "Case_107",
-        "object_type": "Trade"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Trade_Case_107",
-          "type": "Trade"
+          "id": "Order_Case_107",
+          "type": "Order"
         }
       ]
     },
@@ -39213,12 +39213,12 @@
       "ocel:attributes": {
         "resource": "Hedge Desk C",
         "case_id": "Case_1072",
-        "object_type": "Trade"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Trade_Case_1072",
-          "type": "Trade"
+          "id": "Order_Case_1072",
+          "type": "Order"
         }
       ]
     },
@@ -40165,12 +40165,12 @@
       "ocel:attributes": {
         "resource": "Market Maker B",
         "case_id": "Case_1074",
-        "object_type": "Trade"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Trade_Case_1074",
-          "type": "Trade"
+          "id": "Order_Case_1074",
+          "type": "Order"
         }
       ]
     },
@@ -40981,12 +40981,12 @@
       "ocel:attributes": {
         "resource": "Options Desk A",
         "case_id": "Case_1076",
-        "object_type": "Trade"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Trade_Case_1076",
-          "type": "Trade"
+          "id": "Order_Case_1076",
+          "type": "Order"
         }
       ]
     },
@@ -43871,12 +43871,12 @@
       "ocel:attributes": {
         "resource": "Client Desk D",
         "case_id": "Case_1081",
-        "object_type": "Trade"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Trade_Case_1081",
-          "type": "Trade"
+          "id": "Order_Case_1081",
+          "type": "Order"
         }
       ]
     },
@@ -44415,12 +44415,12 @@
       "ocel:attributes": {
         "resource": "Client Desk D",
         "case_id": "Case_1082",
-        "object_type": "Trade"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Trade_Case_1082",
-          "type": "Trade"
+          "id": "Order_Case_1082",
+          "type": "Order"
         }
       ]
     },
@@ -44959,12 +44959,12 @@
       "ocel:attributes": {
         "resource": "Market Maker B",
         "case_id": "Case_1083",
-        "object_type": "Trade"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Trade_Case_1083",
-          "type": "Trade"
+          "id": "Order_Case_1083",
+          "type": "Order"
         }
       ]
     },
@@ -46540,12 +46540,12 @@
       "ocel:attributes": {
         "resource": "Market Maker B",
         "case_id": "Case_1086",
-        "object_type": "Trade"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Trade_Case_1086",
-          "type": "Trade"
+          "id": "Order_Case_1086",
+          "type": "Order"
         }
       ]
     },
@@ -48308,12 +48308,12 @@
       "ocel:attributes": {
         "resource": "Client Desk D",
         "case_id": "Case_109",
-        "object_type": "Trade"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Trade_Case_109",
-          "type": "Trade"
+          "id": "Order_Case_109",
+          "type": "Order"
         }
       ]
     },
@@ -50671,12 +50671,12 @@
       "ocel:attributes": {
         "resource": "Options Desk A",
         "case_id": "Case_1094",
-        "object_type": "Trade"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Trade_Case_1094",
-          "type": "Trade"
+          "id": "Order_Case_1094",
+          "type": "Order"
         }
       ]
     },
@@ -54156,12 +54156,12 @@
       "ocel:attributes": {
         "resource": "Market Maker B",
         "case_id": "Case_110",
-        "object_type": "Trade"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Trade_Case_110",
-          "type": "Trade"
+          "id": "Order_Case_110",
+          "type": "Order"
         }
       ]
     },
@@ -55261,12 +55261,12 @@
       "ocel:attributes": {
         "resource": "Client Desk D",
         "case_id": "Case_1102",
-        "object_type": "Trade"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Trade_Case_1102",
-          "type": "Trade"
+          "id": "Order_Case_1102",
+          "type": "Order"
         }
       ]
     },
@@ -58865,12 +58865,12 @@
       "ocel:attributes": {
         "resource": "Client Desk D",
         "case_id": "Case_1109",
-        "object_type": "Trade"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Trade_Case_1109",
-          "type": "Trade"
+          "id": "Order_Case_1109",
+          "type": "Order"
         }
       ]
     },
@@ -59239,12 +59239,12 @@
       "ocel:attributes": {
         "resource": "Client Desk D",
         "case_id": "Case_111",
-        "object_type": "Trade"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Trade_Case_111",
-          "type": "Trade"
+          "id": "Order_Case_111",
+          "type": "Order"
         }
       ]
     },
@@ -60633,12 +60633,12 @@
       "ocel:attributes": {
         "resource": "Options Desk A",
         "case_id": "Case_1112",
-        "object_type": "Trade"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Trade_Case_1112",
-          "type": "Trade"
+          "id": "Order_Case_1112",
+          "type": "Order"
         }
       ]
     },
@@ -61415,12 +61415,12 @@
       "ocel:attributes": {
         "resource": "Client Desk D",
         "case_id": "Case_1114",
-        "object_type": "Trade"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Trade_Case_1114",
-          "type": "Trade"
+          "id": "Order_Case_1114",
+          "type": "Order"
         }
       ]
     },
@@ -62027,12 +62027,12 @@
       "ocel:attributes": {
         "resource": "Market Maker B",
         "case_id": "Case_1115",
-        "object_type": "Trade"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Trade_Case_1115",
-          "type": "Trade"
+          "id": "Order_Case_1115",
+          "type": "Order"
         }
       ]
     },
@@ -62367,12 +62367,12 @@
       "ocel:attributes": {
         "resource": "Options Desk A",
         "case_id": "Case_1116",
-        "object_type": "Trade"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Trade_Case_1116",
-          "type": "Trade"
+          "id": "Order_Case_1116",
+          "type": "Order"
         }
       ]
     },
@@ -63404,12 +63404,12 @@
       "ocel:attributes": {
         "resource": "Hedge Desk C",
         "case_id": "Case_1118",
-        "object_type": "Trade"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Trade_Case_1118",
-          "type": "Trade"
+          "id": "Order_Case_1118",
+          "type": "Order"
         }
       ]
     },
@@ -63710,12 +63710,12 @@
       "ocel:attributes": {
         "resource": "Options Desk A",
         "case_id": "Case_1119",
-        "object_type": "Trade"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Trade_Case_1119",
-          "type": "Trade"
+          "id": "Order_Case_1119",
+          "type": "Order"
         }
       ]
     },
@@ -65189,12 +65189,12 @@
       "ocel:attributes": {
         "resource": "Options Desk A",
         "case_id": "Case_1121",
-        "object_type": "Trade"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Trade_Case_1121",
-          "type": "Trade"
+          "id": "Order_Case_1121",
+          "type": "Order"
         }
       ]
     },
@@ -65750,12 +65750,12 @@
       "ocel:attributes": {
         "resource": "Market Maker B",
         "case_id": "Case_1122",
-        "object_type": "Trade"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Trade_Case_1122",
-          "type": "Trade"
+          "id": "Order_Case_1122",
+          "type": "Order"
         }
       ]
     },
@@ -69728,12 +69728,12 @@
       "ocel:attributes": {
         "resource": "Client Desk D",
         "case_id": "Case_1130",
-        "object_type": "Trade"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Trade_Case_1130",
-          "type": "Trade"
+          "id": "Order_Case_1130",
+          "type": "Order"
         }
       ]
     },
@@ -70153,12 +70153,12 @@
       "ocel:attributes": {
         "resource": "Options Desk A",
         "case_id": "Case_1131",
-        "object_type": "Trade"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Trade_Case_1131",
-          "type": "Trade"
+          "id": "Order_Case_1131",
+          "type": "Order"
         }
       ]
     },
@@ -71411,12 +71411,12 @@
       "ocel:attributes": {
         "resource": "Market Maker B",
         "case_id": "Case_1134",
-        "object_type": "Trade"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Trade_Case_1134",
-          "type": "Trade"
+          "id": "Order_Case_1134",
+          "type": "Order"
         }
       ]
     },
@@ -72261,12 +72261,12 @@
       "ocel:attributes": {
         "resource": "Market Maker B",
         "case_id": "Case_1135",
-        "object_type": "Trade"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Trade_Case_1135",
-          "type": "Trade"
+          "id": "Order_Case_1135",
+          "type": "Order"
         }
       ]
     },
@@ -72720,12 +72720,12 @@
       "ocel:attributes": {
         "resource": "Hedge Desk C",
         "case_id": "Case_1136",
-        "object_type": "Trade"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Trade_Case_1136",
-          "type": "Trade"
+          "id": "Order_Case_1136",
+          "type": "Order"
         }
       ]
     },
@@ -75797,12 +75797,12 @@
       "ocel:attributes": {
         "resource": "Hedge Desk C",
         "case_id": "Case_1142",
-        "object_type": "Trade"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Trade_Case_1142",
-          "type": "Trade"
+          "id": "Order_Case_1142",
+          "type": "Order"
         }
       ]
     },
@@ -76222,12 +76222,12 @@
       "ocel:attributes": {
         "resource": "Hedge Desk C",
         "case_id": "Case_1143",
-        "object_type": "Trade"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Trade_Case_1143",
-          "type": "Trade"
+          "id": "Order_Case_1143",
+          "type": "Order"
         }
       ]
     },
@@ -76783,12 +76783,12 @@
       "ocel:attributes": {
         "resource": "Client Desk D",
         "case_id": "Case_1144",
-        "object_type": "Trade"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Trade_Case_1144",
-          "type": "Trade"
+          "id": "Order_Case_1144",
+          "type": "Order"
         }
       ]
     },
@@ -78143,12 +78143,12 @@
       "ocel:attributes": {
         "resource": "Hedge Desk C",
         "case_id": "Case_1147",
-        "object_type": "Trade"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Trade_Case_1147",
-          "type": "Trade"
+          "id": "Order_Case_1147",
+          "type": "Order"
         }
       ]
     },
@@ -79571,12 +79571,12 @@
       "ocel:attributes": {
         "resource": "Options Desk A",
         "case_id": "Case_115",
-        "object_type": "Trade"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Trade_Case_115",
-          "type": "Trade"
+          "id": "Order_Case_115",
+          "type": "Order"
         }
       ]
     },
@@ -81866,12 +81866,12 @@
       "ocel:attributes": {
         "resource": "Market Maker B",
         "case_id": "Case_1154",
-        "object_type": "Trade"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Trade_Case_1154",
-          "type": "Trade"
+          "id": "Order_Case_1154",
+          "type": "Order"
         }
       ]
     },
@@ -82818,12 +82818,12 @@
       "ocel:attributes": {
         "resource": "Options Desk A",
         "case_id": "Case_1156",
-        "object_type": "Trade"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Trade_Case_1156",
-          "type": "Trade"
+          "id": "Order_Case_1156",
+          "type": "Order"
         }
       ]
     },
@@ -83804,12 +83804,12 @@
       "ocel:attributes": {
         "resource": "Hedge Desk C",
         "case_id": "Case_1158",
-        "object_type": "Trade"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Trade_Case_1158",
-          "type": "Trade"
+          "id": "Order_Case_1158",
+          "type": "Order"
         }
       ]
     },
@@ -84297,12 +84297,12 @@
       "ocel:attributes": {
         "resource": "Hedge Desk C",
         "case_id": "Case_1159",
-        "object_type": "Trade"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Trade_Case_1159",
-          "type": "Trade"
+          "id": "Order_Case_1159",
+          "type": "Order"
         }
       ]
     },
@@ -85249,12 +85249,12 @@
       "ocel:attributes": {
         "resource": "Hedge Desk C",
         "case_id": "Case_1160",
-        "object_type": "Trade"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Trade_Case_1160",
-          "type": "Trade"
+          "id": "Order_Case_1160",
+          "type": "Order"
         }
       ]
     },
@@ -87510,12 +87510,12 @@
       "ocel:attributes": {
         "resource": "Market Maker B",
         "case_id": "Case_1165",
-        "object_type": "Trade"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Trade_Case_1165",
-          "type": "Trade"
+          "id": "Order_Case_1165",
+          "type": "Order"
         }
       ]
     },
@@ -88105,12 +88105,12 @@
       "ocel:attributes": {
         "resource": "Options Desk A",
         "case_id": "Case_1166",
-        "object_type": "Trade"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Trade_Case_1166",
-          "type": "Trade"
+          "id": "Order_Case_1166",
+          "type": "Order"
         }
       ]
     },
@@ -88734,12 +88734,12 @@
       "ocel:attributes": {
         "resource": "Client Desk D",
         "case_id": "Case_1167",
-        "object_type": "Trade"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Trade_Case_1167",
-          "type": "Trade"
+          "id": "Order_Case_1167",
+          "type": "Order"
         }
       ]
     },
@@ -90281,12 +90281,12 @@
       "ocel:attributes": {
         "resource": "Market Maker B",
         "case_id": "Case_1170",
-        "object_type": "Trade"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Trade_Case_1170",
-          "type": "Trade"
+          "id": "Order_Case_1170",
+          "type": "Order"
         }
       ]
     },
@@ -91539,12 +91539,12 @@
       "ocel:attributes": {
         "resource": "Options Desk A",
         "case_id": "Case_1172",
-        "object_type": "Trade"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Trade_Case_1172",
-          "type": "Trade"
+          "id": "Order_Case_1172",
+          "type": "Order"
         }
       ]
     },
@@ -97115,12 +97115,12 @@
       "ocel:attributes": {
         "resource": "Hedge Desk C",
         "case_id": "Case_1184",
-        "object_type": "Trade"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Trade_Case_1184",
-          "type": "Trade"
+          "id": "Order_Case_1184",
+          "type": "Order"
         }
       ]
     },
@@ -98305,12 +98305,12 @@
       "ocel:attributes": {
         "resource": "Options Desk A",
         "case_id": "Case_1186",
-        "object_type": "Trade"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Trade_Case_1186",
-          "type": "Trade"
+          "id": "Order_Case_1186",
+          "type": "Order"
         }
       ]
     },
@@ -99988,12 +99988,12 @@
       "ocel:attributes": {
         "resource": "Hedge Desk C",
         "case_id": "Case_119",
-        "object_type": "Trade"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Trade_Case_119",
-          "type": "Trade"
+          "id": "Order_Case_119",
+          "type": "Order"
         }
       ]
     },
@@ -100447,12 +100447,12 @@
       "ocel:attributes": {
         "resource": "Market Maker B",
         "case_id": "Case_1190",
-        "object_type": "Trade"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Trade_Case_1190",
-          "type": "Trade"
+          "id": "Order_Case_1190",
+          "type": "Order"
         }
       ]
     },
@@ -101093,12 +101093,12 @@
       "ocel:attributes": {
         "resource": "Market Maker B",
         "case_id": "Case_1191",
-        "object_type": "Trade"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Trade_Case_1191",
-          "type": "Trade"
+          "id": "Order_Case_1191",
+          "type": "Order"
         }
       ]
     },
@@ -101705,12 +101705,12 @@
       "ocel:attributes": {
         "resource": "Market Maker B",
         "case_id": "Case_1192",
-        "object_type": "Trade"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Trade_Case_1192",
-          "type": "Trade"
+          "id": "Order_Case_1192",
+          "type": "Order"
         }
       ]
     },
@@ -103014,12 +103014,12 @@
       "ocel:attributes": {
         "resource": "Hedge Desk C",
         "case_id": "Case_1195",
-        "object_type": "Trade"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Trade_Case_1195",
-          "type": "Trade"
+          "id": "Order_Case_1195",
+          "type": "Order"
         }
       ]
     },
@@ -103779,12 +103779,12 @@
       "ocel:attributes": {
         "resource": "Market Maker B",
         "case_id": "Case_1196",
-        "object_type": "Trade"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Trade_Case_1196",
-          "type": "Trade"
+          "id": "Order_Case_1196",
+          "type": "Order"
         }
       ]
     },
@@ -104391,12 +104391,12 @@
       "ocel:attributes": {
         "resource": "Client Desk D",
         "case_id": "Case_1197",
-        "object_type": "Trade"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Trade_Case_1197",
-          "type": "Trade"
+          "id": "Order_Case_1197",
+          "type": "Order"
         }
       ]
     },
@@ -106006,12 +106006,12 @@
       "ocel:attributes": {
         "resource": "Client Desk D",
         "case_id": "Case_120",
-        "object_type": "Trade"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Trade_Case_120",
-          "type": "Trade"
+          "id": "Order_Case_120",
+          "type": "Order"
         }
       ]
     },
@@ -108777,12 +108777,12 @@
       "ocel:attributes": {
         "resource": "Client Desk D",
         "case_id": "Case_1205",
-        "object_type": "Trade"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Trade_Case_1205",
-          "type": "Trade"
+          "id": "Order_Case_1205",
+          "type": "Order"
         }
       ]
     },
@@ -109287,12 +109287,12 @@
       "ocel:attributes": {
         "resource": "Options Desk A",
         "case_id": "Case_1206",
-        "object_type": "Trade"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Trade_Case_1206",
-          "type": "Trade"
+          "id": "Order_Case_1206",
+          "type": "Order"
         }
       ]
     },
@@ -112891,12 +112891,12 @@
       "ocel:attributes": {
         "resource": "Client Desk D",
         "case_id": "Case_1214",
-        "object_type": "Trade"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Trade_Case_1214",
-          "type": "Trade"
+          "id": "Order_Case_1214",
+          "type": "Order"
         }
       ]
     },
@@ -113707,12 +113707,12 @@
       "ocel:attributes": {
         "resource": "Hedge Desk C",
         "case_id": "Case_1215",
-        "object_type": "Trade"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Trade_Case_1215",
-          "type": "Trade"
+          "id": "Order_Case_1215",
+          "type": "Order"
         }
       ]
     },
@@ -115322,12 +115322,12 @@
       "ocel:attributes": {
         "resource": "Market Maker B",
         "case_id": "Case_1219",
-        "object_type": "Trade"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Trade_Case_1219",
-          "type": "Trade"
+          "id": "Order_Case_1219",
+          "type": "Order"
         }
       ]
     },
@@ -116971,12 +116971,12 @@
       "ocel:attributes": {
         "resource": "Hedge Desk C",
         "case_id": "Case_1221",
-        "object_type": "Trade"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Trade_Case_1221",
-          "type": "Trade"
+          "id": "Order_Case_1221",
+          "type": "Order"
         }
       ]
     },
@@ -118824,12 +118824,12 @@
       "ocel:attributes": {
         "resource": "Hedge Desk C",
         "case_id": "Case_1225",
-        "object_type": "Trade"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Trade_Case_1225",
-          "type": "Trade"
+          "id": "Order_Case_1225",
+          "type": "Order"
         }
       ]
     },
@@ -119487,12 +119487,12 @@
       "ocel:attributes": {
         "resource": "Hedge Desk C",
         "case_id": "Case_1227",
-        "object_type": "Trade"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Trade_Case_1227",
-          "type": "Trade"
+          "id": "Order_Case_1227",
+          "type": "Order"
         }
       ]
     },
@@ -120065,12 +120065,12 @@
       "ocel:attributes": {
         "resource": "Client Desk D",
         "case_id": "Case_1228",
-        "object_type": "Trade"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Trade_Case_1228",
-          "type": "Trade"
+          "id": "Order_Case_1228",
+          "type": "Order"
         }
       ]
     },
@@ -120660,12 +120660,12 @@
       "ocel:attributes": {
         "resource": "Hedge Desk C",
         "case_id": "Case_1229",
-        "object_type": "Trade"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Trade_Case_1229",
-          "type": "Trade"
+          "id": "Order_Case_1229",
+          "type": "Order"
         }
       ]
     },
@@ -121323,12 +121323,12 @@
       "ocel:attributes": {
         "resource": "Hedge Desk C",
         "case_id": "Case_1230",
-        "object_type": "Trade"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Trade_Case_1230",
-          "type": "Trade"
+          "id": "Order_Case_1230",
+          "type": "Order"
         }
       ]
     },
@@ -122377,12 +122377,12 @@
       "ocel:attributes": {
         "resource": "Client Desk D",
         "case_id": "Case_1232",
-        "object_type": "Trade"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Trade_Case_1232",
-          "type": "Trade"
+          "id": "Order_Case_1232",
+          "type": "Order"
         }
       ]
     },
@@ -123754,12 +123754,12 @@
       "ocel:attributes": {
         "resource": "Options Desk A",
         "case_id": "Case_1235",
-        "object_type": "Trade"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Trade_Case_1235",
-          "type": "Trade"
+          "id": "Order_Case_1235",
+          "type": "Order"
         }
       ]
     },
@@ -124026,12 +124026,12 @@
       "ocel:attributes": {
         "resource": "Hedge Desk C",
         "case_id": "Case_1236",
-        "object_type": "Trade"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Trade_Case_1236",
-          "type": "Trade"
+          "id": "Order_Case_1236",
+          "type": "Order"
         }
       ]
     },
@@ -125522,12 +125522,12 @@
       "ocel:attributes": {
         "resource": "Options Desk A",
         "case_id": "Case_1239",
-        "object_type": "Trade"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Trade_Case_1239",
-          "type": "Trade"
+          "id": "Order_Case_1239",
+          "type": "Order"
         }
       ]
     },
@@ -126032,12 +126032,12 @@
       "ocel:attributes": {
         "resource": "Market Maker B",
         "case_id": "Case_124",
-        "object_type": "Trade"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Trade_Case_124",
-          "type": "Trade"
+          "id": "Order_Case_124",
+          "type": "Order"
         }
       ]
     },
@@ -126525,12 +126525,12 @@
       "ocel:attributes": {
         "resource": "Options Desk A",
         "case_id": "Case_1240",
-        "object_type": "Trade"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Trade_Case_1240",
-          "type": "Trade"
+          "id": "Order_Case_1240",
+          "type": "Order"
         }
       ]
     },
@@ -128463,12 +128463,12 @@
       "ocel:attributes": {
         "resource": "Hedge Desk C",
         "case_id": "Case_1244",
-        "object_type": "Trade"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Trade_Case_1244",
-          "type": "Trade"
+          "id": "Order_Case_1244",
+          "type": "Order"
         }
       ]
     },
@@ -130843,12 +130843,12 @@
       "ocel:attributes": {
         "resource": "Market Maker B",
         "case_id": "Case_1249",
-        "object_type": "Trade"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Trade_Case_1249",
-          "type": "Trade"
+          "id": "Order_Case_1249",
+          "type": "Order"
         }
       ]
     },
@@ -131251,12 +131251,12 @@
       "ocel:attributes": {
         "resource": "Options Desk A",
         "case_id": "Case_125",
-        "object_type": "Trade"
+        "object_type": "Order"
       },
       "ocel:objects": [
         {
-          "id": "Trade_Case_125",
-          "type": "Trade"
+          "id": "Order_Case_125",
+          "type": "Order"
         }
       ]
     },
@@ -132029,30 +132029,6 @@
       }
     },
     {
-      "ocel:id": "Trade_KYC Refresh Check",
-      "ocel:type": "Trade",
-      "ocel:attributes": {
-        "activity": "KYC Refresh Check",
-        "attributes": [
-          "booking_system",
-          "case_id",
-          "client_type",
-          "currency_pair",
-          "delta",
-          "gamma",
-          "limit_usage",
-          "notional_amount",
-          "option_type",
-          "premium",
-          "risk_score",
-          "strike_price",
-          "theta",
-          "trading_strategy",
-          "vega"
-        ]
-      }
-    },
-    {
       "ocel:id": "Trade_Premium Settlement",
       "ocel:type": "Trade",
       "ocel:attributes": {
@@ -132473,6 +132449,24 @@
       }
     },
     {
+      "ocel:id": "Order_KYC Refresh Check",
+      "ocel:type": "Order",
+      "ocel:attributes": {
+        "activity": "KYC Refresh Check",
+        "attributes": [
+          "booking_system",
+          "case_id",
+          "client_type",
+          "currency_pair",
+          "notional_amount",
+          "option_type",
+          "premium",
+          "strike_price",
+          "trading_strategy"
+        ]
+      }
+    },
+    {
       "ocel:id": "Order_Premium Calculation",
       "ocel:type": "Order",
       "ocel:attributes": {
@@ -132568,7 +132562,9 @@
       "ocel:attributes": {
         "activity": "CSA Verification",
         "attributes": [
+          "booking_system",
           "case_id",
+          "client_type",
           "currency_pair",
           "delta",
           "gamma",
@@ -132576,6 +132572,28 @@
           "option_type",
           "risk_score",
           "theta",
+          "trading_strategy",
+          "vega"
+        ]
+      }
+    },
+    {
+      "ocel:id": "Position_Client Limit Validation",
+      "ocel:type": "Position",
+      "ocel:attributes": {
+        "activity": "Client Limit Validation",
+        "attributes": [
+          "booking_system",
+          "case_id",
+          "client_type",
+          "currency_pair",
+          "delta",
+          "gamma",
+          "limit_usage",
+          "option_type",
+          "risk_score",
+          "theta",
+          "trading_strategy",
           "vega"
         ]
       }
@@ -132586,7 +132604,9 @@
       "ocel:attributes": {
         "activity": "Collateral Management",
         "attributes": [
+          "booking_system",
           "case_id",
+          "client_type",
           "currency_pair",
           "delta",
           "gamma",
@@ -132594,6 +132614,28 @@
           "option_type",
           "risk_score",
           "theta",
+          "trading_strategy",
+          "vega"
+        ]
+      }
+    },
+    {
+      "ocel:id": "Position_ISDA Master Agreement Check",
+      "ocel:type": "Position",
+      "ocel:attributes": {
+        "activity": "ISDA Master Agreement Check",
+        "attributes": [
+          "booking_system",
+          "case_id",
+          "client_type",
+          "currency_pair",
+          "delta",
+          "gamma",
+          "limit_usage",
+          "option_type",
+          "risk_score",
+          "theta",
+          "trading_strategy",
           "vega"
         ]
       }
@@ -132604,7 +132646,9 @@
       "ocel:attributes": {
         "activity": "Initial Margin Calculation",
         "attributes": [
+          "booking_system",
           "case_id",
+          "client_type",
           "currency_pair",
           "delta",
           "gamma",
@@ -132612,6 +132656,7 @@
           "option_type",
           "risk_score",
           "theta",
+          "trading_strategy",
           "vega"
         ]
       }
@@ -132622,7 +132667,9 @@
       "ocel:attributes": {
         "activity": "Position Reconciliation",
         "attributes": [
+          "booking_system",
           "case_id",
+          "client_type",
           "currency_pair",
           "delta",
           "gamma",
@@ -132630,6 +132677,7 @@
           "option_type",
           "risk_score",
           "theta",
+          "trading_strategy",
           "vega"
         ]
       }
@@ -132640,7 +132688,9 @@
       "ocel:attributes": {
         "activity": "Risk Assessment",
         "attributes": [
+          "booking_system",
           "case_id",
+          "client_type",
           "currency_pair",
           "delta",
           "gamma",
@@ -132648,6 +132698,7 @@
           "option_type",
           "risk_score",
           "theta",
+          "trading_strategy",
           "vega"
         ]
       }
@@ -132658,7 +132709,9 @@
       "ocel:attributes": {
         "activity": "Risk Transfer Executed",
         "attributes": [
+          "booking_system",
           "case_id",
+          "client_type",
           "currency_pair",
           "delta",
           "gamma",
@@ -132666,6 +132719,91 @@
           "option_type",
           "risk_score",
           "theta",
+          "trading_strategy",
+          "vega"
+        ]
+      }
+    },
+    {
+      "ocel:id": "Position_Settlement Instructions",
+      "ocel:type": "Position",
+      "ocel:attributes": {
+        "activity": "Settlement Instructions",
+        "attributes": [
+          "booking_system",
+          "case_id",
+          "client_type",
+          "currency_pair",
+          "delta",
+          "gamma",
+          "limit_usage",
+          "option_type",
+          "risk_score",
+          "theta",
+          "trading_strategy",
+          "vega"
+        ]
+      }
+    },
+    {
+      "ocel:id": "Position_Trade Allocation",
+      "ocel:type": "Position",
+      "ocel:attributes": {
+        "activity": "Trade Allocation",
+        "attributes": [
+          "booking_system",
+          "case_id",
+          "client_type",
+          "currency_pair",
+          "delta",
+          "gamma",
+          "limit_usage",
+          "option_type",
+          "risk_score",
+          "theta",
+          "trading_strategy",
+          "vega"
+        ]
+      }
+    },
+    {
+      "ocel:id": "Position_Trade Matching",
+      "ocel:type": "Position",
+      "ocel:attributes": {
+        "activity": "Trade Matching",
+        "attributes": [
+          "booking_system",
+          "case_id",
+          "client_type",
+          "currency_pair",
+          "delta",
+          "gamma",
+          "limit_usage",
+          "option_type",
+          "risk_score",
+          "theta",
+          "trading_strategy",
+          "vega"
+        ]
+      }
+    },
+    {
+      "ocel:id": "Position_Trade Reconciliation",
+      "ocel:type": "Position",
+      "ocel:attributes": {
+        "activity": "Trade Reconciliation",
+        "attributes": [
+          "booking_system",
+          "case_id",
+          "client_type",
+          "currency_pair",
+          "delta",
+          "gamma",
+          "limit_usage",
+          "option_type",
+          "risk_score",
+          "theta",
+          "trading_strategy",
           "vega"
         ]
       }
@@ -132682,7 +132820,10 @@
           "currency_pair",
           "delta",
           "gamma",
+          "notional_amount",
           "option_type",
+          "premium",
+          "strike_price",
           "theta",
           "trading_strategy",
           "vega"
@@ -132701,7 +132842,10 @@
           "currency_pair",
           "delta",
           "gamma",
+          "notional_amount",
           "option_type",
+          "premium",
+          "strike_price",
           "theta",
           "trading_strategy",
           "vega"
@@ -132720,7 +132864,10 @@
           "currency_pair",
           "delta",
           "gamma",
+          "notional_amount",
           "option_type",
+          "premium",
+          "strike_price",
           "theta",
           "trading_strategy",
           "vega"
@@ -132739,7 +132886,10 @@
           "currency_pair",
           "delta",
           "gamma",
+          "notional_amount",
           "option_type",
+          "premium",
+          "strike_price",
           "theta",
           "trading_strategy",
           "vega"
@@ -132758,7 +132908,10 @@
           "currency_pair",
           "delta",
           "gamma",
+          "notional_amount",
           "option_type",
+          "premium",
+          "strike_price",
           "theta",
           "trading_strategy",
           "vega"
@@ -132777,7 +132930,10 @@
           "currency_pair",
           "delta",
           "gamma",
+          "notional_amount",
           "option_type",
+          "premium",
+          "strike_price",
           "theta",
           "trading_strategy",
           "vega"
@@ -132796,7 +132952,10 @@
           "currency_pair",
           "delta",
           "gamma",
+          "notional_amount",
           "option_type",
+          "premium",
+          "strike_price",
           "theta",
           "trading_strategy",
           "vega"

@@ -1,23 +1,18 @@
 import traceback
 from collections import defaultdict, Counter
-
+from openai import AzureOpenAI
 import streamlit as st
 import json
 import pandas as pd
 import numpy as np
 from typing import Dict, List, Any, Tuple, Optional
 import matplotlib.pyplot as plt
-import seaborn as sns
-from openai import OpenAI
-from scipy import stats
-from datetime import datetime, timedelta
 import plotly.express as px
 import plotly.graph_objects as go
 from dataclasses import dataclass
-from functools import lru_cache
 import warnings
 import logging
-from pathlib import Path
+
 
 warnings.filterwarnings('ignore')
 
@@ -34,247 +29,6 @@ class OutlierMetrics:
     z_score: float
     is_outlier: bool
     details: Dict[str, Any]
-
-
-class OutlierVisualizer:
-    """Component for creating interactive visualizations with OCEL traceability"""
-
-    def __init__(self, analyzer):
-        self.analyzer = analyzer
-        self.ocel_data = analyzer.ocel_data
-
-    def create_activity_duration_plot(self) -> go.Figure:
-        """Create duration outlier plot with detailed event tracing"""
-        duration_data = []
-        outlier_details = {}
-
-        # Process duration outliers
-        for activity, metrics in self.analyzer.outliers['duration'].items():
-            outlier_events = metrics.details.get('outlier_events', {})
-
-            duration_data.append({
-                'Activity': activity,
-                'Z-Score': metrics.z_score,
-                'Is Outlier': metrics.is_outlier,
-                'Total Events': metrics.details['total_events'],
-                'Outside Hours': len(outlier_events.get('outside_hours', [])),
-                'Sequence Issues': len(outlier_events.get('sequence_position', [])),
-                'Timing Gaps': len(outlier_events.get('timing_gap', []))
-            })
-
-            # Store detailed event mappings for tooltips
-            if metrics.is_outlier:
-                outlier_details[activity] = {
-                    'events': outlier_events,
-                    'metrics': metrics.details.get('activity_stats', {})
-                }
-
-        df = pd.DataFrame(duration_data)
-
-        fig = px.scatter(
-            df,
-            x='Activity',
-            y='Z-Score',
-            size='Total Events',
-            color='Is Outlier',
-            custom_data=['Outside Hours', 'Sequence Issues', 'Timing Gaps']
-        )
-
-        # Add detailed tooltips
-        fig.update_traces(
-            hovertemplate=(
-                    "<b>%{x}</b><br>" +
-                    "Z-Score: %{y:.2f}<br>" +
-                    "Total Events: %{marker.size}<br>" +
-                    "Outside Hours: %{customdata[0]}<br>" +
-                    "Sequence Issues: %{customdata[1]}<br>" +
-                    "Timing Gaps: %{customdata[2]}<br>" +
-                    "<extra></extra>"
-            )
-        )
-
-        # Store outlier details for drilldown
-        fig.outlier_details = outlier_details
-
-        return fig
-
-    def get_outlier_details(self, activity: str) -> Dict:
-        """Get detailed OCEL data for outlier events"""
-        if activity not in self.analyzer.outliers['duration']:
-            return {}
-
-        metrics = self.analyzer.outliers['duration'][activity]
-        if not metrics.is_outlier:
-            return {}
-
-        outlier_events = metrics.details['outlier_events']
-
-        # Get full OCEL context for each outlier event
-        event_details = defaultdict(list)
-
-        for violation_type, events in outlier_events.items():
-            for event in events:
-                event_id = event['event_id']
-                ocel_event = next((e for e in self.ocel_data['ocel:events']
-                                   if e['ocel:id'] == event_id), None)
-
-                if ocel_event:
-                    event_details[violation_type].append({
-                        'event_id': event_id,
-                        'timestamp': ocel_event['ocel:timestamp'],
-                        'activity': ocel_event['ocel:activity'],
-                        'case_id': ocel_event.get('ocel:attributes', {}).get('case_id'),
-                        'resource': ocel_event.get('ocel:attributes', {}).get('resource'),
-                        'objects': [obj['id'] for obj in ocel_event.get('ocel:objects', [])],
-                        'violation_details': event.get('details', {})
-                    })
-
-        return {
-            'summary': {
-                'total_violations': len([e for events in event_details.values() for e in events]),
-                'violation_types': dict(Counter(event_details.keys())),
-                'activity_stats': metrics.details.get('activity_stats', {})
-            },
-            'violations': dict(event_details)
-        }
-
-    def create_resource_workload_plot(self) -> Tuple[go.Figure, Dict]:
-        """Create resource workload plot with event tracing"""
-        workload_data = []
-        outlier_details = {}
-
-        for resource, metrics in self.analyzer.outliers['resource_load'].items():
-            workload_data.append({
-                'Resource': resource,
-                'Z-Score': metrics.z_score,
-                'Is Outlier': metrics.is_outlier,
-                'Total Events': metrics.details['metrics']['total_events'],
-                'Cases': len(metrics.details['events']['cases']),
-                'Activities': len(metrics.details['events']['activities'])
-            })
-
-            if metrics.is_outlier:
-                outlier_details[resource] = {
-                    'events': metrics.details['events'],
-                    'metrics': metrics.details['metrics'],
-                    'patterns': metrics.details['outlier_patterns']
-                }
-
-        df = pd.DataFrame(workload_data)
-
-        fig = px.scatter(
-            df,
-            x='Resource',
-            y='Z-Score',
-            size='Total Events',
-            color='Is Outlier',
-            custom_data=['Cases', 'Activities']
-        )
-
-        fig.update_traces(
-            hovertemplate=(
-                    "<b>%{x}</b><br>" +
-                    "Z-Score: %{y:.2f}<br>" +
-                    "Total Events: %{marker.size}<br>" +
-                    "Cases: %{customdata[0]}<br>" +
-                    "Activities: %{customdata[1]}<br>" +
-                    "<extra></extra>"
-            )
-        )
-
-        # Return both figure and outlier details
-        return fig, outlier_details
-
-    def create_case_complexity_plot(self) -> go.Figure:
-        """Create case complexity plot with event tracing"""
-        case_data = []
-        outlier_details = {}
-
-        for case_id, metrics in self.analyzer.outliers['case_complexity'].items():
-            case_data.append({
-                'Case': case_id,
-                'Z-Score': metrics.z_score,
-                'Is Outlier': metrics.is_outlier,
-                'Total Events': metrics.details['metrics']['total_events'],
-                'Activities': metrics.details['metrics']['activity_variety'],
-                'Duration': metrics.details['temporal']['duration_hours']
-            })
-
-            if metrics.is_outlier:
-                outlier_details[case_id] = {
-                    'events': metrics.details['events'],
-                    'temporal': metrics.details['temporal'],
-                    'patterns': metrics.details['outlier_patterns']
-                }
-
-        df = pd.DataFrame(case_data)
-
-        fig = px.scatter(
-            df,
-            x='Case',
-            y='Z-Score',
-            size='Total Events',
-            color='Is Outlier',
-            custom_data=['Activities', 'Duration']
-        )
-
-        fig.update_traces(
-            hovertemplate=(
-                    "<b>%{x}</b><br>" +
-                    "Z-Score: %{y:.2f}<br>" +
-                    "Total Events: %{marker.size}<br>" +
-                    "Activities: %{customdata[0]}<br>" +
-                    "Duration (hrs): %{customdata[1]:.1f}<br>" +
-                    "<extra></extra>"
-            )
-        )
-
-        fig.outlier_details = outlier_details
-        return fig
-
-    def display_outlier_drilldown(self, outlier_type: str, selected_item: str):
-        """Display detailed OCEL data for selected outlier"""
-        if outlier_type == 'duration':
-            details = self.get_outlier_details(selected_item)
-            if not details:
-                st.warning("No outlier details available")
-                return
-
-            # Summary metrics
-            st.subheader("Outlier Summary")
-            col1, col2, col3 = st.columns(3)
-            with col1:
-                st.metric("Total Violations", details['summary']['total_violations'])
-            with col2:
-                st.metric("Violation Types", len(details['summary']['violation_types']))
-            with col3:
-                st.metric("Activity Completion Rate",
-                          f"{details['summary']['activity_stats'].get('completion_rate', 0):.1f}%")
-
-            # Violation details
-            st.subheader("Violation Details")
-            tabs = st.tabs(list(details['violations'].keys()))
-
-            for tab, (violation_type, events) in zip(tabs, details['violations'].items()):
-                with tab:
-                    st.markdown(f"**{violation_type.replace('_', ' ').title()}**")
-                    st.markdown(f"Found {len(events)} violations")
-
-                    # Create event timeline
-                    timeline_data = pd.DataFrame(events)
-                    if not timeline_data.empty:
-                        timeline_data['timestamp'] = pd.to_datetime(timeline_data['timestamp'])
-                        fig = px.scatter(
-                            timeline_data,
-                            x='timestamp',
-                            y='case_id',
-                            color='resource',
-                            hover_data=['event_id', 'violation_details']
-                        )
-                        st.plotly_chart(fig)
-
-                    # Show event details table
-                    st.dataframe(timeline_data)
 
 
 class OCPMProcessValidator:
@@ -344,8 +98,10 @@ class UnfairOCELAnalyzer:
             logger.info(f"Initializing UnfairOCELAnalyzer with {ocel_path}")
 
             # Initialize OpenAI client first
-            self.client = OpenAI(
-                api_key="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"
+            self.client = AzureOpenAI(
+                api_key="5GLXXNjNjhjRKunOEVm8v7HIk335V4E9myCFNdFvpUmuezUG3hzbJQQJ99BAACYeBjFXJ3w3AAABACOGBfoy",
+                api_version="2024-02-01",
+                azure_endpoint="https://smartcall.openai.azure.com/"
             )
             logger.info("OpenAI client initialized")
 
@@ -954,7 +710,10 @@ class UnfairOCELAnalyzer:
         """Enhanced failure pattern detection with full event traceability"""
         try:
             expected_flow = self.process_validator.get_expected_flow()
+            logger.info(f"Expected flow derived as : {expected_flow}")
+
             timing_thresholds = self.process_validator.get_timing_thresholds()
+            logger.info(f"Timing Thresholds derived as : {timing_thresholds}")
 
             failures = {
                 'sequence_violations': [],
@@ -967,6 +726,7 @@ class UnfairOCELAnalyzer:
 
             # Process each case
             for case_id, case_events in self.case_events.items():
+                logger.info(f"Running for case_id | case_events : {case_id} | {case_events}")
                 case_data = pd.DataFrame([
                     {
                         'event_id': event['ocel:id'],
@@ -979,6 +739,16 @@ class UnfairOCELAnalyzer:
                     for event in self.ocel_data['ocel:events']
                     if event.get('ocel:attributes', {}).get('case_id') == case_id
                 ]).sort_values('timestamp')
+
+                pd.set_option('display.max_rows', None)
+                pd.set_option('display.max_columns', None)
+                pd.set_option('display.width', None)
+                pd.set_option('display.expand_frame_repr', False)
+
+                logger.info(" Case_data Build up [start]")
+                logger.info("\n%s", case_data)
+                logger.info(" Case_data Build up [end]")
+
 
                 # Track sequence violations
                 for obj_type, expected_sequence in expected_flow.items():
@@ -1022,25 +792,32 @@ class UnfairOCELAnalyzer:
 
                             failures['sequence_violations'].append(sequence_violation)
 
-                # Track incomplete cases
-                for obj_type, required_sequence in expected_flow.items():
-                    if obj_type in set().union(*case_data['object_types']):
-                        missing_activities = [act for act in required_sequence
-                                              if act not in case_data['activity'].tolist()]
-                        if missing_activities:
-                            failures['incomplete_cases'].append({
-                                'case_id': case_id,
-                                'object_type': obj_type,
-                                'missing_activities': missing_activities,
-                                'completed_activities': case_data['activity'].tolist(),
-                                'events': case_data['event_id'].tolist(),
-                                'last_event': {
-                                    'event_id': case_data.iloc[-1]['event_id'],
-                                    'activity': case_data.iloc[-1]['activity'],
-                                    'timestamp': case_data.iloc[-1]['timestamp'],
-                                    'resource': case_data.iloc[-1]['resource']
-                                }
-                            })
+                # Track incomplete cases by leveraging sequence violation analysis
+                for violation in failures['sequence_violations']:
+                    if violation['missing_activities']:
+                        case_id = violation['case_id']
+                        obj_type = violation['object_type']
+
+                        # Get case specific events for this object type
+                        case_events = case_data[case_data['object_types'].apply(lambda x: obj_type in x)]
+
+                        failures['incomplete_cases'].append({
+                            'case_id': case_id,
+                            'object_type': obj_type,
+                            'missing_activities': violation['missing_activities'],
+                            'completed_activities': case_events['activity'].tolist(),
+                            'events': case_events['event_id'].tolist(),
+                            'last_event': {
+                                'event_id': case_events.iloc[-1][
+                                    'event_id'] if not case_events.empty else None,
+                                'activity': case_events.iloc[-1][
+                                    'activity'] if not case_events.empty else None,
+                                'timestamp': case_events.iloc[-1][
+                                    'timestamp'] if not case_events.empty else None,
+                                'resource': case_events.iloc[-1][
+                                    'resource'] if not case_events.empty else None
+                            }
+                        })
 
                 # Track timing violations
                 for obj_type, timing_rules in timing_thresholds.items():
@@ -1428,7 +1205,7 @@ class UnfairOCELAnalyzer:
             logger.debug(f"Generated prompt: {prompt}")
 
             response = self.client.chat.completions.create(
-                model="gpt-4o-mini",
+                model="gpt-4o",
                 messages=[
                     {"role": "system",
                      "content": "You are a process mining expert explaining patterns to business users."},

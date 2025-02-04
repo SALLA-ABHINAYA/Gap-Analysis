@@ -4,9 +4,7 @@ from datetime import datetime
 from xml.etree import ElementTree as ET
 import PyPDF2
 import spacy
-import pandas as pd
 from typing import Dict, List, Set, Optional
-import re
 
 
 class BPMNProcessAnalyzer:

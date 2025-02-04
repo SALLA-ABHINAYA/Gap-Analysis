@@ -7,7 +7,6 @@
       "Exercise Decision",
       "Final Settlement",
       "ISDA Master Agreement Check",
-      "KYC Refresh Check",
       "Premium Settlement",
       "Regulatory Reporting Generation",
       "Risk Assessment",
@@ -55,6 +54,7 @@
       "Credit Check",
       "ISDA Master Agreement Check",
       "Initial Margin Calculation",
+      "KYC Refresh Check",
       "Premium Calculation",
       "Quote Provided",
       "Quote Requested",
@@ -82,14 +82,22 @@
     "name": "Position",
     "activities": [
       "CSA Verification",
+      "Client Limit Validation",
       "Collateral Management",
+      "ISDA Master Agreement Check",
       "Initial Margin Calculation",
       "Position Reconciliation",
       "Risk Assessment",
-      "Risk Transfer Executed"
+      "Risk Transfer Executed",
+      "Settlement Instructions",
+      "Trade Allocation",
+      "Trade Matching",
+      "Trade Reconciliation"
     ],
     "attributes": [
+      "booking_system",
       "case_id",
+      "client_type",
       "currency_pair",
       "delta",
       "gamma",
@@ -97,6 +105,7 @@
       "option_type",
       "risk_score",
       "theta",
+      "trading_strategy",
       "vega"
     ],
     "relationships": [
@@ -123,7 +132,10 @@
       "currency_pair",
       "delta",
       "gamma",
+      "notional_amount",
       "option_type",
+      "premium",
+      "strike_price",
       "theta",
       "trading_strategy",
       "vega"
