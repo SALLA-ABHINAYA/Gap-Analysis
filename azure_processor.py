@@ -7,6 +7,8 @@ import math
 from dataclasses import dataclass
 from typing import Dict, List, Optional, Tuple
 
+from utils import get_azure_openai_client
+
 
 @dataclass
 class ObjectType:
@@ -402,11 +404,7 @@ def process_log_file(df: pd.DataFrame, chunk_size=1000):
         save_enhanced_prompt(enhanced_prompt)
 
         # Initialize client
-        client = AzureOpenAI(
-            api_key="5GLXXNjNjhjRKunOEVm8v7HIk335V4E9myCFNdFvpUmuezUG3hzbJQQJ99BAACYeBjFXJ3w3AAABACOGBfoy",
-            api_version="2024-02-01",
-            azure_endpoint="https://smartcall.openai.azure.com/"
-        )
+        client = get_azure_openai_client()
 
         # Process chunks
         chunks = chunk_dataframe(df, chunk_size)

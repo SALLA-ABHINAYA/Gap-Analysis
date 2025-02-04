@@ -1,6 +1,4 @@
 import traceback
-from collections import defaultdict, Counter
-from openai import AzureOpenAI
 import streamlit as st
 import json
 import pandas as pd
@@ -13,6 +11,7 @@ from dataclasses import dataclass
 import warnings
 import logging
 
+from utils import get_azure_openai_client
 
 warnings.filterwarnings('ignore')
 
@@ -98,11 +97,7 @@ class UnfairOCELAnalyzer:
             logger.info(f"Initializing UnfairOCELAnalyzer with {ocel_path}")
 
             # Initialize OpenAI client first
-            self.client = AzureOpenAI(
-                api_key="5GLXXNjNjhjRKunOEVm8v7HIk335V4E9myCFNdFvpUmuezUG3hzbJQQJ99BAACYeBjFXJ3w3AAABACOGBfoy",
-                api_version="2024-02-01",
-                azure_endpoint="https://smartcall.openai.azure.com/"
-            )
+            self.client = get_azure_openai_client()
             logger.info("OpenAI client initialized")
 
             self.process_validator = OCPMProcessValidator()
@@ -749,7 +744,6 @@ class UnfairOCELAnalyzer:
                 logger.info("\n%s", case_data)
                 logger.info(" Case_data Build up [end]")
 
-
                 # Track sequence violations
                 for obj_type, expected_sequence in expected_flow.items():
                     if obj_type in set().union(*case_data['object_types']):
@@ -821,6 +815,7 @@ class UnfairOCELAnalyzer:
 
                 # Track timing violations
                 for obj_type, timing_rules in timing_thresholds.items():
+                    logger.info(f"Running timing violations for obj_type | timing_rules : {obj_type} | {timing_rules}")
                     obj_type_events = case_data[case_data['object_types'].apply(lambda x: obj_type in x)]
                     if not obj_type_events.empty:
                         case_duration = (obj_type_events['timestamp'].max() -

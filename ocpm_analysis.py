@@ -1,6 +1,5 @@
 # ocpm_analysis.py
 import traceback
-
 import pandas as pd
 import networkx as nx
 from typing import Dict, List, Optional, Tuple
@@ -12,9 +11,9 @@ import numpy as np
 import os
 import json
 
-from openai import AzureOpenAI
 
 from azure_processor import process_log_file
+from utils import get_azure_openai_client
 
 # Add this at the start of your script, before any other imports
 os.environ["PATH"] += os.pathsep + r"C:\samadhi\technology\Graphviz\bin"
@@ -273,11 +272,7 @@ class OCPMAnalyzer:
                 ocel_model = json.load(f)
 
             # Initialize OpenAI client
-            client = AzureOpenAI(
-                api_key="5GLXXNjNjhjRKunOEVm8v7HIk335V4E9myCFNdFvpUmuezUG3hzbJQQJ99BAACYeBjFXJ3w3AAABACOGBfoy",
-                api_version="2024-02-01",
-                azure_endpoint="https://smartcall.openai.azure.com/"
-            )
+            client = get_azure_openai_client()
 
             # Create prompt for timing threshold generation
             prompt = f"""
