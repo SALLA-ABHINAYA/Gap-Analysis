@@ -144,4 +144,79 @@ For effective object-centric process mining in FX trading:
    - Risk limit utilization
    - Client activity patterns
 
+## Mandatory Activity Sequences (CRITICAL)
+
+### Trade Lifecycle - Strict Sequential Order
+The following sequence MUST be maintained exactly in this order:
+
+1. Trade Initiated
+   * Mandatory first activity
+   * Creates initial trade record
+   * No trade activities can precede this
+
+2. Trade Validation
+   * Must follow Trade Initiated
+   * Must precede Trade Execution
+   * Validates all trade parameters
+
+3. Trade Execution
+   * Can only occur after validation
+   * Core trading activity
+   * Price/execution details captured
+
+4. Trade Confirmation
+   * Immediately follows execution
+   * Generates trade confirmations
+   * Must precede matching
+
+5. Trade Matching
+   * Can only occur after confirmation
+   * Matches with counterparty
+   * Required for settlement
+
+6. Trade Reconciliation
+   * Post-matching reconciliation
+   * Verifies all trade details
+   * Required before transparency
+
+7. Trade Transparency Assessment
+   * Regulatory transparency check
+   * Must occur before settlement
+   * Final pre-settlement check
+
+8. Final Settlement
+   * Mandatory final activity
+   * Cannot occur before other steps
+   * Concludes trade lifecycle
+
+### Order Object Sequential Flow
+1. Quote Requested (always first)
+2. Quote Provided
+3. Client Limit Validation
+4. Strategy Validation
+5. ISDA Master Agreement Check
+6. KYC Refresh Check
+7. Best Execution Validation
+8. Exercise Decision (for options)
+
+### Position Object Sequential Flow
+1. Initial Margin Calculation
+2. Risk Assessment
+3. Collateral Management
+4. Position Reconciliation
+
+### MarketData Object Sequential Flow
+1. Market Data Validation
+2. Volatility Surface Analysis
+3. Greeks Calculation
+4. Premium Calculation
+5. CSA Verification
+6. Transaction Reporting Check
+7. Regulatory Reporting Generation
+
+### Client Object Sequential Flow
+1. Credit Check
+2. Settlement Instructions
+3. Premium Settlement
+
 This context helps identify process bottlenecks, compliance issues, and optimization opportunities while maintaining the complex relationships between different objects in the FX trading ecosystem.

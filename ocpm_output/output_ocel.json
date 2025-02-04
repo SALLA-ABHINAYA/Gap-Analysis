@@ -2,32 +2,27 @@
   "Trade": {
     "name": "Trade",
     "activities": [
-      "Final Settlement",
-      "Trade Allocation",
-      "Trade Confirmation",
-      "Trade Execution",
       "Trade Initiated",
+      "Trade Validation",
+      "Trade Execution",
+      "Trade Confirmation",
       "Trade Matching",
       "Trade Reconciliation",
       "Trade Transparency Assessment",
-      "Trade Validation"
+      "Final Settlement"
     ],
     "attributes": [
       "booking_system",
       "case_id",
       "client_type",
       "currency_pair",
-      "delta",
-      "gamma",
       "limit_usage",
       "notional_amount",
       "option_type",
       "premium",
       "risk_score",
       "strike_price",
-      "theta",
-      "trading_strategy",
-      "vega"
+      "trading_strategy"
     ],
     "relationships": [
       "Client",
@@ -39,14 +34,14 @@
   "Order": {
     "name": "Order",
     "activities": [
-      "Best Execution Validation",
+      "Quote Requested",
+      "Quote Provided",
       "Client Limit Validation",
-      "Exercise Decision",
+      "Strategy Validation",
       "ISDA Master Agreement Check",
       "KYC Refresh Check",
-      "Quote Provided",
-      "Quote Requested",
-      "Strategy Validation"
+      "Best Execution Validation",
+      "Exercise Decision"
     ],
     "attributes": [
       "booking_system",
@@ -65,44 +60,56 @@
   "Position": {
     "name": "Position",
     "activities": [
-      "Collateral Management",
-      "Initial Margin Calculation",
       "Position Reconciliation",
-      "Risk Assessment"
+      "Risk Assessment",
+      "Collateral Management",
+      "Initial Margin Calculation"
     ],
     "attributes": [
+      "booking_system",
       "case_id",
       "client_type",
       "currency_pair",
+      "delta",
+      "gamma",
       "limit_usage",
-      "risk_score"
+      "option_type",
+      "risk_score",
+      "theta",
+      "trading_strategy",
+      "vega"
     ],
     "relationships": [
-      "Client",
+      "MarketData",
       "Trade"
     ]
   },
   "MarketData": {
     "name": "MarketData",
     "activities": [
-      "CSA Verification",
-      "Greeks Calculation",
       "Market Data Validation",
+      "Volatility Surface Analysis",
+      "Greeks Calculation",
       "Premium Calculation",
-      "Regulatory Reporting Generation",
+      "CSA Verification",
       "Transaction Reporting Check",
-      "Volatility Surface Analysis"
+      "Regulatory Reporting Generation"
     ],
     "attributes": [
+      "booking_system",
+      "case_id",
+      "client_type",
       "currency_pair",
       "delta",
       "gamma",
       "option_type",
       "theta",
+      "trading_strategy",
       "vega"
     ],
     "relationships": [
       "Order",
+      "Position",
       "Trade"
     ]
   },
@@ -110,17 +117,18 @@
     "name": "Client",
     "activities": [
       "Credit Check",
-      "Premium Settlement",
-      "Settlement Instructions"
+      "Settlement Instructions",
+      "Premium Settlement"
     ],
     "attributes": [
       "booking_system",
+      "case_id",
       "client_type",
+      "currency_pair",
       "trading_strategy"
     ],
     "relationships": [
       "Order",
-      "Position",
       "Trade"
     ]
   }

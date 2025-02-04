@@ -114,16 +114,26 @@ def chunk_dataframe(df, chunk_size=1000):
 
 def merge_object_types(object_types_list):
     """
-    Merge object types from multiple chunks while ensuring proper structure.
+    Merge object types from multiple chunks while preserving activity order.
     Returns a dictionary structure that can be easily serialized to JSON.
-
-    Args:
-        object_types_list: List of dictionaries containing object types from different chunks
-
-    Returns:
-        Dictionary of merged object types in a JSON-serializable format
     """
     merged = {}
+
+    # Track the original order of activities as they first appear
+    activity_order = {}
+
+    # First pass: collect all activities and their first appearance order
+    for obj_types in object_types_list:
+        for obj_name, obj_data in obj_types.items():
+            if obj_name not in activity_order:
+                activity_order[obj_name] = []
+
+            # Add new activities while preserving their order of appearance
+            for activity in obj_data.get('activities', []):
+                if activity not in activity_order[obj_name]:
+                    activity_order[obj_name].append(activity)
+
+    # Second pass: merge the data while maintaining order
     for obj_types in object_types_list:
         for obj_name, obj_data in obj_types.items():
             # Ensure all required fields are present
@@ -135,19 +145,32 @@ def merge_object_types(object_types_list):
             if obj_name not in merged:
                 merged[obj_name] = {
                     'name': obj_name,
-                    'activities': set(obj_data['activities']),
+                    'activities': set(),
                     'attributes': set(obj_data['attributes']),
                     'relationships': set(obj_data['relationships'])
                 }
             else:
-                # Update existing entries
-                merged[obj_name]['activities'].update(obj_data['activities'])
+                # Update sets for attributes and relationships
                 merged[obj_name]['attributes'].update(obj_data['attributes'])
                 merged[obj_name]['relationships'].update(obj_data['relationships'])
 
-    # Convert sets back to sorted lists for consistent JSON output
+            # Update activities while preserving order
+            merged[obj_name]['activities'].update(obj_data['activities'])
+
+    # Final pass: order activities according to their first appearance
     for obj_name in merged:
-        merged[obj_name]['activities'] = sorted(list(merged[obj_name]['activities']))
+        # Use the tracked order to sort activities
+        ordered_activities = [act for act in activity_order[obj_name]
+                              if act in merged[obj_name]['activities']]
+
+        # Add any activities that might have been missed (shouldn't happen, but safe)
+        remaining_activities = merged[obj_name]['activities'] - set(ordered_activities)
+        ordered_activities.extend(sorted(remaining_activities))  # Only sort remaining if any
+
+        # Update with ordered activities list
+        merged[obj_name]['activities'] = ordered_activities
+
+        # Still sort attributes and relationships (order doesn't matter for these)
         merged[obj_name]['attributes'] = sorted(list(merged[obj_name]['attributes']))
         merged[obj_name]['relationships'] = sorted(list(merged[obj_name]['relationships']))
 
@@ -242,6 +265,26 @@ Object Identification Guidelines:
    - Identify parent-child or hierarchical relationships between objects.
    - Look for objects that share common activities or are frequently associated.
    - Consider relationships implied by foreign key references or data linkages.
+   
+5. **Activity Sequencing Rules:**
+   - Identify mandatory start activities (e.g., "Trade Initiated" for trades)
+   - Identify mandatory end activities (e.g., "Final Settlement" for trades)
+   - Maintain business process order within each object type
+   - Consider dependencies between activities
+   - Respect regulatory and operational sequences
+
+6. **Sequence Validation Rules:**
+   - Start activities must appear first in the sequence
+   - End activities must appear last in the sequence
+   - Intermediate activities must follow business logic order
+   - Validation activities must precede execution activities
+   - Settlement activities must follow execution activities
+
+7. **Cross-Object Sequence Dependencies:**
+   - Order activities must precede related Trade activities
+   - Market Data validation must precede Trade execution
+   - Position updates must follow Trade execution
+   - Client checks must precede Trade execution
 
 Output Requirements:
 1. **JSON Structure:**
@@ -271,9 +314,44 @@ Your response must:
 1. Adhere to the exact JSON format provided in the example.
 2. Include all identified object types with their complete activities, attributes, and relationships.
 3. Maintain consistency in naming conventions and structure.
-4. Cover all activities and relevant attributes from the event log comprehensively."""
+4. Cover all activities and relevant attributes from the event log comprehensively.
 
-    return prompt
+**Process Flow Analysis Rules:**
+1. **Activity Order Detection:**
+   - Analyze case timestamps to determine natural progression
+   - Look for temporal patterns across multiple cases
+   - Identify consistent activity sequences in the event log
+   - Consider activity names that imply order (e.g., "Initiated", "Completed", "Final")
+
+2. **Logical Flow Dependencies:**
+   - Creation/Initiation activities must come first
+   - Validation/Check activities must precede their target activities
+   - Core processing activities follow validation
+   - Assessment/Review activities follow processing
+   - Settlement/Completion activities come last
+   - Final/End activities must be at the end
+
+3. **Timeline-Based Sequencing:**
+   - Use timestamp analysis to validate activity order
+   - Consider minimum time gaps between activities
+   - Look for parallel vs. sequential patterns
+   - Identify activities that consistently occur early/late in cases
+   - Detect standard waiting periods between activities
+
+4. **Cross-Object Dependencies:**
+   - Identify activities that must complete in one object before another starts
+   - Consider input/output relationships between objects
+   - Maintain consistency in related object sequences
+   - Ensure dependent activities across objects maintain proper order
+
+5. **Validation Rules:**
+   - Every object type must have clear start and end activities
+   - No validation activity should follow its target execution
+   - Review activities cannot precede their subject activities
+   - Settlement activities must come after core processing
+   - Maintain logical business process flow
+
+"""
 
 
 def process_chunk(chunk: pd.DataFrame, enhanced_prompt: str, client: AzureOpenAI, chunk_num: int) -> Optional[dict]:

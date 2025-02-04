@@ -1978,102 +1978,6 @@
   ],
   "ocel:objects": [
     {
-      "ocel:id": "Trade_Final Settlement",
-      "ocel:type": "Trade",
-      "ocel:attributes": {
-        "activity": "Final Settlement",
-        "attributes": [
-          "booking_system",
-          "case_id",
-          "client_type",
-          "currency_pair",
-          "delta",
-          "gamma",
-          "limit_usage",
-          "notional_amount",
-          "option_type",
-          "premium",
-          "risk_score",
-          "strike_price",
-          "theta",
-          "trading_strategy",
-          "vega"
-        ]
-      }
-    },
-    {
-      "ocel:id": "Trade_Trade Allocation",
-      "ocel:type": "Trade",
-      "ocel:attributes": {
-        "activity": "Trade Allocation",
-        "attributes": [
-          "booking_system",
-          "case_id",
-          "client_type",
-          "currency_pair",
-          "delta",
-          "gamma",
-          "limit_usage",
-          "notional_amount",
-          "option_type",
-          "premium",
-          "risk_score",
-          "strike_price",
-          "theta",
-          "trading_strategy",
-          "vega"
-        ]
-      }
-    },
-    {
-      "ocel:id": "Trade_Trade Confirmation",
-      "ocel:type": "Trade",
-      "ocel:attributes": {
-        "activity": "Trade Confirmation",
-        "attributes": [
-          "booking_system",
-          "case_id",
-          "client_type",
-          "currency_pair",
-          "delta",
-          "gamma",
-          "limit_usage",
-          "notional_amount",
-          "option_type",
-          "premium",
-          "risk_score",
-          "strike_price",
-          "theta",
-          "trading_strategy",
-          "vega"
-        ]
-      }
-    },
-    {
-      "ocel:id": "Trade_Trade Execution",
-      "ocel:type": "Trade",
-      "ocel:attributes": {
-        "activity": "Trade Execution",
-        "attributes": [
-          "booking_system",
-          "case_id",
-          "client_type",
-          "currency_pair",
-          "delta",
-          "gamma",
-          "limit_usage",
-          "notional_amount",
-          "option_type",
-          "premium",
-          "risk_score",
-          "strike_price",
-          "theta",
-          "trading_strategy",
-          "vega"
-        ]
-      }
-    },
-    {
       "ocel:id": "Trade_Trade Initiated",
       "ocel:type": "Trade",
       "ocel:attributes": {
@@ -2083,89 +1987,13 @@
           "case_id",
           "client_type",
           "currency_pair",
-          "delta",
-          "gamma",
           "limit_usage",
           "notional_amount",
           "option_type",
           "premium",
           "risk_score",
           "strike_price",
-          "theta",
-          "trading_strategy",
-          "vega"
-        ]
-      }
-    },
-    {
-      "ocel:id": "Trade_Trade Matching",
-      "ocel:type": "Trade",
-      "ocel:attributes": {
-        "activity": "Trade Matching",
-        "attributes": [
-          "booking_system",
-          "case_id",
-          "client_type",
-          "currency_pair",
-          "delta",
-          "gamma",
-          "limit_usage",
-          "notional_amount",
-          "option_type",
-          "premium",
-          "risk_score",
-          "strike_price",
-          "theta",
-          "trading_strategy",
-          "vega"
-        ]
-      }
-    },
-    {
-      "ocel:id": "Trade_Trade Reconciliation",
-      "ocel:type": "Trade",
-      "ocel:attributes": {
-        "activity": "Trade Reconciliation",
-        "attributes": [
-          "booking_system",
-          "case_id",
-          "client_type",
-          "currency_pair",
-          "delta",
-          "gamma",
-          "limit_usage",
-          "notional_amount",
-          "option_type",
-          "premium",
-          "risk_score",
-          "strike_price",
-          "theta",
-          "trading_strategy",
-          "vega"
-        ]
-      }
-    },
-    {
-      "ocel:id": "Trade_Trade Transparency Assessment",
-      "ocel:type": "Trade",
-      "ocel:attributes": {
-        "activity": "Trade Transparency Assessment",
-        "attributes": [
-          "booking_system",
-          "case_id",
-          "client_type",
-          "currency_pair",
-          "delta",
-          "gamma",
-          "limit_usage",
-          "notional_amount",
-          "option_type",
-          "premium",
-          "risk_score",
-          "strike_price",
-          "theta",
-          "trading_strategy",
-          "vega"
+          "trading_strategy"
         ]
       }
     },
@@ -2179,25 +2007,156 @@
           "case_id",
           "client_type",
           "currency_pair",
-          "delta",
-          "gamma",
           "limit_usage",
           "notional_amount",
           "option_type",
           "premium",
           "risk_score",
           "strike_price",
-          "theta",
-          "trading_strategy",
-          "vega"
+          "trading_strategy"
         ]
       }
     },
     {
-      "ocel:id": "Order_Best Execution Validation",
+      "ocel:id": "Trade_Trade Execution",
+      "ocel:type": "Trade",
+      "ocel:attributes": {
+        "activity": "Trade Execution",
+        "attributes": [
+          "booking_system",
+          "case_id",
+          "client_type",
+          "currency_pair",
+          "limit_usage",
+          "notional_amount",
+          "option_type",
+          "premium",
+          "risk_score",
+          "strike_price",
+          "trading_strategy"
+        ]
+      }
+    },
+    {
+      "ocel:id": "Trade_Trade Confirmation",
+      "ocel:type": "Trade",
+      "ocel:attributes": {
+        "activity": "Trade Confirmation",
+        "attributes": [
+          "booking_system",
+          "case_id",
+          "client_type",
+          "currency_pair",
+          "limit_usage",
+          "notional_amount",
+          "option_type",
+          "premium",
+          "risk_score",
+          "strike_price",
+          "trading_strategy"
+        ]
+      }
+    },
+    {
+      "ocel:id": "Trade_Trade Matching",
+      "ocel:type": "Trade",
+      "ocel:attributes": {
+        "activity": "Trade Matching",
+        "attributes": [
+          "booking_system",
+          "case_id",
+          "client_type",
+          "currency_pair",
+          "limit_usage",
+          "notional_amount",
+          "option_type",
+          "premium",
+          "risk_score",
+          "strike_price",
+          "trading_strategy"
+        ]
+      }
+    },
+    {
+      "ocel:id": "Trade_Trade Reconciliation",
+      "ocel:type": "Trade",
+      "ocel:attributes": {
+        "activity": "Trade Reconciliation",
+        "attributes": [
+          "booking_system",
+          "case_id",
+          "client_type",
+          "currency_pair",
+          "limit_usage",
+          "notional_amount",
+          "option_type",
+          "premium",
+          "risk_score",
+          "strike_price",
+          "trading_strategy"
+        ]
+      }
+    },
+    {
+      "ocel:id": "Trade_Trade Transparency Assessment",
+      "ocel:type": "Trade",
+      "ocel:attributes": {
+        "activity": "Trade Transparency Assessment",
+        "attributes": [
+          "booking_system",
+          "case_id",
+          "client_type",
+          "currency_pair",
+          "limit_usage",
+          "notional_amount",
+          "option_type",
+          "premium",
+          "risk_score",
+          "strike_price",
+          "trading_strategy"
+        ]
+      }
+    },
+    {
+      "ocel:id": "Trade_Final Settlement",
+      "ocel:type": "Trade",
+      "ocel:attributes": {
+        "activity": "Final Settlement",
+        "attributes": [
+          "booking_system",
+          "case_id",
+          "client_type",
+          "currency_pair",
+          "limit_usage",
+          "notional_amount",
+          "option_type",
+          "premium",
+          "risk_score",
+          "strike_price",
+          "trading_strategy"
+        ]
+      }
+    },
+    {
+      "ocel:id": "Order_Quote Requested",
       "ocel:type": "Order",
       "ocel:attributes": {
-        "activity": "Best Execution Validation",
+        "activity": "Quote Requested",
+        "attributes": [
+          "booking_system",
+          "case_id",
+          "client_type",
+          "currency_pair",
+          "option_type",
+          "trading_strategy"
+        ]
+      }
+    },
+    {
+      "ocel:id": "Order_Quote Provided",
+      "ocel:type": "Order",
+      "ocel:attributes": {
+        "activity": "Quote Provided",
         "attributes": [
           "booking_system",
           "case_id",
@@ -2224,10 +2183,10 @@
       }
     },
     {
-      "ocel:id": "Order_Exercise Decision",
+      "ocel:id": "Order_Strategy Validation",
       "ocel:type": "Order",
       "ocel:attributes": {
-        "activity": "Exercise Decision",
+        "activity": "Strategy Validation",
         "attributes": [
           "booking_system",
           "case_id",
@@ -2269,10 +2228,10 @@
       }
     },
     {
-      "ocel:id": "Order_Quote Provided",
+      "ocel:id": "Order_Best Execution Validation",
       "ocel:type": "Order",
       "ocel:attributes": {
-        "activity": "Quote Provided",
+        "activity": "Best Execution Validation",
         "attributes": [
           "booking_system",
           "case_id",
@@ -2284,10 +2243,10 @@
       }
     },
     {
-      "ocel:id": "Order_Quote Requested",
+      "ocel:id": "Order_Exercise Decision",
       "ocel:type": "Order",
       "ocel:attributes": {
-        "activity": "Quote Requested",
+        "activity": "Exercise Decision",
         "attributes": [
           "booking_system",
           "case_id",
@@ -2295,49 +2254,6 @@
           "currency_pair",
           "option_type",
           "trading_strategy"
-        ]
-      }
-    },
-    {
-      "ocel:id": "Order_Strategy Validation",
-      "ocel:type": "Order",
-      "ocel:attributes": {
-        "activity": "Strategy Validation",
-        "attributes": [
-          "booking_system",
-          "case_id",
-          "client_type",
-          "currency_pair",
-          "option_type",
-          "trading_strategy"
-        ]
-      }
-    },
-    {
-      "ocel:id": "Position_Collateral Management",
-      "ocel:type": "Position",
-      "ocel:attributes": {
-        "activity": "Collateral Management",
-        "attributes": [
-          "case_id",
-          "client_type",
-          "currency_pair",
-          "limit_usage",
-          "risk_score"
-        ]
-      }
-    },
-    {
-      "ocel:id": "Position_Initial Margin Calculation",
-      "ocel:type": "Position",
-      "ocel:attributes": {
-        "activity": "Initial Margin Calculation",
-        "attributes": [
-          "case_id",
-          "client_type",
-          "currency_pair",
-          "limit_usage",
-          "risk_score"
         ]
       }
     },
@@ -2347,11 +2263,18 @@
       "ocel:attributes": {
         "activity": "Position Reconciliation",
         "attributes": [
+          "booking_system",
           "case_id",
           "client_type",
           "currency_pair",
+          "delta",
+          "gamma",
           "limit_usage",
-          "risk_score"
+          "option_type",
+          "risk_score",
+          "theta",
+          "trading_strategy",
+          "vega"
         ]
       }
     },
@@ -2361,40 +2284,59 @@
       "ocel:attributes": {
         "activity": "Risk Assessment",
         "attributes": [
+          "booking_system",
           "case_id",
           "client_type",
           "currency_pair",
-          "limit_usage",
-          "risk_score"
-        ]
-      }
-    },
-    {
-      "ocel:id": "MarketData_CSA Verification",
-      "ocel:type": "MarketData",
-      "ocel:attributes": {
-        "activity": "CSA Verification",
-        "attributes": [
-          "currency_pair",
           "delta",
           "gamma",
+          "limit_usage",
           "option_type",
+          "risk_score",
           "theta",
+          "trading_strategy",
           "vega"
         ]
       }
     },
     {
-      "ocel:id": "MarketData_Greeks Calculation",
-      "ocel:type": "MarketData",
+      "ocel:id": "Position_Collateral Management",
+      "ocel:type": "Position",
       "ocel:attributes": {
-        "activity": "Greeks Calculation",
+        "activity": "Collateral Management",
         "attributes": [
+          "booking_system",
+          "case_id",
+          "client_type",
           "currency_pair",
           "delta",
           "gamma",
+          "limit_usage",
           "option_type",
+          "risk_score",
           "theta",
+          "trading_strategy",
+          "vega"
+        ]
+      }
+    },
+    {
+      "ocel:id": "Position_Initial Margin Calculation",
+      "ocel:type": "Position",
+      "ocel:attributes": {
+        "activity": "Initial Margin Calculation",
+        "attributes": [
+          "booking_system",
+          "case_id",
+          "client_type",
+          "currency_pair",
+          "delta",
+          "gamma",
+          "limit_usage",
+          "option_type",
+          "risk_score",
+          "theta",
+          "trading_strategy",
           "vega"
         ]
       }
@@ -2405,56 +2347,15 @@
       "ocel:attributes": {
         "activity": "Market Data Validation",
         "attributes": [
+          "booking_system",
+          "case_id",
+          "client_type",
           "currency_pair",
           "delta",
           "gamma",
           "option_type",
           "theta",
-          "vega"
-        ]
-      }
-    },
-    {
-      "ocel:id": "MarketData_Premium Calculation",
-      "ocel:type": "MarketData",
-      "ocel:attributes": {
-        "activity": "Premium Calculation",
-        "attributes": [
-          "currency_pair",
-          "delta",
-          "gamma",
-          "option_type",
-          "theta",
-          "vega"
-        ]
-      }
-    },
-    {
-      "ocel:id": "MarketData_Regulatory Reporting Generation",
-      "ocel:type": "MarketData",
-      "ocel:attributes": {
-        "activity": "Regulatory Reporting Generation",
-        "attributes": [
-          "currency_pair",
-          "delta",
-          "gamma",
-          "option_type",
-          "theta",
-          "vega"
-        ]
-      }
-    },
-    {
-      "ocel:id": "MarketData_Transaction Reporting Check",
-      "ocel:type": "MarketData",
-      "ocel:attributes": {
-        "activity": "Transaction Reporting Check",
-        "attributes": [
-          "currency_pair",
-          "delta",
-          "gamma",
-          "option_type",
-          "theta",
+          "trading_strategy",
           "vega"
         ]
       }
@@ -2465,11 +2366,110 @@
       "ocel:attributes": {
         "activity": "Volatility Surface Analysis",
         "attributes": [
+          "booking_system",
+          "case_id",
+          "client_type",
           "currency_pair",
           "delta",
           "gamma",
           "option_type",
           "theta",
+          "trading_strategy",
+          "vega"
+        ]
+      }
+    },
+    {
+      "ocel:id": "MarketData_Greeks Calculation",
+      "ocel:type": "MarketData",
+      "ocel:attributes": {
+        "activity": "Greeks Calculation",
+        "attributes": [
+          "booking_system",
+          "case_id",
+          "client_type",
+          "currency_pair",
+          "delta",
+          "gamma",
+          "option_type",
+          "theta",
+          "trading_strategy",
+          "vega"
+        ]
+      }
+    },
+    {
+      "ocel:id": "MarketData_Premium Calculation",
+      "ocel:type": "MarketData",
+      "ocel:attributes": {
+        "activity": "Premium Calculation",
+        "attributes": [
+          "booking_system",
+          "case_id",
+          "client_type",
+          "currency_pair",
+          "delta",
+          "gamma",
+          "option_type",
+          "theta",
+          "trading_strategy",
+          "vega"
+        ]
+      }
+    },
+    {
+      "ocel:id": "MarketData_CSA Verification",
+      "ocel:type": "MarketData",
+      "ocel:attributes": {
+        "activity": "CSA Verification",
+        "attributes": [
+          "booking_system",
+          "case_id",
+          "client_type",
+          "currency_pair",
+          "delta",
+          "gamma",
+          "option_type",
+          "theta",
+          "trading_strategy",
+          "vega"
+        ]
+      }
+    },
+    {
+      "ocel:id": "MarketData_Transaction Reporting Check",
+      "ocel:type": "MarketData",
+      "ocel:attributes": {
+        "activity": "Transaction Reporting Check",
+        "attributes": [
+          "booking_system",
+          "case_id",
+          "client_type",
+          "currency_pair",
+          "delta",
+          "gamma",
+          "option_type",
+          "theta",
+          "trading_strategy",
+          "vega"
+        ]
+      }
+    },
+    {
+      "ocel:id": "MarketData_Regulatory Reporting Generation",
+      "ocel:type": "MarketData",
+      "ocel:attributes": {
+        "activity": "Regulatory Reporting Generation",
+        "attributes": [
+          "booking_system",
+          "case_id",
+          "client_type",
+          "currency_pair",
+          "delta",
+          "gamma",
+          "option_type",
+          "theta",
+          "trading_strategy",
           "vega"
         ]
       }
@@ -2481,19 +2481,9 @@
         "activity": "Credit Check",
         "attributes": [
           "booking_system",
+          "case_id",
           "client_type",
-          "trading_strategy"
-        ]
-      }
-    },
-    {
-      "ocel:id": "Client_Premium Settlement",
-      "ocel:type": "Client",
-      "ocel:attributes": {
-        "activity": "Premium Settlement",
-        "attributes": [
-          "booking_system",
-          "client_type",
+          "currency_pair",
           "trading_strategy"
         ]
       }
@@ -2505,7 +2495,23 @@
         "activity": "Settlement Instructions",
         "attributes": [
           "booking_system",
+          "case_id",
           "client_type",
+          "currency_pair",
+          "trading_strategy"
+        ]
+      }
+    },
+    {
+      "ocel:id": "Client_Premium Settlement",
+      "ocel:type": "Client",
+      "ocel:attributes": {
+        "activity": "Premium Settlement",
+        "attributes": [
+          "booking_system",
+          "case_id",
+          "client_type",
+          "currency_pair",
           "trading_strategy"
         ]
       }
