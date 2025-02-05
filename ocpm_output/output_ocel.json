@@ -100,15 +100,16 @@
     ],
     "attributes": [
       "currency_pair",
-      "data_id",
       "market_data_id",
       "price",
       "quote",
+      "quote_timestamp",
       "reference_rate",
       "source",
       "timestamp",
       "volatility",
-      "volatility_surface"
+      "volatility_surface",
+      "yield_curve"
     ],
     "relationships": [
       "Order",

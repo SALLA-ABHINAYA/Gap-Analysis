@@ -136284,15 +136284,16 @@
         "activity": "Price Update",
         "attributes": [
           "currency_pair",
-          "data_id",
           "market_data_id",
           "price",
           "quote",
+          "quote_timestamp",
           "reference_rate",
           "source",
           "timestamp",
           "volatility",
-          "volatility_surface"
+          "volatility_surface",
+          "yield_curve"
         ]
       }
     },
@@ -136303,15 +136304,16 @@
         "activity": "Reference Rate Published",
         "attributes": [
           "currency_pair",
-          "data_id",
           "market_data_id",
           "price",
           "quote",
+          "quote_timestamp",
           "reference_rate",
           "source",
           "timestamp",
           "volatility",
-          "volatility_surface"
+          "volatility_surface",
+          "yield_curve"
         ]
       }
     },
@@ -136322,15 +136324,16 @@
         "activity": "Market Status Change",
         "attributes": [
           "currency_pair",
-          "data_id",
           "market_data_id",
           "price",
           "quote",
+          "quote_timestamp",
           "reference_rate",
           "source",
           "timestamp",
           "volatility",
-          "volatility_surface"
+          "volatility_surface",
+          "yield_curve"
         ]
       }
     },
@@ -136341,15 +136344,16 @@
         "activity": "Trading Hours Update",
         "attributes": [
           "currency_pair",
-          "data_id",
           "market_data_id",
           "price",
           "quote",
+          "quote_timestamp",
           "reference_rate",
           "source",
           "timestamp",
           "volatility",
-          "volatility_surface"
+          "volatility_surface",
+          "yield_curve"
         ]
       }
     },
@@ -136360,15 +136364,16 @@
         "activity": "Market Data Validation",
         "attributes": [
           "currency_pair",
-          "data_id",
           "market_data_id",
           "price",
           "quote",
+          "quote_timestamp",
           "reference_rate",
           "source",
           "timestamp",
           "volatility",
-          "volatility_surface"
+          "volatility_surface",
+          "yield_curve"
         ]
       }
     },
@@ -136379,15 +136384,16 @@
         "activity": "Volatility Surface Analysis",
         "attributes": [
           "currency_pair",
-          "data_id",
           "market_data_id",
           "price",
           "quote",
+          "quote_timestamp",
           "reference_rate",
           "source",
           "timestamp",
           "volatility",
-          "volatility_surface"
+          "volatility_surface",
+          "yield_curve"
         ]
       }
     },
@@ -136398,15 +136404,16 @@
         "activity": "Greeks Calculation",
         "attributes": [
           "currency_pair",
-          "data_id",
           "market_data_id",
           "price",
           "quote",
+          "quote_timestamp",
           "reference_rate",
           "source",
           "timestamp",
           "volatility",
-          "volatility_surface"
+          "volatility_surface",
+          "yield_curve"
         ]
       }
     },
@@ -136417,15 +136424,16 @@
         "activity": "Premium Calculation",
         "attributes": [
           "currency_pair",
-          "data_id",
           "market_data_id",
           "price",
           "quote",
+          "quote_timestamp",
           "reference_rate",
           "source",
           "timestamp",
           "volatility",
-          "volatility_surface"
+          "volatility_surface",
+          "yield_curve"
         ]
       }
     },
@@ -136436,15 +136444,16 @@
         "activity": "CSA Verification",
         "attributes": [
           "currency_pair",
-          "data_id",
           "market_data_id",
           "price",
           "quote",
+          "quote_timestamp",
           "reference_rate",
           "source",
           "timestamp",
           "volatility",
-          "volatility_surface"
+          "volatility_surface",
+          "yield_curve"
         ]
       }
     },
@@ -136455,15 +136464,16 @@
         "activity": "Transaction Reporting Check",
         "attributes": [
           "currency_pair",
-          "data_id",
           "market_data_id",
           "price",
           "quote",
+          "quote_timestamp",
           "reference_rate",
           "source",
           "timestamp",
           "volatility",
-          "volatility_surface"
+          "volatility_surface",
+          "yield_curve"
         ]
       }
     },
@@ -136474,15 +136484,16 @@
         "activity": "Regulatory Reporting Generation",
         "attributes": [
           "currency_pair",
-          "data_id",
           "market_data_id",
           "price",
           "quote",
+          "quote_timestamp",
           "reference_rate",
           "source",
           "timestamp",
           "volatility",
-          "volatility_surface"
+          "volatility_surface",
+          "yield_curve"
         ]
       }
     },
