@@ -176,64 +176,62 @@ class FXTradeGenerator:
         return df
 
     def inject_controlled_outliers(self, df: pd.DataFrame) -> pd.DataFrame:
-        """Inject small number of controlled outliers"""
+        """Inject exactly 8 cases missing Final Settlement and other outliers"""
         df = df.copy()
         case_ids = list(df['case_id'].unique())
 
+        # Ensure we don't select more cases than available
+        num_incomplete = 8
+        if len(case_ids) < num_incomplete:
+            raise ValueError("Not enough cases to create the required incomplete cases")
+
         # Select exactly 8 cases for incompleteness
-        incomplete_cases = random.sample(case_ids, 8)
+        incomplete_cases = random.sample(case_ids, num_incomplete)
 
         for case_id in incomplete_cases:
             case_mask = df['case_id'] == case_id
-            case_events = df[case_mask]
-
-            # Find Final Settlement event and remove it
-            final_settlement_mask = (case_mask) & (df['activity'] == 'Final Settlement')
-            if any(final_settlement_mask):
-                df = df.drop(df[final_settlement_mask].index)
+            final_settlement_mask = case_mask & (df['activity'] == 'Final Settlement')
+            final_settlement_indices = df[final_settlement_mask].index
+            df.drop(final_settlement_indices, inplace=True)
 
         # Add other outlier types (sequence violations, etc.)
         remaining_cases = [c for c in case_ids if c not in incomplete_cases]
-        other_outliers = random.sample(remaining_cases, 20)  # 20 cases for other outlier types
+        num_other_outliers = min(20, len(remaining_cases))  # Ensure we don't exceed available cases
+        other_outliers = random.sample(remaining_cases, num_other_outliers)
 
         current_idx = 0
-        for outlier_type in ['sequence_violation', 'resource_switch', 'long_running', 'rework_activity']:
-            cases_for_type = other_outliers[current_idx:current_idx + 5]
+        outlier_types = ['sequence_violation', 'resource_switch', 'long_running', 'rework_activity']
+        for outlier_type in outlier_types:
+            cases_for_type = other_outliers[current_idx:current_idx + 5] if current_idx +5 <= len(other_outliers) else []
             current_idx += 5
+            if not cases_for_type:
+                continue
 
             for case_id in cases_for_type:
                 case_mask = df['case_id'] == case_id
                 case_events = df[case_mask]
 
                 if outlier_type == 'sequence_violation':
-                    # Swap two adjacent non-Final-Settlement activities
                     non_final_events = case_events[case_events['activity'] != 'Final Settlement']
                     if len(non_final_events) >= 2:
-                        idx1, idx2 = non_final_events.index[0:2]
-                        timestamps = df.loc[[idx1, idx2], 'timestamp'].values
-                        df.loc[idx1, 'timestamp'] = timestamps[1]
-                        df.loc[idx2, 'timestamp'] = timestamps[0]
+                        idx1, idx2 = non_final_events.index[0], non_final_events.index[1]
+                        df.loc[idx1, 'timestamp'], df.loc[idx2, 'timestamp'] = df.loc[idx2, 'timestamp'], df.loc[idx1, 'timestamp']
 
                 elif outlier_type == 'resource_switch':
-                    # Switch resources mid-sequence
                     mid_events = case_events[case_events['activity'] != 'Final Settlement'].index[1:-1]
                     if len(mid_events) >= 2:
-                        for idx in mid_events[:2]:
-                            new_resource = random.choice([r for r in self.traders if r != df.loc[idx, 'resource']])
-                            df.loc[idx, 'resource'] = new_resource
+                        new_resource = random.choice([r for r in self.traders if r != df.loc[mid_events[0], 'resource']])
+                        df.loc[mid_events[0], 'resource'] = new_resource
 
                 elif outlier_type == 'long_running':
-                    # Add delay before Final Settlement
-                    non_final_mask = (case_mask) & (df['activity'] != 'Final Settlement')
-                    if any(non_final_mask):
+                    non_final_mask = case_mask & (df['activity'] != 'Final Settlement')
+                    if non_final_mask.any():
                         df.loc[non_final_mask, 'timestamp'] += pd.Timedelta(hours=4)
 
                 elif outlier_type == 'rework_activity':
-                    # Repeat a mid-sequence activity
                     repeatable = case_events[case_events['activity'].isin(['Trade Validation', 'Trade Matching'])]
                     if not repeatable.empty:
-                        activity_to_repeat = repeatable.iloc[0]
-                        new_row = activity_to_repeat.copy()
+                        new_row = repeatable.iloc[0].copy()
                         new_row['timestamp'] += pd.Timedelta(hours=2)
                         df = pd.concat([df, pd.DataFrame([new_row])], ignore_index=True)
 

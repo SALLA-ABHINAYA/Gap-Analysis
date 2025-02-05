@@ -12,19 +12,16 @@ import plotly.express as px
 import json
 from neo4j import GraphDatabase
 
+from utils import get_azure_openai_client
+
 
 class IntegratedAPAAnalyzer:
     """Integrated APA Analytics with AI Analysis capabilities"""
 
     def __init__(self, api_key: str = None):
-        self.api_key = api_key or st.secrets.get("OPENAI_API_KEY")
-        if not self.api_key:
-            raise ValueError("Missing OpenAI API key")
 
         # Initialize OpenAI client with working configuration from test file
-        self.client = OpenAI(
-            api_key="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"
-        )
+        self.client = get_azure_openai_client()
         self.ocel_data = None
         self.events_df = None
         self.stats = {}
@@ -116,7 +113,7 @@ class IntegratedAPAAnalyzer:
             """
 
             response = self.client.chat.completions.create(
-                model="gpt-4o-mini",
+                model="gpt-4o",
                 messages=[
                     {"role": "system",
                      "content": "You are an expert process mining analyst. Analyze the OCEL log and provide insights."},

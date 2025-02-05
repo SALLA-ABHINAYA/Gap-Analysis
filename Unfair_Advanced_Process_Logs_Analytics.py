@@ -627,7 +627,40 @@ class UnfairOCELAnalyzer:
             return {}
 
     def _detect_case_outliers(self) -> Dict[str, OutlierMetrics]:
-        """Optimized case complexity outlier detection"""
+        """Analyzes case complexity outliers using multivariate metrics and z-scores.
+
+            Process:
+            1. Converts OCEL events into a DataFrame with key case metrics:
+               - Total events per case
+               - Unique activities per case
+               - Resource variety per case
+               - Case duration in hours
+               - Object type variety
+
+            2. Calculates z-scores for all metrics simultaneously using vectorized operations
+               for performance optimization.
+
+            3. Creates composite z-score by averaging absolute z-scores across all metrics
+               to identify overall case complexity outliers.
+
+            4. For each case, captures:
+               - Core metrics (events, activities, resources, duration)
+               - Complete event sequence with activity and resource patterns
+               - Temporal information (start, end, duration)
+               - Specific outlier patterns (high complexity, high variety, long duration)
+               - Full event traceability for detailed investigation
+
+            Outlier Definition:
+            - Cases with composite z-score > 3 are flagged as outliers
+            - Individual metrics contributing to outlier status are tracked
+            - Both unusually complex and unusually simple cases can be identified
+
+            Returns:
+                Dict[str, OutlierMetrics]: Dictionary mapping case IDs to OutlierMetrics objects containing:
+                    - z_score: Composite z-score for the case
+                    - is_outlier: Boolean indicating if case is an outlier (z-score > 3)
+                    - details: Dict with complete metrics, events, temporal data and outlier patterns
+            """
         try:
             # Pre-process events into a DataFrame for faster analysis
             events_df = pd.DataFrame([{
@@ -805,26 +838,26 @@ class UnfairOCELAnalyzer:
                         case_id = violation['case_id']
                         obj_type = violation['object_type']
 
-                        # Get case specific events for this object type
-                        case_events = case_data[case_data['object_types'].apply(lambda x: obj_type in x)]
+                        # Filter events for specific case and object type
+                        case_events = case_data[
+                            (case_data['event_id'].str.startswith(f"{case_id}_")) &
+                            (case_data['object_types'].apply(lambda x: obj_type in x))
+                            ]
 
-                        failures['incomplete_cases'].append({
-                            'case_id': case_id,
-                            'object_type': obj_type,
-                            'missing_activities': violation['missing_activities'],
-                            'completed_activities': case_events['activity'].tolist(),
-                            'events': case_events['event_id'].tolist(),
-                            'last_event': {
-                                'event_id': case_events.iloc[-1][
-                                    'event_id'] if not case_events.empty else None,
-                                'activity': case_events.iloc[-1][
-                                    'activity'] if not case_events.empty else None,
-                                'timestamp': case_events.iloc[-1][
-                                    'timestamp'] if not case_events.empty else None,
-                                'resource': case_events.iloc[-1][
-                                    'resource'] if not case_events.empty else None
-                            }
-                        })
+                        if not case_events.empty:
+                            failures['incomplete_cases'].append({
+                                'case_id': case_id,
+                                'object_type': obj_type,
+                                'missing_activities': violation['missing_activities'],
+                                'completed_activities': case_events['activity'].tolist(),
+                                'events': case_events['event_id'].tolist(),
+                                'last_event': {
+                                    'event_id': case_events.iloc[-1]['event_id'],
+                                    'activity': case_events.iloc[-1]['activity'],
+                                    'timestamp': case_events.iloc[-1]['timestamp'],
+                                    'resource': case_events.iloc[-1]['resource']
+                                }
+                            })
 
                 # Track timing violations
                 for obj_type, timing_rules in timing_thresholds.items():
@@ -1057,6 +1090,34 @@ class UnfairOCELAnalyzer:
                         color='Z-Score',
                         title='Case Complexity Outliers'
                     )
+
+                    # Add expandable documentation section
+                    with st.expander("📖 How are case complexity outliers calculated?"):
+                        st.markdown("""
+                                ### Case Complexity Outlier Detection
+
+                                This analysis identifies unusual cases by examining multiple dimensions:
+
+                                **Metrics Analyzed:**
+                                - Total events per case
+                                - Unique activities performed
+                                - Number of different resources involved
+                                - Case duration
+                                - Object type variety (diff objects involved)
+
+                                **Detection Method:**
+                                1. Calculate z-scores across all metrics using vectorized operations
+                                2. Create composite z-score by averaging absolute z-scores
+                                3. Flag cases with composite z-score > 3 as outliers
+
+                                **Types of Outliers Detected:**
+                                - Unusually complex cases (high number of events/activities)
+                                - Cases with abnormal resource patterns
+                                - Exceptionally long-running cases
+                                - Cases with unusual object type interactions
+
+                                Each outlier case includes full event traceability for detailed investigation.
+                                """)
 
             # Failure patterns
             if self.outliers.get('failures'):
