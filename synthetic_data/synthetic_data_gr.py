@@ -10,370 +10,241 @@ from collections import Counter
 # Enhanced logging setup
 logging.basicConfig(
     level=logging.INFO,
-    format='%(asctime)s - %(levelname)s - %(message)s',
-    handlers=[
-        logging.FileHandler('fx_trade_generation.log'),
-        logging.StreamHandler()
-    ]
+    format='%(asctime)s - %(levelname)s - %(message)s'
 )
 logger = logging.getLogger(__name__)
 
 
 @dataclass
-class FXTradeConfig:
-    """Enhanced configuration for different FX trade types"""
-    trade_type: str
-    traders: List[str] = field(default_factory=list)
-    currencies: List[str] = field(default_factory=list)
-    client_types: List[str] = field(default_factory=list)
-    booking_systems: List[str] = field(default_factory=list)
+class ActivitySequence:
+    """Defines expected activity sequence and timing for an object type"""
+    name: str
+    activities: List[str]
+    total_duration: float  # in hours
+    activity_durations: Dict[str, float]  # max duration for each activity
+    activity_gaps: Dict[str, float]  # max gap after each activity
 
-    # Specific configurations for different trade types
-    spot_configs: Dict = field(default_factory=lambda: {
-        "settlement_types": ["T+1", "T+2"],
-        "execution_venues": ["Primary Market", "ECN", "Direct Bank"]
-    })
 
-    forward_configs: Dict = field(default_factory=lambda: {
-        "tenor_range": ["1W", "1M", "3M", "6M", "1Y"],
-        "fixing_conventions": ["Spot", "Tom", "Today"]
-    })
+class FXTradeGenerator:
+    """Enhanced FX trade data generator with OCPM alignment"""
 
-    futures_configs: Dict = field(default_factory=lambda: {
-        "exchanges": ["CME", "ICE", "Eurex"],
-        "contract_months": ["H", "M", "U", "Z"],
-        "lot_sizes": [100000, 125000, 500000]
-    })
+    def __init__(self):
+        # Load OCPM model and thresholds
+        with open('../ocpm_output/output_ocel.json', 'r') as f:
+            self.ocpm_model = json.load(f)
+        with open('../ocpm_output/output_ocel_threshold.json', 'r') as f:
+            self.thresholds = json.load(f)
 
-    swap_configs: Dict = field(default_factory=lambda: {
-        "swap_types": ["Spot-Forward", "Forward-Forward"],
-        "tenor_pairs": ["1M-3M", "3M-6M", "6M-1Y"]
-    })
-
-    options_configs: Dict = field(default_factory=lambda: {
-        "option_types": ["Vanilla Call", "Vanilla Put", "Butterfly", "Risk Reversal"],
-        "strike_types": ["ATM", "25D", "10D"],
-        "expiry_tenors": ["1W", "1M", "3M", "6M"]
-    })
-
-    def __post_init__(self):
-        """Initialize common configurations"""
+        # Configuration for synthetic data
         self.traders = [
-            "Spot Desk A", "Forward Desk B", "Options Desk C",
-            "Market Maker D", "Hedge Desk E", "Client Desk F"
+            "Market Maker A", "Market Maker B", "Client Desk A",
+            "Options Desk A", "Hedge Desk A", "Risk Desk A"
         ]
         self.currencies = [
             "EUR/USD", "GBP/USD", "USD/JPY", "AUD/USD", "EUR/GBP",
-            "USD/CHF", "USD/CAD", "NZD/USD", "EUR/JPY", "GBP/JPY"
+            "USD/CHF", "USD/CAD", "NZD/USD"
         ]
         self.client_types = [
             "Hedge Fund", "Corporate", "Bank", "Asset Manager",
-            "Pension Fund", "Central Bank", "Broker"
+            "Pension Fund", "Central Bank"
         ]
-        self.booking_systems = [
-            "Murex", "Summit", "Calypso", "Internal", "FXAll",
-            "360T", "FXT"
-        ]
+        self.booking_systems = ["Murex", "Summit", "Calypso", "Internal"]
 
+    def _initialize_sequences(self) -> Dict[str, ActivitySequence]:
+        """Initialize activity sequences from OCPM model"""
+        sequences = {}
+        for obj_type, config in self.ocpm_model.items():
+            thresholds = self.thresholds[obj_type]
+            sequences[obj_type] = ActivitySequence(
+                name=obj_type,
+                activities=config['activities'],
+                total_duration=thresholds['total_duration_hours'],
+                activity_durations={
+                    act: thresholds['activity_thresholds'][act]['max_duration_hours']
+                    for act in config['activities']
+                },
+                activity_gaps={
+                    act: thresholds['activity_thresholds'][act]['max_gap_after_hours']
+                    for act in config['activities']
+                }
+            )
+        return sequences
 
-@dataclass
-class TradeEventGenerator:
-    """Generates trade events based on trade type"""
-    config: FXTradeConfig
-    metadata: 'MetadataTracker'
+    def generate_case_events(self, case_id: str, start_time: datetime) -> List[Dict]:
+        """Generate events with debugging to ensure Final Settlement is included"""
+        events = []
+        current_time = start_time
 
-    def generate_base_events(self) -> List[str]:
-        """Generate base event sequence common to all trade types"""
-        return [
+        # Get and verify sequence
+        trade_sequence = [
             "Trade Initiated",
-            "Market Data Validation",
-            "Quote Requested",
-            "Quote Provided",
-            "Trade Execution",
             "Trade Validation",
-            "Risk Assessment",
+            "Trade Execution",
             "Trade Confirmation",
             "Trade Matching",
-            "Settlement Instructions",
-            "Position Reconciliation",
-            "Trade Reconciliation"
-        ]
-
-    def generate_trade_specific_events(self) -> List[str]:
-        """Generate trade type specific events"""
-        specific_events = {
-            "SPOT": [
-                "Rate Lock",
-                "Payment Instructions",
-                "Funds Verification",
-                "T+1 Settlement Processing"
-            ],
-            "FORWARD": [
-                "Forward Points Calculation",
-                "Credit Line Check",
-                "Forward Value Date Confirmation",
-                "Margin Calculation"
-            ],
-            "FUTURES": [
-                "Exchange Connectivity Check",
-                "Margin Requirement Calculation",
-                "Clearing House Submission",
-                "Position Marking"
-            ],
-            "SWAP": [
-                "Swap Points Calculation",
-                "Term Structure Analysis",
-                "Cash Flow Generation",
-                "Swap Reset Confirmation"
-            ],
-            "OPTIONS": [
-                "Volatility Surface Analysis",
-                "Premium Calculation",
-                "Greeks Calculation",
-                "Exercise Decision"
-            ]
-        }
-        return specific_events.get(self.config.trade_type.upper(), [])
-
-    def generate_regulatory_events(self) -> List[str]:
-        """Generate regulatory compliance events"""
-        return [
-            "Transaction Reporting Check",
-            "Best Execution Validation",
+            "Trade Reconciliation",
             "Trade Transparency Assessment",
-            "Regulatory Reporting Generation"
+            "Final Settlement"  # Must be included
         ]
 
+        print(f"Generating case {case_id} with sequence: {trade_sequence}")  # Debug print
 
-class MetadataTracker:
-    """Enhanced metadata tracking for different trade types"""
-
-    def __init__(self, trade_type: str):
-        self.trade_type = trade_type
-        self.total_events = 0
-        self.total_cases = 0
-        self.activity_counts = Counter()
-        self.field_usage = Counter()
-        self.client_type_distribution = Counter()
-        self.currency_pair_distribution = Counter()
-        self.avg_activities_per_case = 0
-        self.path_variations = set()
-        self.trade_specific_metrics = {}
-
-    def track_trade_specific_metrics(self, metrics: Dict):
-        """Track metrics specific to trade type"""
-        self.trade_specific_metrics.update(metrics)
-
-    def to_dict(self) -> Dict:
-        """Convert metadata to dictionary"""
-        return {
-            "trade_type": self.trade_type,
-            "total_events": self.total_events,
-            "total_cases": self.total_cases,
-            "activity_distribution": dict(self.activity_counts),
-            "field_usage": dict(self.field_usage),
-            "client_type_distribution": dict(self.client_type_distribution),
-            "currency_pair_distribution": dict(self.currency_pair_distribution),
-            "avg_activities_per_case": self.avg_activities_per_case,
-            "unique_path_variations": len(self.path_variations),
-            "trade_specific_metrics": self.trade_specific_metrics
+        characteristics = {
+            'resource': random.choice(self.traders),
+            'currency_pair': random.choice(self.currencies),
+            'client_type': random.choice(self.client_types),
+            'booking_system': random.choice(self.booking_systems),
+            'notional_amount': random.randint(1000000, 50000000)
         }
 
+        # Track what we're generating
+        generated_activities = []
 
-def generate_fx_trade_data(trade_type: str, num_cases: int = 30000) -> pd.DataFrame:
-    """Main function to generate FX trade data for specific trade type"""
-    logger.info(f"Starting {trade_type} trade data generation for {num_cases} cases")
+        for activity in trade_sequence:
+            duration = random.uniform(0.1, 0.5)
+            gap = random.uniform(0.1, 0.3)
 
-    # Initialize configuration and tracking
-    config = FXTradeConfig(trade_type=trade_type)
-    metadata = MetadataTracker(trade_type)
-    generator = TradeEventGenerator(config, metadata)
+            event = {
+                'case_id': case_id,
+                'activity': activity,
+                'timestamp': current_time,
+                'object_type': 'Trade',
+                **characteristics
+            }
+            events.append(event)
+            generated_activities.append(activity)
+            current_time += timedelta(hours=duration + gap)
 
-    event_log = []
-    start_time = datetime.now()
+        # Verify Final Settlement was included
+        if "Final Settlement" not in generated_activities:
+            raise ValueError(f"Failed to generate Final Settlement for case {case_id}")
 
-    # Initialize metadata counters
-    metadata.total_cases = num_cases
-    total_events = 0
+        print(f"Case {case_id} activities: {generated_activities}")  # Debug print
+        return events
 
-    for case_id in range(1, num_cases + 1):
-        if case_id % 1000 == 0:
-            logger.info(f"Generated {case_id} cases...")
+    def generate_fx_trade_data(self, num_cases: int = 1000) -> pd.DataFrame:
+        """Generate dataset with verification of Final Settlement and CSV output"""
+        all_events = []
+        start_date = datetime.now() - timedelta(days=30)
 
-        # Generate trade characteristics
-        trade_chars = generate_trade_characteristics(config)
+        print("Starting data generation...")  # Debug print
 
-        # Track distributions
-        metadata.client_type_distribution[trade_chars['client_type']] += 1
-        metadata.currency_pair_distribution[trade_chars['currency']] += 1
+        # Generate base cases
+        for case_num in range(num_cases):
+            case_id = f"Case_{case_num:05d}"
+            case_start = start_date + timedelta(minutes=random.randint(0, 43200))
+            case_events = self.generate_case_events(case_id, case_start)
 
-        # Build event sequence
-        events = generator.generate_base_events()
-        events.extend(generator.generate_trade_specific_events())
+            # Verify this case has Final Settlement
+            if not any(e['activity'] == "Final Settlement" for e in case_events):
+                raise ValueError(f"Case {case_id} missing Final Settlement after generation")
 
-        if random.random() < 0.4:  # 40% chance of regulatory events
-            events.extend(generator.generate_regulatory_events())
+            all_events.extend(case_events)
 
-        # Track path variation
-        metadata.path_variations.add(tuple(events))
+            if case_num % 100 == 0:
+                print(f"Generated {case_num} cases...")
 
-        # Generate event sequence
-        case_events = generate_event_sequence(
-            case_id, events, trade_chars, config, metadata
-        )
+        # Convert to DataFrame
+        df = pd.DataFrame(all_events)
 
-        # Update event count
-        total_events += len(case_events)
-        event_log.extend(case_events)
+        # Verify before injecting outliers
+        total_cases = df['case_id'].nunique()
+        cases_with_settlement = df[df['activity'] == "Final Settlement"]['case_id'].nunique()
+        print(f"Before outliers: {total_cases} total cases, {cases_with_settlement} with Final Settlement")
 
-    # Update metadata
-    metadata.total_events = total_events
+        if total_cases != cases_with_settlement:
+            raise ValueError(f"Missing Final Settlement in {total_cases - cases_with_settlement} cases before outliers")
 
-    # Process and save metadata
-    process_metadata(metadata, start_time)
+        # Now inject a small number of controlled outliers
+        df = self.inject_controlled_outliers(df)
 
-    # Create and save DataFrame
-    df = pd.DataFrame(event_log)
-    df.sort_values(by=["case_id", "timestamp"], inplace=True)
+        # Verify after outliers
+        final_cases_with_settlement = df[df['activity'] == "Final Settlement"]['case_id'].nunique()
+        missing_settlement = total_cases - final_cases_with_settlement
+        print(f"After outliers: {missing_settlement} cases missing Final Settlement")
 
-    output_path = f"fx_trade_log_{trade_type.lower()}.csv"
-    df.to_csv(output_path, sep=';', index=False)
+        if missing_settlement > 10:  # We want fewer than 10 incomplete cases
+            raise ValueError(f"Too many cases missing Final Settlement: {missing_settlement}")
 
-    logger.info(f"Generated {trade_type} trade data saved to {output_path}")
-    logger.info(f"Total events generated: {total_events}")
-    logger.info(f"Average events per case: {total_events / num_cases:.2f}")
+        # Sort and save to CSV
+        df = df.sort_values(['case_id', 'timestamp'])
+        output_path = f"fx_trade_log_{datetime.now().strftime('%Y%m%d_%H%M')}.csv"
+        df.to_csv(output_path, index=False)
+        logger.info(f"Generated {len(df)} events across {df['case_id'].nunique()} cases")
+        logger.info(f"Data saved to {output_path}")
 
-    return df
+        return df
 
+    def inject_controlled_outliers(self, df: pd.DataFrame) -> pd.DataFrame:
+        """Inject small number of controlled outliers"""
+        df = df.copy()
+        case_ids = list(df['case_id'].unique())
 
-def generate_trade_characteristics(config: FXTradeConfig) -> Dict:
-    """Generate characteristics specific to trade type"""
-    base_chars = {
-        "client_type": random.choice(config.client_types),
-        "currency": random.choice(config.currencies),
-        "trader": random.choice(config.traders),
-        "booking_system": random.choice(config.booking_systems)
-    }
+        # Select exactly 8 cases for incompleteness
+        incomplete_cases = random.sample(case_ids, 8)
 
-    # Add trade-type specific characteristics
-    if config.trade_type == "SPOT":
-        base_chars.update({
-            "settlement_type": random.choice(config.spot_configs["settlement_types"]),
-            "execution_venue": random.choice(config.spot_configs["execution_venues"])
-        })
-    elif config.trade_type == "FORWARD":
-        base_chars.update({
-            "tenor": random.choice(config.forward_configs["tenor_range"]),
-            "fixing_convention": random.choice(config.forward_configs["fixing_conventions"])
-        })
-    # Add similar blocks for other trade types
+        for case_id in incomplete_cases:
+            case_mask = df['case_id'] == case_id
+            case_events = df[case_mask]
 
-    return base_chars
+            # Find Final Settlement event and remove it
+            final_settlement_mask = (case_mask) & (df['activity'] == 'Final Settlement')
+            if any(final_settlement_mask):
+                df = df.drop(df[final_settlement_mask].index)
 
+        # Add other outlier types (sequence violations, etc.)
+        remaining_cases = [c for c in case_ids if c not in incomplete_cases]
+        other_outliers = random.sample(remaining_cases, 20)  # 20 cases for other outlier types
 
-def generate_event_sequence(case_id: int, events: List[str],
-                            trade_chars: Dict, config: FXTradeConfig,
-                            metadata: MetadataTracker) -> List[Dict]:
-    """Generate properly sequenced events with timestamps"""
-    sequence = []
-    start_time = datetime.now() + timedelta(days=random.randint(-30, 0))
+        current_idx = 0
+        for outlier_type in ['sequence_violation', 'resource_switch', 'long_running', 'rework_activity']:
+            cases_for_type = other_outliers[current_idx:current_idx + 5]
+            current_idx += 5
 
-    for i, event in enumerate(events):
-        timestamp = start_time + timedelta(minutes=random.randint(10, 60) * i)
+            for case_id in cases_for_type:
+                case_mask = df['case_id'] == case_id
+                case_events = df[case_mask]
 
-        event_data = {
-            "case_id": f"Case_{case_id}",
-            "activity": event,
-            "timestamp": timestamp,
-            **trade_chars  # Include all trade characteristics
-        }
+                if outlier_type == 'sequence_violation':
+                    # Swap two adjacent non-Final-Settlement activities
+                    non_final_events = case_events[case_events['activity'] != 'Final Settlement']
+                    if len(non_final_events) >= 2:
+                        idx1, idx2 = non_final_events.index[0:2]
+                        timestamps = df.loc[[idx1, idx2], 'timestamp'].values
+                        df.loc[idx1, 'timestamp'] = timestamps[1]
+                        df.loc[idx2, 'timestamp'] = timestamps[0]
 
-        # Add event-specific fields
-        event_data.update(generate_event_specific_fields(event, config.trade_type))
+                elif outlier_type == 'resource_switch':
+                    # Switch resources mid-sequence
+                    mid_events = case_events[case_events['activity'] != 'Final Settlement'].index[1:-1]
+                    if len(mid_events) >= 2:
+                        for idx in mid_events[:2]:
+                            new_resource = random.choice([r for r in self.traders if r != df.loc[idx, 'resource']])
+                            df.loc[idx, 'resource'] = new_resource
 
-        # Track metadata
-        metadata.activity_counts[event] += 1
-        metadata.field_usage.update(event_data.keys())
+                elif outlier_type == 'long_running':
+                    # Add delay before Final Settlement
+                    non_final_mask = (case_mask) & (df['activity'] != 'Final Settlement')
+                    if any(non_final_mask):
+                        df.loc[non_final_mask, 'timestamp'] += pd.Timedelta(hours=4)
 
-        sequence.append(event_data)
+                elif outlier_type == 'rework_activity':
+                    # Repeat a mid-sequence activity
+                    repeatable = case_events[case_events['activity'].isin(['Trade Validation', 'Trade Matching'])]
+                    if not repeatable.empty:
+                        activity_to_repeat = repeatable.iloc[0]
+                        new_row = activity_to_repeat.copy()
+                        new_row['timestamp'] += pd.Timedelta(hours=2)
+                        df = pd.concat([df, pd.DataFrame([new_row])], ignore_index=True)
 
-    return sequence
-
-
-def generate_event_specific_fields(event: str, trade_type: str) -> Dict:
-    """Generate fields specific to event and trade type"""
-    fields = {}
-
-    if "Execution" in event:
-        fields.update({
-            "execution_price": round(random.uniform(0.9, 1.1), 4),
-            "notional_amount": random.randint(1000000, 50000000),
-            "execution_time": round(random.uniform(0.01, 0.5), 3)  # in seconds
-        })
-
-    if "Risk" in event:
-        fields.update({
-            "risk_score": round(random.uniform(1, 5), 2),
-            "limit_usage": f"{random.randint(0, 100)}%"
-        })
-
-    # Add trade-type specific fields
-    if trade_type == "OPTIONS" and "Greeks" in event:
-        fields.update({
-            "delta": round(random.uniform(-1, 1), 2),
-            "gamma": round(random.uniform(0, 0.2), 3),
-            "vega": round(random.uniform(0, 50000), 2),
-            "theta": round(random.uniform(-1000, 0), 2)
-        })
-
-    return fields
-
-
-def process_metadata(metadata: MetadataTracker, start_time: datetime):
-    """Process and save metadata"""
-    # Calculate average activities per case
-    if metadata.total_cases > 0:  # Add safety check
-        metadata.avg_activities_per_case = metadata.total_events / metadata.total_cases
-    else:
-        metadata.avg_activities_per_case = 0
-        logger.warning("No cases processed in metadata")
-
-    # Save metadata
-    metadata_file = f'event_log_metadata_{metadata.trade_type.lower()}.json'
-    with open(metadata_file, 'w') as f:
-        json.dump(metadata.to_dict(), f, indent=4)
-
-    # Log generation statistics
-    duration = datetime.now() - start_time
-    logger.info(f"\n=== {metadata.trade_type} Trade Generation Complete ===")
-    logger.info(f"Duration: {duration}")
-    logger.info(f"Total events: {metadata.total_events}")
-    logger.info(f"Total cases: {metadata.total_cases}")
-    logger.info(f"Average activities per case: {metadata.avg_activities_per_case:.2f}")
-    logger.info(f"Unique path variations: {len(metadata.path_variations)}")
-    logger.info(f"Metadata saved to: {metadata_file}")
+        return df.sort_values(['case_id', 'timestamp'])
 
 
 def main():
-    """Generate data for all FX trade types"""
-    trade_types = ["SPOT", "FORWARD", "FUTURES", "OPTIONS", "SWAP"]
-    start_time = datetime.now()
-
-    logger.info("Starting FX trade data generation")
-
-    try:
-        for trade_type in trade_types:
-            logger.info(f"\nGenerating {trade_type} trade data...")
-            df = generate_fx_trade_data(trade_type)
-            logger.info(f"Completed {trade_type} generation. DataFrame shape: {df.shape}")
-
-    except Exception as e:
-        logger.error(f"Error during generation: {str(e)}")
-        raise
-
-    finally:
-        duration = datetime.now() - start_time
-        logger.info(f"\nTotal generation time: {duration}")
+    """Generate FX trade data with proper OCPM alignment"""
+    generator = FXTradeGenerator()
+    df = generator.generate_fx_trade_data()
+    logger.info(f"Generated {len(df)} events across {df['case_id'].nunique()} cases")
 
 
 if __name__ == "__main__":

@@ -157,7 +157,7 @@ class IntegratedAPAAnalyzer:
 
 def run_unfairness_analysis():
     """Run unfairness analysis"""
-    st.subheader("Unfairness Analysis")
+    st.subheader("Outlier Analysis")
     ocel_path = st.session_state.get('ocel_path') or find_ocel_file()
 
     if not ocel_path or not os.path.exists(ocel_path):

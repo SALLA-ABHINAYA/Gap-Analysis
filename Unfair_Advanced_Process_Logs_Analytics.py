@@ -639,6 +639,15 @@ class UnfairOCELAnalyzer:
                 'object_types': [obj.get('type', 'Unknown') for obj in event.get('ocel:objects', [])]
             } for event in self.ocel_data['ocel:events']])
 
+            pd.set_option('display.max_rows', None)
+            pd.set_option('display.max_columns', None)
+            pd.set_option('display.width', None)
+            pd.set_option('display.expand_frame_repr', False)
+
+            logger.info(" events_df Build up [start]")
+            logger.info("\n%s", events_df)
+            logger.info(" events_df Build up [end]")
+
             # Calculate case metrics using vectorized operations
             case_metrics = events_df.groupby('case_id').agg({
                 'event_id': 'count',
@@ -653,6 +662,10 @@ class UnfairOCELAnalyzer:
                 'timestamp': 'duration_hours',
                 'object_types': 'object_variety'
             })
+
+            logger.info(" case_metrics Build up [start]")
+            logger.info("\n%s", case_metrics)
+            logger.info(" case_metrics Build up [end]")
 
             # Calculate z-scores for all metrics at once
             z_scores = pd.DataFrame()
