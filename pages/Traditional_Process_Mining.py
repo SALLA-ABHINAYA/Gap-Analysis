@@ -5,15 +5,20 @@ from pm4py.visualization.petri_net import visualizer as pn_visualizer
 from pm4py.visualization.process_tree import visualizer as pt_visualizer
 from pm4py.visualization.bpmn import visualizer as bpmn_visualizer
 import os
-
-
 import plotly.graph_objects as go
 from process_mining_enhanced import FXProcessMining
 from risk_analysis import ProcessRiskAnalyzer, EnhancedFMEA
 
-# # Set up Graphviz path
+
+# Set up Graphviz path based on environment
 azure_file_path = os.getenv("AZURE_FILE_PATH")
-os.environ["PATH"] += azure_file_path
+if azure_file_path:
+    # We're in Azure
+    os.environ["PATH"] = os.environ["PATH"] + ":" + azure_file_path
+else:
+    # We're in Windows local environment
+    graphviz_path = "C:\\samadhi\\technology\\Graphviz\\bin"
+    os.environ["PATH"] = os.environ["PATH"] + ";" + graphviz_path
 
 
 def create_directories():
@@ -290,5 +295,4 @@ def main():
         """, unsafe_allow_html=True)
 
 
-if __name__ == "__main__":
-    main()
+main()
