@@ -1129,10 +1129,68 @@ class UnfairOCELAnalyzer:
         """Display enhanced analysis with comprehensive outlier tracing"""
         try:
             # Create tabs for different analyses
-            tabs = st.tabs(["Resource Outlier", "Time Outlier", "Case Outlier       ", "Failure Patterns"])
+            tabs = st.tabs(["Failure Patterns", "Resource Outlier", "Time Outlier", "Case Outlier"])
+
+            # Failure Patterns Tab
+            with tabs[0]:
+                logger.debug("Processing Failure Patterns tab")
+                col1, col2 = st.columns([2, 1])
+
+                with col1:
+                    failure_counts = {
+                        'Sequence Violations': len(self.outliers['failures']['sequence_violations']),
+                        'Incomplete Cases': len(self.outliers['failures']['incomplete_cases']),
+                        'Long Running': len(self.outliers['failures']['long_running']),
+                        'Resource Switches': len(self.outliers['failures']['resource_switches']),
+                        'Rework Activities': len(self.outliers['failures']['rework_activities'])
+                    }
+
+                    fig = go.Figure(data=[
+                        go.Bar(
+                            x=list(failure_counts.keys()),
+                            y=list(failure_counts.values()),
+                            text=list(failure_counts.values()),
+                            textposition='auto',
+                        )
+                    ])
+
+                    fig.update_layout(
+                        title='Process Failure Patterns Distribution',
+                        xaxis_title='Failure Pattern Type',
+                        yaxis_title='Count',
+                        showlegend=False
+                    )
+                    st.plotly_chart(fig)
+
+                    # Show failure details in expandable sections
+                    for pattern, failures in self.outliers['failures'].items():
+                        if failures:
+                            with st.expander(f"{pattern.replace('_', ' ').title()} ({len(failures)})"):
+                                failure_df = pd.DataFrame(failures)
+                                st.dataframe(failure_df)
+
+                with col2:
+                    failure_metrics = {
+                        'sequence_violations': len(self.outliers['failures']['sequence_violations']),
+                        'incomplete_cases': len(self.outliers['failures']['incomplete_cases']),
+                        'long_running': len(self.outliers['failures']['long_running'])
+                    }
+                    st.markdown("### Understanding Failure Patterns")
+                    explanation = self.get_explanation('failure', failure_metrics)
+                    st.write(explanation.get('summary', ''))
+
+                    if explanation.get('insights'):
+                        st.write("#### Key Insights")
+                        for insight in explanation['insights']:
+                            st.write(f"• {insight}")
+
+                    if explanation.get('recommendations'):
+                        st.write("#### Recommendations")
+                        for rec in explanation['recommendations']:
+                            st.write(f"• {rec}")
 
             # Resource Analysis Tab
-            with tabs[0]:
+            with tabs[1]:
                 logger.debug("Processing Resource Analysis tab")
                 col1, col2 = st.columns([2, 1])
 
@@ -1267,7 +1325,7 @@ class UnfairOCELAnalyzer:
                             st.write(f"• {rec}")
 
             # Inside Time Analysis Tab section of display_enhanced_analysis method
-            with tabs[1]:  # Time Analysis Tab
+            with tabs[2]:  # Time Analysis Tab
                 col1, col2 = st.columns([2, 1])
 
                 with col1:
@@ -1379,7 +1437,7 @@ class UnfairOCELAnalyzer:
                             st.write(f"• {rec}")
 
             # Case Analysis Tab
-            with tabs[2]:
+            with tabs[3]:
                 logger.debug("Processing Case Analysis tab")
                 col1, col2 = st.columns([2, 1])
 
@@ -1504,64 +1562,6 @@ class UnfairOCELAnalyzer:
                     }
                     st.markdown("### Understanding Case Complexity")
                     explanation = self.get_explanation('case', case_metrics)
-                    st.write(explanation.get('summary', ''))
-
-                    if explanation.get('insights'):
-                        st.write("#### Key Insights")
-                        for insight in explanation['insights']:
-                            st.write(f"• {insight}")
-
-                    if explanation.get('recommendations'):
-                        st.write("#### Recommendations")
-                        for rec in explanation['recommendations']:
-                            st.write(f"• {rec}")
-
-            # Failure Patterns Tab
-            with tabs[3]:
-                logger.debug("Processing Failure Patterns tab")
-                col1, col2 = st.columns([2, 1])
-
-                with col1:
-                    failure_counts = {
-                        'Sequence Violations': len(self.outliers['failures']['sequence_violations']),
-                        'Incomplete Cases': len(self.outliers['failures']['incomplete_cases']),
-                        'Long Running': len(self.outliers['failures']['long_running']),
-                        'Resource Switches': len(self.outliers['failures']['resource_switches']),
-                        'Rework Activities': len(self.outliers['failures']['rework_activities'])
-                    }
-
-                    fig = go.Figure(data=[
-                        go.Bar(
-                            x=list(failure_counts.keys()),
-                            y=list(failure_counts.values()),
-                            text=list(failure_counts.values()),
-                            textposition='auto',
-                        )
-                    ])
-
-                    fig.update_layout(
-                        title='Process Failure Patterns Distribution',
-                        xaxis_title='Failure Pattern Type',
-                        yaxis_title='Count',
-                        showlegend=False
-                    )
-                    st.plotly_chart(fig)
-
-                    # Show failure details in expandable sections
-                    for pattern, failures in self.outliers['failures'].items():
-                        if failures:
-                            with st.expander(f"{pattern.replace('_', ' ').title()} ({len(failures)})"):
-                                failure_df = pd.DataFrame(failures)
-                                st.dataframe(failure_df)
-
-                with col2:
-                    failure_metrics = {
-                        'sequence_violations': len(self.outliers['failures']['sequence_violations']),
-                        'incomplete_cases': len(self.outliers['failures']['incomplete_cases']),
-                        'long_running': len(self.outliers['failures']['long_running'])
-                    }
-                    st.markdown("### Understanding Failure Patterns")
-                    explanation = self.get_explanation('failure', failure_metrics)
                     st.write(explanation.get('summary', ''))
 
                     if explanation.get('insights'):

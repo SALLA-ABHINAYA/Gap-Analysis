@@ -22,11 +22,6 @@ ENV AZURE_FILE_PATH=/mnt/azure/graphviz-12.2.0.zip
 
 COPY . .
 
-RUN python synthetic_data/synthetic_data_gr.py
-
-HEALTHCHECK CMD curl --fail http://localhost:8501/_stcore/health
-
-
 CMD ["streamlit","run","IRMAI.py","--server.port","8501"]
 
 
