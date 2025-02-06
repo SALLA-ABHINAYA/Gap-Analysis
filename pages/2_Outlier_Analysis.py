@@ -152,6 +152,7 @@ class IntegratedAPAAnalyzer:
 
         return figures
 
+
 def run_unfairness_analysis():
     """Run unfairness analysis"""
     st.subheader("Outlier Analysis")
@@ -262,7 +263,7 @@ def setup_apa_page():
 
 if __name__ == "__main__":
     st.set_page_config(
-        page_title="IRMAI APA Analytics",
+        page_title="IRMAI APA Analysis",
         page_icon="📊",
         layout="wide"
     )

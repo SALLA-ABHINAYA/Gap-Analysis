@@ -1668,7 +1668,7 @@ class UnfairOCELAnalyzer:
             st.error(f"Error showing case details: {str(e)}")
 
     def _display_timing_gaps(self, duration_data: Dict):
-        """Helper method to display timing gap analysis"""
+        """Helper method to display timing gap analysis using pandas styling"""
         try:
             timing_gaps = []
             for activity, metrics in duration_data.items():
@@ -1677,44 +1677,23 @@ class UnfairOCELAnalyzer:
                         prev_event = self._get_event_details(violation['details'].get('previous_event', ''))
 
                         timing_gaps.append({
+                            'Case ID': violation.get('case_id', 'Unknown'),
                             'Current Activity': activity,
                             'Previous Activity': prev_event.get('Activity', 'Unknown'),
-                            'Gap (Minutes)': violation['details'].get('time_gap_minutes', 0),
-                            'Threshold': violation['details'].get('threshold_minutes', 0),
-                            'Case ID': violation.get('case_id', 'Unknown')
+                            'Gap (Minutes)': round(violation['details'].get('time_gap_minutes', 0), 2),
+                            'Threshold': violation['details'].get('threshold_minutes', 0)
                         })
 
             if timing_gaps:
                 st.write("### Timing Gap Analysis")
                 df = pd.DataFrame(timing_gaps)
 
-                gap_table = go.Figure(data=[go.Table(
-                    header=dict(
-                        values=['Case ID', 'Current Activity', 'Previous Activity', 'Gap (Minutes)', 'Threshold'],
-                        fill_color='paleturquoise',
-                        align='left'
-                    ),
-                    cells=dict(
-                        values=[
-                            df['Case ID'],
-                            df['Current Activity'],
-                            df['Previous Activity'],
-                            df['Gap (Minutes)'].round(2),
-                            df['Threshold']
-                        ],
-                        fill_color=[
-                            ['pink' if gap > thresh else 'lightgreen'
-                             for gap, thresh in zip(df['Gap (Minutes)'], df['Threshold'])]
-                        ],
-                        align='left'
-                    )
-                )])
+                def highlight_gaps(row):
+                    return ['background-color: #ffcdd2' if row['Gap (Minutes)'] > row['Threshold']
+                            else 'background-color: #ffffff' for _ in row]
 
-                gap_table.update_layout(
-                    title="Detailed Timing Gap Analysis",
-                    height=400
-                )
-                st.plotly_chart(gap_table, use_container_width=True)
+                styled_df = df.style.apply(highlight_gaps, axis=1)
+                st.dataframe(styled_df)
 
         except Exception as e:
             logger.error(f"Error displaying timing gaps: {str(e)}")
@@ -1734,6 +1713,184 @@ class UnfairOCELAnalyzer:
             # Failure Patterns Tab
             with tabs[0]:
                 logger.debug("Processing Failure Patterns tab")
+                with st.expander("Failure Pattern Detection Logic"):
+                    st.markdown("""
+                    # Understanding Failure Pattern Detection
+
+                    ## Overview
+                    The failure pattern detection system analyzes object-centric event logs to identify various types of process deviations and anomalies. It monitors six key categories of failures:
+                    
+                    1. Sequence Violations
+                    2. Incomplete Cases
+                    3. Long Running Cases
+                    4. Resource Switches  
+                    5. Rework Activities
+                    6. Timing Violations
+                    
+                    ## Detection Process
+                    
+                    ### Data Preparation
+                    The system first organizes event data into a structured format containing:
+                    - Event IDs
+                    - Timestamps
+                    - Activities
+                    - Resources
+                    - Object Types
+                    - Object IDs
+                    
+                    ### Failure Categories in Detail
+                    
+                    #### 1. Sequence Violations
+                    ```python
+                    actual_sequence = case_data[...]['activity'].tolist()
+                    if actual_sequence != expected_sequence:
+                        # Track violation details
+                    ```
+                    - Compares actual activity sequence against expected flow
+                    - Records:
+                      - Missing activities
+                      - Wrong order activities
+                      - First violation point
+                      - Affected objects
+                    
+                    #### 2. Incomplete Cases
+                    ```python
+                    if violation['missing_activities']:
+                        # Track incomplete case details
+                    ```
+                    - Identifies cases missing required activities
+                    - Tracks:
+                      - Missing activities list
+                      - Completed activities
+                      - Last known event
+                      - Case context
+                    
+                    #### 3. Timing Violations
+                    ```python
+                    if case_duration > timing_rules['total_duration']:
+                        # Track timing violation details
+                    ```
+                    Monitors two types of timing issues:
+                    - Overall case duration exceeding thresholds
+                    - Activity-specific gaps between events
+                    - Records detailed gap analysis including:
+                      - Previous activity
+                      - Current activity
+                      - Gap duration
+                      - Threshold exceeded
+                    
+                    #### 4. Resource Switches
+                    ```python
+                    resource_changes = [(i, sequence[i], sequence[i+1])
+                                       for i in range(len(sequence)-1)
+                                       if sequence[i] != sequence[i+1]]
+                    ```
+                    - Detects handovers between different resources
+                    - Tracks:
+                      - Switch points
+                      - From/To resources
+                      - Associated activities
+                      - Timestamps
+                    
+                    #### 5. Rework Activities
+                    ```python
+                    activity_counts = case_data['activity'].value_counts()
+                    rework = activity_counts[activity_counts > 1]
+                    ```
+                    - Identifies repeated activities
+                    - Records:
+                      - Activity frequency
+                      - Event sequences
+                      - Resources involved
+                      - Timestamps
+                    
+                    ## Visualization Components
+                    
+                    The failure pattern analysis is displayed in four key components:
+                    
+                    1. **Pattern Distribution Bar Chart**
+                       - Shows count of each failure type
+                       - Color-coded by severity
+                       - Interactive tooltips with details
+                    
+                    2. **Detailed Pattern Analysis**
+                       - Expandable sections for each pattern type
+                       - Tabular view of specific failures
+                       - Sorting and filtering capabilities
+                    
+                    3. **Metrics Summary**
+                       - Key statistics about detected patterns
+                       - Trend indicators
+                       - Severity distribution
+                    
+                    4. **AI-Generated Insights**
+                       - Pattern interpretation
+                       - Key findings
+                       - Improvement recommendations
+                    
+                    ## Usage in Process Analysis
+                    
+                    This failure pattern detection helps organizations:
+                    1. Identify process bottlenecks
+                    2. Monitor compliance violations
+                    3. Optimize resource allocation
+                    4. Improve process efficiency
+                    5. Ensure quality control
+                    
+                    ## Implementation Details
+                    
+                    The code implements several advanced features:
+                    - Full event traceability
+                    - Multi-perspective analysis
+                    - Object-centric correlation
+                    - Temporal pattern detection
+                    - Resource interaction analysis
+                    
+                    ## Data Structure Example
+                    
+                    A typical failure pattern record looks like:
+                    ```json
+                    {
+                      "case_id": "Case_1",
+                      "object_type": "Trade",
+                      "actual_sequence": ["A", "B", "D"],
+                      "expected_sequence": ["A", "B", "C", "D"],
+                      "missing_activities": ["C"],
+                      "events": ["evt_1", "evt_2", "evt_4"],
+                      "first_violation": {
+                        "event_id": "evt_2",
+                        "timestamp": "2024-01-01T10:00:00",
+                        "resource": "Trader_A"
+                      }
+                    }
+                    ```
+                    
+                    ## Performance Considerations
+                    
+                    The detection system is optimized for:
+                    - Efficient data processing
+                    - Minimal memory footprint
+                    - Real-time analysis capability
+                    - Scalable pattern detection
+                    
+                    ## Error Handling
+                    
+                    The system includes comprehensive error handling:
+                    - Data validation
+                    - Exception logging
+                    - Graceful degradation
+                    - Recovery mechanisms
+                    
+                    ## Integration Points
+                    
+                    The failure pattern detection integrates with:
+                    - Process mining analytics
+                    - Conformance checking
+                    - Performance analysis
+                    - Resource optimization
+                    
+                    
+                    """)
 
                 # Validate failures data exists
                 failures_data = self.outliers.get('failures', {})
@@ -1790,17 +1947,17 @@ class UnfairOCELAnalyzer:
                         st.markdown("### Understanding Failure Patterns")
                         try:
                             explanation = self.get_explanation('failure', failure_metrics)
-                            st.write(explanation.get('summary', 'No summary available'))
+                            st.markdown(explanation.get('summary', 'No summary available'))
 
                             if explanation.get('insights'):
-                                st.write("#### Key Insights")
+                                st.markdown("#### Key Insights")
                                 for insight in explanation['insights']:
-                                    st.write(f"• {insight}")
+                                    st.markdown(f"• {insight}")
 
                             if explanation.get('recommendations'):
-                                st.write("#### Recommendations")
+                                st.markdown("#### Recommendations")
                                 for rec in explanation['recommendations']:
-                                    st.write(f"• {rec}")
+                                    st.markdown(f"• {rec}")
                         except Exception as e:
                             logger.error(f"Error getting explanation: {str(e)}")
                             st.error("Unable to generate insights at this time")
@@ -1808,8 +1965,85 @@ class UnfairOCELAnalyzer:
             # Resource Analysis Tab
             with tabs[1]:
                 logger.debug("Processing Resource Analysis tab")
+                with st.expander("📊 Resource Complexity Detection Logic"):
+                    st.markdown("""
+                    # Understanding Resource Complexity Detection
 
-                # Validate resource data exists
+                    ## Overview
+                    The visualization shows resource workload distribution in object-centric process mining (OCPM), highlighting potential outliers in how resources interact with different process objects and activities.
+                    
+                    ## Metrics Calculation
+                    
+                    ### Base Metrics
+                    - **Total Events**: Raw count of events handled by each resource
+                    - **Unique Cases**: Number of distinct cases a resource works on
+                    - **Activity Variety**: Number of different activities performed
+                    - **Object Variety**: Unique object types handled
+                    
+                    ### Z-Score Analysis
+                    The code calculates normalized z-scores for each metric using:
+                    ```
+                    z = (value - mean) / standard_deviation
+                    ```
+                    
+                    ### Composite Score
+                    A composite z-score is generated by averaging absolute z-scores across all metrics to identify overall outliers.
+                    
+                    ## Visualization Components
+                    
+                    ### Scatter Plot Elements
+                    - **X-axis**: Individual resources
+                    - **Y-axis**: Composite z-score
+                    - **Bubble Size**: Total event count
+                    - **Color**: Outlier status (z-score > 3)
+                    
+                    ### Interactive Features
+                    - Hover shows detailed metrics
+                    - Selection enables detailed resource analysis
+                    
+                    ## Outlier Detection
+                    
+                    ### Workload Patterns
+                    - **High Workload**: Events > mean + 2*std
+                    - **High Variety**: Activity count > mean + 2*std
+                    
+                    ### Resource Classification
+                    Resources are flagged as outliers when:
+                    - Composite z-score > 3
+                    - Showing unusual patterns in:
+                      - Event volume
+                      - Case variety
+                      - Activity diversity
+                      - Object type interactions
+                    
+                    ## Interpretation Guide
+                    
+                    ### Normal Resource Profile
+                    - Balanced workload distribution
+                    - Expected activity variety
+                    - Typical object type interactions
+                    
+                    ### Outlier Indicators
+                    - Unusually high/low event counts
+                    - Excessive activity variety
+                    - Abnormal object type interactions
+                    - Extreme composite z-scores
+                    
+                    ### Business Impact
+                    - Resource overloading
+                    - Specialization vs. generalization
+                    - Process bottlenecks
+                    - Workload imbalances
+                    
+                    ## Technical Implementation Notes
+                    The implementation uses vectorized operations in pandas for efficiency:
+                    - Grouped aggregations
+                    - Vectorized z-score calculations
+                    - Optimized outlier detection
+                    
+                    """)
+
+                    # Validate resource data exists
                 resource_data = self.outliers.get('resource_load', {})
                 if not resource_data:
                     st.warning("No resource analysis data available")
@@ -1893,17 +2127,17 @@ class UnfairOCELAnalyzer:
                         st.markdown("### Understanding Resource Distribution")
                         try:
                             explanation = self.get_explanation('resource', workload_metrics)
-                            st.write(explanation.get('summary', 'No summary available'))
+                            st.markdown(explanation.get('summary', 'No summary available'))
 
                             if explanation.get('insights'):
-                                st.write("#### Key Insights")
+                                st.markdown("#### Key Insights")
                                 for insight in explanation['insights']:
-                                    st.write(f"• {insight}")
+                                    st.markdown(f"• {insight}")
 
                             if explanation.get('recommendations'):
-                                st.write("#### Recommendations")
+                                st.markdown("#### Recommendations")
                                 for rec in explanation['recommendations']:
-                                    st.write(f"• {rec}")
+                                    st.markdown(f"• {rec}")
                         except Exception as e:
                             logger.error(f"Error getting resource explanation: {str(e)}")
                             st.error("Unable to generate resource insights")
@@ -1911,6 +2145,119 @@ class UnfairOCELAnalyzer:
             # Time Analysis Tab
             with tabs[2]:
                 logger.debug("Processing Time Analysis tab")
+                # Under the Time Analysis Tab, after your visualizations
+                with st.expander("🔍 Time Outlier Detection Logic"):
+                    st.markdown("""
+                    # Object-Centric Process Mining: Time Outlier Detection
+
+                    ## Overview
+                    The time outlier detection analyzes process execution durations and timing patterns across different object types and activities. The visualization appears in the "Time Outlier" tab and consists of two key components:
+                    
+                    1. Duration Distribution Plot
+                    2. Timing Gap Analysis Table
+                    
+                    ## Detection Process
+                    
+                    ### 1. Duration Data Collection
+                    The system:
+                    - Creates a DataFrame of all events with timestamps, activities, and object relationships
+                    - Groups events by activity to analyze timing patterns
+                    - Tracks multiple object types per event to handle object-centric complexity
+                    
+                    ### 2. Threshold Validation
+                    For each activity-object combination:
+                    - Retrieves timing rules from OCPM validator
+                    - Validates against:
+                      - Activity-specific thresholds
+                      - Default gap thresholds per object type
+                      - Overall process duration limits
+                    
+                    ### 3. Outlier Detection Logic
+                    
+                    #### Duration Outliers
+                    ```python
+                    gap_hours = (event['timestamp'] - last_event['timestamp']).total_seconds() / 3600
+                    if gap_hours > activity_threshold:
+                        outlier_events['timing_gap'].append({...})
+                    ```
+                    
+                    System flags outliers when:
+                    - Time gap between activities exceeds threshold
+                    - Events occur out of expected sequence
+                    - Activities take longer than typical duration
+                    
+                    #### Z-Score Calculation
+                    ```python
+                    violation_score = sum(metrics.values()) / (metrics['total_events'] * 3)
+                    z_score = float(violation_score * 10)
+                    is_outlier = violation_score > 0.3
+                    ```
+                    
+                    ### 4. Visualization Components
+                    
+                    #### Duration Distribution Plot
+                    - X-axis: Activities
+                    - Y-axis: Z-Score
+                    - Size: Number of events
+                    - Color: Outlier status (True/False)
+                    
+                    #### Timing Gap Table
+                    Shows detailed timing violations:
+                    - Case ID
+                    - Current/Previous Activities
+                    - Gap Duration
+                    - Threshold Values
+                    - Color coding:
+                      - Red: Exceeds threshold
+                      - Green: Within threshold
+                    
+                    ## Key Metrics Tracked
+                    
+                    1. **Timing Violations**
+                       - Gap between activities
+                       - Sequence position violations
+                       - Resource handover delays
+                    
+                    2. **Activity Statistics**
+                       - Average duration per activity
+                       - Resource distribution
+                       - Object type distribution
+                    
+                    3. **Outlier Metrics**
+                       - Z-score per activity
+                       - Violation rate
+                       - Total events and violations
+                    
+                    ## Example Interpretation
+                    
+                    If an activity shows:
+                    - Z-score > 3: Significant outlier
+                    - Multiple timing gaps: Process bottleneck
+                    - High violation rate: Potential process issue
+                    
+                    ## Understanding the Visualization
+                    
+                    1. **Scatter Plot Reading**
+                       - Each point represents an activity
+                       - Size indicates event frequency
+                       - Higher Z-scores suggest more severe timing issues
+                       - Color differentiates outliers from normal activities
+                    
+                    2. **Gap Analysis Table Reading**
+                       - Red rows indicate critical timing violations
+                       - Compare actual gaps against thresholds
+                       - Look for patterns in specific cases or activities
+                    
+                    ## Technical Implementation Notes
+                    
+                    The detection uses a multi-level approach:
+                    1. Event-level timing analysis
+                    2. Activity-level pattern detection
+                    3. Object-centric relationship validation
+                    4. Cross-object timing correlation
+                    
+                    This ensures comprehensive coverage of timing patterns while maintaining object-centric process mining principles.
+                    """)
 
                 # Validate duration data exists
                 duration_data = self.outliers.get('duration', {})
@@ -1939,14 +2286,14 @@ class UnfairOCELAnalyzer:
                             st.write(explanation.get('summary', 'No summary available'))
 
                             if explanation.get('insights'):
-                                st.write("#### Key Insights")
+                                st.markdown("#### Key Insights")
                                 for insight in explanation['insights']:
-                                    st.write(f"• {insight}")
+                                    st.markdown(f"• {insight}")
 
                             if explanation.get('recommendations'):
-                                st.write("#### Recommendations")
+                                st.markdown("#### Recommendations")
                                 for rec in explanation['recommendations']:
-                                    st.write(f"• {rec}")
+                                    st.markdown(f"• {rec}")
                         except Exception as e:
                             logger.error(f"Error getting time explanation: {str(e)}")
                             st.error("Unable to generate time insights")
@@ -1954,6 +2301,76 @@ class UnfairOCELAnalyzer:
             # Case Analysis Tab
             with tabs[3]:
                 logger.debug("Processing Case Analysis tab")
+
+                with st.expander("Case Outlier Detection Logic", expanded=False):
+                    st.markdown("""
+                    ## Case Outlier Detection in Object-Centric Process Mining
+
+                    ### 1. Data Structure & Analysis
+                    The code analyzes case outliers using these key metrics:
+                    - **Total Events**: Number of events per case
+                    - **Activity Variety**: Unique activities in each case
+                    - **Resource Variety**: Different resources involved
+                    - **Object Type Variety**: Different object types per case
+                    - **Case Duration**: Total duration in hours
+
+                    ### 2. Detection Method
+                    Cases are flagged as outliers based on:
+                    - Composite z-score calculation across all metrics
+                    - Threshold: z-score > 3 indicates outlier
+                    - Multi-dimensional analysis including:
+                        - Event frequency patterns
+                        - Activity sequence variations
+                        - Resource utilization patterns
+                        - Object type interactions
+
+                    ### 3. Visualization Components
+
+                    #### Main Scatter Plot
+                    - X-axis: Case IDs
+                    - Y-axis: Z-scores
+                    - Point Size: Total events in case
+                    - Color: Outlier status (True/False)
+                    - Hover data: Detailed case metrics
+
+                    #### Case Details View
+                    When selecting a specific case:
+                    - Event sequence timeline
+                    - Resource distribution
+                    - Object type interactions
+                    - Duration metrics
+
+                    ### 4. Implementation Details
+                    ```python
+                    # Key method calls in order:
+                    1. _detect_case_outliers()
+                    2. _build_trace_index()
+                    3. _display_case_analysis()
+                    4. _display_case_details()
+                    ```
+
+                    ### 5. Outlier Classification
+                    Cases are marked as outliers if they exhibit:
+                    - Unusually high/low number of events
+                    - Unexpected activity patterns
+                    - Abnormal resource usage
+                    - Complex object interactions
+                    - Extreme duration values
+
+                    ### 6. AI Enhancement
+                    The analysis includes AI-powered insights:
+                    - Pattern identification
+                    - Root cause analysis
+                    - Improvement recommendations
+                    """)
+
+                    st.info("""
+                    **How to Use the Visualization:**
+                    1. Examine the scatter plot for overall outlier distribution
+                    2. Click on specific cases to view detailed analysis
+                    3. Review AI insights for process understanding
+                    4. Check object interactions for complexity analysis
+                    """)
 
                 # Validate case complexity data exists
                 case_data = self.outliers.get('case_complexity', {})
@@ -1980,17 +2397,17 @@ class UnfairOCELAnalyzer:
                         st.markdown("### Understanding Case Complexity")
                         try:
                             explanation = self.get_explanation('case', case_metrics)
-                            st.write(explanation.get('summary', 'No summary available'))
+                            st.markdown(explanation.get('summary', 'No summary available'))
 
                             if explanation.get('insights'):
-                                st.write("#### Key Insights")
+                                st.markdown("#### Key Insights")
                                 for insight in explanation['insights']:
-                                    st.write(f"• {insight}")
+                                    st.markdown(f"• {insight}")
 
                             if explanation.get('recommendations'):
-                                st.write("#### Recommendations")
+                                st.markdown("#### Recommendations")
                                 for rec in explanation['recommendations']:
-                                    st.write(f"• {rec}")
+                                    st.markdown(f"• {rec}")
                         except Exception as e:
                             logger.error(f"Error getting case explanation: {str(e)}")
                             st.error("Unable to generate case insights")
