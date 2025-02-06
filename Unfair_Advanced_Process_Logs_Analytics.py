@@ -1,9 +1,11 @@
 import traceback
+from collections import defaultdict
+
 import streamlit as st
 import json
 import pandas as pd
 import numpy as np
-from typing import Dict, List, Any, Tuple, Optional
+from typing import Dict, List, Any, Tuple, Optional, Set
 import matplotlib.pyplot as plt
 import plotly.express as px
 import plotly.graph_objects as go
@@ -992,42 +994,82 @@ class UnfairOCELAnalyzer:
             logger.error(traceback.format_exc())
             return {}
 
+    def _count_resource_interactions(self) -> int:
+        """Count number of resource interactions in process"""
+        interactions = 0
+        for case_id, case_events in self.case_events.items():
+            case_resources = set()
+            for event_id in case_events:
+                event = next((e for e in self.ocel_data['ocel:events'] if e['ocel:id'] == event_id), None)
+                if event:
+                    resource = event.get('ocel:attributes', {}).get('resource', 'Unknown')
+                    case_resources.add(resource)
+            if len(case_resources) > 1:
+                interactions += len(case_resources) - 1
+        return interactions
+
+    def _count_major_violations(self, duration_data: Dict) -> int:
+        """Count number of major timing violations"""
+        major_violations = 0
+        for metrics in duration_data.values():
+            if hasattr(metrics, 'details'):
+                violations = metrics.details.get('outlier_events', {}).get('timing_gap', [])
+                major_violations += sum(1 for v in violations
+                                        if v['details'].get('time_gap_minutes', 0) >
+                                        v['details'].get('threshold_minutes', 0) * 2)
+        return major_violations
+
+    def _identify_bottlenecks(self, duration_data: Dict) -> int:
+        """Identify number of process bottlenecks"""
+        return sum(1 for metrics in duration_data.values()
+                   if hasattr(metrics, 'is_outlier') and metrics.is_outlier)
+
+    def _count_object_interactions(self, case_data: Dict) -> int:
+        """Count cases with multiple object interactions"""
+        multi_object_cases = 0
+        for metrics in case_data.values():
+            if hasattr(metrics, 'details'):
+                events = metrics.details.get('events', {})
+                if len(set(events.get('object_types', []))) > 1:
+                    multi_object_cases += 1
+        return multi_object_cases
+
+    def _count_case_variants(self, case_data: Dict) -> int:
+        """Count unique case variants based on activity sequences"""
+        variants = set()
+        for metrics in case_data.values():
+            if hasattr(metrics, 'details'):
+                activity_sequence = tuple(metrics.details.get('events', {}).get('activity_sequence', []))
+                if activity_sequence:
+                    variants.add(activity_sequence)
+        return len(variants)
+
     def _format_ai_response(self, response_text: str) -> Dict:
-        """Helper method to format AI response with enhanced logging"""
-        logger.info("Formatting AI response")
+        """Format AI analysis response into structured sections"""
         try:
-            # First try to parse as JSON if response happens to be JSON
-            try:
-                return json.loads(response_text)
-            except json.JSONDecodeError:
-                logger.debug("Response is not JSON format, formatting as structured text")
+            sections = response_text.split('\n\n')
+            formatted_response = {
+                'summary': sections[0] if sections else '',
+                'insights': [],
+                'recommendations': []
+            }
 
-                # Format text response into sections
-                sections = response_text.split('\n')
-                formatted_response = {
-                    'summary': sections[0] if sections else '',
-                    'insights': [],
-                    'recommendations': []
-                }
+            current_section = 'insights'
+            for line in sections[1:]:
+                line = line.strip()
+                if not line:
+                    continue
 
-                current_section = 'insights'
-                for line in sections[1:]:
-                    line = line.strip()
-                    if not line:
-                        continue
+                if line.lower().startswith('recommend'):
+                    current_section = 'recommendations'
+                    continue
 
-                    if line.lower().startswith('recommend'):
-                        current_section = 'recommendations'
-                        continue
+                formatted_response[current_section].append(line)
 
-                    formatted_response[current_section].append(line)
-
-                logger.debug(f"Formatted response: {formatted_response}")
-                return formatted_response
+            return formatted_response
 
         except Exception as e:
             logger.error(f"Error formatting AI response: {str(e)}")
-            logger.error(f"Original response: {response_text}")
             return {
                 'summary': 'Error formatting response',
                 'insights': [],
@@ -1035,549 +1077,930 @@ class UnfairOCELAnalyzer:
             }
 
     def get_explanation(self, tab_type: str, metrics: Dict) -> Dict:
-        """Get AI explanation with enhanced logging"""
-        logger.info(f"Generating explanation for tab: {tab_type}")
-        logger.info(f"Input metrics: {metrics}")
+        """Generate AI explanation for OCEL analysis results"""
+        logger.info(f"Generating OCEL explanation for: {tab_type}")
 
         try:
-            # Map tab types to analysis contexts
-            context_map = {
-                'resource': {
-                    'title': 'Resource Workload Analysis',
-                    'metrics': [
-                        f"Market Maker B workload: {metrics.get('market_maker_b', 'N/A')} cases",
-                        f"Client Desk D workload: {metrics.get('client_desk_d', 'N/A')} cases",
-                        f"Options Desk A workload: {metrics.get('options_desk_a', 'N/A')} cases"
-                    ]
-                },
-                'case': {
-                    'title': 'Case Complexity Analysis',
-                    'metrics': [
-                        f"Complex cases: {metrics.get('complex_cases', 0)}",
-                        f"Timing issues: {metrics.get('timestamp_cases', 0)}",
-                        f"Multi-object cases: {metrics.get('object_cases', 0)}"
-                    ]
-                },
-                'time': {
-                    'title': 'Time Analysis',
-                    'metrics': [
-                        f"Average duration: {metrics.get('avg_duration', 'N/A')}",
-                        f"Duration outliers: {metrics.get('outlier_count', 0)}",
-                        f"Typical duration: {metrics.get('typical_duration', 'N/A')}"
-                    ]
-                },
-                'failure': {
-                    'title': 'Failure Pattern Analysis',
-                    'metrics': [
-                        f"Sequence violations: {metrics.get('sequence_violations', 0)}",
-                        f"Incomplete cases: {metrics.get('incomplete_cases', 0)}",
-                        f"Long running cases: {metrics.get('long_running', 0)}"
-                    ]
-                }
-            }
-
-            context = context_map.get(tab_type)
-            if not context:
-                logger.error(f"Unknown tab type: {tab_type}")
-                return {"error": f"Unknown analysis type: {tab_type}"}
-
-            logger.debug(f"Using context: {context}")
+            context = self._build_analysis_context(tab_type, metrics)
 
             prompt = f"""
-            Analyze {context['title']}:
-            Metrics:
-            {chr(10).join(f'- {metric}' for metric in context['metrics'])}
+            Analyze this Object-Centric Process Mining data for {context['title']}:
 
-            Provide analysis in following format:
-            1. Brief summary of the situation
-            2. Key insights about patterns and anomalies
-            3. Specific recommendations for improvement
+            Process Context:
+            {self._format_process_context()}
 
-            Keep each section concise and actionable.
+            Analysis Metrics:
+            {self._format_metrics(context['metrics'])}
+
+            Specific Patterns:
+            {self._format_patterns(context['patterns'])}
+
+            Object Type Interactions:
+            {self._format_object_interactions()}
+
+            Provide detailed analysis focusing on:
+            1. Object-centric interactions and their impact on process performance
+            2. Process conformance, deviations, and their root causes
+            3. Resource and time utilization patterns affecting multiple object types
+            4. Multi-perspective performance insights across object lifecycles
+            5. Specific recommendations for process improvement
+
+            Format response as:
+            1. Key findings about object interactions and process patterns
+            2. Critical insights about performance and conformance
+            3. Specific, actionable recommendations for process improvement
             """
-
-            logger.debug(f"Generated prompt: {prompt}")
 
             response = self.client.chat.completions.create(
                 model="gpt-4o",
                 messages=[
                     {"role": "system",
-                     "content": "You are a process mining expert explaining patterns to business users."},
+                     "content": "You are an expert in object-centric process mining analysis, focusing on multi-object interactions and process patterns."},
                     {"role": "user", "content": prompt}
                 ],
                 temperature=0.7,
-                max_tokens=300
+                max_tokens=500
             )
 
-            logger.debug("Received response from OpenAI")
-            response_text = response.choices[0].message.content
-
-            # Format and structure the response
-            formatted_response = self._format_ai_response(response_text)
-            logger.info("Successfully generated and formatted explanation")
-            return formatted_response
+            return self._format_ai_response(response.choices[0].message.content)
 
         except Exception as e:
             logger.error(f"Error generating explanation: {str(e)}")
-            logger.error(traceback.format_exc())
             return {
                 "error": "Unable to generate explanation",
                 "details": str(e)
             }
 
-    def display_enhanced_analysis(self):
-        """Display enhanced analysis with comprehensive outlier tracing"""
+    def _build_analysis_context(self, tab_type: str, metrics: Dict) -> Dict:
+        """Build comprehensive analysis context from outliers data"""
+        context = {
+            'title': '',
+            'metrics': [],
+            'patterns': []
+        }
+
+        if tab_type == 'failure':
+            failures = self.outliers.get('failures', {})
+            context['title'] = 'Process Failure Pattern Analysis'
+            context['metrics'] = [
+                f"Total sequence violations: {len(failures.get('sequence_violations', []))}",
+                f"Incomplete cases: {len(failures.get('incomplete_cases', []))}",
+                f"Timing violations: {len(failures.get('timing_violations', []))}",
+                f"Rework activities: {len(failures.get('rework_activities', []))}",
+                f"Resource switches: {len(failures.get('resource_switches', []))}"
+            ]
+            context['patterns'] = self._extract_failure_patterns(failures)
+
+        elif tab_type == 'resource':
+            resource_data = self.outliers.get('resource_load', {})
+            context['metrics'] = []
+            for resource, metrics in resource_data.items():
+                if hasattr(metrics, 'details'):
+                    stats = metrics.details.get('metrics', {})
+                    context['metrics'].append(
+                        f"{resource}: {stats.get('total_events', 0)} events, "
+                        f"{len(metrics.details['events'].get('cases', []))} cases, "
+                        f"{len(metrics.details['events'].get('activities', []))} activities"
+                    )
+            context['title'] = 'Resource Utilization Analysis'
+            context['patterns'] = self._extract_resource_patterns(resource_data)
+
+        elif tab_type == 'time':
+            duration_data = self.outliers.get('duration', {})
+            context['title'] = 'Temporal Pattern Analysis'
+            context['metrics'] = []
+            for activity, metrics in duration_data.items():
+                if hasattr(metrics, 'details'):
+                    violation_count = len(metrics.details.get('outlier_events', {}).get('timing_gap', []))
+                    context['metrics'].append(
+                        f"{activity}: {violation_count} timing violations, "
+                        f"Z-score: {metrics.z_score:.2f}"
+                    )
+            context['patterns'] = self._extract_timing_patterns(duration_data)
+
+        elif tab_type == 'case':
+            case_data = self.outliers.get('case_complexity', {})
+            context['title'] = 'Case Complexity Analysis'
+            context['metrics'] = []
+            outlier_cases = [case_id for case_id, metrics in case_data.items()
+                             if getattr(metrics, 'is_outlier', False)]
+            context['metrics'].extend([
+                f"Total cases analyzed: {len(case_data)}",
+                f"Complex cases identified: {len(outlier_cases)}",
+                f"Average case duration: {self._calculate_avg_case_duration():.2f} hours"
+            ])
+            context['patterns'] = self._extract_case_patterns(case_data)
+
+        return context
+
+    def _format_process_context(self) -> str:
+        """Format overall process context"""
+        process_stats = {
+            'total_events': len(self.events_df) if hasattr(self, 'events_df') else 0,
+            'object_types': self._get_unique_object_types(),
+            'activities': self._get_unique_activities(),
+            'object_interactions': self._analyze_object_interactions()
+        }
+
+        return f"""
+        Process Overview:
+        - Total events: {process_stats['total_events']}
+        - Object types: {', '.join(process_stats['object_types'])}
+        - Activities: {', '.join(process_stats['activities'])}
+        - Object interactions: {process_stats['object_interactions']}
+        """
+
+    def _format_metrics(self, metrics: List[str]) -> str:
+        """Format metrics for AI analysis"""
+        return '\n'.join(f"- {metric}" for metric in metrics)
+
+    def _format_patterns(self, patterns: List[str]) -> str:
+        """Format patterns for AI analysis"""
+        return '\n'.join(f"- {pattern}" for pattern in patterns)
+
+    def _extract_failure_patterns(self, failures: Dict) -> List[str]:
+        """Extract key failure patterns from outlier data"""
+        patterns = []
+
+        # Analyze sequence violations
+        sequence_violations = failures.get('sequence_violations', [])
+        if sequence_violations:
+            violation_types = defaultdict(int)
+            for violation in sequence_violations:
+                for activity in violation.get('wrong_order_activities', []):
+                    violation_types[f"{activity['expected']} -> {activity['actual']}"] += 1
+
+            if violation_types:
+                most_common = max(violation_types.items(), key=lambda x: x[1])
+                patterns.append(f"Most common sequence violation: {most_common[0]} ({most_common[1]} occurrences)")
+
+        # Analyze timing violations
+        timing_violations = failures.get('timing_violations', [])
+        if timing_violations:
+            critical_gaps = [
+                v for v in timing_violations
+                if any(gap['gap_hours'] > gap['threshold_hours'] * 2
+                       for gap in v.get('activity_gaps', []))
+            ]
+            if critical_gaps:
+                patterns.append(f"Critical timing violations: {len(critical_gaps)} cases with severe delays")
+
+        # Analyze resource switches
+        resource_switches = failures.get('resource_switches', [])
+        if resource_switches:
+            high_switch_cases = [r for r in resource_switches if r['total_switches'] > 3]
+            if high_switch_cases:
+                patterns.append(f"Resource handover issues: {len(high_switch_cases)} cases with excessive switches")
+
+        # Analyze rework
+        rework = failures.get('rework_activities', [])
+        if rework:
+            rework_activities = defaultdict(int)
+            for case in rework:
+                for activity, details in case.get('rework_activities', {}).items():
+                    rework_activities[activity] += details.get('count', 0)
+
+            if rework_activities:
+                most_rework = max(rework_activities.items(), key=lambda x: x[1])
+                patterns.append(f"Most reworked activity: {most_rework[0]} ({most_rework[1]} times)")
+
+        return patterns
+
+    def _extract_resource_patterns(self, resource_data: Dict) -> List[str]:
+        """Extract key resource patterns from outlier data"""
+        patterns = []
+
+        # Analyze workload distribution
+        workloads = []
+        for resource, metrics in resource_data.items():
+            if hasattr(metrics, 'details'):
+                stats = metrics.details.get('metrics', {})
+                workloads.append((resource, stats.get('total_events', 0)))
+
+        if workloads:
+            workloads.sort(key=lambda x: x[1], reverse=True)
+            patterns.append(f"Highest workload: {workloads[0][0]} ({workloads[0][1]} events)")
+
+            # Calculate workload imbalance
+            avg_workload = sum(w[1] for w in workloads) / len(workloads)
+            imbalanced = [w for w in workloads if abs(w[1] - avg_workload) > avg_workload * 0.5]
+            if imbalanced:
+                patterns.append(f"Workload imbalance detected in {len(imbalanced)} resources")
+
+        # Analyze resource specialization
+        specialists = []
+        for resource, metrics in resource_data.items():
+            if hasattr(metrics, 'details'):
+                activities = metrics.details['events'].get('activities', [])
+                if len(activities) <= 2:
+                    specialists.append(resource)
+
+        if specialists:
+            patterns.append(f"Specialized resources: {len(specialists)} resources with focused activities")
+
+        return patterns
+
+    def _extract_timing_patterns(self, duration_data: Dict) -> List[str]:
+        """Extract key timing patterns from outlier data"""
+        patterns = []
+
+        # Analyze systematic delays
+        systematic_delays = defaultdict(list)
+        for activity, metrics in duration_data.items():
+            if hasattr(metrics, 'details'):
+                violations = metrics.details.get('outlier_events', {}).get('timing_gap', [])
+                if violations:
+                    for violation in violations:
+                        if violation['details'].get('time_gap_minutes', 0) > violation['details'].get(
+                                'threshold_minutes', 0):
+                            systematic_delays[activity].append(violation)
+
+        if systematic_delays:
+            most_delayed = max(systematic_delays.items(), key=lambda x: len(x[1]))
+            patterns.append(f"Most delayed activity: {most_delayed[0]} ({len(most_delayed[1])} violations)")
+
+        # Analyze bottlenecks
+        bottlenecks = []
+        for activity, metrics in duration_data.items():
+            if hasattr(metrics, 'details') and metrics.z_score > 2:
+                bottlenecks.append(activity)
+
+        if bottlenecks:
+            patterns.append(f"Process bottlenecks identified in: {', '.join(bottlenecks)}")
+
+        return patterns
+
+    def _extract_case_patterns(self, case_data: Dict) -> List[str]:
+        """Extract key case patterns from outlier data"""
+        patterns = []
+
+        # Analyze case complexity
+        case_complexities = []
+        for case_id, metrics in case_data.items():
+            if hasattr(metrics, 'details'):
+                total_events = metrics.details['metrics'].get('total_events', 0)
+                case_complexities.append((case_id, total_events))
+
+        if case_complexities:
+            avg_complexity = sum(c[1] for c in case_complexities) / len(case_complexities)
+            complex_cases = [c for c in case_complexities if c[1] > avg_complexity * 1.5]
+            if complex_cases:
+                patterns.append(f"Complex cases: {len(complex_cases)} cases with high complexity")
+
+        # Analyze object interactions
+        case_objects = defaultdict(set)
+        for case_id, metrics in case_data.items():
+            if hasattr(metrics, 'details'):
+                case_objects[case_id].update(metrics.details['events'].get('object_types', []))
+
+        multi_object_cases = [(case_id, len(objects)) for case_id, objects in case_objects.items() if len(objects) > 1]
+        if multi_object_cases:
+            patterns.append(f"Multi-object interactions: {len(multi_object_cases)} cases with multiple object types")
+
+        return patterns
+
+    def _get_unique_object_types(self) -> Set[str]:
+        """Get unique object types from OCEL data"""
+        return set(obj['type'] for event in self.ocel_data['ocel:events']
+                   for obj in event.get('ocel:objects', []))
+
+    def _get_unique_activities(self) -> Set[str]:
+        """Get unique activities from OCEL data"""
+        return set(event['ocel:activity'] for event in self.ocel_data['ocel:events'])
+
+    def _analyze_object_interactions(self) -> str:
+        """Analyze object type interactions"""
+        interactions = defaultdict(set)
+        for event in self.ocel_data['ocel:events']:
+            objects = event.get('ocel:objects', [])
+            if len(objects) > 1:
+                object_types = {obj['type'] for obj in objects}
+                if len(object_types) > 1:
+                    key = tuple(sorted(object_types))
+                    interactions[key].add(event['ocel:id'])
+
+        if interactions:
+            most_common = max(interactions.items(), key=lambda x: len(x[1]))
+            return f"Most common interaction: {' - '.join(most_common[0])} ({len(most_common[1])} instances)"
+        return "No significant object interactions found"
+
+    def _format_object_interactions(self) -> str:
+        """Format object interactions for AI analysis"""
+        object_types = self._get_unique_object_types()
+        interactions = defaultdict(int)
+
+        for event in self.ocel_data['ocel:events']:
+            objects = event.get('ocel:objects', [])
+            if len(objects) > 1:
+                object_types = {obj['type'] for obj in objects}
+                if len(object_types) > 1:
+                    key = tuple(sorted(object_types))
+                    interactions[key] += 1
+
+        return "\n".join(
+            f"- {' - '.join(types)}: {count} interactions"
+            for types, count in sorted(interactions.items(), key=lambda x: x[1], reverse=True)
+        )
+
+    def _calculate_avg_case_duration(self) -> float:
+        """Calculate average case duration in hours"""
+        case_durations = []
+        for case_events in self.case_events.values():
+            if case_events:
+                timestamps = [
+                    pd.to_datetime(event['ocel:timestamp'])
+                    for event in self.ocel_data['ocel:events']
+                    if event['ocel:id'] in case_events
+                ]
+                if timestamps:
+                    duration = (max(timestamps) - min(timestamps)).total_seconds() / 3600
+                    case_durations.append(duration)
+
+        return sum(case_durations) / len(case_durations) if case_durations else 0.0
+
+    def get_explanation(self, tab_type: str, metrics: Dict) -> Dict:
+        """Generate AI explanation for OCEL analysis results"""
+        logger.info(f"Generating OCEL explanation for: {tab_type}")
+
         try:
+            context = self._build_analysis_context(tab_type, metrics)
+
+            prompt = f"""
+            Analyze this Object-Centric Process Mining data for {context['title']}:
+
+            Process Context:
+            {self._format_process_context()}
+
+            Analysis Metrics:
+            {self._format_metrics(context['metrics'])}
+
+            Specific Patterns:
+            {self._format_patterns(context['patterns'])}
+
+            Object Type Interactions:
+            {self._format_object_interactions()}
+
+            Provide detailed analysis focusing on:
+            1. Object-centric interactions and their impact on process performance
+            2. Process conformance, deviations, and their root causes
+            3. Resource and time utilization patterns affecting multiple object types
+            4. Multi-perspective performance insights across object lifecycles
+            5. Specific recommendations for process improvement
+
+            Format response as:
+            1. Key findings about object interactions and process patterns
+            2. Critical insights about performance and conformance
+            3. Specific, actionable recommendations for process improvement
+            """
+
+            response = self.client.chat.completions.create(
+                model="gpt-4o",
+                messages=[
+                    {"role": "system",
+                     "content": "You are an expert in object-centric process mining analysis, focusing on multi-object interactions and process patterns."},
+                    {"role": "user", "content": prompt}
+                ],
+                temperature=0.7,
+                max_tokens=500
+            )
+
+            return self._format_ai_response(response.choices[0].message.content)
+
+        except Exception as e:
+            logger.error(f"Error generating explanation: {str(e)}")
+            return {
+                "error": "Unable to generate explanation",
+                "details": str(e)
+            }
+
+    def _display_resource_details(self, resource: str, details: Dict):
+        """Helper method to display resource details"""
+        try:
+            st.write("### Resource Details")
+
+            # Show metrics
+            cols = st.columns(3)
+            cols[0].metric("Total Events", details['metrics'].get('total_events', 0))
+            cols[1].metric("Cases", len(details['events'].get('cases', [])))
+            cols[2].metric("Activities", len(details['events'].get('activities', [])))
+
+            # Show activity distribution
+            events_df = self._get_events_dataframe(details['events'].get('all_events', []))
+            if not events_df.empty:
+                st.write("### Activity Distribution")
+                activity_counts = events_df['activity'].value_counts()
+                activity_fig = px.bar(
+                    x=activity_counts.index,
+                    y=activity_counts.values,
+                    title=f'Activities Performed by {resource}'
+                )
+                st.plotly_chart(activity_fig)
+
+        except Exception as e:
+            logger.error(f"Error displaying resource details: {str(e)}")
+            st.error("Error displaying resource details")
+
+    def _display_time_analysis(self, duration_data: Dict):
+        """Helper method to display time analysis"""
+        try:
+            # Create duration outlier visualization
+            duration_info = []
+            for activity, metrics in duration_data.items():
+                if hasattr(metrics, 'details'):
+                    duration_info.append({
+                        'Activity': activity,
+                        'Z-Score': metrics.z_score,
+                        'Is Outlier': metrics.is_outlier,
+                        'Total Events': metrics.details.get('total_events', 0),
+                        'Violation Count': len(metrics.details.get('outlier_events', {}).get('timing_gap', []))
+                    })
+
+            if duration_info:
+                df = pd.DataFrame(duration_info)
+                fig = px.scatter(
+                    df,
+                    x='Activity',
+                    y='Z-Score',
+                    size='Total Events',
+                    color='Is Outlier',
+                    title='Activity Duration Distribution'
+                )
+                st.plotly_chart(fig)
+
+                # Display timing gaps if available
+                self._display_timing_gaps(duration_data)
+
+        except Exception as e:
+            logger.error(f"Error in time analysis display: {str(e)}")
+            raise
+
+    def _display_case_analysis(self, case_data: Dict):
+        """Helper method to display case analysis"""
+        try:
+            # Create case visualization
+            case_info = []
+            case_details = {}
+
+            for case_id, metrics in case_data.items():
+                if hasattr(metrics, 'details'):
+                    case_info.append({
+                        'Case': case_id,
+                        'Z-Score': metrics.z_score,
+                        'Is Outlier': metrics.is_outlier,
+                        'Total Events': metrics.details['metrics'].get('total_events', 0),
+                        'Activity Count': metrics.details['metrics'].get('activity_variety', 0)
+                    })
+                    case_details[case_id] = metrics.details
+
+            if case_info:
+                df = pd.DataFrame(case_info)
+                fig = px.scatter(
+                    df,
+                    x='Case',
+                    y='Z-Score',
+                    size='Total Events',
+                    color='Is Outlier',
+                    title='Case Complexity Distribution'
+                )
+
+                fig.update_traces(
+                    hovertemplate=(
+                            "<b>%{x}</b><br>" +
+                            "Z-Score: %{y:.2f}<br>" +
+                            "Total Events: %{marker.size}<br>" +
+                            "Activities: %{customdata[0]}<br>" +
+                            "<extra></extra>"
+                    )
+                )
+                st.plotly_chart(fig, use_container_width=True)
+
+                # Add case details selection
+                if case_details:
+                    selected_case = st.selectbox(
+                        "Select case for details",
+                        options=list(case_details.keys())
+                    )
+                    if selected_case:
+                        self._display_case_details(selected_case, case_details[selected_case])
+
+        except Exception as e:
+            logger.error(f"Error in case analysis display: {str(e)}")
+            raise
+
+    def _display_case_details(self, case_id: str, details: Dict):
+        """Helper method to display detailed case information"""
+        try:
+            st.write("### Case Details")
+
+            # Show if case is an outlier
+            if details.get('outlier_patterns', {}).get('high_complexity'):
+                st.warning("⚠️ This case has high complexity")
+            if details.get('outlier_patterns', {}).get('long_duration'):
+                st.warning("⚠️ This case has unusual duration")
+
+            # Display metrics
+            cols = st.columns(3)
+            cols[0].metric(
+                "Total Events",
+                details['metrics'].get('total_events', 0)
+            )
+            cols[1].metric(
+                "Activities",
+                details['metrics'].get('activity_variety', 0)
+            )
+            cols[2].metric(
+                "Duration (hrs)",
+                f"{details['temporal'].get('duration_hours', 0):.1f}"
+            )
+
+            # Display timeline
+            events_df = self._get_events_dataframe(details['events'].get('all_events', []))
+            if not events_df.empty:
+                events_df['timestamp'] = pd.to_datetime(events_df['timestamp'])
+
+                # Create timeline visualization
+                timeline_fig = px.scatter(
+                    events_df,
+                    x='timestamp',
+                    y='activity',
+                    color='resource',
+                    title=f'Case Timeline - {case_id}',
+                    labels={
+                        'timestamp': 'Time',
+                        'activity': 'Activity',
+                        'resource': 'Resource'
+                    }
+                )
+
+                timeline_fig.update_layout(
+                    height=400,
+                    showlegend=True,
+                    hovermode='closest'
+                )
+                st.plotly_chart(timeline_fig)
+
+                # Display event sequence
+                st.write("### Event Sequence")
+                sequence_df = events_df[['timestamp', 'activity', 'resource']].copy()
+                sequence_df['duration_from_start'] = (
+                                                             sequence_df['timestamp'] - sequence_df['timestamp'].min()
+                                                     ).dt.total_seconds() / 3600
+
+                # Add styling to highlight potential issues
+                styled_df = sequence_df.style.background_gradient(
+                    subset=['duration_from_start'],
+                    cmap='YlOrRd'
+                )
+                st.dataframe(styled_df)
+
+            # Display object interactions if available
+            if 'object_types' in details:
+                st.write("### Object Interactions")
+                object_df = pd.DataFrame({
+                    'Object Type': details['object_types'],
+                    'Interaction Count': [1] * len(details['object_types'])
+                }).groupby('Object Type').sum()
+
+                st.bar_chart(object_df)
+
+        except Exception as e:
+            logger.error(f"Error displaying case details: {str(e)}")
+            st.error(f"Error showing case details: {str(e)}")
+
+    def _display_timing_gaps(self, duration_data: Dict):
+        """Helper method to display timing gap analysis"""
+        try:
+            timing_gaps = []
+            for activity, metrics in duration_data.items():
+                if hasattr(metrics, 'details'):
+                    for violation in metrics.details.get('outlier_events', {}).get('timing_gap', []):
+                        prev_event = self._get_event_details(violation['details'].get('previous_event', ''))
+
+                        timing_gaps.append({
+                            'Current Activity': activity,
+                            'Previous Activity': prev_event.get('Activity', 'Unknown'),
+                            'Gap (Minutes)': violation['details'].get('time_gap_minutes', 0),
+                            'Threshold': violation['details'].get('threshold_minutes', 0),
+                            'Case ID': violation.get('case_id', 'Unknown')
+                        })
+
+            if timing_gaps:
+                st.write("### Timing Gap Analysis")
+                df = pd.DataFrame(timing_gaps)
+
+                gap_table = go.Figure(data=[go.Table(
+                    header=dict(
+                        values=['Case ID', 'Current Activity', 'Previous Activity', 'Gap (Minutes)', 'Threshold'],
+                        fill_color='paleturquoise',
+                        align='left'
+                    ),
+                    cells=dict(
+                        values=[
+                            df['Case ID'],
+                            df['Current Activity'],
+                            df['Previous Activity'],
+                            df['Gap (Minutes)'].round(2),
+                            df['Threshold']
+                        ],
+                        fill_color=[
+                            ['pink' if gap > thresh else 'lightgreen'
+                             for gap, thresh in zip(df['Gap (Minutes)'], df['Threshold'])]
+                        ],
+                        align='left'
+                    )
+                )])
+
+                gap_table.update_layout(
+                    title="Detailed Timing Gap Analysis",
+                    height=400
+                )
+                st.plotly_chart(gap_table, use_container_width=True)
+
+        except Exception as e:
+            logger.error(f"Error displaying timing gaps: {str(e)}")
+            st.error("Error displaying timing gap analysis")
+
+    def display_enhanced_analysis(self):
+        """Display enhanced analysis with comprehensive outlier tracing and error handling"""
+        try:
+            # Validate that outliers dictionary exists and has required keys
+            if not hasattr(self, 'outliers'):
+                st.error("No outlier analysis data available. Please ensure data is processed first.")
+                return
+
             # Create tabs for different analyses
             tabs = st.tabs(["Failure Patterns", "Resource Outlier", "Time Outlier", "Case Outlier"])
 
             # Failure Patterns Tab
             with tabs[0]:
                 logger.debug("Processing Failure Patterns tab")
-                col1, col2 = st.columns([2, 1])
 
-                with col1:
-                    failure_counts = {
-                        'Sequence Violations': len(self.outliers['failures']['sequence_violations']),
-                        'Incomplete Cases': len(self.outliers['failures']['incomplete_cases']),
-                        'Long Running': len(self.outliers['failures']['long_running']),
-                        'Resource Switches': len(self.outliers['failures']['resource_switches']),
-                        'Rework Activities': len(self.outliers['failures']['rework_activities'])
-                    }
+                # Validate failures data exists
+                failures_data = self.outliers.get('failures', {})
+                if not failures_data:
+                    st.warning("No failure pattern data available")
+                else:
+                    col1, col2 = st.columns([2, 1])
 
-                    fig = go.Figure(data=[
-                        go.Bar(
-                            x=list(failure_counts.keys()),
-                            y=list(failure_counts.values()),
-                            text=list(failure_counts.values()),
-                            textposition='auto',
-                        )
-                    ])
+                    with col1:
+                        failure_counts = {
+                            'Sequence Violations': len(failures_data.get('sequence_violations', [])),
+                            'Incomplete Cases': len(failures_data.get('incomplete_cases', [])),
+                            'Long Running': len(failures_data.get('long_running', [])),
+                            'Resource Switches': len(failures_data.get('resource_switches', [])),
+                            'Rework Activities': len(failures_data.get('rework_activities', []))
+                        }
 
-                    fig.update_layout(
-                        title='Process Failure Patterns Distribution',
-                        xaxis_title='Failure Pattern Type',
-                        yaxis_title='Count',
-                        showlegend=False
-                    )
-                    st.plotly_chart(fig)
+                        if any(failure_counts.values()):
+                            fig = go.Figure(data=[
+                                go.Bar(
+                                    x=list(failure_counts.keys()),
+                                    y=list(failure_counts.values()),
+                                    text=list(failure_counts.values()),
+                                    textposition='auto',
+                                )
+                            ])
 
-                    # Show failure details in expandable sections
-                    for pattern, failures in self.outliers['failures'].items():
-                        if failures:
-                            with st.expander(f"{pattern.replace('_', ' ').title()} ({len(failures)})"):
-                                failure_df = pd.DataFrame(failures)
-                                st.dataframe(failure_df)
+                            fig.update_layout(
+                                title='Process Failure Patterns Distribution',
+                                xaxis_title='Failure Pattern Type',
+                                yaxis_title='Count',
+                                showlegend=False
+                            )
+                            st.plotly_chart(fig)
 
-                with col2:
-                    failure_metrics = {
-                        'sequence_violations': len(self.outliers['failures']['sequence_violations']),
-                        'incomplete_cases': len(self.outliers['failures']['incomplete_cases']),
-                        'long_running': len(self.outliers['failures']['long_running'])
-                    }
-                    st.markdown("### Understanding Failure Patterns")
-                    explanation = self.get_explanation('failure', failure_metrics)
-                    st.write(explanation.get('summary', ''))
+                            # Show failure details in expandable sections
+                            for pattern, failures in failures_data.items():
+                                if failures:
+                                    with st.expander(f"{pattern.replace('_', ' ').title()} ({len(failures)})"):
+                                        try:
+                                            failure_df = pd.DataFrame(failures)
+                                            st.dataframe(failure_df)
+                                        except Exception as e:
+                                            logger.error(f"Error creating failure DataFrame: {str(e)}")
+                                            st.error(f"Error displaying failure details: {str(e)}")
 
-                    if explanation.get('insights'):
-                        st.write("#### Key Insights")
-                        for insight in explanation['insights']:
-                            st.write(f"• {insight}")
+                    with col2:
+                        failure_metrics = {
+                            'sequence_violations': len(failures_data.get('sequence_violations', [])),
+                            'incomplete_cases': len(failures_data.get('incomplete_cases', [])),
+                            'long_running': len(failures_data.get('long_running', []))
+                        }
 
-                    if explanation.get('recommendations'):
-                        st.write("#### Recommendations")
-                        for rec in explanation['recommendations']:
-                            st.write(f"• {rec}")
+                        st.markdown("### Understanding Failure Patterns")
+                        try:
+                            explanation = self.get_explanation('failure', failure_metrics)
+                            st.write(explanation.get('summary', 'No summary available'))
+
+                            if explanation.get('insights'):
+                                st.write("#### Key Insights")
+                                for insight in explanation['insights']:
+                                    st.write(f"• {insight}")
+
+                            if explanation.get('recommendations'):
+                                st.write("#### Recommendations")
+                                for rec in explanation['recommendations']:
+                                    st.write(f"• {rec}")
+                        except Exception as e:
+                            logger.error(f"Error getting explanation: {str(e)}")
+                            st.error("Unable to generate insights at this time")
 
             # Resource Analysis Tab
             with tabs[1]:
                 logger.debug("Processing Resource Analysis tab")
-                col1, col2 = st.columns([2, 1])
 
-                with col1:
-                    # Create resource workload visualization
-                    workload_data = []
-                    resource_details = {}
+                # Validate resource data exists
+                resource_data = self.outliers.get('resource_load', {})
+                if not resource_data:
+                    st.warning("No resource analysis data available")
+                else:
+                    col1, col2 = st.columns([2, 1])
 
-                    for resource, metrics in self.outliers['resource_load'].items():
-                        workload_data.append({
-                            'Resource': resource,
-                            'Z-Score': metrics.z_score,
-                            'Is Outlier': metrics.is_outlier,
-                            'Total Events': metrics.details['metrics']['total_events'],
-                            'Cases': len(metrics.details['events']['cases']),
-                            'Activities': len(metrics.details['events']['activities'])
-                        })
+                    with col1:
+                        # Create resource workload visualization
+                        workload_data = []
+                        resource_details = {}
 
-                        # Store all details for traceability
-                        resource_details[resource] = {
-                            'metrics': metrics.details['metrics'],
-                            'events': metrics.details['events'],
-                            'patterns': metrics.details.get('outlier_patterns', {})
-                        }
+                        for resource, metrics in resource_data.items():
+                            if isinstance(metrics, (dict, object)):  # Validate metrics object
+                                try:
+                                    workload_data.append({
+                                        'Resource': resource,
+                                        'Z-Score': getattr(metrics, 'z_score', 0),
+                                        'Is Outlier': getattr(metrics, 'is_outlier', False),
+                                        'Total Events': metrics.details['metrics'].get('total_events', 0) if hasattr(
+                                            metrics, 'details') else 0,
+                                        'Cases': len(metrics.details['events'].get('cases', [])) if hasattr(metrics,
+                                                                                                            'details') else 0,
+                                        'Activities': len(metrics.details['events'].get('activities', [])) if hasattr(
+                                            metrics, 'details') else 0
+                                    })
 
-                    # Create resource plot
-                    fig = px.scatter(
-                        pd.DataFrame(workload_data),
-                        x='Resource',
-                        y='Z-Score',
-                        size='Total Events',
-                        color='Is Outlier',
-                        title='Resource Workload Distribution',
-                        custom_data=['Cases', 'Activities']
-                    )
+                                    # Store details for traceability
+                                    if hasattr(metrics, 'details'):
+                                        resource_details[resource] = {
+                                            'metrics': metrics.details.get('metrics', {}),
+                                            'events': metrics.details.get('events', {}),
+                                            'patterns': metrics.details.get('outlier_patterns', {})
+                                        }
+                                except Exception as e:
+                                    logger.error(f"Error processing resource metrics: {str(e)}")
 
-                    fig.update_traces(
-                        hovertemplate=(
-                                "<b>%{x}</b><br>" +
-                                "Z-Score: %{y:.2f}<br>" +
-                                "Total Events: %{marker.size}<br>" +
-                                "Cases: %{customdata[0]}<br>" +
-                                "Activities: %{customdata[1]}<br>" +
-                                "<extra></extra>"
-                        )
-                    )
-                    st.plotly_chart(fig, use_container_width=True)
-
-                    # Show resource details
-                    if resource_details:
-                        selected_resource = st.selectbox(
-                            "Select resource for details",
-                            options=list(resource_details.keys())
-                        )
-                        if selected_resource:
-                            details = resource_details[selected_resource]
-                            st.write("### Resource Details")
-
-                            # Show if resource is an outlier
-                            if workload_data[
-                                next(i for i, x in enumerate(workload_data) if x['Resource'] == selected_resource)][
-                                'Is Outlier']:
-                                st.warning("⚠️ This resource is identified as an outlier")
-
-                            # Show metrics
-                            cols = st.columns(3)
-                            cols[0].metric("Total Events", details['metrics']['total_events'])
-                            cols[1].metric("Cases", len(details['events']['cases']))
-                            cols[2].metric("Activities", len(details['events']['activities']))
-
-                            # Show activity distribution
-                            st.write("### Activity Distribution")
-                            events_df = self._get_events_dataframe(details['events']['all_events'])
-                            if not events_df.empty:
-                                activity_counts = events_df['activity'].value_counts()
-                                activity_fig = px.bar(
-                                    x=activity_counts.index,
-                                    y=activity_counts.values,
-                                    title=f'Activities Performed by {selected_resource}',
-                                    labels={'x': 'Activity', 'y': 'Count'}
+                        if workload_data:
+                            # Create resource plot
+                            try:
+                                fig = px.scatter(
+                                    pd.DataFrame(workload_data),
+                                    x='Resource',
+                                    y='Z-Score',
+                                    size='Total Events',
+                                    color='Is Outlier',
+                                    title='Resource Workload Distribution',
+                                    custom_data=['Cases', 'Activities']
                                 )
-                                st.plotly_chart(activity_fig)
 
-                            # Show case involvement timeline
-                            st.write("### Case Timeline")
-                            events_df['timestamp'] = pd.to_datetime(events_df['timestamp'])
-                            timeline_fig = px.scatter(
-                                events_df,
-                                x='timestamp',
-                                y='case_id',
-                                color='activity',
-                                title=f'Case Involvement Timeline - {selected_resource}',
-                                labels={'timestamp': 'Time', 'case_id': 'Case', 'activity': 'Activity'}
-                            )
-                            timeline_fig.update_layout(height=400)
-                            st.plotly_chart(timeline_fig)
+                                fig.update_traces(
+                                    hovertemplate=(
+                                            "<b>%{x}</b><br>" +
+                                            "Z-Score: %{y:.2f}<br>" +
+                                            "Total Events: %{marker.size}<br>" +
+                                            "Cases: %{customdata[0]}<br>" +
+                                            "Activities: %{customdata[1]}<br>" +
+                                            "<extra></extra>"
+                                    )
+                                )
+                                st.plotly_chart(fig, use_container_width=True)
 
-                            # Show objects handled
-                            st.write("### Objects Handled")
-                            object_series = pd.Series(
-                                [obj.strip() for obj in events_df['objects'].str.split(',').explode()])
-                            object_counts = object_series.value_counts()
-                            object_fig = px.pie(
-                                values=object_counts.values,
-                                names=object_counts.index,
-                                title=f'Object Types Handled by {selected_resource}'
-                            )
-                            st.plotly_chart(object_fig)
+                                # Show resource details
+                                if resource_details:
+                                    selected_resource = st.selectbox(
+                                        "Select resource for details",
+                                        options=list(resource_details.keys())
+                                    )
+                                    if selected_resource:
+                                        self._display_resource_details(selected_resource,
+                                                                       resource_details[selected_resource])
+                            except Exception as e:
+                                logger.error(f"Error creating resource visualization: {str(e)}")
+                                st.error("Error displaying resource visualization")
 
-                            # Show detailed event table
-                            st.write("### Event Details")
-                            st.dataframe(events_df.sort_values('timestamp'))
+                    with col2:
+                        workload_metrics = {
+                            'market_maker_b': len(self.resource_events.get('Market Maker B', [])),
+                            'client_desk_d': len(self.resource_events.get('Client Desk D', [])),
+                            'options_desk_a': len(self.resource_events.get('Options Desk A', []))
+                        }
+                        st.markdown("### Understanding Resource Distribution")
+                        try:
+                            explanation = self.get_explanation('resource', workload_metrics)
+                            st.write(explanation.get('summary', 'No summary available'))
 
-                with col2:
-                    workload_metrics = {
-                        'market_maker_b': len(self.resource_events.get('Market Maker B', [])),
-                        'client_desk_d': len(self.resource_events.get('Client Desk D', [])),
-                        'options_desk_a': len(self.resource_events.get('Options Desk A', []))
-                    }
-                    st.markdown("### Understanding Resource Distribution")
-                    explanation = self.get_explanation('resource', workload_metrics)
-                    st.write(explanation.get('summary', ''))
+                            if explanation.get('insights'):
+                                st.write("#### Key Insights")
+                                for insight in explanation['insights']:
+                                    st.write(f"• {insight}")
 
-                    if explanation.get('insights'):
-                        st.write("#### Key Insights")
-                        for insight in explanation['insights']:
-                            st.write(f"• {insight}")
+                            if explanation.get('recommendations'):
+                                st.write("#### Recommendations")
+                                for rec in explanation['recommendations']:
+                                    st.write(f"• {rec}")
+                        except Exception as e:
+                            logger.error(f"Error getting resource explanation: {str(e)}")
+                            st.error("Unable to generate resource insights")
 
-                    if explanation.get('recommendations'):
-                        st.write("#### Recommendations")
-                        for rec in explanation['recommendations']:
-                            st.write(f"• {rec}")
+            # Time Analysis Tab
+            with tabs[2]:
+                logger.debug("Processing Time Analysis tab")
 
-            # Inside Time Analysis Tab section of display_enhanced_analysis method
-            with tabs[2]:  # Time Analysis Tab
-                col1, col2 = st.columns([2, 1])
+                # Validate duration data exists
+                duration_data = self.outliers.get('duration', {})
+                if not duration_data:
+                    st.warning("No time analysis data available")
+                else:
+                    col1, col2 = st.columns([2, 1])
 
-                with col1:
-                    # Keep existing duration outlier visualization
-                    duration_data = []
-                    duration_outliers = {}
+                    with col1:
+                        try:
+                            self._display_time_analysis(duration_data)
+                        except Exception as e:
+                            logger.error(f"Error displaying time analysis: {str(e)}")
+                            st.error("Error displaying time analysis visualizations")
 
-                    for activity, metrics in self.outliers['duration'].items():
-                        duration_data.append({
-                            'Activity': activity,
-                            'Z-Score': metrics.z_score,
-                            'Is Outlier': metrics.is_outlier,
-                            'Total Events': metrics.details['total_events'],
-                            'Violation Count': len(metrics.details.get('outlier_events', {}).get('timing_gap', [])),
-                        })
+                    with col2:
+                        timing_metrics = {
+                            'avg_duration': f"{np.mean([len(events) for events in self.case_events.values()]):.2f}",
+                            'outlier_count': len(
+                                [m for m in duration_data.values() if getattr(m, 'is_outlier', False)]),
+                            'typical_duration': "2-4 hours"
+                        }
+                        st.markdown("### Understanding Time Patterns")
+                        try:
+                            explanation = self.get_explanation('time', timing_metrics)
+                            st.write(explanation.get('summary', 'No summary available'))
 
-                        if metrics.is_outlier:
-                            duration_outliers[activity] = metrics.details
+                            if explanation.get('insights'):
+                                st.write("#### Key Insights")
+                                for insight in explanation['insights']:
+                                    st.write(f"• {insight}")
 
-                    # Original scatter plot visualization
-                    fig = px.scatter(
-                        pd.DataFrame(duration_data),
-                        x='Activity',
-                        y='Z-Score',
-                        size='Total Events',
-                        color='Is Outlier',
-                        title='Activity Duration Distribution',
-                        custom_data=['Violation Count']
-                    )
-
-                    fig.update_traces(
-                        hovertemplate=(
-                                "<b>%{x}</b><br>" +
-                                "Z-Score: %{y:.2f}<br>" +
-                                "Total Events: %{marker.size}<br>" +
-                                "Violations: %{customdata[0]}<br>" +
-                                "<extra></extra>"
-                        )
-                    )
-                    st.plotly_chart(fig, use_container_width=True)
-
-                    # Add new timing gap analysis section
-                    st.subheader("Timing Gap Details")
-                    timing_gaps = []
-                    for activity, metrics in self.outliers['duration'].items():
-                        for violation in metrics.details.get('outlier_events', {}).get('timing_gap', []):
-                            # Get previous event details
-                            prev_event = self._get_event_details(violation['details']['previous_event'])
-
-                            timing_gaps.append({
-                                'Current Activity': activity,
-                                'Previous Activity': prev_event.get('Activity', 'Unknown'),
-                                'Gap (Minutes)': violation['details']['time_gap_minutes'],
-                                'Threshold': violation['details']['threshold_minutes'],
-                                'Case ID': violation['case_id'],
-                                'Object ID': violation['object_id']
-                            })
-
-                    if timing_gaps:
-                        df = pd.DataFrame(timing_gaps)
-
-                        # Create timing gap table
-                        gap_table = go.Figure(data=[go.Table(
-                            header=dict(
-                                values=['Case ID', 'Current Activity', 'Previous Activity',
-                                        'Gap (Minutes)', 'Threshold'],
-                                fill_color='paleturquoise',
-                                align='left'
-                            ),
-                            cells=dict(
-                                values=[
-                                    df['Case ID'],
-                                    df['Current Activity'],
-                                    df['Previous Activity'],
-                                    df['Gap (Minutes)'].round(2),
-                                    df['Threshold']
-                                ],
-                                fill_color=[['pink' if gap > thresh else 'lightgreen'
-                                             for gap, thresh in zip(df['Gap (Minutes)'], df['Threshold'])]],
-                                align='left'
-                            )
-                        )])
-
-                        gap_table.update_layout(
-                            title="Detailed Timing Gap Analysis",
-                            height=400
-                        )
-                        st.plotly_chart(gap_table, use_container_width=True)
-
-                with col2:
-                    # Keep existing explanation section
-                    timing_metrics = {
-                        'avg_duration': f"{np.mean([len(events) for events in self.case_events.values()]):.2f}",
-                        'outlier_count': len([m for m in self.outliers['duration'].values() if m.is_outlier]),
-                        'typical_duration': "2-4 hours"
-                    }
-                    st.markdown("### Understanding Time Patterns")
-                    explanation = self.get_explanation('time', timing_metrics)
-                    st.write(explanation.get('summary', ''))
-
-                    if explanation.get('insights'):
-                        st.write("#### Key Insights")
-                        for insight in explanation['insights']:
-                            st.write(f"• {insight}")
-
-                    if explanation.get('recommendations'):
-                        st.write("#### Recommendations")
-                        for rec in explanation['recommendations']:
-                            st.write(f"• {rec}")
+                            if explanation.get('recommendations'):
+                                st.write("#### Recommendations")
+                                for rec in explanation['recommendations']:
+                                    st.write(f"• {rec}")
+                        except Exception as e:
+                            logger.error(f"Error getting time explanation: {str(e)}")
+                            st.error("Unable to generate time insights")
 
             # Case Analysis Tab
             with tabs[3]:
                 logger.debug("Processing Case Analysis tab")
-                col1, col2 = st.columns([2, 1])
 
-                with col1:
-                    # Create case outlier visualization
-                    case_data = []
-                    case_details = {}  # Store all cases data
+                # Validate case complexity data exists
+                case_data = self.outliers.get('case_complexity', {})
+                if not case_data:
+                    st.warning("No case analysis data available")
+                else:
+                    col1, col2 = st.columns([2, 1])
 
-                    for case_id, metrics in self.outliers['case_complexity'].items():
-                        case_data.append({
-                            'Case': case_id,
-                            'Z-Score': metrics.z_score,
-                            'Is Outlier': metrics.is_outlier,
-                            'Total Events': metrics.details['metrics']['total_events'],
-                            'Activity Count': metrics.details['metrics']['activity_variety']
-                        })
+                    with col1:
+                        try:
+                            self._display_case_analysis(case_data)
+                        except Exception as e:
+                            logger.error(f"Error displaying case analysis: {str(e)}")
+                            st.error("Error displaying case analysis visualizations")
 
-                        # Store details for all cases
-                        case_details[case_id] = metrics.details
+                    with col2:
+                        case_metrics = {
+                            'complex_cases': len([c for c in case_data.values()
+                                                  if c.details['metrics'].get('total_events', 0) > 10]),
+                            'timestamp_cases': len([c for c in case_data.values()
+                                                    if c.details['temporal'].get('duration_hours', 0) > 24]),
+                            'object_cases': len(case_data)
+                        }
+                        st.markdown("### Understanding Case Complexity")
+                        try:
+                            explanation = self.get_explanation('case', case_metrics)
+                            st.write(explanation.get('summary', 'No summary available'))
 
-                    # Create case plot
-                    fig = px.scatter(
-                        pd.DataFrame(case_data),
-                        x='Case',
-                        y='Z-Score',
-                        size='Total Events',
-                        color='Is Outlier',
-                        title='Case Complexity Distribution',
-                        custom_data=['Activity Count']
-                    )
+                            if explanation.get('insights'):
+                                st.write("#### Key Insights")
+                                for insight in explanation['insights']:
+                                    st.write(f"• {insight}")
 
-                    # Add expandable documentation section
-                    with st.expander("📖 How are case complexity outliers calculated?"):
-                        st.markdown("""
-                            ### Case Complexity Outlier Detection
-
-                            This analysis identifies unusual cases by examining multiple dimensions:
-
-                            **Metrics Analyzed:**
-                            - Total events per case
-                            - Unique activities performed
-                            - Number of different resources involved
-                            - Case duration
-                            - Object type variety (diff objects involved)
-
-                            **Detection Method:**
-                            1. Calculate z-scores across all metrics using vectorized operations
-                            2. Create composite z-score by averaging absolute z-scores
-                            3. Flag cases with composite z-score > 3 as outliers
-
-                            **Types of Outliers Detected:**
-                            - Unusually complex cases (high number of events/activities)
-                            - Cases with abnormal resource patterns
-                            - Exceptionally long-running cases
-                            - Cases with unusual object type interactions
-
-                            Each outlier case includes full event traceability for detailed investigation.
-                            """)
-
-                    fig.update_traces(
-                        hovertemplate=(
-                                "<b>%{x}</b><br>" +
-                                "Z-Score: %{y:.2f}<br>" +
-                                "Total Events: %{marker.size}<br>" +
-                                "Activities: %{customdata[0]}<br>" +
-                                "<extra></extra>"
-                        )
-                    )
-                    st.plotly_chart(fig, use_container_width=True)
-
-                    # Show case details for any selected case
-                    if case_details:
-                        selected_case = st.selectbox(
-                            "Select case for details",
-                            options=list(case_details.keys())
-                        )
-                        if selected_case:
-                            details = case_details[selected_case]
-                            st.write("### Case Details")
-
-                            # Add outlier indicator
-                            if case_data[next(i for i, x in enumerate(case_data) if x['Case'] == selected_case)][
-                                'Is Outlier']:
-                                st.warning("⚠️ This case is identified as an outlier")
-
-                            # Show metrics
-                            cols = st.columns(3)
-                            cols[0].metric("Total Events", details['metrics']['total_events'])
-                            cols[1].metric("Activities", details['metrics']['activity_variety'])
-                            cols[2].metric("Duration (hrs)", f"{details['temporal']['duration_hours']:.1f}")
-
-                            # Show timeline
-                            events_df = self._get_events_dataframe(details['events']['all_events'])
-                            if not events_df.empty:
-                                events_df['timestamp'] = pd.to_datetime(events_df['timestamp'])
-                                timeline_fig = px.scatter(
-                                    events_df,
-                                    x='timestamp',
-                                    y='activity',
-                                    color='resource',
-                                    title=f'Case Timeline - {selected_case}',
-                                    labels={'timestamp': 'Time', 'activity': 'Activity', 'resource': 'Resource'}
-                                )
-                                timeline_fig.update_layout(
-                                    height=400,
-                                    showlegend=True,
-                                    hovermode='closest'
-                                )
-                                st.plotly_chart(timeline_fig)
-
-                                # Show event details table
-                                st.write("### Event Details")
-                                st.dataframe(events_df.style.highlight_max(subset=['timestamp']))
-
-                with col2:
-                    case_metrics = {
-                        'complex_cases': len([c for c in self.outliers['case_complexity'].values() if
-                                              c.details['metrics']['total_events'] > 10]),
-                        'timestamp_cases': len([c for c in self.outliers['case_complexity'].values() if
-                                                c.details['temporal']['duration_hours'] > 24]),
-                        'object_cases': len(self.outliers['case_complexity'])
-                    }
-                    st.markdown("### Understanding Case Complexity")
-                    explanation = self.get_explanation('case', case_metrics)
-                    st.write(explanation.get('summary', ''))
-
-                    if explanation.get('insights'):
-                        st.write("#### Key Insights")
-                        for insight in explanation['insights']:
-                            st.write(f"• {insight}")
-
-                    if explanation.get('recommendations'):
-                        st.write("#### Recommendations")
-                        for rec in explanation['recommendations']:
-                            st.write(f"• {rec}")
+                            if explanation.get('recommendations'):
+                                st.write("#### Recommendations")
+                                for rec in explanation['recommendations']:
+                                    st.write(f"• {rec}")
+                        except Exception as e:
+                            logger.error(f"Error getting case explanation: {str(e)}")
+                            st.error("Unable to generate case insights")
 
         except Exception as e:
             logger.error(f"Error in display_enhanced_analysis: {str(e)}")
             logger.error(traceback.format_exc())
-            st.error("Error analyzing process patterns. Check logs for details.")
+            st.error("Error analyzing process patterns. Please check logs for details.")
+            if st.checkbox("Show detailed error"):
+                st.code(traceback.format_exc())
 
     def _get_events_dataframe(self, event_ids: List[str]) -> pd.DataFrame:
         """Helper method to create DataFrame from event IDs"""
