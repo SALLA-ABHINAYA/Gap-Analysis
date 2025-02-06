@@ -137,20 +137,21 @@ class OCPMAnalyzer:
             raise
 
     def _preprocess_event_log(self, df: pd.DataFrame) -> pd.DataFrame:
-        """
-        Preprocess event log to ensure consistent format.
-        Handles both traditional process mining formats and custom business formats.
-        Required columns: case_id (or Case id), timestamp (or Timestamp)
-        """
+        """Preprocess event log to ensure consistent format"""
         print("Input DataFrame Info:")
         print(df.info())
 
         # Create a copy to avoid modifying the original
         df = df.copy()
 
-        # Define all possible column mappings - both traditional and new format
+        # Check if we need to handle semicolon-separated data that was read as a single column
+        if len(df.columns) == 1 and ';' in df.columns[0]:
+            # Split the single column into multiple columns
+            column_names = df.columns[0].split(';')
+            df = pd.DataFrame([row[0].split(';') for row in df.values], columns=column_names)
+
+        # Define all possible column mappings
         column_mappings = {
-            # Traditional process mining formats
             'case:concept:name': 'case_id',
             'concept:name': 'activity',
             'time:timestamp': 'timestamp',
@@ -159,103 +160,24 @@ class OCPMAnalyzer:
             'Timestamp': 'timestamp',
             'case': 'case_id',
             'event': 'activity',
-            'start_timestamp': 'timestamp',
-            
-            # New business format
-            'Case id': 'case_id',
-            'Activity name': 'activity',
-            
-            # Already correct format
-            'case_id': 'case_id',
-            'activity': 'activity',
-            'timestamp': 'timestamp',
-            
-            # Additional business columns
-            'Resource': 'resource',
-            'User type': 'user_type',
-            'Resource name': 'resource_name',
-            'Product name': 'product_name',
-            'Product description': 'product_description',
-            'Order value': 'order_value',
-            'Business unit': 'business_unit',
-            'Customer name': 'customer_name',
-            'Customer payment history': 'payment_history'
+            'start_timestamp': 'timestamp'
         }
 
-        # Try to identify and rename columns
+        # Rename columns if they exist
         for old_col, new_col in column_mappings.items():
             if old_col in df.columns:
                 df = df.rename(columns={old_col: new_col})
 
-        # Special handling for case_id if it has a numeric prefix
-        if 'case_id' not in df.columns:
-            case_id_columns = [col for col in df.columns if 'case' in col.lower()]
-            if case_id_columns:
-                df = df.rename(columns={case_id_columns[0]: 'case_id'})
-
-        # Special handling for synthetic data format
-        if 'case_id' not in df.columns and 'case:concept:name' in df.columns:
-            df['case_id'] = df['case:concept:name']
-        if 'activity' not in df.columns and 'concept:name' in df.columns:
-            df['activity'] = df['concept:name']
-        if 'timestamp' not in df.columns and 'time:timestamp' in df.columns:
-            df['timestamp'] = df['time:timestamp']
-
         # Check required columns
-        required_columns = ['case_id', 'timestamp']
+        required_columns = ['case_id', 'activity', 'timestamp']
         missing_columns = [col for col in required_columns if col not in df.columns]
         if missing_columns:
             print("Available columns:", df.columns.tolist())
             raise ValueError(f"Missing required columns: {missing_columns}")
 
-        # If activity column is not present, create it from Activity name or set to default
-        if 'activity' not in df.columns:
-            if 'Activity name' in df.columns:
-                df['activity'] = df['Activity name']
-            else:
-                df['activity'] = 'Unknown Activity'
-
-        # Try multiple timestamp formats
+        # Convert timestamp
         if not pd.api.types.is_datetime64_any_dtype(df['timestamp']):
-            timestamp_formats = [
-                '%d/%m/%Y %H:%M',  # New business format
-                '%Y-%m-%d %H:%M:%S',  # Traditional format
-                '%Y/%m/%d %H:%M:%S',
-                '%d-%m-%Y %H:%M:%S'
-            ]
-            
-            for timestamp_format in timestamp_formats:
-                try:
-                    df['timestamp'] = pd.to_datetime(df['timestamp'], format=timestamp_format)
-                    break
-                except ValueError:
-                    continue
-            
-            # If none of the specific formats work, try pandas default parser
-            if not pd.api.types.is_datetime64_any_dtype(df['timestamp']):
-                df['timestamp'] = pd.to_datetime(df['timestamp'])
-
-        # Handle numeric fields
-        if 'order_value' in df.columns:
-            df['order_value'] = pd.to_numeric(df['order_value'], errors='coerce')
-
-        # Set default values for optional columns
-        default_values = {
-            'activity': 'Unknown Activity',
-            'resource': 'Unknown Resource',
-            'user_type': 'Unknown',
-            'resource_name': 'Unknown',
-            'product_name': 'Unknown Product',
-            'product_description': 'No Description',
-            'business_unit': 'Unknown Unit',
-            'customer_name': '',
-            'payment_history': 'unknown'
-        }
-
-        # Only fill default values for columns that exist
-        for col, default_val in default_values.items():
-            if col in df.columns:
-                df[col] = df[col].fillna(default_val)
+            df['timestamp'] = pd.to_datetime(df['timestamp'])
 
         print("\nProcessed DataFrame Info:")
         print(df.info())
@@ -594,56 +516,69 @@ def create_ocpm_ui():
     """Create Streamlit UI components for OCPM analysis"""
     st.subheader("Object-Centric Process Analytics Analysis")
 
-    # Create output directory if it doesn't exist
-    os.makedirs("ocpm_output", exist_ok=True)
+    # Check for existing event log
+    event_log_path = "ocpm_output/event_log.csv"
 
-    uploaded_file = st.file_uploader("Upload Event Log (CSV)", type=['csv'])
+    try:
+        if os.path.exists(event_log_path):
+            # Try reading with different separators
+            try:
+                # First try semicolon separator
+                df = pd.read_csv(event_log_path, sep=';')
+            except:
+                # Fallback to comma separator
+                df = pd.read_csv(event_log_path)
 
-    if uploaded_file is not None:
-        try:
-            df = read_csv_with_detection(uploaded_file)
+            st.success("Found existing event log from Process Discovery")
 
-            # Initialize analyzer
-            analyzer = OCPMAnalyzer(df)
+            # Debug information
+            #st.write("Available columns:", df.columns.tolist())
 
-            # Generate and save OCEL file
-            ocel_path = analyzer.save_ocel()
-            st.session_state['ocel_path'] = ocel_path
-            st.success(f"OCEL file generated: {ocel_path}")
+        else:
+            st.error("Please run Process Discovery first to analyze event log")
+            st.stop()
 
-            # Create tabs for different analyses
-            tabs = st.tabs(["Object Interactions", "Object Metrics", "Object Lifecycles"])
+        # Initialize analyzer
+        analyzer = OCPMAnalyzer(df)
 
-            # Object Interactions Tab
-            with tabs[0]:
-                st.subheader("Object Type Interactions")
-                interactions = analyzer.analyze_object_interactions()
-                fig = OCPMVisualizer.create_object_interaction_heatmap(interactions)
+        # Generate OCEL file
+        ocel_path = analyzer.save_ocel()
+        st.session_state['ocel_path'] = ocel_path
+        st.success(f"OCEL file generated: {ocel_path}")
+
+        # Create tabs for different analyses
+        tabs = st.tabs(["Object Interactions", "Object Metrics", "Object Lifecycles"])
+
+        # Object Interactions Tab
+        with tabs[0]:
+            st.subheader("Object Type Interactions")
+            interactions = analyzer.analyze_object_interactions()
+            fig = OCPMVisualizer.create_object_interaction_heatmap(interactions)
+            st.plotly_chart(fig)
+
+        # Object Metrics Tab
+        with tabs[1]:
+            st.subheader("Object Type Metrics")
+            metrics = analyzer.calculate_object_metrics()
+            figures = OCPMVisualizer.create_object_metrics_dashboard(metrics)
+            for fig in figures:
                 st.plotly_chart(fig)
 
-            # Object Metrics Tab
-            with tabs[1]:
-                st.subheader("Object Type Metrics")
-                metrics = analyzer.calculate_object_metrics()
-                figures = OCPMVisualizer.create_object_metrics_dashboard(metrics)
-                for fig in figures:
-                    st.plotly_chart(fig)
+        # Object Lifecycles Tab
+        with tabs[2]:
+            st.subheader("Object Lifecycles")
+            selected_object = st.selectbox(
+                "Select Object Type",
+                list(analyzer.object_types.keys())
+            )
 
-            # Object Lifecycles Tab
-            with tabs[2]:
-                st.subheader("Object Lifecycles")
-                selected_object = st.selectbox(
-                    "Select Object Type",
-                    list(analyzer.object_types.keys())
-                )
+            if selected_object:
+                lifecycle_graph = analyzer.generate_object_lifecycle_graph(selected_object)
+                dot_graph = nx.nx_pydot.to_pydot(lifecycle_graph)
+                st.graphviz_chart(dot_graph.to_string())
 
-                if selected_object:
-                    lifecycle_graph = analyzer.generate_object_lifecycle_graph(selected_object)
-                    dot_graph = nx.nx_pydot.to_pydot(lifecycle_graph)
-                    st.graphviz_chart(dot_graph.to_string())
-
-        except Exception as e:
-            st.error(f"Error in OCPM analysis: {str(e)}")
-            st.write("Available columns in uploaded file:",
-                     df.columns.tolist() if 'df' in locals() else 'No data loaded')
-            st.write("Please ensure your CSV file has the required columns and data format")
+    except Exception as e:
+        st.error(f"Error in OCPM analysis: {str(e)}")
+        if 'df' in locals():
+            st.write("Available columns:", df.columns.tolist())
+        st.write("Please ensure the event log has the required columns and data format")

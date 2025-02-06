@@ -1,4 +1,4 @@
-# APA_Analytics.py
+# 2_Outlier_Analysis.py
 import shutil
 import traceback
 import streamlit as st
@@ -242,10 +242,6 @@ def setup_apa_page():
     st.title("📊 IRMAI APA Analytics")
 
     st.info("APA provides comprehensive process analysis including AI-powered insights.")
-
-    # Create directories
-    os.makedirs("ocpm_data", exist_ok=True)
-    os.makedirs("ocpm_output", exist_ok=True)
 
     # Create tabs for different analyses
     main_tabs = st.tabs(["Process Analysis", "Outlier Analysis", "AI Insights"])

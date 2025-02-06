@@ -1,4 +1,4 @@
-# pages/FMEA_Analysis.py
+# pages/5_FMEA_Analysis.py
 
 import streamlit as st
 import pandas as pd
