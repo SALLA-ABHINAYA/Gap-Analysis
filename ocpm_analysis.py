@@ -529,7 +529,7 @@ def create_ocpm_ui():
                 # Fallback to comma separator
                 df = pd.read_csv(event_log_path)
 
-            st.success("Found existing event log from Process Discovery")
+            st.success("Performing APA Analysis...")
 
             # Debug information
             #st.write("Available columns:", df.columns.tolist())
