@@ -4,7 +4,7 @@ import shutil
 import streamlit as st
 import json
 import pandas as pd
-from openai import OpenAI
+
 import plotly.graph_objects as go
 from datetime import datetime, timedelta
 from dataclasses import dataclass
@@ -14,6 +14,8 @@ import traceback
 from datetime import datetime
 from typing import Dict, List
 from neo4j import GraphDatabase
+
+from utils import get_azure_openai_client
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -39,9 +41,7 @@ class AIGapAnalyzer:
 
         try:
             # Initialize OpenAI client
-            self.openai_client = OpenAI(
-                api_key="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"
-            )
+            self.client = get_azure_openai_client()
             logger.info("OpenAI client initialized successfully")
         except Exception as e:
             logger.error(f"Failed to initialize OpenAI client: {str(e)}")
@@ -75,8 +75,8 @@ class AIGapAnalyzer:
                 "}"
             )
 
-            response = self.openai_client.chat.completions.create(
-                model="gpt-4o-mini",
+            response = self.client.chat.completions.create(
+                model="gpt-4o",
                 messages=[
                     {
                         "role": "system",
@@ -203,7 +203,7 @@ class AIGapAnalyzer:
             """
 
             response = self.client.chat.completions.create(
-                model="gpt-4o-mini",
+                model="gpt-4o",
                 messages=[
                     {"role": "system", "content": "You are an expert process improvement consultant."},
                     {"role": "user", "content": context}
@@ -245,9 +245,7 @@ class GapAnalysisVisualizer:
         self.metrics = pd.DataFrame.from_dict(report.get('metrics', {}), orient='index')
         self.logger = logging.getLogger(__name__)
         # Initialize OpenAI client
-        self.openai_client = OpenAI(
-            api_key="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"
-        )
+        self.client = get_azure_openai_client()
 
     def get_ai_explanation(self, data: Dict, chart_type: str) -> str:
         """Get AI explanation for a visualization"""
@@ -274,8 +272,8 @@ class GapAnalysisVisualizer:
             Keep the explanation business-friendly and actionable.
             """
 
-            response = self.openai_client.chat.completions.create(
-                model="gpt-4o-mini",
+            response = self.client.chat.completions.create(
+                model="gpt-4o",
                 messages=[
                     {"role": "system", "content": "You are a process analytics expert."},
                     {"role": "user", "content": base_prompt}
@@ -748,9 +746,7 @@ class FXTradingGapAnalyzer:
         self.findings = []
         self._initialize_metrics()
 
-        self.openai_client = OpenAI(
-            api_key="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"
-        )
+        self.client = get_azure_openai_client()
 
         # Initialize AI analyzer with API key from environment or session state
         api_key = api_key or st.secrets.get("OPENAI_API_KEY")
