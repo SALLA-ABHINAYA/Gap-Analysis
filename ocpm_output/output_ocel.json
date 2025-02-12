@@ -3,8 +3,8 @@
     "name": "Trade",
     "activities": [
       "Trade Initiated",
-      "Trade Validation",
       "Trade Execution",
+      "Trade Validation",
       "Trade Confirmation",
       "Trade Matching",
       "Trade Reconciliation",
@@ -12,15 +12,16 @@
       "Final Settlement"
     ],
     "attributes": [
-      "activity",
       "booking_system",
       "case_id",
       "client_type",
       "currency_pair",
       "notional_amount",
-      "object_type",
-      "resource",
-      "timestamp"
+      "option_type",
+      "premium",
+      "strike_price",
+      "trade_id",
+      "trading_strategy"
     ],
     "relationships": [
       "Client",
@@ -34,21 +35,29 @@
     "activities": [
       "Quote Requested",
       "Quote Provided",
+      "Trade Allocation",
+      "Exercise Decision",
       "Client Limit Validation",
       "Strategy Validation",
       "ISDA Master Agreement Check",
       "KYC Refresh Check",
-      "Best Execution Validation",
-      "Exercise Decision"
+      "Best Execution Validation"
     ],
     "attributes": [
-      "client_id",
+      "booking_system",
+      "case_id",
+      "client_type",
+      "currency_pair",
+      "notional_amount",
+      "option_type",
       "order_id",
       "order_type",
+      "premium",
       "price",
       "quantity",
       "status",
-      "timestamp"
+      "strike_price",
+      "trading_strategy"
     ],
     "relationships": [
       "Client",
@@ -59,23 +68,25 @@
   "Position": {
     "name": "Position",
     "activities": [
-      "Position Updated",
-      "Risk Limit Checked",
-      "Position Reconciled",
-      "Risk Transfer Executed",
-      "Initial Margin Calculation",
+      "Position Reconciliation",
       "Risk Assessment",
-      "Collateral Management",
-      "Position Reconciliation"
+      "Initial Margin Calculation",
+      "Collateral Management"
     ],
     "attributes": [
-      "book_id",
+      "booking_system",
+      "case_id",
+      "client_type",
       "currency_pair",
+      "delta",
+      "gamma",
+      "limit_usage",
+      "option_type",
       "position_id",
-      "risk_exposure",
-      "status",
-      "timestamp",
-      "trading_book"
+      "risk_score",
+      "theta",
+      "trading_strategy",
+      "vega"
     ],
     "relationships": [
       "Client",
@@ -86,31 +97,33 @@
   "MarketData": {
     "name": "MarketData",
     "activities": [
-      "Price Update",
-      "Reference Rate Published",
-      "Market Status Change",
-      "Trading Hours Update",
       "Market Data Validation",
       "Volatility Surface Analysis",
       "Greeks Calculation",
       "Premium Calculation",
+      "Volatility Smile Analysis",
+      "Skew Calibration",
+      "Surface Construction",
+      "Market Making Spread Calculation",
       "CSA Verification",
       "Transaction Reporting Check",
       "Regulatory Reporting Generation"
     ],
     "attributes": [
+      "booking_system",
+      "case_id",
+      "client_type",
       "currency_pair",
-      "data_id",
+      "delta",
+      "gamma",
       "market_data_id",
-      "price",
-      "quote",
-      "reference_rate",
-      "source",
-      "timestamp",
-      "volatility",
-      "yield_curve"
+      "option_type",
+      "theta",
+      "trading_strategy",
+      "vega"
     ],
     "relationships": [
+      "Client",
       "Order",
       "Position",
       "Trade"
@@ -120,20 +133,28 @@
     "name": "Client",
     "activities": [
       "Credit Check",
+      "Client Limit Validation",
+      "KYC Refresh Check",
+      "ISDA Master Agreement Check",
       "Settlement Instructions",
-      "Premium Settlement"
+      "Premium Settlement",
+      "CSA Verification"
     ],
     "attributes": [
+      "booking_system",
+      "case_id",
       "client_id",
       "client_type",
       "compliance_requirements",
+      "compliance_status",
       "credit_limit",
       "credit_limits",
-      "preferred_execution_venue",
+      "currency_pair",
+      "option_type",
       "preferred_execution_venues",
       "settlement_instructions",
-      "timestamp",
-      "trading_permissions"
+      "trading_permissions",
+      "trading_strategy"
     ],
     "relationships": [
       "Order",

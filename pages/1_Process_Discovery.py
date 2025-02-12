@@ -19,7 +19,7 @@ if azure_file_path:
     os.environ["PATH"] = os.environ["PATH"] + ":" + azure_file_path
 else:
     # We're in Windows local environment
-    graphviz_path = "C:\\samadhi\\technology\\Graphviz\\bin"
+    graphviz_path = "C:\\irmai\\technology\\Graphviz\\bin"
     os.environ["PATH"] = os.environ["PATH"] + ";" + graphviz_path
 
 

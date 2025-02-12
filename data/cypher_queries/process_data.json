@@ -1,0 +1,2528 @@
+{
+  "ocel:version": "1.0",
+  "ocel:ordering": "timestamp",
+  "ocel:attribute-names": [],
+  "ocel:events": [
+    {
+      "ocel:id": "Case_1_Trade Initiated",
+      "ocel:timestamp": "2024-11-09T19:18:10.387330",
+      "ocel:activity": "Trade Initiated",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Client Desk D",
+        "case_id": "Case_1",
+        "object_type": "Trade"
+      },
+      "ocel:objects": [
+        {
+          "id": "Trade_Case_1",
+          "type": "Trade"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_1_Market Data Validation",
+      "ocel:timestamp": "2024-11-09T19:38:10.387330",
+      "ocel:activity": "Market Data Validation",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Client Desk D",
+        "case_id": "Case_1",
+        "object_type": "MarketData"
+      },
+      "ocel:objects": [
+        {
+          "id": "MarketData_Case_1",
+          "type": "MarketData"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_1_Volatility Surface Analysis",
+      "ocel:timestamp": "2024-11-09T20:30:10.387330",
+      "ocel:activity": "Volatility Surface Analysis",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Client Desk D",
+        "case_id": "Case_1",
+        "object_type": "MarketData"
+      },
+      "ocel:objects": [
+        {
+          "id": "MarketData_Case_1",
+          "type": "MarketData"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_1_Quote Provided",
+      "ocel:timestamp": "2024-11-09T20:53:10.387330",
+      "ocel:activity": "Quote Provided",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Client Desk D",
+        "case_id": "Case_1",
+        "object_type": "Order"
+      },
+      "ocel:objects": [
+        {
+          "id": "Order_Case_1",
+          "type": "Order"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_1_Exercise Decision",
+      "ocel:timestamp": "2024-11-09T21:10:10.387330",
+      "ocel:activity": "Exercise Decision",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Client Desk D",
+        "case_id": "Case_1",
+        "object_type": "Order"
+      },
+      "ocel:objects": [
+        {
+          "id": "Order_Case_1",
+          "type": "Order"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_1_Trade Transparency Assessment",
+      "ocel:timestamp": "2024-11-09T21:28:10.387330",
+      "ocel:activity": "Trade Transparency Assessment",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Client Desk D",
+        "case_id": "Case_1",
+        "object_type": "Trade"
+      },
+      "ocel:objects": [
+        {
+          "id": "Trade_Case_1",
+          "type": "Trade"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_1_Premium Calculation",
+      "ocel:timestamp": "2024-11-09T21:39:10.387330",
+      "ocel:activity": "Premium Calculation",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Client Desk D",
+        "case_id": "Case_1",
+        "object_type": "MarketData"
+      },
+      "ocel:objects": [
+        {
+          "id": "MarketData_Case_1",
+          "type": "MarketData"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_1_Strategy Validation",
+      "ocel:timestamp": "2024-11-09T22:38:10.387330",
+      "ocel:activity": "Strategy Validation",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Client Desk D",
+        "case_id": "Case_1",
+        "object_type": "Order"
+      },
+      "ocel:objects": [
+        {
+          "id": "Order_Case_1",
+          "type": "Order"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_1_Quote Requested",
+      "ocel:timestamp": "2024-11-09T22:58:10.387330",
+      "ocel:activity": "Quote Requested",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Client Desk D",
+        "case_id": "Case_1",
+        "object_type": "Order"
+      },
+      "ocel:objects": [
+        {
+          "id": "Order_Case_1",
+          "type": "Order"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_1_Position Reconciliation",
+      "ocel:timestamp": "2024-11-09T22:59:10.387330",
+      "ocel:activity": "Position Reconciliation",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Client Desk D",
+        "case_id": "Case_1",
+        "object_type": "Position"
+      },
+      "ocel:objects": [
+        {
+          "id": "Position_Case_1",
+          "type": "Position"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_1_Trade Reconciliation",
+      "ocel:timestamp": "2024-11-09T23:18:10.387330",
+      "ocel:activity": "Trade Reconciliation",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Client Desk D",
+        "case_id": "Case_1",
+        "object_type": "Trade"
+      },
+      "ocel:objects": [
+        {
+          "id": "Trade_Case_1",
+          "type": "Trade"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_1_Premium Settlement",
+      "ocel:timestamp": "2024-11-09T23:50:10.387330",
+      "ocel:activity": "Premium Settlement",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Client Desk D",
+        "case_id": "Case_1",
+        "object_type": "Client"
+      },
+      "ocel:objects": [
+        {
+          "id": "Client_Case_1",
+          "type": "Client"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_1_Collateral Management",
+      "ocel:timestamp": "2024-11-10T00:06:10.387330",
+      "ocel:activity": "Collateral Management",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Client Desk D",
+        "case_id": "Case_1",
+        "object_type": "Position"
+      },
+      "ocel:objects": [
+        {
+          "id": "Position_Case_1",
+          "type": "Position"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_1_Risk Assessment",
+      "ocel:timestamp": "2024-11-10T00:17:10.387330",
+      "ocel:activity": "Risk Assessment",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Client Desk D",
+        "case_id": "Case_1",
+        "object_type": "Position"
+      },
+      "ocel:objects": [
+        {
+          "id": "Position_Case_1",
+          "type": "Position"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_1_Trade Execution",
+      "ocel:timestamp": "2024-11-10T00:24:10.387330",
+      "ocel:activity": "Trade Execution",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Client Desk D",
+        "case_id": "Case_1",
+        "object_type": "Trade"
+      },
+      "ocel:objects": [
+        {
+          "id": "Trade_Case_1",
+          "type": "Trade"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_1_Best Execution Validation",
+      "ocel:timestamp": "2024-11-10T02:46:10.387330",
+      "ocel:activity": "Best Execution Validation",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Client Desk D",
+        "case_id": "Case_1",
+        "object_type": "Order"
+      },
+      "ocel:objects": [
+        {
+          "id": "Order_Case_1",
+          "type": "Order"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_1_Credit Check",
+      "ocel:timestamp": "2024-11-10T03:18:10.387330",
+      "ocel:activity": "Credit Check",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Client Desk D",
+        "case_id": "Case_1",
+        "object_type": "Client"
+      },
+      "ocel:objects": [
+        {
+          "id": "Client_Case_1",
+          "type": "Client"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_1_Greeks Calculation",
+      "ocel:timestamp": "2024-11-10T03:38:10.387330",
+      "ocel:activity": "Greeks Calculation",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Client Desk D",
+        "case_id": "Case_1",
+        "object_type": "MarketData"
+      },
+      "ocel:objects": [
+        {
+          "id": "MarketData_Case_1",
+          "type": "MarketData"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_1_Client Limit Validation",
+      "ocel:timestamp": "2024-11-10T04:00:10.387330",
+      "ocel:activity": "Client Limit Validation",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Client Desk D",
+        "case_id": "Case_1",
+        "object_type": "Order"
+      },
+      "ocel:objects": [
+        {
+          "id": "Order_Case_1",
+          "type": "Order"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_1_Trade Allocation",
+      "ocel:timestamp": "2024-11-10T04:03:10.387330",
+      "ocel:activity": "Trade Allocation",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Client Desk D",
+        "case_id": "Case_1",
+        "object_type": "Trade"
+      },
+      "ocel:objects": [
+        {
+          "id": "Trade_Case_1",
+          "type": "Trade"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_1_Initial Margin Calculation",
+      "ocel:timestamp": "2024-11-10T05:18:10.387330",
+      "ocel:activity": "Initial Margin Calculation",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Client Desk D",
+        "case_id": "Case_1",
+        "object_type": "Position"
+      },
+      "ocel:objects": [
+        {
+          "id": "Position_Case_1",
+          "type": "Position"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_1_Trade Validation",
+      "ocel:timestamp": "2024-11-10T05:45:10.387330",
+      "ocel:activity": "Trade Validation",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Client Desk D",
+        "case_id": "Case_1",
+        "object_type": "Trade"
+      },
+      "ocel:objects": [
+        {
+          "id": "Trade_Case_1",
+          "type": "Trade"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_1_Regulatory Reporting Generation",
+      "ocel:timestamp": "2024-11-10T06:08:10.387330",
+      "ocel:activity": "Regulatory Reporting Generation",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Client Desk D",
+        "case_id": "Case_1",
+        "object_type": "MarketData"
+      },
+      "ocel:objects": [
+        {
+          "id": "MarketData_Case_1",
+          "type": "MarketData"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_1_Settlement Instructions",
+      "ocel:timestamp": "2024-11-10T06:42:10.387330",
+      "ocel:activity": "Settlement Instructions",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Client Desk D",
+        "case_id": "Case_1",
+        "object_type": "Client"
+      },
+      "ocel:objects": [
+        {
+          "id": "Client_Case_1",
+          "type": "Client"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_1_Trade Matching",
+      "ocel:timestamp": "2024-11-10T07:46:10.387330",
+      "ocel:activity": "Trade Matching",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Client Desk D",
+        "case_id": "Case_1",
+        "object_type": "Trade"
+      },
+      "ocel:objects": [
+        {
+          "id": "Trade_Case_1",
+          "type": "Trade"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_1_ISDA Master Agreement Check",
+      "ocel:timestamp": "2024-11-10T09:15:10.387330",
+      "ocel:activity": "ISDA Master Agreement Check",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Client Desk D",
+        "case_id": "Case_1",
+        "object_type": "Order"
+      },
+      "ocel:objects": [
+        {
+          "id": "Order_Case_1",
+          "type": "Order"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_1_Final Settlement",
+      "ocel:timestamp": "2024-11-10T11:30:10.387330",
+      "ocel:activity": "Final Settlement",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Client Desk D",
+        "case_id": "Case_1",
+        "object_type": "Trade"
+      },
+      "ocel:objects": [
+        {
+          "id": "Trade_Case_1",
+          "type": "Trade"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_1_KYC Refresh Check",
+      "ocel:timestamp": "2024-11-10T12:48:10.387330",
+      "ocel:activity": "KYC Refresh Check",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Client Desk D",
+        "case_id": "Case_1",
+        "object_type": "Order"
+      },
+      "ocel:objects": [
+        {
+          "id": "Order_Case_1",
+          "type": "Order"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_1_Trade Confirmation",
+      "ocel:timestamp": "2024-11-10T13:40:10.387330",
+      "ocel:activity": "Trade Confirmation",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Client Desk D",
+        "case_id": "Case_1",
+        "object_type": "Trade"
+      },
+      "ocel:objects": [
+        {
+          "id": "Trade_Case_1",
+          "type": "Trade"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_1_Transaction Reporting Check",
+      "ocel:timestamp": "2024-11-10T18:06:10.387330",
+      "ocel:activity": "Transaction Reporting Check",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Client Desk D",
+        "case_id": "Case_1",
+        "object_type": "MarketData"
+      },
+      "ocel:objects": [
+        {
+          "id": "MarketData_Case_1",
+          "type": "MarketData"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_1_CSA Verification",
+      "ocel:timestamp": "2024-11-10T22:22:10.387330",
+      "ocel:activity": "CSA Verification",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Client Desk D",
+        "case_id": "Case_1",
+        "object_type": "MarketData"
+      },
+      "ocel:objects": [
+        {
+          "id": "MarketData_Case_1",
+          "type": "MarketData"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_10_Trade Initiated",
+      "ocel:timestamp": "2024-10-24T19:18:10.387883",
+      "ocel:activity": "Trade Initiated",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Client Desk D",
+        "case_id": "Case_10",
+        "object_type": "Trade"
+      },
+      "ocel:objects": [
+        {
+          "id": "Trade_Case_10",
+          "type": "Trade"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_10_Volatility Surface Analysis",
+      "ocel:timestamp": "2024-10-24T19:50:10.387883",
+      "ocel:activity": "Volatility Surface Analysis",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Client Desk D",
+        "case_id": "Case_10",
+        "object_type": "MarketData"
+      },
+      "ocel:objects": [
+        {
+          "id": "MarketData_Case_10",
+          "type": "MarketData"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_10_Market Data Validation",
+      "ocel:timestamp": "2024-10-24T19:53:10.387883",
+      "ocel:activity": "Market Data Validation",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Client Desk D",
+        "case_id": "Case_10",
+        "object_type": "MarketData"
+      },
+      "ocel:objects": [
+        {
+          "id": "MarketData_Case_10",
+          "type": "MarketData"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_10_Collateral Management",
+      "ocel:timestamp": "2024-10-24T21:02:10.387883",
+      "ocel:activity": "Collateral Management",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Client Desk D",
+        "case_id": "Case_10",
+        "object_type": "Position"
+      },
+      "ocel:objects": [
+        {
+          "id": "Position_Case_10",
+          "type": "Position"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_10_Quote Requested",
+      "ocel:timestamp": "2024-10-24T21:26:10.387883",
+      "ocel:activity": "Quote Requested",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Client Desk D",
+        "case_id": "Case_10",
+        "object_type": "Order"
+      },
+      "ocel:objects": [
+        {
+          "id": "Order_Case_10",
+          "type": "Order"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_10_Premium Calculation",
+      "ocel:timestamp": "2024-10-24T21:48:10.387883",
+      "ocel:activity": "Premium Calculation",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Client Desk D",
+        "case_id": "Case_10",
+        "object_type": "MarketData"
+      },
+      "ocel:objects": [
+        {
+          "id": "MarketData_Case_10",
+          "type": "MarketData"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_10_Trade Execution",
+      "ocel:timestamp": "2024-10-24T21:48:10.387883",
+      "ocel:activity": "Trade Execution",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Client Desk D",
+        "case_id": "Case_10",
+        "object_type": "Trade"
+      },
+      "ocel:objects": [
+        {
+          "id": "Trade_Case_10",
+          "type": "Trade"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_10_Trade Transparency Assessment",
+      "ocel:timestamp": "2024-10-24T22:03:10.387883",
+      "ocel:activity": "Trade Transparency Assessment",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Client Desk D",
+        "case_id": "Case_10",
+        "object_type": "Trade"
+      },
+      "ocel:objects": [
+        {
+          "id": "Trade_Case_10",
+          "type": "Trade"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_10_Quote Provided",
+      "ocel:timestamp": "2024-10-24T22:38:10.387883",
+      "ocel:activity": "Quote Provided",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Client Desk D",
+        "case_id": "Case_10",
+        "object_type": "Order"
+      },
+      "ocel:objects": [
+        {
+          "id": "Order_Case_10",
+          "type": "Order"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_10_Greeks Calculation",
+      "ocel:timestamp": "2024-10-24T22:59:10.387883",
+      "ocel:activity": "Greeks Calculation",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Client Desk D",
+        "case_id": "Case_10",
+        "object_type": "MarketData"
+      },
+      "ocel:objects": [
+        {
+          "id": "MarketData_Case_10",
+          "type": "MarketData"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_10_Exercise Decision",
+      "ocel:timestamp": "2024-10-24T23:18:10.387883",
+      "ocel:activity": "Exercise Decision",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Client Desk D",
+        "case_id": "Case_10",
+        "object_type": "Order"
+      },
+      "ocel:objects": [
+        {
+          "id": "Order_Case_10",
+          "type": "Order"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_10_Best Execution Validation",
+      "ocel:timestamp": "2024-10-24T23:30:10.387883",
+      "ocel:activity": "Best Execution Validation",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Client Desk D",
+        "case_id": "Case_10",
+        "object_type": "Order"
+      },
+      "ocel:objects": [
+        {
+          "id": "Order_Case_10",
+          "type": "Order"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_10_Initial Margin Calculation",
+      "ocel:timestamp": "2024-10-25T01:38:10.387883",
+      "ocel:activity": "Initial Margin Calculation",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Client Desk D",
+        "case_id": "Case_10",
+        "object_type": "Position"
+      },
+      "ocel:objects": [
+        {
+          "id": "Position_Case_10",
+          "type": "Position"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_10_Trade Matching",
+      "ocel:timestamp": "2024-10-25T03:42:10.387883",
+      "ocel:activity": "Trade Matching",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Client Desk D",
+        "case_id": "Case_10",
+        "object_type": "Trade"
+      },
+      "ocel:objects": [
+        {
+          "id": "Trade_Case_10",
+          "type": "Trade"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_10_Strategy Validation",
+      "ocel:timestamp": "2024-10-25T03:51:10.387883",
+      "ocel:activity": "Strategy Validation",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Client Desk D",
+        "case_id": "Case_10",
+        "object_type": "Order"
+      },
+      "ocel:objects": [
+        {
+          "id": "Order_Case_10",
+          "type": "Order"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_10_Credit Check",
+      "ocel:timestamp": "2024-10-25T03:58:10.387883",
+      "ocel:activity": "Credit Check",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Client Desk D",
+        "case_id": "Case_10",
+        "object_type": "Client"
+      },
+      "ocel:objects": [
+        {
+          "id": "Client_Case_10",
+          "type": "Client"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_10_Premium Settlement",
+      "ocel:timestamp": "2024-10-25T04:18:10.387883",
+      "ocel:activity": "Premium Settlement",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Client Desk D",
+        "case_id": "Case_10",
+        "object_type": "Client"
+      },
+      "ocel:objects": [
+        {
+          "id": "Client_Case_10",
+          "type": "Client"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_10_Trade Reconciliation",
+      "ocel:timestamp": "2024-10-25T04:28:10.387883",
+      "ocel:activity": "Trade Reconciliation",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Client Desk D",
+        "case_id": "Case_10",
+        "object_type": "Trade"
+      },
+      "ocel:objects": [
+        {
+          "id": "Trade_Case_10",
+          "type": "Trade"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_10_Final Settlement",
+      "ocel:timestamp": "2024-10-25T05:18:10.387883",
+      "ocel:activity": "Final Settlement",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Client Desk D",
+        "case_id": "Case_10",
+        "object_type": "Trade"
+      },
+      "ocel:objects": [
+        {
+          "id": "Trade_Case_10",
+          "type": "Trade"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_10_Trade Allocation",
+      "ocel:timestamp": "2024-10-25T06:51:10.387883",
+      "ocel:activity": "Trade Allocation",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Client Desk D",
+        "case_id": "Case_10",
+        "object_type": "Trade"
+      },
+      "ocel:objects": [
+        {
+          "id": "Trade_Case_10",
+          "type": "Trade"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_10_Trade Confirmation",
+      "ocel:timestamp": "2024-10-25T07:50:10.387883",
+      "ocel:activity": "Trade Confirmation",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Client Desk D",
+        "case_id": "Case_10",
+        "object_type": "Trade"
+      },
+      "ocel:objects": [
+        {
+          "id": "Trade_Case_10",
+          "type": "Trade"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_10_Position Reconciliation",
+      "ocel:timestamp": "2024-10-25T08:50:10.387883",
+      "ocel:activity": "Position Reconciliation",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Client Desk D",
+        "case_id": "Case_10",
+        "object_type": "Position"
+      },
+      "ocel:objects": [
+        {
+          "id": "Position_Case_10",
+          "type": "Position"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_10_Risk Assessment",
+      "ocel:timestamp": "2024-10-25T11:01:10.387883",
+      "ocel:activity": "Risk Assessment",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Client Desk D",
+        "case_id": "Case_10",
+        "object_type": "Position"
+      },
+      "ocel:objects": [
+        {
+          "id": "Position_Case_10",
+          "type": "Position"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_10_Settlement Instructions",
+      "ocel:timestamp": "2024-10-25T11:12:10.387883",
+      "ocel:activity": "Settlement Instructions",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Client Desk D",
+        "case_id": "Case_10",
+        "object_type": "Client"
+      },
+      "ocel:objects": [
+        {
+          "id": "Client_Case_10",
+          "type": "Client"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_10_Client Limit Validation",
+      "ocel:timestamp": "2024-10-25T11:15:10.387883",
+      "ocel:activity": "Client Limit Validation",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Client Desk D",
+        "case_id": "Case_10",
+        "object_type": "Order"
+      },
+      "ocel:objects": [
+        {
+          "id": "Order_Case_10",
+          "type": "Order"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_10_Transaction Reporting Check",
+      "ocel:timestamp": "2024-10-25T12:32:10.387883",
+      "ocel:activity": "Transaction Reporting Check",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Client Desk D",
+        "case_id": "Case_10",
+        "object_type": "MarketData"
+      },
+      "ocel:objects": [
+        {
+          "id": "MarketData_Case_10",
+          "type": "MarketData"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_10_KYC Refresh Check",
+      "ocel:timestamp": "2024-10-25T12:48:10.387883",
+      "ocel:activity": "KYC Refresh Check",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Client Desk D",
+        "case_id": "Case_10",
+        "object_type": "Order"
+      },
+      "ocel:objects": [
+        {
+          "id": "Order_Case_10",
+          "type": "Order"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_10_ISDA Master Agreement Check",
+      "ocel:timestamp": "2024-10-25T12:51:10.387883",
+      "ocel:activity": "ISDA Master Agreement Check",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Client Desk D",
+        "case_id": "Case_10",
+        "object_type": "Order"
+      },
+      "ocel:objects": [
+        {
+          "id": "Order_Case_10",
+          "type": "Order"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_10_Trade Validation",
+      "ocel:timestamp": "2024-10-25T13:13:10.387883",
+      "ocel:activity": "Trade Validation",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Client Desk D",
+        "case_id": "Case_10",
+        "object_type": "Trade"
+      },
+      "ocel:objects": [
+        {
+          "id": "Trade_Case_10",
+          "type": "Trade"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_10_Regulatory Reporting Generation",
+      "ocel:timestamp": "2024-10-25T14:22:10.387883",
+      "ocel:activity": "Regulatory Reporting Generation",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Client Desk D",
+        "case_id": "Case_10",
+        "object_type": "MarketData"
+      },
+      "ocel:objects": [
+        {
+          "id": "MarketData_Case_10",
+          "type": "MarketData"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_10_CSA Verification",
+      "ocel:timestamp": "2024-10-25T21:26:10.387883",
+      "ocel:activity": "CSA Verification",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Client Desk D",
+        "case_id": "Case_10",
+        "object_type": "MarketData"
+      },
+      "ocel:objects": [
+        {
+          "id": "MarketData_Case_10",
+          "type": "MarketData"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_100_Trade Initiated",
+      "ocel:timestamp": "2024-11-11T19:18:10.397557",
+      "ocel:activity": "Trade Initiated",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Client Desk D",
+        "case_id": "Case_100",
+        "object_type": "Trade"
+      },
+      "ocel:objects": [
+        {
+          "id": "Trade_Case_100",
+          "type": "Trade"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_100_Market Data Validation",
+      "ocel:timestamp": "2024-11-11T20:04:10.397557",
+      "ocel:activity": "Market Data Validation",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Client Desk D",
+        "case_id": "Case_100",
+        "object_type": "MarketData"
+      },
+      "ocel:objects": [
+        {
+          "id": "MarketData_Case_100",
+          "type": "MarketData"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_100_Trade Execution",
+      "ocel:timestamp": "2024-11-11T20:48:10.397557",
+      "ocel:activity": "Trade Execution",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Client Desk D",
+        "case_id": "Case_100",
+        "object_type": "Trade"
+      },
+      "ocel:objects": [
+        {
+          "id": "Trade_Case_100",
+          "type": "Trade"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_100_Quote Requested",
+      "ocel:timestamp": "2024-11-11T20:50:10.397557",
+      "ocel:activity": "Quote Requested",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Client Desk D",
+        "case_id": "Case_100",
+        "object_type": "Order"
+      },
+      "ocel:objects": [
+        {
+          "id": "Order_Case_100",
+          "type": "Order"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_100_Volatility Surface Analysis",
+      "ocel:timestamp": "2024-11-11T20:56:10.397557",
+      "ocel:activity": "Volatility Surface Analysis",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Client Desk D",
+        "case_id": "Case_100",
+        "object_type": "MarketData"
+      },
+      "ocel:objects": [
+        {
+          "id": "MarketData_Case_100",
+          "type": "MarketData"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_100_Position Reconciliation",
+      "ocel:timestamp": "2024-11-11T21:10:10.397557",
+      "ocel:activity": "Position Reconciliation",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Client Desk D",
+        "case_id": "Case_100",
+        "object_type": "Position"
+      },
+      "ocel:objects": [
+        {
+          "id": "Position_Case_100",
+          "type": "Position"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_100_Premium Calculation",
+      "ocel:timestamp": "2024-11-11T22:00:10.397557",
+      "ocel:activity": "Premium Calculation",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Client Desk D",
+        "case_id": "Case_100",
+        "object_type": "MarketData"
+      },
+      "ocel:objects": [
+        {
+          "id": "MarketData_Case_100",
+          "type": "MarketData"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_100_Trade Matching",
+      "ocel:timestamp": "2024-11-11T22:48:10.397557",
+      "ocel:activity": "Trade Matching",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Client Desk D",
+        "case_id": "Case_100",
+        "object_type": "Trade"
+      },
+      "ocel:objects": [
+        {
+          "id": "Trade_Case_100",
+          "type": "Trade"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_100_Trade Confirmation",
+      "ocel:timestamp": "2024-11-11T22:58:10.397557",
+      "ocel:activity": "Trade Confirmation",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Client Desk D",
+        "case_id": "Case_100",
+        "object_type": "Trade"
+      },
+      "ocel:objects": [
+        {
+          "id": "Trade_Case_100",
+          "type": "Trade"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_100_Strategy Validation",
+      "ocel:timestamp": "2024-11-11T23:30:10.397557",
+      "ocel:activity": "Strategy Validation",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Client Desk D",
+        "case_id": "Case_100",
+        "object_type": "Order"
+      },
+      "ocel:objects": [
+        {
+          "id": "Order_Case_100",
+          "type": "Order"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_100_Quote Provided",
+      "ocel:timestamp": "2024-11-11T23:43:10.397557",
+      "ocel:activity": "Quote Provided",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Client Desk D",
+        "case_id": "Case_100",
+        "object_type": "Order"
+      },
+      "ocel:objects": [
+        {
+          "id": "Order_Case_100",
+          "type": "Order"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_100_Exercise Decision",
+      "ocel:timestamp": "2024-11-12T00:03:10.397557",
+      "ocel:activity": "Exercise Decision",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Client Desk D",
+        "case_id": "Case_100",
+        "object_type": "Order"
+      },
+      "ocel:objects": [
+        {
+          "id": "Order_Case_100",
+          "type": "Order"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_100_Trade Validation",
+      "ocel:timestamp": "2024-11-12T00:54:10.397557",
+      "ocel:activity": "Trade Validation",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Client Desk D",
+        "case_id": "Case_100",
+        "object_type": "Trade"
+      },
+      "ocel:objects": [
+        {
+          "id": "Trade_Case_100",
+          "type": "Trade"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_100_Regulatory Reporting Generation",
+      "ocel:timestamp": "2024-11-12T00:56:10.397557",
+      "ocel:activity": "Regulatory Reporting Generation",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Client Desk D",
+        "case_id": "Case_100",
+        "object_type": "MarketData"
+      },
+      "ocel:objects": [
+        {
+          "id": "MarketData_Case_100",
+          "type": "MarketData"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_100_Final Settlement",
+      "ocel:timestamp": "2024-11-12T01:43:10.397557",
+      "ocel:activity": "Final Settlement",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Client Desk D",
+        "case_id": "Case_100",
+        "object_type": "Trade"
+      },
+      "ocel:objects": [
+        {
+          "id": "Trade_Case_100",
+          "type": "Trade"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_100_Transaction Reporting Check",
+      "ocel:timestamp": "2024-11-12T03:44:10.397557",
+      "ocel:activity": "Transaction Reporting Check",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Client Desk D",
+        "case_id": "Case_100",
+        "object_type": "MarketData"
+      },
+      "ocel:objects": [
+        {
+          "id": "MarketData_Case_100",
+          "type": "MarketData"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_100_Risk Assessment",
+      "ocel:timestamp": "2024-11-12T04:09:10.397557",
+      "ocel:activity": "Risk Assessment",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Client Desk D",
+        "case_id": "Case_100",
+        "object_type": "Position"
+      },
+      "ocel:objects": [
+        {
+          "id": "Position_Case_100",
+          "type": "Position"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_100_Greeks Calculation",
+      "ocel:timestamp": "2024-11-12T04:48:10.397557",
+      "ocel:activity": "Greeks Calculation",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Client Desk D",
+        "case_id": "Case_100",
+        "object_type": "MarketData"
+      },
+      "ocel:objects": [
+        {
+          "id": "MarketData_Case_100",
+          "type": "MarketData"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_100_Settlement Instructions",
+      "ocel:timestamp": "2024-11-12T04:56:10.397557",
+      "ocel:activity": "Settlement Instructions",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Client Desk D",
+        "case_id": "Case_100",
+        "object_type": "Client"
+      },
+      "ocel:objects": [
+        {
+          "id": "Client_Case_100",
+          "type": "Client"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_100_Initial Margin Calculation",
+      "ocel:timestamp": "2024-11-12T05:42:10.397557",
+      "ocel:activity": "Initial Margin Calculation",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Client Desk D",
+        "case_id": "Case_100",
+        "object_type": "Position"
+      },
+      "ocel:objects": [
+        {
+          "id": "Position_Case_100",
+          "type": "Position"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_100_Premium Settlement",
+      "ocel:timestamp": "2024-11-12T06:14:10.397557",
+      "ocel:activity": "Premium Settlement",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Client Desk D",
+        "case_id": "Case_100",
+        "object_type": "Client"
+      },
+      "ocel:objects": [
+        {
+          "id": "Client_Case_100",
+          "type": "Client"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_100_Trade Reconciliation",
+      "ocel:timestamp": "2024-11-12T09:14:10.397557",
+      "ocel:activity": "Trade Reconciliation",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Client Desk D",
+        "case_id": "Case_100",
+        "object_type": "Trade"
+      },
+      "ocel:objects": [
+        {
+          "id": "Trade_Case_100",
+          "type": "Trade"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_100_Credit Check",
+      "ocel:timestamp": "2024-11-12T09:52:10.397557",
+      "ocel:activity": "Credit Check",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Client Desk D",
+        "case_id": "Case_100",
+        "object_type": "Client"
+      },
+      "ocel:objects": [
+        {
+          "id": "Client_Case_100",
+          "type": "Client"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_100_Collateral Management",
+      "ocel:timestamp": "2024-11-12T11:48:10.397557",
+      "ocel:activity": "Collateral Management",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Client Desk D",
+        "case_id": "Case_100",
+        "object_type": "Position"
+      },
+      "ocel:objects": [
+        {
+          "id": "Position_Case_100",
+          "type": "Position"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_100_Best Execution Validation",
+      "ocel:timestamp": "2024-11-12T12:06:10.397557",
+      "ocel:activity": "Best Execution Validation",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Client Desk D",
+        "case_id": "Case_100",
+        "object_type": "Order"
+      },
+      "ocel:objects": [
+        {
+          "id": "Order_Case_100",
+          "type": "Order"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_100_Trade Allocation",
+      "ocel:timestamp": "2024-11-12T12:18:10.397557",
+      "ocel:activity": "Trade Allocation",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Client Desk D",
+        "case_id": "Case_100",
+        "object_type": "Trade"
+      },
+      "ocel:objects": [
+        {
+          "id": "Trade_Case_100",
+          "type": "Trade"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_100_Trade Transparency Assessment",
+      "ocel:timestamp": "2024-11-12T14:53:10.397557",
+      "ocel:activity": "Trade Transparency Assessment",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Client Desk D",
+        "case_id": "Case_100",
+        "object_type": "Trade"
+      },
+      "ocel:objects": [
+        {
+          "id": "Trade_Case_100",
+          "type": "Trade"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_1000_Trade Initiated",
+      "ocel:timestamp": "2024-10-30T19:18:10.488523",
+      "ocel:activity": "Trade Initiated",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Hedge Desk C",
+        "case_id": "Case_1000",
+        "object_type": "Trade"
+      },
+      "ocel:objects": [
+        {
+          "id": "Trade_Case_1000",
+          "type": "Trade"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_1000_Market Data Validation",
+      "ocel:timestamp": "2024-10-30T19:33:10.488523",
+      "ocel:activity": "Market Data Validation",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Hedge Desk C",
+        "case_id": "Case_1000",
+        "object_type": "MarketData"
+      },
+      "ocel:objects": [
+        {
+          "id": "MarketData_Case_1000",
+          "type": "MarketData"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_1000_Volatility Surface Analysis",
+      "ocel:timestamp": "2024-10-30T20:04:10.488523",
+      "ocel:activity": "Volatility Surface Analysis",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Hedge Desk C",
+        "case_id": "Case_1000",
+        "object_type": "MarketData"
+      },
+      "ocel:objects": [
+        {
+          "id": "MarketData_Case_1000",
+          "type": "MarketData"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_1000_Quote Requested",
+      "ocel:timestamp": "2024-10-30T20:46:10.488523",
+      "ocel:activity": "Quote Requested",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Hedge Desk C",
+        "case_id": "Case_1000",
+        "object_type": "Order"
+      },
+      "ocel:objects": [
+        {
+          "id": "Order_Case_1000",
+          "type": "Order"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_1000_Quote Provided",
+      "ocel:timestamp": "2024-10-30T20:48:10.488523",
+      "ocel:activity": "Quote Provided",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Hedge Desk C",
+        "case_id": "Case_1000",
+        "object_type": "Order"
+      },
+      "ocel:objects": [
+        {
+          "id": "Order_Case_1000",
+          "type": "Order"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_1000_Premium Calculation",
+      "ocel:timestamp": "2024-10-30T21:21:10.488523",
+      "ocel:activity": "Premium Calculation",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Hedge Desk C",
+        "case_id": "Case_1000",
+        "object_type": "MarketData"
+      },
+      "ocel:objects": [
+        {
+          "id": "MarketData_Case_1000",
+          "type": "MarketData"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_1000_Trade Matching",
+      "ocel:timestamp": "2024-10-30T21:38:10.488523",
+      "ocel:activity": "Trade Matching",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Hedge Desk C",
+        "case_id": "Case_1000",
+        "object_type": "Trade"
+      },
+      "ocel:objects": [
+        {
+          "id": "Trade_Case_1000",
+          "type": "Trade"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_1000_Trade Allocation",
+      "ocel:timestamp": "2024-10-30T22:14:10.488523",
+      "ocel:activity": "Trade Allocation",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Hedge Desk C",
+        "case_id": "Case_1000",
+        "object_type": "Trade"
+      },
+      "ocel:objects": [
+        {
+          "id": "Trade_Case_1000",
+          "type": "Trade"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_1000_Greeks Calculation",
+      "ocel:timestamp": "2024-10-30T22:20:10.488523",
+      "ocel:activity": "Greeks Calculation",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Hedge Desk C",
+        "case_id": "Case_1000",
+        "object_type": "MarketData"
+      },
+      "ocel:objects": [
+        {
+          "id": "MarketData_Case_1000",
+          "type": "MarketData"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_1000_Collateral Management",
+      "ocel:timestamp": "2024-10-30T23:09:10.488523",
+      "ocel:activity": "Collateral Management",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Hedge Desk C",
+        "case_id": "Case_1000",
+        "object_type": "Position"
+      },
+      "ocel:objects": [
+        {
+          "id": "Position_Case_1000",
+          "type": "Position"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_1000_Credit Check",
+      "ocel:timestamp": "2024-10-30T23:18:10.488523",
+      "ocel:activity": "Credit Check",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Hedge Desk C",
+        "case_id": "Case_1000",
+        "object_type": "Client"
+      },
+      "ocel:objects": [
+        {
+          "id": "Client_Case_1000",
+          "type": "Client"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_1000_Trade Execution",
+      "ocel:timestamp": "2024-10-30T23:48:10.488523",
+      "ocel:activity": "Trade Execution",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Hedge Desk C",
+        "case_id": "Case_1000",
+        "object_type": "Trade"
+      },
+      "ocel:objects": [
+        {
+          "id": "Trade_Case_1000",
+          "type": "Trade"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_1000_Trade Confirmation",
+      "ocel:timestamp": "2024-10-31T00:42:10.488523",
+      "ocel:activity": "Trade Confirmation",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Hedge Desk C",
+        "case_id": "Case_1000",
+        "object_type": "Trade"
+      },
+      "ocel:objects": [
+        {
+          "id": "Trade_Case_1000",
+          "type": "Trade"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_1000_Settlement Instructions",
+      "ocel:timestamp": "2024-10-31T00:48:10.488523",
+      "ocel:activity": "Settlement Instructions",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Hedge Desk C",
+        "case_id": "Case_1000",
+        "object_type": "Client"
+      },
+      "ocel:objects": [
+        {
+          "id": "Client_Case_1000",
+          "type": "Client"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_1000_Final Settlement",
+      "ocel:timestamp": "2024-10-31T00:54:10.488523",
+      "ocel:activity": "Final Settlement",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Hedge Desk C",
+        "case_id": "Case_1000",
+        "object_type": "Trade"
+      },
+      "ocel:objects": [
+        {
+          "id": "Trade_Case_1000",
+          "type": "Trade"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_1000_Premium Settlement",
+      "ocel:timestamp": "2024-10-31T02:54:10.488523",
+      "ocel:activity": "Premium Settlement",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Hedge Desk C",
+        "case_id": "Case_1000",
+        "object_type": "Client"
+      },
+      "ocel:objects": [
+        {
+          "id": "Client_Case_1000",
+          "type": "Client"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_1000_Trade Validation",
+      "ocel:timestamp": "2024-10-31T04:17:10.488523",
+      "ocel:activity": "Trade Validation",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Hedge Desk C",
+        "case_id": "Case_1000",
+        "object_type": "Trade"
+      },
+      "ocel:objects": [
+        {
+          "id": "Trade_Case_1000",
+          "type": "Trade"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_1000_Strategy Validation",
+      "ocel:timestamp": "2024-10-31T04:42:10.488523",
+      "ocel:activity": "Strategy Validation",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Hedge Desk C",
+        "case_id": "Case_1000",
+        "object_type": "Order"
+      },
+      "ocel:objects": [
+        {
+          "id": "Order_Case_1000",
+          "type": "Order"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_1000_Client Limit Validation",
+      "ocel:timestamp": "2024-10-31T07:48:10.488523",
+      "ocel:activity": "Client Limit Validation",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Hedge Desk C",
+        "case_id": "Case_1000",
+        "object_type": "Order"
+      },
+      "ocel:objects": [
+        {
+          "id": "Order_Case_1000",
+          "type": "Order"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_1000_ISDA Master Agreement Check",
+      "ocel:timestamp": "2024-10-31T07:57:10.488523",
+      "ocel:activity": "ISDA Master Agreement Check",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Hedge Desk C",
+        "case_id": "Case_1000",
+        "object_type": "Order"
+      },
+      "ocel:objects": [
+        {
+          "id": "Order_Case_1000",
+          "type": "Order"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_1000_KYC Refresh Check",
+      "ocel:timestamp": "2024-10-31T08:18:10.488523",
+      "ocel:activity": "KYC Refresh Check",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Hedge Desk C",
+        "case_id": "Case_1000",
+        "object_type": "Order"
+      },
+      "ocel:objects": [
+        {
+          "id": "Order_Case_1000",
+          "type": "Order"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_1000_Initial Margin Calculation",
+      "ocel:timestamp": "2024-10-31T08:33:10.488523",
+      "ocel:activity": "Initial Margin Calculation",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Hedge Desk C",
+        "case_id": "Case_1000",
+        "object_type": "Position"
+      },
+      "ocel:objects": [
+        {
+          "id": "Position_Case_1000",
+          "type": "Position"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_1000_Trade Reconciliation",
+      "ocel:timestamp": "2024-10-31T09:58:10.488523",
+      "ocel:activity": "Trade Reconciliation",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Hedge Desk C",
+        "case_id": "Case_1000",
+        "object_type": "Trade"
+      },
+      "ocel:objects": [
+        {
+          "id": "Trade_Case_1000",
+          "type": "Trade"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_1000_Risk Assessment",
+      "ocel:timestamp": "2024-10-31T12:01:10.488523",
+      "ocel:activity": "Risk Assessment",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Hedge Desk C",
+        "case_id": "Case_1000",
+        "object_type": "Position"
+      },
+      "ocel:objects": [
+        {
+          "id": "Position_Case_1000",
+          "type": "Position"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_1000_Position Reconciliation",
+      "ocel:timestamp": "2024-10-31T12:24:10.488523",
+      "ocel:activity": "Position Reconciliation",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Hedge Desk C",
+        "case_id": "Case_1000",
+        "object_type": "Position"
+      },
+      "ocel:objects": [
+        {
+          "id": "Position_Case_1000",
+          "type": "Position"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_1000_CSA Verification",
+      "ocel:timestamp": "2024-10-31T12:54:10.488523",
+      "ocel:activity": "CSA Verification",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Hedge Desk C",
+        "case_id": "Case_1000",
+        "object_type": "MarketData"
+      },
+      "ocel:objects": [
+        {
+          "id": "MarketData_Case_1000",
+          "type": "MarketData"
+        }
+      ]
+    },
+    {
+      "ocel:id": "Case_1000_Exercise Decision",
+      "ocel:timestamp": "2024-10-31T14:18:10.488523",
+      "ocel:activity": "Exercise Decision",
+      "ocel:type": "event",
+      "ocel:attributes": {
+        "resource": "Hedge Desk C",
+        "case_id": "Case_1000",
+        "object_type": "Order"
+      },
+      "ocel:objects": [
+        {
+          "id": "Order_Case_1000",
+          "type": "Order"
+        }
+      ]
+    }
+  ],
+  "ocel:objects": [
+    {
+      "ocel:id": "Trade_Trade Initiated",
+      "ocel:type": "Trade",
+      "ocel:attributes": {
+        "activity": "Trade Initiated",
+        "attributes": [
+          "booking_system",
+          "client_type",
+          "currency_pair",
+          "notional_amount",
+          "option_type",
+          "premium",
+          "status",
+          "strike_price",
+          "trade_id",
+          "trading_strategy"
+        ]
+      }
+    },
+    {
+      "ocel:id": "Trade_Trade Validation",
+      "ocel:type": "Trade",
+      "ocel:attributes": {
+        "activity": "Trade Validation",
+        "attributes": [
+          "booking_system",
+          "client_type",
+          "currency_pair",
+          "notional_amount",
+          "option_type",
+          "premium",
+          "status",
+          "strike_price",
+          "trade_id",
+          "trading_strategy"
+        ]
+      }
+    },
+    {
+      "ocel:id": "Trade_Trade Execution",
+      "ocel:type": "Trade",
+      "ocel:attributes": {
+        "activity": "Trade Execution",
+        "attributes": [
+          "booking_system",
+          "client_type",
+          "currency_pair",
+          "notional_amount",
+          "option_type",
+          "premium",
+          "status",
+          "strike_price",
+          "trade_id",
+          "trading_strategy"
+        ]
+      }
+    },
+    {
+      "ocel:id": "Trade_Trade Confirmation",
+      "ocel:type": "Trade",
+      "ocel:attributes": {
+        "activity": "Trade Confirmation",
+        "attributes": [
+          "booking_system",
+          "client_type",
+          "currency_pair",
+          "notional_amount",
+          "option_type",
+          "premium",
+          "status",
+          "strike_price",
+          "trade_id",
+          "trading_strategy"
+        ]
+      }
+    },
+    {
+      "ocel:id": "Trade_Trade Matching",
+      "ocel:type": "Trade",
+      "ocel:attributes": {
+        "activity": "Trade Matching",
+        "attributes": [
+          "booking_system",
+          "client_type",
+          "currency_pair",
+          "notional_amount",
+          "option_type",
+          "premium",
+          "status",
+          "strike_price",
+          "trade_id",
+          "trading_strategy"
+        ]
+      }
+    },
+    {
+      "ocel:id": "Trade_Trade Reconciliation",
+      "ocel:type": "Trade",
+      "ocel:attributes": {
+        "activity": "Trade Reconciliation",
+        "attributes": [
+          "booking_system",
+          "client_type",
+          "currency_pair",
+          "notional_amount",
+          "option_type",
+          "premium",
+          "status",
+          "strike_price",
+          "trade_id",
+          "trading_strategy"
+        ]
+      }
+    },
+    {
+      "ocel:id": "Trade_Trade Transparency Assessment",
+      "ocel:type": "Trade",
+      "ocel:attributes": {
+        "activity": "Trade Transparency Assessment",
+        "attributes": [
+          "booking_system",
+          "client_type",
+          "currency_pair",
+          "notional_amount",
+          "option_type",
+          "premium",
+          "status",
+          "strike_price",
+          "trade_id",
+          "trading_strategy"
+        ]
+      }
+    },
+    {
+      "ocel:id": "Trade_Final Settlement",
+      "ocel:type": "Trade",
+      "ocel:attributes": {
+        "activity": "Final Settlement",
+        "attributes": [
+          "booking_system",
+          "client_type",
+          "currency_pair",
+          "notional_amount",
+          "option_type",
+          "premium",
+          "status",
+          "strike_price",
+          "trade_id",
+          "trading_strategy"
+        ]
+      }
+    },
+    {
+      "ocel:id": "Order_Quote Requested",
+      "ocel:type": "Order",
+      "ocel:attributes": {
+        "activity": "Quote Requested",
+        "attributes": [
+          "client_type",
+          "currency_pair",
+          "order_id",
+          "order_type",
+          "price",
+          "quantity",
+          "status",
+          "trading_strategy"
+        ]
+      }
+    },
+    {
+      "ocel:id": "Order_Quote Provided",
+      "ocel:type": "Order",
+      "ocel:attributes": {
+        "activity": "Quote Provided",
+        "attributes": [
+          "client_type",
+          "currency_pair",
+          "order_id",
+          "order_type",
+          "price",
+          "quantity",
+          "status",
+          "trading_strategy"
+        ]
+      }
+    },
+    {
+      "ocel:id": "Order_Client Limit Validation",
+      "ocel:type": "Order",
+      "ocel:attributes": {
+        "activity": "Client Limit Validation",
+        "attributes": [
+          "client_type",
+          "currency_pair",
+          "order_id",
+          "order_type",
+          "price",
+          "quantity",
+          "status",
+          "trading_strategy"
+        ]
+      }
+    },
+    {
+      "ocel:id": "Order_Strategy Validation",
+      "ocel:type": "Order",
+      "ocel:attributes": {
+        "activity": "Strategy Validation",
+        "attributes": [
+          "client_type",
+          "currency_pair",
+          "order_id",
+          "order_type",
+          "price",
+          "quantity",
+          "status",
+          "trading_strategy"
+        ]
+      }
+    },
+    {
+      "ocel:id": "Order_ISDA Master Agreement Check",
+      "ocel:type": "Order",
+      "ocel:attributes": {
+        "activity": "ISDA Master Agreement Check",
+        "attributes": [
+          "client_type",
+          "currency_pair",
+          "order_id",
+          "order_type",
+          "price",
+          "quantity",
+          "status",
+          "trading_strategy"
+        ]
+      }
+    },
+    {
+      "ocel:id": "Order_KYC Refresh Check",
+      "ocel:type": "Order",
+      "ocel:attributes": {
+        "activity": "KYC Refresh Check",
+        "attributes": [
+          "client_type",
+          "currency_pair",
+          "order_id",
+          "order_type",
+          "price",
+          "quantity",
+          "status",
+          "trading_strategy"
+        ]
+      }
+    },
+    {
+      "ocel:id": "Order_Best Execution Validation",
+      "ocel:type": "Order",
+      "ocel:attributes": {
+        "activity": "Best Execution Validation",
+        "attributes": [
+          "client_type",
+          "currency_pair",
+          "order_id",
+          "order_type",
+          "price",
+          "quantity",
+          "status",
+          "trading_strategy"
+        ]
+      }
+    },
+    {
+      "ocel:id": "Order_Exercise Decision",
+      "ocel:type": "Order",
+      "ocel:attributes": {
+        "activity": "Exercise Decision",
+        "attributes": [
+          "client_type",
+          "currency_pair",
+          "order_id",
+          "order_type",
+          "price",
+          "quantity",
+          "status",
+          "trading_strategy"
+        ]
+      }
+    },
+    {
+      "ocel:id": "Position_Position Reconciliation",
+      "ocel:type": "Position",
+      "ocel:attributes": {
+        "activity": "Position Reconciliation",
+        "attributes": [
+          "currency_pair",
+          "delta",
+          "gamma",
+          "limit_usage",
+          "position_id",
+          "risk_score",
+          "theta",
+          "vega"
+        ]
+      }
+    },
+    {
+      "ocel:id": "Position_Risk Assessment",
+      "ocel:type": "Position",
+      "ocel:attributes": {
+        "activity": "Risk Assessment",
+        "attributes": [
+          "currency_pair",
+          "delta",
+          "gamma",
+          "limit_usage",
+          "position_id",
+          "risk_score",
+          "theta",
+          "vega"
+        ]
+      }
+    },
+    {
+      "ocel:id": "Position_Collateral Management",
+      "ocel:type": "Position",
+      "ocel:attributes": {
+        "activity": "Collateral Management",
+        "attributes": [
+          "currency_pair",
+          "delta",
+          "gamma",
+          "limit_usage",
+          "position_id",
+          "risk_score",
+          "theta",
+          "vega"
+        ]
+      }
+    },
+    {
+      "ocel:id": "Position_Initial Margin Calculation",
+      "ocel:type": "Position",
+      "ocel:attributes": {
+        "activity": "Initial Margin Calculation",
+        "attributes": [
+          "currency_pair",
+          "delta",
+          "gamma",
+          "limit_usage",
+          "position_id",
+          "risk_score",
+          "theta",
+          "vega"
+        ]
+      }
+    },
+    {
+      "ocel:id": "Position_Risk Transfer Executed",
+      "ocel:type": "Position",
+      "ocel:attributes": {
+        "activity": "Risk Transfer Executed",
+        "attributes": [
+          "currency_pair",
+          "delta",
+          "gamma",
+          "limit_usage",
+          "position_id",
+          "risk_score",
+          "theta",
+          "vega"
+        ]
+      }
+    },
+    {
+      "ocel:id": "MarketData_Market Data Validation",
+      "ocel:type": "MarketData",
+      "ocel:attributes": {
+        "activity": "Market Data Validation",
+        "attributes": [
+          "currency_pair",
+          "delta",
+          "gamma",
+          "market_data_id",
+          "reference_rate",
+          "theta",
+          "vega",
+          "volatility_surface"
+        ]
+      }
+    },
+    {
+      "ocel:id": "MarketData_Volatility Surface Analysis",
+      "ocel:type": "MarketData",
+      "ocel:attributes": {
+        "activity": "Volatility Surface Analysis",
+        "attributes": [
+          "currency_pair",
+          "delta",
+          "gamma",
+          "market_data_id",
+          "reference_rate",
+          "theta",
+          "vega",
+          "volatility_surface"
+        ]
+      }
+    },
+    {
+      "ocel:id": "MarketData_Greeks Calculation",
+      "ocel:type": "MarketData",
+      "ocel:attributes": {
+        "activity": "Greeks Calculation",
+        "attributes": [
+          "currency_pair",
+          "delta",
+          "gamma",
+          "market_data_id",
+          "reference_rate",
+          "theta",
+          "vega",
+          "volatility_surface"
+        ]
+      }
+    },
+    {
+      "ocel:id": "MarketData_Premium Calculation",
+      "ocel:type": "MarketData",
+      "ocel:attributes": {
+        "activity": "Premium Calculation",
+        "attributes": [
+          "currency_pair",
+          "delta",
+          "gamma",
+          "market_data_id",
+          "reference_rate",
+          "theta",
+          "vega",
+          "volatility_surface"
+        ]
+      }
+    },
+    {
+      "ocel:id": "MarketData_CSA Verification",
+      "ocel:type": "MarketData",
+      "ocel:attributes": {
+        "activity": "CSA Verification",
+        "attributes": [
+          "currency_pair",
+          "delta",
+          "gamma",
+          "market_data_id",
+          "reference_rate",
+          "theta",
+          "vega",
+          "volatility_surface"
+        ]
+      }
+    },
+    {
+      "ocel:id": "MarketData_Transaction Reporting Check",
+      "ocel:type": "MarketData",
+      "ocel:attributes": {
+        "activity": "Transaction Reporting Check",
+        "attributes": [
+          "currency_pair",
+          "delta",
+          "gamma",
+          "market_data_id",
+          "reference_rate",
+          "theta",
+          "vega",
+          "volatility_surface"
+        ]
+      }
+    },
+    {
+      "ocel:id": "MarketData_Regulatory Reporting Generation",
+      "ocel:type": "MarketData",
+      "ocel:attributes": {
+        "activity": "Regulatory Reporting Generation",
+        "attributes": [
+          "currency_pair",
+          "delta",
+          "gamma",
+          "market_data_id",
+          "reference_rate",
+          "theta",
+          "vega",
+          "volatility_surface"
+        ]
+      }
+    },
+    {
+      "ocel:id": "Client_Credit Check",
+      "ocel:type": "Client",
+      "ocel:attributes": {
+        "activity": "Credit Check",
+        "attributes": [
+          "client_id",
+          "client_type",
+          "credit_limits",
+          "preferred_execution_venues",
+          "settlement_instructions",
+          "trading_permissions"
+        ]
+      }
+    },
+    {
+      "ocel:id": "Client_Settlement Instructions",
+      "ocel:type": "Client",
+      "ocel:attributes": {
+        "activity": "Settlement Instructions",
+        "attributes": [
+          "client_id",
+          "client_type",
+          "credit_limits",
+          "preferred_execution_venues",
+          "settlement_instructions",
+          "trading_permissions"
+        ]
+      }
+    },
+    {
+      "ocel:id": "Client_Premium Settlement",
+      "ocel:type": "Client",
+      "ocel:attributes": {
+        "activity": "Premium Settlement",
+        "attributes": [
+          "client_id",
+          "client_type",
+          "credit_limits",
+          "preferred_execution_venues",
+          "settlement_instructions",
+          "trading_permissions"
+        ]
+      }
+    }
+  ],
+  "ocel:object-types": [
+    "Trade",
+    "Order",
+    "Position",
+    "MarketData",
+    "Client"
+  ],
+  "ocel:global-log": {
+    "ocel:attribute-names": []
+  }
+}
