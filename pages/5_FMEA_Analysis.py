@@ -13,6 +13,8 @@ import logging
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 
+import tornado
+
 # Configure logging
 logging.basicConfig(
     level=logging.INFO,
@@ -1122,30 +1124,91 @@ class OCELEnhancedFMEA:
             logger.error(f"Error checking attribute violations for {obj_type}: {str(e)}")
             return []
 
+    def _is_valid_relationship(self, source_type: str, target_type: str) -> bool:
+        """Check if relationship between object types is valid based on OCEL model"""
+        # Get allowed relationships from OCEL model
+        allowed_relationships = self.data_manager.ocel_model.get(source_type, {}).get('relationships', [])
+        return target_type in allowed_relationships
+
+    def _get_single_relationship_types(self) -> Set[str]:
+        """Get object types that should only have single relationship per event"""
+        # Objects that should have 1:1 relationships
+        single_relation_types = {
+            'Trade',  # One trade per event
+            'Position',  # One position per event
+            'Market'  # One market data point per event
+        }
+        return single_relation_types
+
+    def _check_relationship_violations(self, obj_type: str) -> List[Dict]:
+        """Check for invalid relationships"""
+        violations = []
+
+        for _, event in self.events.iterrows():
+            objects = event.get('ocel:objects', [])
+            current_type_objects = [obj for obj in objects if obj.get('type') == obj_type]
+            other_type_objects = [obj for obj in objects if obj.get('type') != obj_type]
+
+            # Check for invalid combinations
+            for curr_obj in current_type_objects:
+                for other_obj in other_type_objects:
+                    if not self._is_valid_relationship(obj_type, other_obj.get('type')):
+                        violations.append({
+                            'description': f"Invalid relationship between {obj_type} and {other_obj.get('type')}",
+                            'objects': [curr_obj['id'], other_obj['id']]
+                        })
+
+            # Check for multiple relationships where single is required
+            if len(current_type_objects) > 1 and obj_type in self._get_single_relationship_types():
+                violations.append({
+                    'description': f"Multiple {obj_type} objects in single event",
+                    'objects': [obj['id'] for obj in current_type_objects]
+                })
+
+        return violations
 
     def _identify_object_failures(self) -> List[Dict]:
-        """Identify object-specific failures"""
+        """Identify object-level failures"""
         failures = []
 
         for obj_type in self.object_types:
-            # Check for missing relationships
+            logger.info(f"Getting expected relationships for {obj_type}")
             expected_relationships = self._get_expected_relationships(obj_type)
-            actual_relationships = self._get_actual_relationships(obj_type)
-            missing = expected_relationships - actual_relationships
+            logger.info(f"Found {len(expected_relationships)} expected relationships for {obj_type}")
 
+            logger.info(f"Getting actual relationships for {obj_type}")
+            actual_relationships = self._get_actual_relationships(obj_type)
+            logger.info(f"Found {len(actual_relationships)} actual relationships for {obj_type}")
+
+            # Check missing relationships
+            missing = expected_relationships - actual_relationships
             if missing:
                 failures.append({
-                    'id': f"OF_{len(failures)}",
-                    'activity': 'Object Relationship',
+                    'id': f"OF_M_{len(failures)}",
+                    'activity': f"{obj_type} Object Analysis",
                     'object_type': obj_type,
-                    'description': f"Missing relationships: {', '.join(missing)}",
+                    'description': f"Missing mandatory relationships: {', '.join(missing)}",
                     'affected_objects': list(missing),
-                    'violation_type': 'relationship'
+                    'violation_type': 'missing_relationship'
                 })
 
-            # Check for attribute violations
-            violations = self._check_attribute_violations(obj_type)
-            failures.extend(violations)
+            # Check attribute violations
+            logger.info(f"Checking attribute violations for {obj_type}")
+            attribute_violations = self._check_attribute_violations(obj_type)
+            logger.info(f"Found {len(attribute_violations)} attribute violations for {obj_type}")
+            failures.extend(attribute_violations)
+
+            # Check relationship violations
+            relationship_violations = self._check_relationship_violations(obj_type)
+            for violation in relationship_violations:
+                failures.append({
+                    'id': f"OF_V_{len(failures)}",
+                    'activity': f"{obj_type} Object Analysis",
+                    'object_type': obj_type,
+                    'description': violation['description'],
+                    'affected_objects': violation['objects'],
+                    'violation_type': 'invalid_relationship'
+                })
 
         return failures
 
@@ -1374,52 +1437,44 @@ def create_timeline_chart(results: List[Dict]) -> go.Figure:
 
 
 def display_object_recommendations(failures: List[Dict]) -> None:
-    """Display recommendations for specific object type without nested expanders"""
+    """Display recommendations for specific object type"""
     if not failures:
         st.info("No failures found for this object type")
         return
 
-    # Group failures by violation type
-    violation_groups = defaultdict(list)
-    for failure in failures:
-        violation_groups[failure.get('violation_type', 'Unknown')].append(failure)
+    # Group failures by violation category
+    categories = {
+        'Object-Level': [f for f in failures if 'relationship' in f.get('violation_type', '')],
+        'Activity-Level': [f for f in failures if f.get('violation_type') == 'sequence'],
+        'System-Level': [f for f in failures if f.get('violation_type') in ['convergence', 'divergence']]
+    }
 
-    # Create tabs for different violation types
-    violation_tabs = st.tabs([f"{v_type} Violations" for v_type in violation_groups.keys()])
+    # Create tabs for different categories
+    tabs = st.tabs(list(categories.keys()))
 
-    # Display recommendations for each violation type in its tab
-    for tab, (violation_type, group) in zip(violation_tabs, violation_groups.items()):
+    for tab, (category, items) in zip(tabs, categories.items()):
         with tab:
-            total_rpn = sum(f['rpn'] for f in group)
-            avg_rpn = total_rpn / len(group)
+            if not items:
+                st.info(f"No {category} failures detected")
+                continue
 
+            total_rpn = sum(f['rpn'] for f in items)
+            avg_rpn = total_rpn / len(items) if items else 0
             st.metric("Average RPN", f"{avg_rpn:.2f}")
 
-            st.markdown("### Recommended Actions")
+            for failure in sorted(items, key=lambda x: x['rpn'], reverse=True):
+                with st.expander(f"{failure['activity']} (RPN: {failure['rpn']})"):
+                    col1, col2, col3 = st.columns(3)
+                    with col1:
+                        st.metric("Severity", failure['severity'])
+                    with col2:
+                        st.metric("Likelihood", failure['likelihood'])
+                    with col3:
+                        st.metric("Detectability", failure['detectability'])
 
-            # Create a table for recommendations
-            recommendations_data = []
-            for failure in sorted(group, key=lambda x: x['rpn'], reverse=True):
-                recommendations_data.append({
-                    'RPN': failure['rpn'],
-                    'Description': failure['description'],
-                    'Recommendations': "\n".join([
-                        f"• {strategy}" for strategy in
-                        failure.get('mitigation_strategies', ['No specific recommendations'])
-                    ])
-                })
-
-            if recommendations_data:
-                df = pd.DataFrame(recommendations_data)
-                st.dataframe(
-                    df.style.background_gradient(
-                        subset=['RPN'],
-                        cmap='RdYlGn_r',
-                        vmin=0,
-                        vmax=1000
-                    ),
-                    use_container_width=True
-                )
+                    st.write("**Description:**", failure['description'])
+                    if 'affected_objects' in failure:
+                        st.write("**Affected Objects:**", ', '.join(failure['affected_objects']))
 
 def paginate_dataframe(df: pd.DataFrame, page_size: int = 1000) -> pd.DataFrame:
     """Handle pagination for large dataframes"""
@@ -1589,174 +1644,119 @@ def display_rpn_distribution(fmea_results: List[Dict]):
 
 
 def display_fmea_analysis(fmea_results: List[Dict]):
-    """Display comprehensive FMEA analysis without nested expanders"""
+    """Display comprehensive FMEA analysis with categorized tabs"""
     try:
+        @st.cache_data
+        def get_summary_stats(results):
+            return {
+                'total': len(results),
+                'high_risk': sum(1 for r in results if r['rpn'] > 200),
+                'medium_risk': sum(1 for r in results if 100 < r['rpn'] <= 200),
+                'low_risk': sum(1 for r in results if r['rpn'] <= 100)
+            }
+
+        stats = get_summary_stats(fmea_results)
+
         # Display summary metrics
-        display_summary_metrics(fmea_results)
+        with st.container():
+            col1, col2, col3, col4 = st.columns(4)
+            with col1:
+                st.metric("Total Failure Modes", stats['total'])
+            with col2:
+                st.metric("High Risk (RPN > 200)", stats['high_risk'])
+            with col3:
+                st.metric("Medium Risk", stats['medium_risk'])
+            with col4:
+                st.metric("Low Risk", stats['low_risk'])
 
-        # Display RPN distribution
-        display_rpn_distribution(fmea_results)
-
-        # Create main analysis tabs
-        main_tabs = st.tabs(["Object Type Analysis", "Severity Analysis", "Recommendations"])
+        # Create main tabs
+        main_tabs = st.tabs(["Overview", "Detailed Analysis", "Recommendations"])
 
         with main_tabs[0]:
-            # Group failure modes by object type
-            object_groups = {}
-            for result in fmea_results:
-                obj_type = result['object_type']
-                if obj_type not in object_groups:
-                    object_groups[obj_type] = []
-                object_groups[obj_type].append(result)
-
-            # Create object type selection
-            selected_obj_type = st.selectbox(
-                "Select Object Type",
-                options=list(object_groups.keys())
-            )
-
-            if selected_obj_type:
-                failures = object_groups[selected_obj_type]
-
-                # Object type summary metrics
-                col1, col2, col3 = st.columns(3)
-                with col1:
-                    st.metric("Total Failures", len(failures))
-                with col2:
-                    avg_rpn = sum(f['rpn'] for f in failures) / len(failures)
-                    st.metric("Average RPN", f"{avg_rpn:.1f}")
-                with col3:
-                    critical = sum(1 for f in failures if f['rpn'] > 200)
-                    st.metric("Critical Issues", critical)
-
-                # Failure mode selection
-                selected_failure = st.selectbox(
-                    "Select Failure Mode",
-                    options=[f"{f['activity']} (RPN: {f['rpn']})" for f in failures],
-                    key=f"select_{selected_obj_type}"
-                )
-
-                if selected_failure:
-                    selected_idx = [f"{f['activity']} (RPN: {f['rpn']})" for f in failures].index(selected_failure)
-                    failure = failures[selected_idx]
-
-                    # Create analysis sections using tabs instead of expanders
-                    analysis_tabs = st.tabs([
-                        "Risk Assessment",
-                        "Impact Analysis",
-                        "Root Causes",
-                        "Effects",
-                        "Controls",
-                        "Actions"
-                    ])
-
-                    with analysis_tabs[0]:
-                        cols = st.columns(3)
-                        with cols[0]:
-                            st.metric("Severity", failure['severity'])
-                        with cols[1]:
-                            st.metric("Likelihood", failure['likelihood'])
-                        with cols[2]:
-                            st.metric("Detectability", failure['detectability'])
-
-                    with analysis_tabs[1]:
-                        if 'business_impact' in failure:
-                            for impact, details in failure['business_impact'].items():
-                                st.markdown(f"**{impact}**: {details}")
-
-                    with analysis_tabs[2]:
-                        col1, col2 = st.columns(2)
-                        with col1:
-                            st.markdown("#### Direct Causes")
-                            for cause in failure.get('direct_causes', []):
-                                st.markdown(f"- {cause}")
-                        with col2:
-                            st.markdown("#### Contributing Factors")
-                            for factor in failure.get('contributing_factors', []):
-                                st.markdown(f"- {factor}")
-
-                    with analysis_tabs[3]:
-                        cols = st.columns(3)
-                        with cols[0]:
-                            st.markdown("#### Immediate")
-                            for effect in failure.get('immediate_effects', []):
-                                st.markdown(f"- {effect}")
-                        with cols[1]:
-                            st.markdown("#### Intermediate")
-                            for effect in failure.get('intermediate_effects', []):
-                                st.markdown(f"- {effect}")
-                        with cols[2]:
-                            st.markdown("#### Long-term")
-                            for effect in failure.get('long_term_effects', []):
-                                st.markdown(f"- {effect}")
-
-                    with analysis_tabs[4]:
-                        col1, col2 = st.columns(2)
-                        with col1:
-                            st.markdown("#### Current Controls")
-                            for control in failure.get('current_controls', []):
-                                st.markdown(f"- {control}")
-                        with col2:
-                            st.markdown("#### Detection Methods")
-                            for method in failure.get('detection_methods', []):
-                                st.markdown(f"- {method}")
-
-                    with analysis_tabs[5]:
-                        for action in failure.get('recommended_actions', []):
-                            st.markdown(f"""
-                            #### {action.get('title', 'Action')}
-                            - **Priority:** {action.get('priority', 'N/A')}
-                            - **Timeline:** {action.get('timeline', 'N/A')}
-                            - **Resources:** {action.get('resources', 'N/A')}
-                            - **Impact:** {action.get('impact', 'N/A')}
-                            """)
+            if len(fmea_results) > 0:
+                display_rpn_distribution(fmea_results)
 
         with main_tabs[1]:
-            severity_groups = {
-                'High': [f for f in fmea_results if f['rpn'] > 200],
-                'Medium': [f for f in fmea_results if 100 < f['rpn'] <= 200],
-                'Low': [f for f in fmea_results if f['rpn'] <= 100]
-            }
+            # Create subtabs for different failure types
+            detailed_tabs = st.tabs(["Object-Level", "Activity-Level", "System-Level"])
 
-            for severity, failures in severity_groups.items():
-                st.markdown(f"### {severity} Severity Issues ({len(failures)})")
-                if failures:
-                    df = pd.DataFrame([{
-                        'Activity': f['activity'],
-                        'Object Type': f['object_type'],
-                        'RPN': f['rpn'],
-                        'Description': f['description']
-                    } for f in failures])
-                    st.dataframe(df, use_container_width=True)
+            # Object-Level Analysis
+            with detailed_tabs[0]:
+                object_failures = [r for r in fmea_results if 'Object Analysis' in r.get('activity', '')]
+                if object_failures:
+                    for failure in sorted(object_failures, key=lambda x: x['rpn'], reverse=True):
+                        with st.expander(
+                                f"{failure['object_type']} - {failure['description']} (RPN: {failure['rpn']})"):
+                            cols = st.columns(3)
+                            cols[0].metric("Severity", failure['severity'])
+                            cols[1].metric("Likelihood", failure['likelihood'])
+                            cols[2].metric("Detectability", failure['detectability'])
+                            if 'affected_objects' in failure:
+                                st.write("**Affected Objects:**", ', '.join(failure['affected_objects']))
+                else:
+                    st.info("No object-level failures detected")
+
+            # Activity-Level Analysis
+            with detailed_tabs[1]:
+                activity_failures = [r for r in fmea_results if r.get('violation_type') in ['sequence', 'timing']]
+                if activity_failures:
+                    for failure in sorted(activity_failures, key=lambda x: x['rpn'], reverse=True):
+                        with st.expander(f"{failure['activity']} (RPN: {failure['rpn']})"):
+                            cols = st.columns(3)
+                            cols[0].metric("Severity", failure['severity'])
+                            cols[1].metric("Likelihood", failure['likelihood'])
+                            cols[2].metric("Detectability", failure['detectability'])
+                            st.write("**Violation Type:**", failure['violation_type'])
+                else:
+                    st.info("No activity-level failures detected")
+
+            # System-Level Analysis
+            with detailed_tabs[2]:
+                system_failures = [r for r in fmea_results if r.get('violation_type') in ['convergence', 'divergence']]
+                if system_failures:
+                    for failure in sorted(system_failures, key=lambda x: x['rpn'], reverse=True):
+                        with st.expander(f"{failure['activity']} (RPN: {failure['rpn']})"):
+                            cols = st.columns(3)
+                            cols[0].metric("Severity", failure['severity'])
+                            cols[1].metric("Likelihood", failure['likelihood'])
+                            cols[2].metric("Detectability", failure['detectability'])
+                            st.write("**System Impact:**", failure['description'])
+                else:
+                    st.info("No system-level failures detected")
 
         with main_tabs[2]:
-            st.markdown("### Recommendations by Priority")
-            priority_tabs = st.tabs(["High Priority", "Medium Priority", "Low Priority"])
-
+            # Display recommendations as before
             priorities = {
-                0: [f for f in fmea_results if f['rpn'] > 200],
-                1: [f for f in fmea_results if 100 < f['rpn'] <= 200],
-                2: [f for f in fmea_results if f['rpn'] <= 100]
+                'High': [r for r in fmea_results if r['rpn'] > 200],
+                'Medium': [r for r in fmea_results if 100 < r['rpn'] <= 200],
+                'Low': [r for r in fmea_results if r['rpn'] <= 100]
             }
 
-            for i, tab in enumerate(priority_tabs):
-                with tab:
-                    if priorities[i]:
-                        for failure in priorities[i]:
-                            st.markdown(f"""
-                            #### {failure['activity']} (RPN: {failure['rpn']})
-                            - **Description:** {failure['description']}
-                            - **Object Type:** {failure['object_type']}
-                            """)
-                            if 'recommended_actions' in failure:
-                                st.markdown("**Recommended Actions:**")
-                                for action in failure['recommended_actions']:
-                                    st.markdown(f"- {action}")
-                    else:
-                        st.info("No issues found in this priority level")
+            for priority, items in priorities.items():
+                if items:
+                    with st.expander(f"{priority} Priority Items ({len(items)})"):
+                        for item in items[:5]:
+                            st.write(f"**{item['activity']}** (RPN: {item['rpn']})")
+                            st.write(item['description'])
+                        if len(items) > 5:
+                            st.write(f"... and {len(items) - 5} more items")
+
+        # Add failure mode type breakdown
+        st.subheader("Failure Mode Analysis Breakdown")
+        breakdown_cols = st.columns(3)
+        with breakdown_cols[0]:
+            st.metric("Object-Level Failures",
+                      len([r for r in fmea_results if 'Object Analysis' in r.get('activity', '')]))
+        with breakdown_cols[1]:
+            st.metric("Activity-Level Failures",
+                      len([r for r in fmea_results if r.get('violation_type') in ['sequence', 'timing']]))
+        with breakdown_cols[2]:
+            st.metric("System-Level Failures",
+                      len([r for r in fmea_results if r.get('violation_type') in ['convergence', 'divergence']]))
 
     except Exception as e:
         logger.error(f"Error in display_fmea_analysis: {str(e)}")
+        logger.error(traceback.format_exc())
         st.error(f"Error displaying analysis: {str(e)}")
 
 
@@ -2058,6 +2058,17 @@ try:
     # Display results with additional context
     st.success(f"Analysis complete - identified {len(fmea_results)} failure modes")
     display_fmea_analysis(fmea_results)
+
+    if st.session_state.get('websocket_error'):
+        st.warning("Previous session ended unexpectedly. Data has been refreshed.")
+        st.session_state.websocket_error = False
+
+except tornado.websocket.WebSocketClosedError:
+    st.session_state.websocket_error = True
+    st.error("Connection lost. Please refresh the page.")
+except Exception as e:
+    logger.error(f"Unexpected error: {str(e)}")
+    st.error(f"An unexpected error occurred: {str(e)}")
 
 except FileNotFoundError as e:
     st.error(f"File error: {str(e)}")
