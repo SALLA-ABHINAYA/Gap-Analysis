@@ -1172,70 +1172,88 @@ class OCELEnhancedFMEA:
         failures = []
 
         for obj_type in self.object_types:
-            logger.info(f"Getting expected relationships for {obj_type}")
-            expected_relationships = self._get_expected_relationships(obj_type)
-            logger.info(f"Found {len(expected_relationships)} expected relationships for {obj_type}")
-
-            logger.info(f"Getting actual relationships for {obj_type}")
+            # Get expected and actual relationships
+            expected_relationships = self.data_manager.get_expected_relationships(obj_type)
             actual_relationships = self._get_actual_relationships(obj_type)
-            logger.info(f"Found {len(actual_relationships)} actual relationships for {obj_type}")
 
-            # Check missing relationships
+            # Missing relationships create multiple failures - one per missing relationship
             missing = expected_relationships - actual_relationships
-            if missing:
+            for missing_rel in missing:
                 failures.append({
-                    'id': f"OF_M_{len(failures)}",
+                    'id': f"OF_R_{len(failures)}",
                     'activity': f"{obj_type} Object Analysis",
                     'object_type': obj_type,
-                    'description': f"Missing mandatory relationships: {', '.join(missing)}",
-                    'affected_objects': list(missing),
-                    'violation_type': 'missing_relationship'
+                    'description': f"Missing mandatory relationship: {missing_rel}",
+                    'violation_type': 'missing_relationship',
+                    'severity': 8,
+                    'likelihood': 7,
+                    'detectability': 6,
+                    'rpn': 336,
+                    'affected_objects': [missing_rel]
                 })
 
-            # Check attribute violations
-            logger.info(f"Checking attribute violations for {obj_type}")
+            # Check attribute violations - one failure per missing attribute
             attribute_violations = self._check_attribute_violations(obj_type)
-            logger.info(f"Found {len(attribute_violations)} attribute violations for {obj_type}")
-            failures.extend(attribute_violations)
-
-            # Check relationship violations
-            relationship_violations = self._check_relationship_violations(obj_type)
-            for violation in relationship_violations:
+            for attr in attribute_violations:
                 failures.append({
-                    'id': f"OF_V_{len(failures)}",
+                    'id': f"OF_A_{len(failures)}",
                     'activity': f"{obj_type} Object Analysis",
                     'object_type': obj_type,
-                    'description': violation['description'],
-                    'affected_objects': violation['objects'],
-                    'violation_type': 'invalid_relationship'
+                    'description': f"Missing mandatory attribute: {attr}",
+                    'violation_type': 'missing_attribute',
+                    'severity': 6,
+                    'likelihood': 8,
+                    'detectability': 4,
+                    'rpn': 192,
+                    'affected_objects': [obj_type]
                 })
 
         return failures
 
     def _identify_event_failures(self) -> List[Dict]:
-        """Identify event-level failures"""
+        """Identify event-level failures - one per case when sequence or timing violation occurs"""
         failures = []
 
-        # Sequence violations
-        for activity in self.activity_stats:
-            expected_sequence = self._get_expected_sequence(activity)
-            actual_sequences = self._get_actual_sequences(activity)
+        for case_id in self.events['case_id'].unique():
+            case_events = self.events[self.events['case_id'] == case_id].sort_values('ocel:timestamp')
 
-            for seq in actual_sequences:
-                if not self._validate_sequence(seq, expected_sequence):
+            # Check sequence violations
+            for obj_type in self.object_types:
+                expected_sequence = self.data_manager.get_expected_activities(obj_type)
+                actual_sequence = case_events[
+                    case_events['ocel:objects'].apply(lambda x:
+                                                      any(obj.get('type') == obj_type for obj in x))
+                ]['ocel:activity'].tolist()
+
+                if expected_sequence and not self._validate_sequence(actual_sequence, expected_sequence):
                     failures.append({
-                        'id': f"EF_{len(failures)}",
-                        'activity': activity,
-                        'object_type': self._get_primary_object_type(activity),
-                        'description': f"Sequence violation in {activity}",
+                        'id': f"EF_S_{len(failures)}",
+                        'activity': actual_sequence[0] if actual_sequence else 'Unknown',
+                        'object_type': obj_type,
+                        'description': f"Sequence violation in case {case_id}",
                         'violation_type': 'sequence',
-                        'expected': expected_sequence,
-                        'actual': seq
+                        'severity': 7,
+                        'likelihood': 6,
+                        'detectability': 5,
+                        'rpn': 210,
+                        'affected_objects': [obj_type]
                     })
 
-        # Timing violations
-        timing_failures = self._identify_timing_violations()
-        failures.extend(timing_failures)
+            # Check timing violations for each event
+            for _, event in case_events.iterrows():
+                if self._check_timing_violation(event):
+                    failures.append({
+                        'id': f"EF_T_{len(failures)}",
+                        'activity': event['ocel:activity'],
+                        'object_type': self._get_primary_object_type(event['ocel:activity']),
+                        'description': f"Timing violation in case {case_id}",
+                        'violation_type': 'timing',
+                        'severity': 8,
+                        'likelihood': 7,
+                        'detectability': 4,
+                        'rpn': 224,
+                        'affected_objects': [obj.get('type') for obj in event.get('ocel:objects', [])]
+                    })
 
         return failures
 
@@ -1243,30 +1261,39 @@ class OCELEnhancedFMEA:
         """Identify system-wide failures"""
         failures = []
 
-        # Convergence issues
+        # Check convergence points
         for cp in self.convergence_points:
-            if not self._validate_convergence(cp):
+            if len(cp['object_types']) > 3:  # Too many objects converging
                 failures.append({
-                    'id': f"SF_{len(failures)}",
+                    'id': f"SF_C_{len(failures)}",
                     'activity': cp['activity'],
                     'object_type': 'System',
-                    'description': "Invalid object convergence",
+                    'description': f"Complex convergence point with {len(cp['object_types'])} object types",
                     'violation_type': 'convergence',
-                    'details': cp
+                    'severity': 7,
+                    'likelihood': 6,
+                    'detectability': 5,
+                    'rpn': 210
                 })
 
-        # Divergence issues
+        # Check divergence points
         for dp in self.divergence_points:
-            if not self._validate_divergence(dp):
+            # Get event details
+            event = self.events[self.events['ocel:id'] == dp['event_id']].iloc[0]
+            next_event = self.events[self.events['ocel:id'] == dp['next_event_id']].iloc[0]
+
+            # Check for uncontrolled divergence
+            if len(next_event.get('ocel:objects', [])) < len(event.get('ocel:objects', [])) / 2:
                 failures.append({
-                    'id': f"SF_{len(failures)}",
-                    'activity': self.events[
-                        self.events['ocel:id'] == dp['event_id']
-                        ].iloc[0]['ocel:activity'],
+                    'id': f"SF_D_{len(failures)}",
+                    'activity': dp['activity'],
                     'object_type': 'System',
-                    'description': "Invalid object divergence",
+                    'description': f"Uncontrolled object divergence in {dp['activity']}",
                     'violation_type': 'divergence',
-                    'details': dp
+                    'severity': 8,
+                    'likelihood': 7,
+                    'detectability': 4,
+                    'rpn': 224
                 })
 
         return failures
@@ -1682,7 +1709,8 @@ def display_fmea_analysis(fmea_results: List[Dict]):
 
             # Object-Level Analysis
             with detailed_tabs[0]:
-                object_failures = [r for r in fmea_results if 'Object Analysis' in r.get('activity', '')]
+                object_failures = [r for r in fmea_results if r['object_type'] != 'System' and
+                                   r.get('violation_type', '').startswith('missing_')]
                 if object_failures:
                     for failure in sorted(object_failures, key=lambda x: x['rpn'], reverse=True):
                         with st.expander(
@@ -1698,7 +1726,8 @@ def display_fmea_analysis(fmea_results: List[Dict]):
 
             # Activity-Level Analysis
             with detailed_tabs[1]:
-                activity_failures = [r for r in fmea_results if r.get('violation_type') in ['sequence', 'timing']]
+                activity_failures = [r for r in fmea_results if r.get('violation_type') in ['sequence', 'timing'] and
+                                     r['object_type'] != 'System']
                 if activity_failures:
                     for failure in sorted(activity_failures, key=lambda x: x['rpn'], reverse=True):
                         with st.expander(f"{failure['activity']} (RPN: {failure['rpn']})"):
@@ -1712,7 +1741,7 @@ def display_fmea_analysis(fmea_results: List[Dict]):
 
             # System-Level Analysis
             with detailed_tabs[2]:
-                system_failures = [r for r in fmea_results if r.get('violation_type') in ['convergence', 'divergence']]
+                system_failures = [r for r in fmea_results if r['object_type'] == 'System']
                 if system_failures:
                     for failure in sorted(system_failures, key=lambda x: x['rpn'], reverse=True):
                         with st.expander(f"{failure['activity']} (RPN: {failure['rpn']})"):
