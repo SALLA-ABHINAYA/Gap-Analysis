@@ -1,4 +1,5 @@
 # pages/5_FMEA_Analysis.py
+import os
 import traceback
 from collections import defaultdict
 
@@ -81,14 +82,92 @@ class OCELFailureMode:
     preventive_measures: List[str] = field(default_factory=list)
     contingency_plans: List[str] = field(default_factory=list)
 
+
+class OCELDataManager:
+    """Manages OCEL data loading and common operations"""
+
+    def __init__(self, ocel_path: str):
+        """Initialize with path to OCEL data"""
+        try:
+            # Load OCEL relationship definitions
+            with open('ocpm_output/output_ocel.json', 'r') as f:
+                self.ocel_model = json.load(f)
+
+            # Load process data
+            with open(ocel_path, 'r') as f:
+                self.ocel_data = json.load(f)
+
+            # Create events DataFrame
+            self.events_df = self._create_events_df()
+
+            # Store object types and their relationships
+            self.object_relationships = {
+                obj_type: data.get('relationships', [])
+                for obj_type, data in self.ocel_model.items()
+            }
+
+            # Store object attributes
+            self.object_attributes = {
+                obj_type: data.get('attributes', [])
+                for obj_type, data in self.ocel_model.items()
+            }
+
+            # Store object activities
+            self.object_activities = {
+                obj_type: data.get('activities', [])
+                for obj_type, data in self.ocel_model.items()
+            }
+
+        except Exception as e:
+            logger.error(f"Error initializing OCEL data manager: {str(e)}")
+            raise
+
+    def _create_events_df(self) -> pd.DataFrame:
+        """Create DataFrame from OCEL events"""
+        events_data = []
+        for event in self.ocel_data['ocel:events']:
+            event_data = {
+                'ocel:id': event.get('ocel:id', ''),
+                'ocel:timestamp': pd.to_datetime(event.get('ocel:timestamp')),
+                'ocel:activity': event.get('ocel:activity', ''),
+                'ocel:objects': event.get('ocel:objects', []),
+                'case_id': event.get('ocel:attributes', {}).get('case_id',
+                                                                event.get('case:concept:name',
+                                                                          event.get('ocel:id', '')))
+            }
+
+            # Add all attributes
+            attributes = event.get('ocel:attributes', {})
+            for key, value in attributes.items():
+                event_data[key] = value
+
+            events_data.append(event_data)
+
+        return pd.DataFrame(events_data)
+
+    def get_expected_relationships(self, obj_type: str) -> Set[str]:
+        """Get expected relationships for object type from OCEL model"""
+        return set(self.object_relationships.get(obj_type, []))
+
+    def get_expected_attributes(self, obj_type: str) -> Set[str]:
+        """Get expected attributes for object type from OCEL model"""
+        return set(self.object_attributes.get(obj_type, []))
+
+    def get_expected_activities(self, obj_type: str) -> List[str]:
+        """Get expected activities for object type from OCEL model"""
+        return self.object_activities.get(obj_type, [])
+
 class OCELEnhancedFMEA:
     """Enhanced FMEA analyzer for OCEL data"""
 
     def __init__(self, ocel_data: Dict):
-        """Initialize with enhanced error handling and logging"""
+        """Initialize analyzer with enhanced error handling and logging"""
         logger.info("Initializing OCELEnhancedFMEA")
         try:
             self.ocel_data = ocel_data
+
+            # Initialize OCEL data manager for relationship/attribute management
+            self.data_manager = OCELDataManager("ocpm_output/process_data.json")
 
             # Validate OCEL data structure
             if not isinstance(ocel_data, dict):
@@ -128,8 +207,8 @@ class OCELEnhancedFMEA:
 
             self._validate_columns()
 
-            # Initialize core components
-            self.object_types = ocel_data.get('ocel:object-types', [])
+            # Initialize core components using data manager
+            self.object_types = list(self.data_manager.object_relationships.keys())
             logger.info(f"Found {len(self.object_types)} object types")
 
             # Build object relationships
@@ -165,14 +244,46 @@ class OCELEnhancedFMEA:
             else:
                 logger.warning("No sequence patterns found")
 
+            # Initialize timing thresholds from OCEL model
+            logger.info("Initializing timing thresholds")
+            self.timing_thresholds = self._initialize_timing_thresholds()
+
             # Initialize empty failure modes list
             self.failure_modes = []
+
+            # Store expected sequences from OCEL model
+            self.expected_sequences = {
+                obj_type: data.get('activities', [])
+                for obj_type, data in self.data_manager.ocel_model.items()
+            }
+
             logger.info("Initialization complete")
 
         except Exception as e:
             logger.error(f"Error initializing OCELEnhancedFMEA: {str(e)}")
             logger.error(traceback.format_exc())
             raise
+
+    def _initialize_timing_thresholds(self) -> Dict[str, Dict]:
+        """Initialize timing thresholds from OCEL model"""
+        try:
+            thresholds = {}
+            for obj_type, data in self.data_manager.ocel_model.items():
+                activities = data.get('activities', [])
+                thresholds[obj_type] = {
+                    'total_duration': 24,  # Default 24 hours for full process
+                    'activity_thresholds': {
+                        activity: {
+                            'max_duration_hours': 1,  # Default 1 hour per activity
+                            'max_gap_after_hours': 2  # Default 2 hour gap allowed
+                        }
+                        for activity in activities
+                    }
+                }
+            return thresholds
+        except Exception as e:
+            logger.error(f"Error initializing timing thresholds: {str(e)}")
+            return {}
 
     def _validate_columns(self):
         """Validate required columns exist in DataFrame"""
@@ -954,24 +1065,8 @@ class OCELEnhancedFMEA:
         return sorted(failure_modes, key=lambda x: x['rpn'], reverse=True)
 
     def _get_expected_relationships(self, obj_type: str) -> Set[str]:
-        """Get expected relationships for an object type"""
-        logger.info(f"Getting expected relationships for {obj_type}")
-        try:
-            # Default relationships based on object type
-            default_relationships = {
-                'Trade': {'Market', 'Risk', 'Settlement'},
-                'Market': {'Trade', 'Risk'},
-                'Risk': {'Trade', 'Market', 'Settlement'},
-                'Settlement': {'Trade', 'Risk'}
-            }
-
-            expected = default_relationships.get(obj_type, set())
-            logger.info(f"Found {len(expected)} expected relationships for {obj_type}")
-            return expected
-
-        except Exception as e:
-            logger.error(f"Error getting expected relationships for {obj_type}: {str(e)}")
-            return set()
+        """Get expected relationships from OCEL model"""
+        return self.data_manager.get_expected_relationships(obj_type)
 
     def _get_actual_relationships(self, obj_type: str) -> Set[str]:
         """Get actual relationships from event log for an object type"""
@@ -997,18 +1092,11 @@ class OCELEnhancedFMEA:
             return set()
 
     def _check_attribute_violations(self, obj_type: str) -> List[Dict]:
-        """Check for attribute violations in object type"""
+        """Check for attribute violations using OCEL model definition"""
         logger.info(f"Checking attribute violations for {obj_type}")
         try:
             violations = []
-
-            # Get expected attributes for object type
-            expected_attributes = {
-                'Trade': {'currency_pair', 'notional_amount', 'trade_type'},
-                'Market': {'market_condition', 'volatility'},
-                'Risk': {'risk_score', 'exposure_level'},
-                'Settlement': {'settlement_amount', 'settlement_status'}
-            }.get(obj_type, set())
+            expected_attributes = self.data_manager.get_expected_attributes(obj_type)
 
             # Check each event involving this object type
             for _, event in self.events.iterrows():
@@ -1937,18 +2025,46 @@ def create_object_network(results: List[Dict]) -> go.Figure:
 st.set_page_config(page_title="FMEA Analysis", layout="wide")
 st.title("FMEA Analysis")
 
+# Modified main execution code for 5_FMEA_Analysis.py
 try:
-    # Load OCEL data
+    # First verify OCEL model file exists
+    if not os.path.exists('ocpm_output/output_ocel.json'):
+        st.error("OCEL model file (output_ocel.json) not found. Please ensure the file exists.")
+        logger.error("Missing required OCEL model file")
+        raise FileNotFoundError("output_ocel.json not found")
+
+    # Load process data
     with open("ocpm_output/process_data.json", 'r') as f:
         ocel_data = json.load(f)
 
-    # Initialize analyzer and get results
-    analyzer = OCELEnhancedFMEA(ocel_data)
-    fmea_results = analyzer.identify_failure_modes()
+    # Validate OCEL data structure
+    if 'ocel:events' not in ocel_data:
+        st.error("Invalid OCEL data structure - missing events")
+        logger.error("Invalid OCEL data structure")
+        raise ValueError("Invalid OCEL data structure")
 
-    # Display results
+    # Initialize analyzer with validated data
+    analyzer = OCELEnhancedFMEA(ocel_data)
+
+    # Track analysis progress
+    with st.spinner('Performing FMEA analysis...'):
+        fmea_results = analyzer.identify_failure_modes()
+
+        # Log analysis summary
+        logger.info(f"Analysis complete. Found {len(fmea_results)} failure modes")
+        logger.info(
+            f"Using relationships from OCEL model with {len(analyzer.data_manager.object_relationships)} object types")
+
+    # Display results with additional context
+    st.success(f"Analysis complete - identified {len(fmea_results)} failure modes")
     display_fmea_analysis(fmea_results)
 
+except FileNotFoundError as e:
+    st.error(f"File error: {str(e)}")
+    logger.error(f"File error in FMEA analysis: {str(e)}")
+except ValueError as e:
+    st.error(f"Data validation error: {str(e)}")
+    logger.error(f"Validation error in FMEA analysis: {str(e)}")
 except Exception as e:
     st.error(f"Error in FMEA analysis: {str(e)}")
     logger.error(f"FMEA analysis error: {str(e)}", exc_info=True)
