@@ -1388,42 +1388,45 @@ class OCELEnhancedFMEA:
                 for event_obj in event_objects:
                     obj_id = event_obj.get('id')
                     activity = event.get('ocel:activity')
+                    found_matching_def = False
 
                     # Find matching object definition in ocel:objects
-                    actual_attributes = set()
                     for obj_def in object_definitions:
                         if obj_def.get('ocel:attributes', {}).get('activity') == activity:
+                            found_matching_def = True
                             # Get attributes list from object definition
                             attr_list = obj_def.get('ocel:attributes', {}).get('attributes', [])
-                            if isinstance(attr_list, list):
-                                actual_attributes.update(attr_list)
-                            break
+                            actual_attributes = set(attr_list) if isinstance(attr_list, list) else set()
 
-                    # Compare expected vs actual attributes
-                    missing_attrs = expected_attributes - actual_attributes
-                    if missing_attrs:
-                        failures.append(OCELFailureMode(
-                            id=f"OF_A_{len(failures)}",
-                            activity=activity,
-                            object_type=obj_type,
-                            description=f"Missing attributes: {', '.join(missing_attrs)}",
-                            violation_type='missing_attribute',
-                            event_id=event.get('ocel:id'),
-                            object_id=obj_id,
-                            attribute_details={
-                                'missing_attributes': sorted(list(missing_attrs)),
-                                'present_attributes': sorted(list(actual_attributes))
-                            }
-                        ).__dict__)
-                        logger.info(f"""
-                        Violation details:
-                        Object Type: {obj_type}
-                        Activity: {activity}
-                        Object ID: {obj_id}
-                        Expected: {sorted(list(expected_attributes))}
-                        Actual: {sorted(list(actual_attributes))}
-                        Missing: {sorted(list(missing_attrs))}
-                        """)
+                            # Compare expected vs actual attributes
+                            missing_attrs = expected_attributes - actual_attributes
+                            if missing_attrs:
+                                failures.append(OCELFailureMode(
+                                    id=f"OF_A_{len(failures)}",
+                                    activity=activity,
+                                    object_type=obj_type,
+                                    description=f"Missing attributes: {', '.join(missing_attrs)}",
+                                    violation_type='missing_attribute',
+                                    event_id=event.get('ocel:id'),
+                                    object_id=obj_id,
+                                    attribute_details={
+                                        'missing_attributes': sorted(list(missing_attrs)),
+                                        'present_attributes': sorted(list(actual_attributes))
+                                    }
+                                ).__dict__)
+                                logger.info(f"""
+                                Violation details:
+                                Object Type: {obj_type}
+                                Activity: {activity}
+                                Object ID: {obj_id}
+                                Expected: {sorted(list(expected_attributes))}
+                                Actual: {sorted(list(actual_attributes))}
+                                Missing: {sorted(list(missing_attrs))}
+                                """)
+                            break  # Found matching definition, exit inner loop
+
+                    if not found_matching_def:
+                        continue  # Skip to next event_obj if no matching definition found
 
         return failures
 
