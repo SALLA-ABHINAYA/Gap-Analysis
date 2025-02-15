@@ -103,6 +103,7 @@ class OCELDataManager:
                 obj_type: data.get('relationships', [])
                 for obj_type, data in self.ocel_model.items()
             }
+            logger.info(f"Built object types and their relationships maps: {json.dumps(self.object_relationships, indent=2)}")
 
             # Build object activities map
             self.object_activities = self._build_object_activities_map()
@@ -213,6 +214,7 @@ class OCELDataManager:
         """Get expected activities for object type"""
         return self.object_activities.get(obj_type, [])
 
+
 class OCELEnhancedFMEA:
     """Enhanced FMEA analyzer for OCEL data"""
 
@@ -321,24 +323,14 @@ class OCELEnhancedFMEA:
             raise
 
     def _initialize_timing_thresholds(self) -> Dict[str, Dict]:
-        """Initialize timing thresholds from OCEL model"""
+        """Initialize timing thresholds from OCEL threshold file"""
         try:
-            thresholds = {}
-            for obj_type, data in self.data_manager.ocel_model.items():
-                activities = data.get('activities', [])
-                thresholds[obj_type] = {
-                    'total_duration': 24,  # Default 24 hours for full process
-                    'activity_thresholds': {
-                        activity: {
-                            'max_duration_hours': 1,  # Default 1 hour per activity
-                            'max_gap_after_hours': 2  # Default 2 hour gap allowed
-                        }
-                        for activity in activities
-                    }
-                }
+            with open('ocpm_output/output_ocel_threshold.json', 'r') as f:
+                thresholds = json.load(f)
+            logger.info("Loaded timing thresholds from file")
             return thresholds
         except Exception as e:
-            logger.error(f"Error initializing timing thresholds: {str(e)}")
+            logger.error(f"Error loading timing thresholds: {str(e)}")
             return {}
 
     def _validate_columns(self):
@@ -418,12 +410,7 @@ class OCELEnhancedFMEA:
 
     def _check_timing_violation(self, event: pd.Series) -> bool:
         """
-        Check for timing violations in OCPM context considering:
-        - Activity-specific thresholds
-        - Object type timing requirements
-        - Cross-object timing dependencies
-        - Business hour constraints
-        - Market-specific timing rules
+        Check for timing violations based on OCEL thresholds
 
         Args:
             event: Single event series containing timestamp and activity info
@@ -432,52 +419,52 @@ class OCELEnhancedFMEA:
             bool: True if timing violation detected, False otherwise
         """
         try:
-            # Get activity-specific thresholds
-            timing_thresholds = {
-                'Trade Execution': timedelta(minutes=5),  # Quick execution required
-                'Risk Assessment': timedelta(minutes=15),  # Pre-trade risk check
-                'Market Data Validation': timedelta(minutes=2),  # Near real-time
-                'Settlement': timedelta(hours=2),  # End-of-day process
-                'Position Reconciliation': timedelta(hours=1)  # Regular checks
-            }
-
-            # Get event context
+            # Get activity and case info
             activity = event['ocel:activity']
-            timestamp = pd.to_datetime(event['ocel:timestamp'])
             case_id = event['case_id']
+            timestamp = pd.to_datetime(event['ocel:timestamp'])
 
-            # Get previous event in same case
+            # Get object types for this event
+            object_types = []
+            for obj in event.get('ocel:objects', []):
+                if isinstance(obj, dict) and 'type' in obj:
+                    object_types.append(obj['type'])
+
+            # Get case events
             case_events = self.events[self.events['case_id'] == case_id]
             case_events = case_events.sort_values('ocel:timestamp')
             prev_event_idx = case_events.index.get_loc(event.name) - 1
 
+            violation_found = False
             if prev_event_idx >= 0:
                 prev_event = case_events.iloc[prev_event_idx]
-                time_diff = timestamp - pd.to_datetime(prev_event['ocel:timestamp'])
+                time_diff = (timestamp - pd.to_datetime(prev_event['ocel:timestamp'])).total_seconds() / 3600
 
-                # Check activity-specific threshold
-                threshold = timing_thresholds.get(activity)
-                if threshold and time_diff > threshold:
-                    return True
+                # Check thresholds for each object type
+                for obj_type in object_types:
+                    if obj_type in self.timing_thresholds:
+                        obj_rules = self.timing_thresholds[obj_type]
 
-                # Check object-type timing rules
-                for obj in event.get('ocel:objects', []):
-                    obj_type = obj.get('type')
-                    if obj_type == 'Trade':
-                        # Trades should complete within market hours
-                        if not self._is_market_hours(timestamp):
-                            return True
-                    elif obj_type == 'Risk':
-                        # Risk checks must happen before trade execution
-                        if activity == 'Trade Execution' and 'Risk Assessment' not in \
-                                case_events[case_events['ocel:timestamp'] < timestamp]['ocel:activity'].values:
-                            return True
+                        # Check activity-specific threshold
+                        if activity in obj_rules['activity_thresholds']:
+                            threshold = obj_rules['activity_thresholds'][activity]['max_gap_after_hours']
+                            if time_diff > threshold:
+                                violation_found = True
+                                break
+                        else:
+                            # Use default gap threshold
+                            if time_diff > obj_rules['default_gap_hours']:
+                                violation_found = True
+                                break
 
-                # Check cross-object timing dependencies
-                if self._has_timing_dependency_violation(event, case_events):
-                    return True
+                        # Check total duration threshold
+                        total_duration = (case_events['ocel:timestamp'].max() -
+                                          case_events['ocel:timestamp'].min()).total_seconds() / 3600
+                        if total_duration > obj_rules['total_duration_hours']:
+                            violation_found = True
+                            break
 
-            return False
+            return violation_found
 
         except Exception as e:
             logger.error(f"Error checking timing violation: {str(e)}")
@@ -777,25 +764,6 @@ class OCELEnhancedFMEA:
                 interactions.add(obj.get('type'))
         return interactions
 
-    def _has_failure_condition(self, event: pd.Series, violation_type: str) -> bool:
-        """Check if event has specific failure condition"""
-        if violation_type == 'attribute':
-            return any(attr not in event for attr in ['currency_pair', 'notional_amount'])
-        elif violation_type == 'relationship':
-            return len(event.get('ocel:objects', [])) < 2
-        elif violation_type == 'timing':
-            return self._check_timing_violation(event)
-        return False
-
-    def _get_object_interactions(self, activity: str) -> Set[str]:
-        """Get unique object types interacting in activity"""
-        interactions = set()
-        activity_events = self.events[self.events['ocel:activity'] == activity]
-        for _, event in activity_events.iterrows():
-            for obj in event.get('ocel:objects', []):
-                interactions.add(obj.get('type'))
-        return interactions
-
     def calculate_detectability(self, failure_mode: OCELFailureMode) -> int:
         """Calculate detectability in OCPM context"""
         detectability = 10  # Start with worst detectability
@@ -841,31 +809,6 @@ class OCELEnhancedFMEA:
         }
         return controls.get(activity, [])
 
-    def _get_expected_sequence(self, activity: str) -> List[str]:
-        """Get expected sequence for given activity"""
-        # This should be customized based on domain knowledge
-        # For now, return common sequences from the log
-        sequences = self.sequence_patterns.get(activity, [])
-        return sequences[0] if sequences else []
-
-    def _get_actual_sequences(self, activity: str) -> List[List[str]]:
-        """Get actual sequences from the log"""
-        sequences = []
-        try:
-            case_events = self.events.groupby('case_id')
-
-            for _, events in case_events:
-                if activity in events['ocel:activity'].values:
-                    sorted_events = events.sort_values('ocel:timestamp')
-                    sequences.append(list(sorted_events['ocel:activity']))
-
-            logger.info(f"Found {len(sequences)} sequences for activity {activity}")
-            return sequences
-
-        except Exception as e:
-            logger.error(f"Error getting sequences for activity {activity}: {str(e)}")
-            logger.error(traceback.format_exc())
-            return []
 
     def _validate_sequence(self, actual: List[str], expected: List[str]) -> bool:
         """Validate if actual sequence follows expected pattern"""
@@ -889,44 +832,6 @@ class OCELEnhancedFMEA:
                 activity_objects[obj.get('type', 'Unknown')] += 1
 
         return max(activity_objects.items(), key=lambda x: x[1])[0] if activity_objects else 'Unknown'
-
-    def _identify_timing_violations(self) -> List[Dict]:
-        """Identify timing violations in the process"""
-        violations = []
-        case_events = self.events.groupby('case_id')
-
-        for case_id, events in case_events:
-            sorted_events = events.sort_values('ocel:timestamp')
-            for i in range(len(sorted_events) - 1):
-                current = sorted_events.iloc[i]
-                next_event = sorted_events.iloc[i + 1]
-                time_diff = (next_event['ocel:timestamp'] - current['ocel:timestamp']).total_seconds() / 3600
-
-                # Check for unusual delays
-                if time_diff > 24:  # Threshold can be customized
-                    violations.append({
-                        'id': f"TV_{len(violations)}",
-                        'activity': current['ocel:activity'],
-                        'object_type': self._get_primary_object_type(current['ocel:activity']),
-                        'description': f"Unusual delay between activities",
-                        'violation_type': 'timing',
-                        'time_diff': time_diff,
-                        'next_activity': next_event['ocel:activity']
-                    })
-
-        return violations
-
-    def _validate_convergence(self, convergence_point: Dict) -> bool:
-        """Validate convergence point"""
-        # This should be customized based on domain rules
-        # For now, basic validation
-        return len(convergence_point['object_types']) <= 3
-
-    def _validate_divergence(self, divergence_point: Dict) -> bool:
-        """Validate divergence point"""
-        # This should be customized based on domain rules
-        # For now, basic validation
-        return True
 
     def _identify_convergence_points(self) -> List[Dict[str, Any]]:
         """Identify points where multiple objects converge in the process"""
@@ -1120,94 +1025,6 @@ class OCELEnhancedFMEA:
 
         return sorted(failure_modes, key=lambda x: x['rpn'], reverse=True)
 
-    def _get_expected_relationships(self, obj_type: str) -> Set[str]:
-        """Get expected relationships from OCEL model"""
-        return self.data_manager.get_expected_relationships(obj_type)
-
-    def _get_actual_relationships(self, obj_type: str) -> Set[str]:
-        """Get actual relationships from event log for an object type"""
-        logger.info(f"Getting actual relationships for {obj_type}")
-        try:
-            relationships = set()
-
-            # Find all events involving this object type
-            for _, event in self.events.iterrows():
-                objects = event.get('ocel:objects', [])
-                current_type_objects = [obj for obj in objects if obj.get('type') == obj_type]
-                other_type_objects = [obj for obj in objects if obj.get('type') != obj_type]
-
-                if current_type_objects and other_type_objects:
-                    for other_obj in other_type_objects:
-                        relationships.add(other_obj.get('type', 'Unknown'))
-
-            logger.info(f"Found {len(relationships)} actual relationships for {obj_type}")
-            return relationships
-
-        except Exception as e:
-            logger.error(f"Error getting actual relationships for {obj_type}: {str(e)}")
-            return set()
-
-    def _check_attribute_violations(self, obj_type: str) -> List[Dict]:
-        """Check attribute violations by comparing with expected attributes from OCEL model"""
-        logger.info(f"Checking attribute violations for {obj_type}")
-        try:
-            violations = []
-            expected_attributes = self.data_manager.get_expected_attributes(obj_type)
-            logger.info(f"Expected attributes: {sorted(list(expected_attributes))}")
-
-            # Get object definitions for this type
-            type_definitions = [
-                obj for obj in self.ocel_data.get('ocel:objects', [])
-                if obj.get('ocel:type') == obj_type
-            ]
-
-            # Process each event
-            for event in self.ocel_data.get('ocel:events', []):
-                # Get objects of current type from event
-                event_objects = [
-                    obj for obj in event.get('ocel:objects', [])
-                    if obj.get('type') == obj_type
-                ]
-
-                for event_obj in event_objects:
-                    obj_id = event_obj.get('id')
-                    activity = event.get('ocel:activity')
-
-                    # Find matching object definition by activity
-                    matching_def = None
-                    for obj_def in type_definitions:
-                        if obj_def.get('ocel:attributes', {}).get('activity') == activity:
-                            matching_def = obj_def
-                            break
-
-                    if matching_def:
-                        # Get actual attributes from object definition
-                        attr_list = matching_def.get('ocel:attributes', {}).get('attributes', [])
-                        actual_attributes = set(attr_list) if isinstance(attr_list, list) else set()
-
-                        # Check missing attributes
-                        missing_attrs = expected_attributes - actual_attributes
-                        if missing_attrs:
-                            violations.append({
-                                'id': f"AV_{len(violations)}",
-                                'activity': activity,
-                                'object_type': obj_type,
-                                'description': f"Missing attributes: {', '.join(missing_attrs)}",
-                                'violation_type': 'missing_attribute',
-                                'event_id': event.get('ocel:id'),
-                                'object_id': obj_id,
-                                'attribute_details': {
-                                    'missing_attributes': sorted(list(missing_attrs)),
-                                    'present_attributes': sorted(list(actual_attributes))
-                                }
-                            })
-
-            return violations
-
-        except Exception as e:
-            logger.error(f"Error checking attribute violations for {obj_type}: {str(e)}")
-            return []
-
     def _is_valid_relationship(self, source_type: str, target_type: str) -> bool:
         """Check if relationship between object types is valid based on OCEL model"""
         # Get allowed relationships from OCEL model
@@ -1223,33 +1040,6 @@ class OCELEnhancedFMEA:
             'Market'  # One market data point per event
         }
         return single_relation_types
-
-    def _check_relationship_violations(self, obj_type: str) -> List[Dict]:
-        """Check for invalid relationships"""
-        violations = []
-
-        for _, event in self.events.iterrows():
-            objects = event.get('ocel:objects', [])
-            current_type_objects = [obj for obj in objects if obj.get('type') == obj_type]
-            other_type_objects = [obj for obj in objects if obj.get('type') != obj_type]
-
-            # Check for invalid combinations
-            for curr_obj in current_type_objects:
-                for other_obj in other_type_objects:
-                    if not self._is_valid_relationship(obj_type, other_obj.get('type')):
-                        violations.append({
-                            'description': f"Invalid relationship between {obj_type} and {other_obj.get('type')}",
-                            'objects': [curr_obj['id'], other_obj['id']]
-                        })
-
-            # Check for multiple relationships where single is required
-            if len(current_type_objects) > 1 and obj_type in self._get_single_relationship_types():
-                violations.append({
-                    'description': f"Multiple {obj_type} objects in single event",
-                    'objects': [obj['id'] for obj in current_type_objects]
-                })
-
-        return violations
 
     def _identify_event_failures(self) -> List[Dict]:
         """Identify event-level failures with detailed tracing"""
@@ -1470,276 +1260,6 @@ class OCELEnhancedFMEA:
                 })
 
         return failures
-
-
-def create_object_distribution(results: List[Dict]) -> None:
-    """Create object type distribution visualization"""
-    object_counts = defaultdict(int)
-    for result in results:
-        object_counts[result['object_type']] += 1
-
-    fig = go.Figure(data=[
-        go.Bar(
-            x=list(object_counts.keys()),
-            y=list(object_counts.values()),
-            name='Object Distribution'
-        )
-    ])
-
-    fig.update_layout(
-        title='Failure Distribution by Object Type',
-        xaxis_title='Object Type',
-        yaxis_title='Number of Failures',
-        showlegend=True
-    )
-
-    st.plotly_chart(fig)
-
-
-def create_violation_distribution(results: List[Dict]) -> None:
-    """Create violation type distribution visualization"""
-    violation_counts = defaultdict(int)
-    for result in results:
-        violation_counts[result.get('violation_type', 'Unknown')] += 1
-
-    fig = go.Figure(data=[
-        go.Bar(
-            x=list(violation_counts.keys()),
-            y=list(violation_counts.values()),
-            name='Violation Distribution'
-        )
-    ])
-
-    fig.update_layout(
-        title='Distribution by Violation Type',
-        xaxis_title='Violation Type',
-        yaxis_title='Count',
-        showlegend=True
-    )
-
-    st.plotly_chart(fig)
-
-
-def style_dataframe(df: pd.DataFrame) -> pd.DataFrame:
-    """Apply styling to dataframe with proper return type"""
-    styled = df.style.background_gradient(
-        subset=['RPN'],
-        cmap='RdYlGn_r',
-        vmin=0,
-        vmax=1000
-    ).format({
-        'Severity': '{:.0f}',
-        'Likelihood': '{:.0f}',
-        'Detectability': '{:.0f}',
-        'RPN': '{:.0f}'
-    })
-
-    # Return the styled DataFrame
-    return styled
-
-
-def create_relationship_matrix(results: List[Dict]) -> go.Figure:
-    """Create relationship matrix visualization"""
-    # Get unique object types
-    object_types = list(set(r['object_type'] for r in results))
-    matrix = np.zeros((len(object_types), len(object_types)))
-
-    # Build relationship matrix
-    for result in results:
-        if 'affected_objects' in result:
-            source_idx = object_types.index(result['object_type'])
-            for affected in result['affected_objects']:
-                if affected in object_types:
-                    target_idx = object_types.index(affected)
-                    matrix[source_idx][target_idx] += 1
-
-    fig = go.Figure(data=go.Heatmap(
-        z=matrix,
-        x=object_types,
-        y=object_types,
-        colorscale='Viridis'
-    ))
-
-    fig.update_layout(
-        title='Object Relationship Matrix',
-        xaxis_title='Target Object',
-        yaxis_title='Source Object'
-    )
-
-    return fig
-
-
-def create_cascade_chart(results: List[Dict]) -> go.Figure:
-    """Create cascade effect visualization"""
-    cascade_data = defaultdict(list)
-
-    for result in results:
-        if 'cascading_effects' in result:
-            depth = len(result['cascading_effects'])
-            cascade_data['depth'].append(depth)
-            cascade_data['rpn'].append(result['rpn'])
-            cascade_data['activity'].append(result['activity'])
-
-    fig = go.Figure(data=go.Scatter(
-        x=cascade_data['depth'],
-        y=cascade_data['rpn'],
-        mode='markers+text',
-        text=cascade_data['activity'],
-        marker=dict(
-            size=10,
-            color=cascade_data['rpn'],
-            colorscale='Viridis',
-            showscale=True
-        )
-    ))
-
-    fig.update_layout(
-        title='Failure Cascade Analysis',
-        xaxis_title='Cascade Depth',
-        yaxis_title='RPN',
-        showlegend=False
-    )
-
-    return fig
-
-
-def create_timeline_chart(results: List[Dict]) -> go.Figure:
-    """Create timeline visualization of failures"""
-    timeline_data = defaultdict(list)
-
-    for result in results:
-        if 'timestamp' in result:
-            timeline_data['timestamp'].append(result['timestamp'])
-            timeline_data['rpn'].append(result['rpn'])
-            timeline_data['activity'].append(result['activity'])
-
-    fig = go.Figure(data=go.Scatter(
-        x=timeline_data['timestamp'],
-        y=timeline_data['rpn'],
-        mode='markers+text',
-        text=timeline_data['activity'],
-        marker=dict(
-            size=10,
-            color=timeline_data['rpn'],
-            colorscale='Viridis',
-            showscale=True
-        )
-    ))
-
-    fig.update_layout(
-        title='Failure Timeline',
-        xaxis_title='Time',
-        yaxis_title='RPN',
-        showlegend=False
-    )
-
-    return fig
-
-
-def display_object_recommendations(failures: List[Dict]) -> None:
-    """Display recommendations for specific object type with enhanced detail"""
-    if not failures:
-        st.info("No failures found for this object type")
-        return
-
-    # Group failures by violation category
-    categories = {
-        'Object-Level': [f for f in failures if 'relationship' in f.get('violation_type', '')],
-        'Activity-Level': [f for f in failures if f.get('violation_type') == 'sequence'],
-        'System-Level': [f for f in failures if f.get('violation_type') in ['convergence', 'divergence']]
-    }
-
-    # Create tabs for different categories
-    tabs = st.tabs(list(categories.keys()))
-
-    for tab, (category, items) in zip(tabs, categories.items()):
-        with tab:
-            if not items:
-                st.info(f"No {category} failures detected")
-                continue
-
-            total_rpn = sum(f['rpn'] for f in items)
-            avg_rpn = total_rpn / len(items) if items else 0
-            st.metric("Average RPN", f"{avg_rpn:.2f}")
-
-            for failure in sorted(items, key=lambda x: x['rpn'], reverse=True):
-                with st.expander(f"{failure['activity']} (RPN: {failure['rpn']})"):
-                    col1, col2, col3 = st.columns(3)
-                    with col1:
-                        st.metric("Severity", failure['severity'])
-                    with col2:
-                        st.metric("Likelihood", failure['likelihood'])
-                    with col3:
-                        st.metric("Detectability", failure['detectability'])
-
-                    st.write("**Description:**", failure['description'])
-
-                    # Handle the new affected_objects structure
-                    if 'affected_objects' in failure:
-                        if isinstance(failure['affected_objects'], list):
-                            # Handle both dictionary and string formats
-                            affected_objs = []
-                            for obj in failure['affected_objects']:
-                                if isinstance(obj, dict):
-                                    # Format dictionary entries
-                                    obj_str = f"{obj.get('type', 'Unknown')}: {obj.get('id', 'Unknown')}"
-                                    affected_objs.append(obj_str)
-                                else:
-                                    # Handle string entries
-                                    affected_objs.append(str(obj))
-                            st.write("**Affected Objects:**", ', '.join(affected_objs))
-
-                    # Display additional details based on violation type
-                    if failure.get('event_details'):
-                        with st.expander("Event Details"):
-                            for key, value in failure['event_details'].items():
-                                st.write(f"**{key.replace('_', ' ').title()}:** {value}")
-
-                    if failure.get('sequence_details'):
-                        with st.expander("Sequence Details"):
-                            st.write("**Expected Sequence:**",
-                                     ' → '.join(failure['sequence_details'].get('expected_sequence', [])))
-                            st.write("**Actual Sequence:**",
-                                     ' → '.join(failure['sequence_details'].get('actual_sequence', [])))
-                            if failure['sequence_details'].get('wrong_order'):
-                                st.write("**Sequence Violations:**")
-                                for violation in failure['sequence_details']['wrong_order']:
-                                    st.write(
-                                        f"- Position {violation['position']}: Expected '{violation['expected']}', got '{violation['actual']}'")
-
-                    if failure.get('relationship_details'):
-                        with st.expander("Relationship Details"):
-                            st.write(f"**Object ID:** {failure['relationship_details'].get('object_id')}")
-                            st.write(f"**Event ID:** {failure['relationship_details'].get('event_id')}")
-                            st.write(
-                                f"**Missing Relationship:** {failure['relationship_details'].get('missing_relationship')}")
-                            st.write("**Existing Relationships:**",
-                                     ', '.join(failure['relationship_details'].get('existing_relationships', [])))
-
-                    if failure.get('attribute_details'):
-                        with st.expander("Attribute Details"):
-                            st.write(f"**Object ID:** {failure['attribute_details'].get('object_id')}")
-                            st.write(f"**Event ID:** {failure['attribute_details'].get('event_id')}")
-                            st.write("**Missing Attributes:**",
-                                     ', '.join(failure['attribute_details'].get('missing_attributes', [])))
-                            st.write("**Present Attributes:**",
-                                     ', '.join(failure['attribute_details'].get('present_attributes', [])))
-
-def paginate_dataframe(df: pd.DataFrame, page_size: int = 1000) -> pd.DataFrame:
-    """Handle pagination for large dataframes"""
-    n_pages = len(df) // page_size + (1 if len(df) % page_size > 0 else 0)
-
-    page = st.sidebar.number_input(
-        'Page',
-        min_value=1,
-        max_value=n_pages,
-        value=1
-    )
-
-    start_idx = (page - 1) * page_size
-    end_idx = min(start_idx + page_size, len(df))
-
-    return df.iloc[start_idx:end_idx].copy()
 
 
 def display_rpn_distribution(fmea_results: List[Dict]):
@@ -2076,278 +1596,16 @@ def display_fmea_analysis(fmea_results: List[Dict]):
         st.error(f"Error displaying analysis: {str(e)}")
 
 
-def display_summary_metrics(results: List[Dict]):
-    """Display summary metrics with enhanced visualizations"""
-    col1, col2, col3, col4 = st.columns(4)
-
-    # Basic metrics
-    with col1:
-        st.metric("Total Failure Modes", len(results))
-    with col2:
-        high_risk = sum(1 for r in results if r['rpn'] > 200)
-        st.metric("High Risk (RPN > 200)", high_risk)
-    with col3:
-        medium_risk = sum(1 for r in results if 100 < r['rpn'] <= 200)
-        st.metric("Medium Risk", medium_risk)
-    with col4:
-        low_risk = sum(1 for r in results if r['rpn'] <= 100)
-        st.metric("Low Risk", low_risk)
-
-    # RPN Distribution
-    create_rpn_distribution(results)
-
-    # Object Type Distribution
-    create_object_distribution(results)
-
-    # Violation Type Distribution
-    create_violation_distribution(results)
-
-
-def display_detailed_analysis(results: List[Dict]):
-    """Display detailed analysis with filtering and sorting"""
-    # Filters
-    col1, col2, col3 = st.columns(3)
-    with col1:
-        selected_types = st.multiselect(
-            "Filter by Object Type",
-            options=list(set(r['object_type'] for r in results))
-        )
-
-    with col2:
-        selected_violations = st.multiselect(
-            "Filter by Violation Type",
-            options=list(set(r.get('violation_type', 'Unknown') for r in results))
-        )
-
-    with col3:
-        rpn_threshold = st.slider("RPN Threshold", 0, 1000, 100)
-
-    # Filter results
-    filtered_results = results
-    if selected_types:
-        filtered_results = [r for r in filtered_results if r['object_type'] in selected_types]
-    if selected_violations:
-        filtered_results = [r for r in filtered_results if r.get('violation_type') in selected_violations]
-    filtered_results = [r for r in filtered_results if r['rpn'] >= rpn_threshold]
-
-    # Display table
-    display_df = pd.DataFrame([{
-        'ID': r['id'],
-        'Object Type': r['object_type'],
-        'Activity': r['activity'],
-        'Description': r['description'],
-        'Violation Type': r.get('violation_type', 'Unknown'),
-        'Severity': r['severity'],
-        'Likelihood': r['likelihood'],
-        'Detectability': r['detectability'],
-        'RPN': r['rpn']
-    } for r in filtered_results])
-
-    # Apply styling
-    styled_df = style_dataframe(display_df)
-    st.dataframe(styled_df)
-
-
-def display_object_interactions(results: List[Dict]):
-    """Display object interaction analysis"""
-    # Create network graph
-    object_network = create_object_network(results)
-
-    # Display network
-    st.plotly_chart(object_network)
-
-    # Object relationship matrix
-    st.subheader("Object Relationship Matrix")
-    relationship_matrix = create_relationship_matrix(results)
-    st.plotly_chart(relationship_matrix)
-
-    # Cascade analysis
-    st.subheader("Failure Cascade Analysis")
-    cascade_chart = create_cascade_chart(results)
-    st.plotly_chart(cascade_chart)
-
-
-def display_system_impact(results: List[Dict]):
-    """Display system-wide impact analysis"""
-    # System metrics
-    col1, col2 = st.columns(2)
-
-    with col1:
-        st.subheader("Convergence Points")
-        convergence_df = pd.DataFrame([r for r in results if r.get('violation_type') == 'convergence'])
-        if not convergence_df.empty:
-            st.dataframe(convergence_df)
-
-    with col2:
-        st.subheader("Divergence Points")
-        divergence_df = pd.DataFrame([r for r in results if r.get('violation_type') == 'divergence'])
-        if not divergence_df.empty:
-            st.dataframe(divergence_df)
-
-    # Timeline analysis
-    st.subheader("Failure Timeline")
-    timeline_chart = create_timeline_chart(results)
-    st.plotly_chart(timeline_chart)
-
-
-def display_recommendations(results: List[Dict]):
-    """Display recommendations and mitigation strategies"""
-    # High-risk items
-    st.subheader("Critical Risk Recommendations")
-    high_risk_items = [r for r in results if r['rpn'] > 200]
-
-    if high_risk_items:
-        for item in high_risk_items:
-            with st.expander(f"{item['activity']} (RPN: {item['rpn']})"):
-                st.write("**Description:**", item['description'])
-
-                cols = st.columns(3)
-                with cols[0]:
-                    st.write(f"**Severity:** {item['severity']}")
-                with cols[1]:
-                    st.write(f"**Likelihood:** {item['likelihood']}")
-                with cols[2]:
-                    st.write(f"**Detectability:** {item['detectability']}")
-
-                # Detailed impact analysis
-                st.write("**Impact Analysis:**")
-                if 'cascading_effects' in item:
-                    st.write("Cascading Effects:")
-                    for effect in item['cascading_effects']:
-                        st.write(f"- {effect}")
-
-                # Root causes
-                if 'root_causes' in item:
-                    st.write("**Root Causes:**")
-                    for cause in item['root_causes']:
-                        st.write(f"- {cause}")
-
-                # Mitigation strategies
-                if 'mitigation_strategies' in item:
-                    st.write("**Recommended Actions:**")
-                    for strategy in item['mitigation_strategies']:
-                        st.write(f"- {strategy}")
-
-                # Monitoring points
-                if 'monitoring_points' in item:
-                    st.write("**Monitoring Points:**")
-                    for point in item['monitoring_points']:
-                        st.write(f"- {point}")
-    else:
-        st.info("No high-risk failure modes identified")
-
-    # Object-specific recommendations
-    st.subheader("Object-Type Recommendations")
-    for obj_type in set(r['object_type'] for r in results):
-        with st.expander(f"Recommendations for {obj_type}"):
-            type_failures = [r for r in results if r['object_type'] == obj_type]
-            display_object_recommendations(type_failures)
-
-
-def create_rpn_distribution(results: List[Dict]) -> None:
-    """Create RPN distribution visualization"""
-    fig = go.Figure(data=go.Histogram(
-        x=[r['rpn'] for r in results],
-        nbinsx=20,
-        name='RPN Distribution'
-    ))
-
-    fig.add_vline(
-        x=200,
-        line_dash="dash",
-        line_color="red",
-        annotation_text="Critical Threshold"
-    )
-
-    fig.update_layout(
-        title='RPN Distribution',
-        xaxis_title='RPN',
-        yaxis_title='Count',
-        showlegend=True
-    )
-
-    st.plotly_chart(fig)
-
-
-def create_object_network(results: List[Dict]) -> go.Figure:
-    """Create network visualization of object interactions"""
-    # Implementation of network graph visualization
-    nodes = []
-    edges = []
-
-    # Process results to create network
-    object_types = set()
-    relationships = set()
-
-    for result in results:
-        object_types.add(result['object_type'])
-        if 'affected_objects' in result:
-            for obj in result['affected_objects']:
-                relationships.add((result['object_type'], obj))
-
-    # Create nodes
-    for obj_type in object_types:
-        nodes.append(
-            dict(
-                id=obj_type,
-                label=obj_type,
-                size=len([r for r in results if r['object_type'] == obj_type])
-            )
-        )
-
-    # Create edges
-    for source, target in relationships:
-        edges.append(
-            dict(
-                source=source,
-                target=target,
-                value=len([r for r in results
-                           if r['object_type'] == source and target in r.get('affected_objects', [])])
-            )
-        )
-
-    # Create network visualization
-    fig = go.Figure(data=[
-        go.Scatter(
-            x=[node['id'] for node in nodes],
-            y=[node['size'] for node in nodes],
-            mode='markers+text',
-            text=[node['label'] for node in nodes],
-            marker=dict(size=[node['size'] * 5 for node in nodes]),
-            name='Objects'
-        )
-    ])
-
-    for edge in edges:
-        fig.add_trace(
-            go.Scatter(
-                x=[edge['source'], edge['target']],
-                y=[nodes[i]['size'] for i in range(2)],
-                mode='lines',
-                line=dict(width=edge['value']),
-                showlegend=False
-            )
-        )
-
-    fig.update_layout(
-        title='Object Interaction Network',
-        showlegend=True
-    )
-
-    return fig
-
-
 # Page execution
 st.set_page_config(page_title="FMEA Analysis", layout="wide")
 st.title("FMEA Analysis")
 
-# Modified main execution code for 5_FMEA_Analysis.py
+
 try:
     # First verify OCEL model file exists
     if not os.path.exists('ocpm_output/output_ocel.json'):
-        st.error("OCEL model file (output_ocel.json) not found. Please ensure the file exists.")
-        logger.error("Missing required OCEL model file")
-        raise FileNotFoundError("output_ocel.json not found")
+        st.error("OCEL model file (output_ocel.json) not found. Please run Outlier Analysis first to analyze event log")
+        st.stop()
 
     # Load process data
     with open("ocpm_output/process_data.json", 'r') as f:
