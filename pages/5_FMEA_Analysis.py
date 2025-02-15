@@ -38,31 +38,30 @@ class OCELFailureMode:
     detectability: int = 0
     rpn: int = 0
     violation_type: str = ""
+    event_id: str = ""  # Added this field
+    object_id: str = "" # Added this field
+    event_details: Dict[str, Any] = field(default_factory=dict)
+    sequence_details: Dict[str, Any] = field(default_factory=dict)
+    relationship_details: Dict[str, Any] = field(default_factory=dict)
+    attribute_details: Dict[str, Any] = field(default_factory=dict)
+    affected_objects: List[Dict[str, str]] = field(default_factory=list)
     effects: List[str] = field(default_factory=list)
     causes: List[str] = field(default_factory=list)
-    attributes: Dict[str, Any] = field(default_factory=dict)  # Added this field
 
-    # Impact Analysis
+    # Business context
     business_impact: Dict[str, Any] = field(default_factory=dict)
     operational_impact: Dict[str, Any] = field(default_factory=dict)
     regulatory_impact: Dict[str, Any] = field(default_factory=dict)
 
-    # Detection and Control
+    # Control mechanisms
     current_controls: List[str] = field(default_factory=list)
     detection_methods: List[str] = field(default_factory=list)
-
-    # Object Relationships
-    affected_objects: List[str] = field(default_factory=list)
-    dependent_activities: List[str] = field(default_factory=list)
+    control_effectiveness: Dict[str, float] = field(default_factory=dict)
 
     # Mitigation
     recommended_actions: List[Dict[str, Any]] = field(default_factory=list)
     mitigation_status: str = "Open"
     priority_level: str = "Medium"
-
-    # Detailed failure analysis
-    failure_category: str = ""
-    subcategory: str = ""
 
     # Root cause analysis
     direct_causes: List[str] = field(default_factory=list)
@@ -76,13 +75,6 @@ class OCELFailureMode:
 
     # Object relationships
     impacted_resources: List[str] = field(default_factory=list)
-
-    # Control mechanisms
-    control_effectiveness: Dict[str, float] = field(default_factory=dict)
-
-    # Mitigation strategies
-    preventive_measures: List[str] = field(default_factory=list)
-    contingency_plans: List[str] = field(default_factory=list)
 
 
 class OCELDataManager:
@@ -102,23 +94,19 @@ class OCELDataManager:
             # Create events DataFrame
             self.events_df = self._create_events_df()
 
+            # Build attribute maps for each object type
+            self.object_attributes = self._build_object_attribute_maps()
+            logger.info(f"Built object attribute maps: {json.dumps(self.object_attributes, indent=2)}")
+
             # Store object types and their relationships
             self.object_relationships = {
                 obj_type: data.get('relationships', [])
                 for obj_type, data in self.ocel_model.items()
             }
 
-            # Store object attributes
-            self.object_attributes = {
-                obj_type: data.get('attributes', [])
-                for obj_type, data in self.ocel_model.items()
-            }
-
-            # Store object activities
-            self.object_activities = {
-                obj_type: data.get('activities', [])
-                for obj_type, data in self.ocel_model.items()
-            }
+            # Build object activities map
+            self.object_activities = self._build_object_activities_map()
+            logger.info(f"Built object activities map: {json.dumps(self.object_activities, indent=2)}")
 
         except Exception as e:
             logger.error(f"Error initializing OCEL data manager: {str(e)}")
@@ -147,16 +135,82 @@ class OCELDataManager:
 
         return pd.DataFrame(events_data)
 
+    def _build_object_attribute_maps(self) -> Dict[str, List[str]]:
+        """Build attribute maps for each object type strictly based on OCEL model attributes"""
+        try:
+            # Initialize empty maps
+            attribute_maps = {}
+
+            # Get expected attributes directly from OCEL model
+            for obj_type, obj_data in self.ocel_model.items():
+                # Get attributes list directly from model
+                expected_attrs = obj_data.get('attributes', [])
+                # Store only business attributes, filtering out system/event attributes
+                attribute_maps[obj_type] = sorted([
+                    attr for attr in expected_attrs
+                    if attr not in {'activity', 'object_type', 'case_id', 'resource'}
+                ])
+                logger.info(
+                    f"Loaded {len(attribute_maps[obj_type])} attributes for {obj_type}: {attribute_maps[obj_type]}")
+
+            logger.info(f"Built object attribute maps: {json.dumps(attribute_maps, indent=2)}")
+            return attribute_maps
+
+        except Exception as e:
+            logger.error(f"Error building object attribute maps: {str(e)}")
+            logger.error(traceback.format_exc())
+            return {}
+
+    def _build_object_activities_map(self) -> Dict[str, List[str]]:
+        """Build map of expected activities for each object type"""
+        activities_map = {}
+
+        # Get activities from ocel:objects definitions
+        for obj in self.ocel_data.get('ocel:objects', []):
+            obj_type = obj.get('ocel:type')
+            if obj_type:
+                if obj_type not in activities_map:
+                    activities_map[obj_type] = set()
+
+                # Get activity from object attributes
+                activity = obj.get('ocel:attributes', {}).get('activity')
+                if activity:
+                    activities_map[obj_type].add(activity)
+
+        # Augment with activities from events
+        for event in self.ocel_data.get('ocel:events', []):
+            activity = event.get('ocel:activity')
+            if activity:
+                for obj in event.get('ocel:objects', []):
+                    obj_type = obj.get('type')
+                    if obj_type:
+                        if obj_type not in activities_map:
+                            activities_map[obj_type] = set()
+                        activities_map[obj_type].add(activity)
+
+        # Convert sets to sorted lists
+        for obj_type in activities_map:
+            activities_map[obj_type] = sorted(list(activities_map[obj_type]))
+            logger.info(f"Activities for {obj_type}: {activities_map[obj_type]}")
+
+        return activities_map
+
+    def get_expected_attributes(self, obj_type: str) -> Set[str]:
+        """Get expected attributes for object type"""
+        try:
+            attributes = set(self.object_attributes.get(obj_type, []))
+            logger.info(f"Getting expected attributes for {obj_type}: {sorted(list(attributes))}")
+            return attributes
+        except Exception as e:
+            logger.error(f"Error getting expected attributes for {obj_type}: {str(e)}")
+            return set()
+
     def get_expected_relationships(self, obj_type: str) -> Set[str]:
         """Get expected relationships for object type from OCEL model"""
         return set(self.object_relationships.get(obj_type, []))
 
-    def get_expected_attributes(self, obj_type: str) -> Set[str]:
-        """Get expected attributes for object type from OCEL model"""
-        return set(self.object_attributes.get(obj_type, []))
-
     def get_expected_activities(self, obj_type: str) -> List[str]:
-        """Get expected activities for object type from OCEL model"""
+        """Get expected activities for object type"""
         return self.object_activities.get(obj_type, [])
 
 class OCELEnhancedFMEA:
@@ -1094,30 +1148,60 @@ class OCELEnhancedFMEA:
             return set()
 
     def _check_attribute_violations(self, obj_type: str) -> List[Dict]:
-        """Check for attribute violations using OCEL model definition"""
+        """Check attribute violations by comparing with expected attributes from OCEL model"""
         logger.info(f"Checking attribute violations for {obj_type}")
         try:
             violations = []
             expected_attributes = self.data_manager.get_expected_attributes(obj_type)
+            logger.info(f"Expected attributes: {sorted(list(expected_attributes))}")
 
-            # Check each event involving this object type
-            for _, event in self.events.iterrows():
-                objects = event.get('ocel:objects', [])
-                for obj in objects:
-                    if obj.get('type') == obj_type:
-                        # Check for missing attributes
-                        missing_attrs = expected_attributes - set(obj.keys())
+            # Get object definitions for this type
+            type_definitions = [
+                obj for obj in self.ocel_data.get('ocel:objects', [])
+                if obj.get('ocel:type') == obj_type
+            ]
+
+            # Process each event
+            for event in self.ocel_data.get('ocel:events', []):
+                # Get objects of current type from event
+                event_objects = [
+                    obj for obj in event.get('ocel:objects', [])
+                    if obj.get('type') == obj_type
+                ]
+
+                for event_obj in event_objects:
+                    obj_id = event_obj.get('id')
+                    activity = event.get('ocel:activity')
+
+                    # Find matching object definition by activity
+                    matching_def = None
+                    for obj_def in type_definitions:
+                        if obj_def.get('ocel:attributes', {}).get('activity') == activity:
+                            matching_def = obj_def
+                            break
+
+                    if matching_def:
+                        # Get actual attributes from object definition
+                        attr_list = matching_def.get('ocel:attributes', {}).get('attributes', [])
+                        actual_attributes = set(attr_list) if isinstance(attr_list, list) else set()
+
+                        # Check missing attributes
+                        missing_attrs = expected_attributes - actual_attributes
                         if missing_attrs:
                             violations.append({
                                 'id': f"AV_{len(violations)}",
-                                'activity': event['ocel:activity'],
+                                'activity': activity,
                                 'object_type': obj_type,
                                 'description': f"Missing attributes: {', '.join(missing_attrs)}",
-                                'violation_type': 'attribute',
-                                'attributes': list(missing_attrs)
+                                'violation_type': 'missing_attribute',
+                                'event_id': event.get('ocel:id'),
+                                'object_id': obj_id,
+                                'attribute_details': {
+                                    'missing_attributes': sorted(list(missing_attrs)),
+                                    'present_attributes': sorted(list(actual_attributes))
+                                }
                             })
 
-            logger.info(f"Found {len(violations)} attribute violations for {obj_type}")
             return violations
 
         except Exception as e:
@@ -1167,93 +1251,179 @@ class OCELEnhancedFMEA:
 
         return violations
 
-    def _identify_object_failures(self) -> List[Dict]:
-        """Identify object-level failures"""
-        failures = []
-
-        for obj_type in self.object_types:
-            # Get expected and actual relationships
-            expected_relationships = self.data_manager.get_expected_relationships(obj_type)
-            actual_relationships = self._get_actual_relationships(obj_type)
-
-            # Missing relationships create multiple failures - one per missing relationship
-            missing = expected_relationships - actual_relationships
-            for missing_rel in missing:
-                failures.append({
-                    'id': f"OF_R_{len(failures)}",
-                    'activity': f"{obj_type} Object Analysis",
-                    'object_type': obj_type,
-                    'description': f"Missing mandatory relationship: {missing_rel}",
-                    'violation_type': 'missing_relationship',
-                    'severity': 8,
-                    'likelihood': 7,
-                    'detectability': 6,
-                    'rpn': 336,
-                    'affected_objects': [missing_rel]
-                })
-
-            # Check attribute violations - one failure per missing attribute
-            attribute_violations = self._check_attribute_violations(obj_type)
-            for attr in attribute_violations:
-                failures.append({
-                    'id': f"OF_A_{len(failures)}",
-                    'activity': f"{obj_type} Object Analysis",
-                    'object_type': obj_type,
-                    'description': f"Missing mandatory attribute: {attr}",
-                    'violation_type': 'missing_attribute',
-                    'severity': 6,
-                    'likelihood': 8,
-                    'detectability': 4,
-                    'rpn': 192,
-                    'affected_objects': [obj_type]
-                })
-
-        return failures
-
     def _identify_event_failures(self) -> List[Dict]:
-        """Identify event-level failures - one per case when sequence or timing violation occurs"""
+        """Identify event-level failures with detailed tracing"""
         failures = []
+        logger.info("Identifying event-level failures")
 
         for case_id in self.events['case_id'].unique():
             case_events = self.events[self.events['case_id'] == case_id].sort_values('ocel:timestamp')
 
-            # Check sequence violations
+            # Track timing violations with event details
+            for idx, event in case_events.iterrows():
+                if self._check_timing_violation(event):
+                    # Get previous event details for context
+                    prev_events = case_events[case_events.index < idx]
+                    prev_event = prev_events.iloc[-1] if not prev_events.empty else None
+
+                    # Calculate time difference if previous event exists
+                    time_diff = None
+                    if prev_event is not None:
+                        time_diff = (pd.to_datetime(event['ocel:timestamp']) -
+                                     pd.to_datetime(prev_event['ocel:timestamp'])).total_seconds() / 3600
+
+                    failure = OCELFailureMode(
+                        id=f"EF_T_{len(failures)}",
+                        activity=event['ocel:activity'],
+                        object_type=self._get_primary_object_type(event['ocel:activity']),
+                        description=(
+                            f"Timing violation in case {case_id}\n"
+                            f"Event ID: {event['ocel:id']}\n"
+                            f"Previous Activity: {prev_event['ocel:activity'] if prev_event is not None else 'None'}\n"
+                            f"Time Gap: {f'{time_diff:.2f} hours' if time_diff else 'N/A'}"
+                        ),
+                        violation_type='timing',
+                        severity=8,
+                        likelihood=7,
+                        detectability=4,
+                        rpn=224,
+                        event_details={
+                            'event_id': event['ocel:id'],
+                            'timestamp': event['ocel:timestamp'],
+                            'case_id': case_id,
+                            'previous_event_id': prev_event['ocel:id'] if prev_event is not None else None,
+                            'time_difference_hours': time_diff
+                        },
+                        affected_objects=[
+                            {
+                                'id': obj['id'],
+                                'type': obj['type']
+                            } for obj in event.get('ocel:objects', [])
+                        ]
+                    )
+                    failures.append(failure.__dict__)  # Convert to dict for storage
+
+            # Check sequence violations with detailed object tracing
             for obj_type in self.object_types:
                 expected_sequence = self.data_manager.get_expected_activities(obj_type)
-                actual_sequence = case_events[
-                    case_events['ocel:objects'].apply(lambda x:
-                                                      any(obj.get('type') == obj_type for obj in x))
-                ]['ocel:activity'].tolist()
+                obj_events = case_events[
+                    case_events['ocel:objects'].apply(
+                        lambda x: any(obj.get('type') == obj_type for obj in x)
+                    )
+                ]
+                actual_sequence = obj_events['ocel:activity'].tolist()
 
                 if expected_sequence and not self._validate_sequence(actual_sequence, expected_sequence):
-                    failures.append({
+                    missing_activities = set(expected_sequence) - set(actual_sequence)
+                    wrong_order = []
+
+                    # Identify specific sequence violations
+                    for i, (exp, act) in enumerate(zip(expected_sequence, actual_sequence)):
+                        if exp != act:
+                            wrong_order.append({
+                                'position': i,
+                                'expected': exp,
+                                'actual': act,
+                                'event_id': obj_events.iloc[i]['ocel:id']
+                            })
+
+                    failure = {
                         'id': f"EF_S_{len(failures)}",
                         'activity': actual_sequence[0] if actual_sequence else 'Unknown',
                         'object_type': obj_type,
-                        'description': f"Sequence violation in case {case_id}",
+                        'description': (
+                            f"Sequence violation in case {case_id}\n"
+                            f"Missing activities: {', '.join(missing_activities) if missing_activities else 'None'}\n"
+                            f"Wrong order activities: {len(wrong_order)}"
+                        ),
                         'violation_type': 'sequence',
                         'severity': 7,
                         'likelihood': 6,
                         'detectability': 5,
                         'rpn': 210,
-                        'affected_objects': [obj_type]
-                    })
+                        'sequence_details': {
+                            'case_id': case_id,
+                            'expected_sequence': expected_sequence,
+                            'actual_sequence': actual_sequence,
+                            'missing_activities': list(missing_activities),
+                            'wrong_order': wrong_order
+                        },
+                        'affected_objects': [
+                            {
+                                'id': obj['id'],
+                                'type': obj['type']
+                            } for event in obj_events.itertuples()
+                            for obj in event._asdict().get('ocel:objects', [])
+                            if obj.get('type') == obj_type
+                        ]
+                    }
+                    failures.append(failure)
 
-            # Check timing violations for each event
-            for _, event in case_events.iterrows():
-                if self._check_timing_violation(event):
-                    failures.append({
-                        'id': f"EF_T_{len(failures)}",
-                        'activity': event['ocel:activity'],
-                        'object_type': self._get_primary_object_type(event['ocel:activity']),
-                        'description': f"Timing violation in case {case_id}",
-                        'violation_type': 'timing',
-                        'severity': 8,
-                        'likelihood': 7,
-                        'detectability': 4,
-                        'rpn': 224,
-                        'affected_objects': [obj.get('type') for obj in event.get('ocel:objects', [])]
-                    })
+        return failures
+
+    def _identify_object_failures(self) -> List[Dict]:
+        """Identify object-level failures with comprehensive object attribute checking"""
+        failures = []
+        logger.info("Identifying object-level failures")
+
+        for obj_type in self.object_types:
+            # Get expected attributes from output_ocel.json
+            expected_attributes = self.data_manager.get_expected_attributes(obj_type)
+            logger.info(f"Expected attributes for {obj_type}: {expected_attributes}")
+
+            # Get all object definitions for this type
+            object_definitions = [
+                obj for obj in self.ocel_data.get('ocel:objects', [])
+                if obj.get('ocel:type') == obj_type
+            ]
+
+            # Process each event
+            for event in self.ocel_data.get('ocel:events', []):
+                # Get objects of current type from event
+                event_objects = [
+                    obj for obj in event.get('ocel:objects', [])
+                    if obj.get('type') == obj_type
+                ]
+
+                for event_obj in event_objects:
+                    obj_id = event_obj.get('id')
+                    activity = event.get('ocel:activity')
+
+                    # Find matching object definition in ocel:objects
+                    actual_attributes = set()
+                    for obj_def in object_definitions:
+                        if obj_def.get('ocel:attributes', {}).get('activity') == activity:
+                            # Get attributes list from object definition
+                            attr_list = obj_def.get('ocel:attributes', {}).get('attributes', [])
+                            if isinstance(attr_list, list):
+                                actual_attributes.update(attr_list)
+                            break
+
+                    # Compare expected vs actual attributes
+                    missing_attrs = expected_attributes - actual_attributes
+                    if missing_attrs:
+                        failures.append(OCELFailureMode(
+                            id=f"OF_A_{len(failures)}",
+                            activity=activity,
+                            object_type=obj_type,
+                            description=f"Missing attributes: {', '.join(missing_attrs)}",
+                            violation_type='missing_attribute',
+                            event_id=event.get('ocel:id'),
+                            object_id=obj_id,
+                            attribute_details={
+                                'missing_attributes': sorted(list(missing_attrs)),
+                                'present_attributes': sorted(list(actual_attributes))
+                            }
+                        ).__dict__)
+                        logger.info(f"""
+                        Violation details:
+                        Object Type: {obj_type}
+                        Activity: {activity}
+                        Object ID: {obj_id}
+                        Expected: {sorted(list(expected_attributes))}
+                        Actual: {sorted(list(actual_attributes))}
+                        Missing: {sorted(list(missing_attrs))}
+                        """)
 
         return failures
 
@@ -1464,7 +1634,7 @@ def create_timeline_chart(results: List[Dict]) -> go.Figure:
 
 
 def display_object_recommendations(failures: List[Dict]) -> None:
-    """Display recommendations for specific object type"""
+    """Display recommendations for specific object type with enhanced detail"""
     if not failures:
         st.info("No failures found for this object type")
         return
@@ -1500,8 +1670,57 @@ def display_object_recommendations(failures: List[Dict]) -> None:
                         st.metric("Detectability", failure['detectability'])
 
                     st.write("**Description:**", failure['description'])
+
+                    # Handle the new affected_objects structure
                     if 'affected_objects' in failure:
-                        st.write("**Affected Objects:**", ', '.join(failure['affected_objects']))
+                        if isinstance(failure['affected_objects'], list):
+                            # Handle both dictionary and string formats
+                            affected_objs = []
+                            for obj in failure['affected_objects']:
+                                if isinstance(obj, dict):
+                                    # Format dictionary entries
+                                    obj_str = f"{obj.get('type', 'Unknown')}: {obj.get('id', 'Unknown')}"
+                                    affected_objs.append(obj_str)
+                                else:
+                                    # Handle string entries
+                                    affected_objs.append(str(obj))
+                            st.write("**Affected Objects:**", ', '.join(affected_objs))
+
+                    # Display additional details based on violation type
+                    if failure.get('event_details'):
+                        with st.expander("Event Details"):
+                            for key, value in failure['event_details'].items():
+                                st.write(f"**{key.replace('_', ' ').title()}:** {value}")
+
+                    if failure.get('sequence_details'):
+                        with st.expander("Sequence Details"):
+                            st.write("**Expected Sequence:**",
+                                     ' → '.join(failure['sequence_details'].get('expected_sequence', [])))
+                            st.write("**Actual Sequence:**",
+                                     ' → '.join(failure['sequence_details'].get('actual_sequence', [])))
+                            if failure['sequence_details'].get('wrong_order'):
+                                st.write("**Sequence Violations:**")
+                                for violation in failure['sequence_details']['wrong_order']:
+                                    st.write(
+                                        f"- Position {violation['position']}: Expected '{violation['expected']}', got '{violation['actual']}'")
+
+                    if failure.get('relationship_details'):
+                        with st.expander("Relationship Details"):
+                            st.write(f"**Object ID:** {failure['relationship_details'].get('object_id')}")
+                            st.write(f"**Event ID:** {failure['relationship_details'].get('event_id')}")
+                            st.write(
+                                f"**Missing Relationship:** {failure['relationship_details'].get('missing_relationship')}")
+                            st.write("**Existing Relationships:**",
+                                     ', '.join(failure['relationship_details'].get('existing_relationships', [])))
+
+                    if failure.get('attribute_details'):
+                        with st.expander("Attribute Details"):
+                            st.write(f"**Object ID:** {failure['attribute_details'].get('object_id')}")
+                            st.write(f"**Event ID:** {failure['attribute_details'].get('event_id')}")
+                            st.write("**Missing Attributes:**",
+                                     ', '.join(failure['attribute_details'].get('missing_attributes', [])))
+                            st.write("**Present Attributes:**",
+                                     ', '.join(failure['attribute_details'].get('present_attributes', [])))
 
 def paginate_dataframe(df: pd.DataFrame, page_size: int = 1000) -> pd.DataFrame:
     """Handle pagination for large dataframes"""
@@ -1715,12 +1934,51 @@ def display_fmea_analysis(fmea_results: List[Dict]):
                     for failure in sorted(object_failures, key=lambda x: x['rpn'], reverse=True):
                         with st.expander(
                                 f"{failure['object_type']} - {failure['description']} (RPN: {failure['rpn']})"):
+                            # Metrics row
                             cols = st.columns(3)
                             cols[0].metric("Severity", failure['severity'])
                             cols[1].metric("Likelihood", failure['likelihood'])
                             cols[2].metric("Detectability", failure['detectability'])
-                            if 'affected_objects' in failure:
-                                st.write("**Affected Objects:**", ', '.join(failure['affected_objects']))
+
+                            st.markdown("---")
+
+                            # Details section
+                            col1, col2 = st.columns(2)
+                            with col1:
+                                st.markdown("##### Core Information")
+                                st.write("**Object Type:**", failure['object_type'])
+                                st.write("**Violation Type:**", failure.get('violation_type', 'Unknown'))
+
+                                # Handle affected_objects
+                                if 'affected_objects' in failure:
+                                    affected_objs = []
+                                    for obj in failure['affected_objects']:
+                                        if isinstance(obj, dict):
+                                            obj_str = f"{obj.get('type', 'Unknown')}: {obj.get('id', 'Unknown')}"
+                                            affected_objs.append(obj_str)
+                                        else:
+                                            affected_objs.append(str(obj))
+                                    st.write("**Affected Objects:**", ', '.join(affected_objs))
+
+                            with col2:
+                                st.markdown("##### Detailed Information")
+                                if failure.get('relationship_details'):
+                                    st.markdown("**Relationship Information:**")
+                                    st.write(f"• Object ID: {failure['relationship_details'].get('object_id')}")
+                                    st.write(f"• Event ID: {failure['relationship_details'].get('event_id')}")
+                                    st.write(
+                                        f"• Missing: {failure['relationship_details'].get('missing_relationship')}")
+                                    st.write("• Current:", ', '.join(
+                                        failure['relationship_details'].get('existing_relationships', [])))
+
+                                if failure.get('attribute_details'):
+                                    st.markdown("**Attribute Information:**")
+                                    st.write(f"• Object ID: {failure['attribute_details'].get('object_id')}")
+                                    st.write(f"• Event ID: {failure['attribute_details'].get('event_id')}")
+                                    st.write("• Missing:",
+                                             ', '.join(failure['attribute_details'].get('missing_attributes', [])))
+                                    st.write("• Present:",
+                                             ', '.join(failure['attribute_details'].get('present_attributes', [])))
                 else:
                     st.info("No object-level failures detected")
 
@@ -1731,11 +1989,33 @@ def display_fmea_analysis(fmea_results: List[Dict]):
                 if activity_failures:
                     for failure in sorted(activity_failures, key=lambda x: x['rpn'], reverse=True):
                         with st.expander(f"{failure['activity']} (RPN: {failure['rpn']})"):
+                            # Metrics row
                             cols = st.columns(3)
                             cols[0].metric("Severity", failure['severity'])
                             cols[1].metric("Likelihood", failure['likelihood'])
                             cols[2].metric("Detectability", failure['detectability'])
-                            st.write("**Violation Type:**", failure['violation_type'])
+
+                            st.markdown("---")
+
+                            col1, col2 = st.columns(2)
+                            with col1:
+                                st.markdown("##### Event Information")
+                                if failure.get('event_details'):
+                                    for key, value in failure['event_details'].items():
+                                        st.write(f"**{key.replace('_', ' ').title()}:** {value}")
+
+                            with col2:
+                                st.markdown("##### Sequence Information")
+                                if failure.get('sequence_details'):
+                                    st.write("**Expected:**",
+                                             ' → '.join(failure['sequence_details'].get('expected_sequence', [])))
+                                    st.write("**Actual:**",
+                                             ' → '.join(failure['sequence_details'].get('actual_sequence', [])))
+                                    if failure['sequence_details'].get('wrong_order'):
+                                        st.markdown("**Violations:**")
+                                        for violation in failure['sequence_details']['wrong_order']:
+                                            st.write(
+                                                f"• Position {violation['position']}: Expected '{violation['expected']}', got '{violation['actual']}'")
                 else:
                     st.info("No activity-level failures detected")
 
@@ -1749,12 +2029,15 @@ def display_fmea_analysis(fmea_results: List[Dict]):
                             cols[0].metric("Severity", failure['severity'])
                             cols[1].metric("Likelihood", failure['likelihood'])
                             cols[2].metric("Detectability", failure['detectability'])
-                            st.write("**System Impact:**", failure['description'])
+
+                            st.markdown("---")
+                            st.markdown("##### System Impact")
+                            st.write(failure['description'])
                 else:
                     st.info("No system-level failures detected")
 
         with main_tabs[2]:
-            # Display recommendations as before
+            # Display recommendations
             priorities = {
                 'High': [r for r in fmea_results if r['rpn'] > 200],
                 'Medium': [r for r in fmea_results if 100 < r['rpn'] <= 200],
@@ -1765,23 +2048,24 @@ def display_fmea_analysis(fmea_results: List[Dict]):
                 if items:
                     with st.expander(f"{priority} Priority Items ({len(items)})"):
                         for item in items[:5]:
-                            st.write(f"**{item['activity']}** (RPN: {item['rpn']})")
+                            st.markdown(f"**{item['activity']}** (RPN: {item['rpn']})")
                             st.write(item['description'])
+
+                            # Handle affected_objects
+                            if 'affected_objects' in item:
+                                affected_objs = []
+                                for obj in item['affected_objects']:
+                                    if isinstance(obj, dict):
+                                        obj_str = f"{obj.get('type', 'Unknown')}: {obj.get('id', 'Unknown')}"
+                                        affected_objs.append(obj_str)
+                                    else:
+                                        affected_objs.append(str(obj))
+                                st.write("**Affected Objects:**", ', '.join(affected_objs))
+
+                            st.markdown("---")
+
                         if len(items) > 5:
                             st.write(f"... and {len(items) - 5} more items")
-
-        # Add failure mode type breakdown
-        st.subheader("Failure Mode Analysis Breakdown")
-        breakdown_cols = st.columns(3)
-        with breakdown_cols[0]:
-            st.metric("Object-Level Failures",
-                      len([r for r in fmea_results if 'Object Analysis' in r.get('activity', '')]))
-        with breakdown_cols[1]:
-            st.metric("Activity-Level Failures",
-                      len([r for r in fmea_results if r.get('violation_type') in ['sequence', 'timing']]))
-        with breakdown_cols[2]:
-            st.metric("System-Level Failures",
-                      len([r for r in fmea_results if r.get('violation_type') in ['convergence', 'divergence']]))
 
     except Exception as e:
         logger.error(f"Error in display_fmea_analysis: {str(e)}")
