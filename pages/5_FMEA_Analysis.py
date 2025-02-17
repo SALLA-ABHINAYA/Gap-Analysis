@@ -15,6 +15,8 @@ from datetime import datetime, timedelta
 
 import tornado
 
+from utils import get_azure_openai_client
+
 # Configure logging
 logging.basicConfig(
     level=logging.INFO,
@@ -1289,6 +1291,72 @@ class OCELEnhancedFMEA:
         return failures
 
 
+def get_fmea_insights(fmea_results: List[Dict]) -> Dict[str, str]:
+    """Generate AI insights for FMEA analysis"""
+    client = get_azure_openai_client()
+
+    # Create analysis context
+    analysis_context = {
+        'total_failures': len(fmea_results),
+        'high_risk': len([r for r in fmea_results if r['rpn'] > 200]),
+        'medium_risk': len([r for r in fmea_results if 100 < r['rpn'] <= 200]),
+        'object_types': list(set(r['object_type'] for r in fmea_results)),
+        'top_activities': list(set(r['activity'] for r in fmea_results
+                                   if r['rpn'] > 150))[:5]
+    }
+
+    prompt = f"""
+    Analyze this FMEA (Failure Mode and Effects Analysis) data:
+
+    Process Statistics:
+    - Total Failure Modes: {analysis_context['total_failures']}
+    - High Risk Items: {analysis_context['high_risk']}
+    - Medium Risk Items: {analysis_context['medium_risk']}
+    - Object Types Affected: {', '.join(analysis_context['object_types'])}
+    - Critical Activities: {', '.join(analysis_context['top_activities'])}
+
+    Provide detailed analysis focusing on:
+    1. Pattern identification in failure modes
+    2. Critical risk areas and their implications
+    3. Object interaction complexity
+    4. Process vulnerability assessment
+    5. Specific recommendations for improvement
+
+    Format response as:
+    1. Key findings about failure patterns
+    2. Critical insights about process risks
+    3. Specific, actionable recommendations
+    """
+
+    try:
+        response = client.chat.completions.create(
+            model="gpt-4o",
+            messages=[
+                {"role": "system",
+                 "content": "You are an expert in FMEA and process mining analysis."},
+                {"role": "user", "content": prompt}
+            ],
+            temperature=0.7,
+            max_tokens=800
+        )
+
+        # Parse response into sections
+        content = response.choices[0].message.content
+        sections = content.split('\n\n')
+
+        return {
+            'findings': sections[0] if len(sections) > 0 else '',
+            'insights': sections[1] if len(sections) > 1 else '',
+            'recommendations': sections[2] if len(sections) > 2 else ''
+        }
+    except Exception as e:
+        logger.error(f"Error getting AI insights: {str(e)}")
+        return {
+            'findings': 'Error generating insights',
+            'insights': '',
+            'recommendations': ''
+        }
+
 def display_rpn_distribution(fmea_results: List[Dict]):
     """
     Display comprehensive RPN distribution visualization with analysis breakdowns.
@@ -1442,6 +1510,88 @@ def display_rpn_distribution(fmea_results: List[Dict]):
 def display_fmea_analysis(fmea_results: List[Dict]):
     """Display comprehensive FMEA analysis with categorized tabs"""
     try:
+        # Add explanation expander first
+        with st.expander("Understanding FMEA Analysis Logic", expanded=False):
+            st.markdown("""
+                    # Understanding FMEA Analysis in Object-Centric Process Mining
+
+                    ## Overview
+                    The FMEA (Failure Mode and Effects Analysis) system analyzes object-centric event logs through multiple dimensions:
+
+                    ### 1. Object-Level Analysis
+                    - Analyzes failures related to object attributes and relationships
+                    - Tracks missing required attributes
+                    - Validates object relationships against OCEL model
+                    - Monitors attribute value patterns and violations
+
+                    ### 2. Activity-Level Analysis
+                    - Sequence violations
+                      * Compares actual vs expected activity sequences
+                      * Tracks missing activities
+                      * Identifies wrong order executions
+                    - Timing violations
+                      * Monitors activity durations
+                      * Checks inter-activity gaps
+                      * Validates against timing thresholds
+
+                    ### 3. System-Level Analysis
+                    - Convergence point analysis
+                      * Identifies complex object interactions
+                      * Monitors multi-object synchronization
+                    - Divergence point analysis
+                      * Tracks object lifecycle splits
+                      * Validates object path separations
+
+                    ### Risk Priority Number (RPN) Calculation
+
+                    RPN = Severity × Likelihood × Detectability
+
+                    Where:
+                    - **Severity (1-10)**: Impact of failure
+                      * Object criticality
+                      * Business impact
+                      * Regulatory implications
+
+                    - **Likelihood (1-10)**: Probability of occurrence
+                      * Historical frequency
+                      * Process complexity
+                      * Control effectiveness
+
+                    - **Detectability (1-10)**: Ability to detect before impact
+                      * Monitoring capabilities
+                      * Control points
+                      * Visibility in process
+
+                    ### Risk Zones
+                    - High Risk (RPN > 200)
+                    - Medium Risk (100 < RPN ≤ 200)
+                    - Low Risk (RPN ≤ 100)
+
+                    ### Implementation Details
+                    ```python
+                    # Example calculation
+                    severity = base_severity + object_criticality + multi_object_impact
+                    likelihood = historical_frequency + complexity_factor
+                    detectability = 10 - (automation_factor + visibility_factor + control_points)
+                    rpn = severity * likelihood * detectability
+                    ```
+
+                    ### Data Structure Example
+                    ```json
+                    {
+                      "id": "FM_001",
+                      "activity": "Trade Execution",
+                      "object_type": "Trade",
+                      "description": "Missing required attributes",
+                      "severity": 8,
+                      "likelihood": 6,
+                      "detectability": 4,
+                      "rpn": 192,
+                      "affected_objects": ["Trade_1", "Position_1"],
+                      "root_causes": ["Incomplete data validation", "System timeout"]
+                    }
+                    ```
+                    """)
         @st.cache_data
         def get_summary_stats(results):
             return {
@@ -1678,6 +1828,25 @@ try:
         logger.info(f"Analysis complete. Found {len(fmea_results)} failure modes")
         logger.info(
             f"Using relationships from OCEL model with {len(analyzer.data_manager.object_relationships)} object types")
+
+    # Get AI insights
+    with st.spinner('Generating AI insights...'):
+        ai_insights = get_fmea_insights(fmea_results)
+
+    # Display AI insights in a collapsible section
+    with st.expander("🤖 AI-Powered FMEA Insights", expanded=True):
+        if ai_insights['findings']:
+            st.markdown("### Key Findings")
+            st.markdown(ai_insights['findings'])
+
+        if ai_insights['insights']:
+            st.markdown("### Critical Insights")
+            st.markdown(ai_insights['insights'])
+
+        if ai_insights['recommendations']:
+            st.markdown("### Recommendations")
+            st.markdown(ai_insights['recommendations'])
+
 
     # Display results with additional context
     st.success(f"Analysis complete - identified {len(fmea_results)} failure modes")
