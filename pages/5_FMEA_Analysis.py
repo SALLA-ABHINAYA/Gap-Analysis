@@ -1152,125 +1152,98 @@ class OCELEnhancedFMEA:
         return failures
 
     def _identify_object_failures(self) -> List[Dict]:
-        """Identify object-level failures with comprehensive object and relationship checking"""
+        """Identify object-level failures with optimized processing"""
         failures = []
         logger.info("Identifying object-level failures")
 
+        # Pre-process event data for efficient lookup
+        event_object_map = defaultdict(list)
+        object_event_map = defaultdict(list)
+        object_type_map = {}
+
+        # Build indexes in one pass through events
+        for event in self.ocel_data['ocel:events']:
+            event_id = event['ocel:id']
+            event_object_map[event_id] = []
+
+            for obj in event['ocel:objects']:
+                obj_id = obj['id']
+                obj_type = obj['type']
+
+                event_object_map[event_id].append((obj_id, obj_type))
+                object_event_map[obj_id].append(event_id)
+                object_type_map[obj_id] = obj_type
+
+        # Process each object type
         for obj_type in self.object_types:
-            # Get expected relationships for this object type
+            # Get expected relationships and attributes
             expected_relationships = self.data_manager.get_expected_relationships(obj_type)
+            expected_attributes = self.data_manager.get_expected_attributes(obj_type)
+
             logger.info(f"Getting expected relationships for {obj_type}")
             logger.info(f"Found {len(expected_relationships)} expected relationships for {obj_type}")
 
-            # Get actual relationships for events involving this object type
-            actual_relationships = defaultdict(dict)
-            logger.info(f"Getting actual relationships for {obj_type}")
+            # Track objects of this type
+            type_objects = {obj_id for obj_id, type_ in object_type_map.items() if type_ == obj_type}
 
-            # Track all events for this object type
-            type_events = []
-            for event in self.ocel_data['ocel:events']:
-                obj_ids = [obj['id'] for obj in event['ocel:objects'] if obj['type'] == obj_type]
-                if not obj_ids:
-                    continue
+            # Process each object
+            for obj_id in type_objects:
+                # Get all events for this object
+                obj_events = object_event_map[obj_id]
 
-                # Record event for future reference
-                type_events.append({
-                    'event_id': event['ocel:id'],
-                    'obj_ids': obj_ids,
-                    'timestamp': event['ocel:timestamp'],
-                    'activity': event['ocel:activity'],
-                    'related_objects': [
-                        {
-                            'id': obj['id'],
-                            'type': obj['type']
-                        }
-                        for obj in event['ocel:objects']
-                        if obj['type'] != obj_type
-                    ]
-                })
+                # Get all related objects
+                related_types = set()
+                for event_id in obj_events:
+                    for rel_obj_id, rel_type in event_object_map[event_id]:
+                        if rel_obj_id != obj_id:
+                            related_types.add(rel_type)
 
-                # Build relationship map
-                for obj_id in obj_ids:
-                    if obj_id not in actual_relationships:
-                        actual_relationships[obj_id] = {
-                            'event_ids': set(),
-                            'related_types': set(),
-                            'relationships': []
-                        }
-                    actual_relationships[obj_id]['event_ids'].add(event['ocel:id'])
-                    for related_obj in event['ocel:objects']:
-                        if related_obj['type'] != obj_type:
-                            actual_relationships[obj_id]['related_types'].add(related_obj['type'])
-                            actual_relationships[obj_id]['relationships'].append({
-                                'event_id': event['ocel:id'],
-                                'object_id': related_obj['id'],
-                                'object_type': related_obj['type'],
-                                'timestamp': event['ocel:timestamp']
-                            })
-
-            logger.info(f"Found {len(actual_relationships)} actual relationships for {obj_type}")
-
-            # Check for missing relationships
-            for obj_id, rel_data in actual_relationships.items():
-                missing_relationships = expected_relationships - rel_data['related_types']
+                # Check relationship violations
+                missing_relationships = expected_relationships - related_types
                 if missing_relationships:
                     # Get first event for context
-                    first_event = next((e for e in type_events if obj_id in e['obj_ids']), None)
+                    first_event = next((e for e in self.ocel_data['ocel:events']
+                                        if e['ocel:id'] == obj_events[0]), None)
 
-                    failure = OCELFailureMode(
-                        id=f"OF_R_{len(failures)}",
-                        activity=first_event['activity'] if first_event else 'Unknown',
-                        object_type=obj_type,
-                        description=f"Missing relationships with: {', '.join(missing_relationships)}",
-                        violation_type='missing_relationship',
-                        event_id=first_event['event_id'] if first_event else None,
-                        object_id=obj_id,
-                        relationship_details={
-                            'object_id': obj_id,
-                            'event_id': first_event['event_id'] if first_event else None,
-                            'missing_relationship': list(missing_relationships),
-                            'current': [
-                                {
-                                    'type': r['object_type'],
-                                    'id': r['object_id'],
-                                    'event_id': r['event_id']
-                                }
-                                for r in rel_data['relationships']
-                            ]
-                        }
-                    ).__dict__
-                    failures.append(failure)
+                    if first_event:
+                        failures.append(OCELFailureMode(
+                            id=f"OF_R_{len(failures)}",
+                            activity=first_event['ocel:activity'],
+                            object_type=obj_type,
+                            description=f"Missing relationships with: {', '.join(missing_relationships)}",
+                            violation_type='missing_relationship',
+                            event_id=first_event['ocel:id'],
+                            object_id=obj_id,
+                            relationship_details={
+                                'object_id': obj_id,
+                                'event_id': first_event['ocel:id'],
+                                'missing_relationship': list(missing_relationships),
+                                'current': list(related_types)
+                            }
+                        ).__dict__)
 
-            # Check for attribute violations
-            expected_attributes = self.data_manager.get_expected_attributes(obj_type)
-            logger.info(f"Checking attribute violations for {obj_type}")
+                # Check attribute violations (only for object's events)
+                for event_id in obj_events:
+                    event = next(e for e in self.ocel_data['ocel:events'] if e['ocel:id'] == event_id)
+                    event_attrs = set(event.get('ocel:attributes', {}).keys())
+                    missing_attrs = expected_attributes - event_attrs
 
-            # Process each event's objects for attribute violations
-            attribute_violations = 0
-            for event in type_events:
-                event_attrs = set()
-                if 'attributes' in event:
-                    event_attrs = set(event['attributes'].keys())
-                missing_attrs = expected_attributes - event_attrs
-                if missing_attrs:
-                    attribute_violations += 1
-                    failures.append(OCELFailureMode(
-                        id=f"OF_A_{len(failures)}",
-                        activity=event['activity'],
-                        object_type=obj_type,
-                        description=f"Missing required attributes: {', '.join(missing_attrs)}",
-                        violation_type='missing_attribute',
-                        event_id=event['event_id'],
-                        object_id=event['obj_ids'][0],
-                        attribute_details={
-                            'object_id': event['obj_ids'][0],
-                            'event_id': event['event_id'],
-                            'missing_attributes': list(missing_attrs),
-                            'present_attributes': list(event_attrs)
-                        }
-                    ).__dict__)
-
-            logger.info(f"Found {attribute_violations} attribute violations for {obj_type}")
+                    if missing_attrs:
+                        failures.append(OCELFailureMode(
+                            id=f"OF_A_{len(failures)}",
+                            activity=event['ocel:activity'],
+                            object_type=obj_type,
+                            description=f"Missing required attributes: {', '.join(missing_attrs)}",
+                            violation_type='missing_attribute',
+                            event_id=event['ocel:id'],
+                            object_id=obj_id,
+                            attribute_details={
+                                'object_id': obj_id,
+                                'event_id': event['ocel:id'],
+                                'missing_attributes': list(missing_attrs),
+                                'present_attributes': list(event_attrs)
+                            }
+                        ).__dict__)
 
         return failures
 
@@ -1565,7 +1538,12 @@ def display_fmea_analysis(fmea_results: List[Dict]):
                                      r['object_type'] != 'System']
                 if activity_failures:
                     for failure in sorted(activity_failures, key=lambda x: x['rpn'], reverse=True):
-                        with st.expander(f"{failure['activity']} (RPN: {failure['rpn']})"):
+                        # Create descriptive header based on violation type
+                        failure_type = "Time Gap Violation" if failure.get(
+                            'violation_type') == 'timing' else "Sequence Violation"
+                        failure_header = f"{failure['activity']} - {failure_type} (RPN: {failure['rpn']})"
+
+                        with st.expander(failure_header):
                             # Metrics row
                             cols = st.columns(3)
                             cols[0].metric("Severity", failure['severity'])
@@ -1580,19 +1558,37 @@ def display_fmea_analysis(fmea_results: List[Dict]):
                                 if failure.get('event_details'):
                                     for key, value in failure['event_details'].items():
                                         st.write(f"**{key.replace('_', ' ').title()}:** {value}")
-
-                            with col2:
-                                st.markdown("##### Sequence Information")
-                                if failure.get('sequence_details'):
-                                    st.write("**Expected:**",
-                                             ' → '.join(failure['sequence_details'].get('expected_sequence', [])))
-                                    st.write("**Actual:**",
-                                             ' → '.join(failure['sequence_details'].get('actual_sequence', [])))
+                                elif failure.get('sequence_details'):  # Add event info for sequence violations
+                                    st.write("**Case ID:**", failure['sequence_details'].get('case_id', 'Unknown'))
                                     if failure['sequence_details'].get('wrong_order'):
-                                        st.markdown("**Violations:**")
-                                        for violation in failure['sequence_details']['wrong_order']:
-                                            st.write(
-                                                f"• Position {violation['position']}: Expected '{violation['expected']}', got '{violation['actual']}'")
+                                        first_violation = failure['sequence_details']['wrong_order'][0]
+                                        st.write("**Event ID:**", first_violation.get('event_id', 'Unknown'))
+
+                            # Only show sequence information for sequence violations
+                            if failure.get('violation_type') == 'sequence':
+                                with col2:
+                                    st.markdown("##### Sequence Information")
+                                    if failure.get('sequence_details'):
+                                        st.write("**Expected:**",
+                                                 ' → '.join(failure['sequence_details'].get('expected_sequence', [])))
+                                        st.write("**Actual:**",
+                                                 ' → '.join(failure['sequence_details'].get('actual_sequence', [])))
+                                        if failure['sequence_details'].get('wrong_order'):
+                                            st.markdown("**Violations:**")
+                                            for violation in failure['sequence_details']['wrong_order']:
+                                                st.write(
+                                                    f"• Position {violation['position']}: Expected '{violation['expected']}', got '{violation['actual']}'")
+
+                            # Show timing information for timing violations
+                            elif failure.get('violation_type') == 'timing':
+                                with col2:
+                                    st.markdown("##### Timing Information")
+                                    if failure.get('event_details'):
+                                        time_diff = failure['event_details'].get('time_difference_hours')
+                                        if time_diff:
+                                            st.write(f"**Time Gap:** {time_diff:.2f} hours")
+                                        st.write("**Previous Activity:**",
+                                                 failure['event_details'].get('previous_event_id', 'Unknown'))
                 else:
                     st.info("No activity-level failures detected")
 
