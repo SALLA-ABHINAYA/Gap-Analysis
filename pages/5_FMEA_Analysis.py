@@ -317,12 +317,124 @@ class OCELEnhancedFMEA:
                 for obj_type, data in self.data_manager.ocel_model.items()
             }
 
+            # Generate or load FMEA settings
+            fmea_settings_path = 'ocpm_output/fmea_settings.json'
+            if not os.path.exists(fmea_settings_path):
+                logger.info("Generating new FMEA settings...")
+                self.fmea_settings = self._generate_fmea_settings()
+            else:
+                logger.info("Loading existing FMEA settings...")
+                with open(fmea_settings_path, 'r') as f:
+                    self.fmea_settings = json.load(f)
+
             logger.info("Initialization complete")
 
         except Exception as e:
             logger.error(f"Error initializing OCELEnhancedFMEA: {str(e)}")
             logger.error(traceback.format_exc())
             raise
+
+    def _generate_fmea_settings(self) -> None:
+        """Generate FMEA settings using Azure OpenAI based on OCEL model"""
+        try:
+            # Load OCEL model
+            with open('ocpm_output/output_ocel.json', 'r') as f:
+                ocel_model = json.load(f)
+
+            # Create context for OpenAI
+            context = {
+                'object_types': list(ocel_model.keys()),
+                'object_details': {
+                    obj_type: {
+                        'activities': data.get('activities', []),
+                        'attributes': data.get('attributes', []),
+                        'relationships': data.get('relationships', [])
+                    }
+                    for obj_type, data in ocel_model.items()
+                }
+            }
+
+            prompt = f"""
+            Analyze this Object-Centric Process Mining (OCPM) model and generate FMEA settings:
+
+            Object Types and Their Details:
+            {json.dumps(context, indent=2)}
+
+            Generate a comprehensive FMEA configuration with these components:
+
+            1. object_visibility (scale -3 to 0, where -3 means highly visible/easily detectable):
+            - Consider object's observability in process
+            - More system interactions = more visible
+            - More attributes = more visible
+            - More relationships = more visible
+
+            2. object_criticality (scale 1-5, where 5 is most critical):
+            - Consider business impact
+            - Consider number of relationships
+            - Consider number of activities
+            - Consider attribute importance
+
+            3. temporal_dependencies:
+            - Define required activity sequences
+            - Specify timing constraints
+            - Consider business logic dependencies
+            - Include validation requirements
+
+            4. critical_activities (activities that have high severity impact):
+            - List activities that are critical to process success
+            - Include execution activities
+            - Include validation activities
+            - Include settlement/completion activities
+
+            5. regulatory_keywords:
+            - List keywords that indicate regulatory/compliance significance
+            - Include industry-specific compliance terms
+            - Include risk-related terms
+            - Include legal/regulatory terms
+
+            Format the response as a JSON object with these exact five keys. For critical_activities and regulatory_keywords, 
+            analyze the provided activities and their context to determine appropriate values.
+            """
+
+            # Get Azure OpenAI client
+            client = get_azure_openai_client()
+
+            # Generate settings - Fixed order of arguments
+            response = client.chat.completions.create(
+                model="gpt-4o",
+                messages=[
+                    {
+                        "role": "system",
+                        "content": "You are an expert in FMEA and process mining analysis."
+                    },
+                    {
+                        "role": "user",
+                        "content": prompt
+                    }
+                ],
+                temperature=0.7,
+                max_tokens=1500,
+                response_format={
+                    "type": "json_object"
+                }
+            )
+
+            # Parse and validate response
+            settings = json.loads(response.choices[0].message.content)
+
+            # Save settings
+            output_path = os.path.join('ocpm_output', 'fmea_settings.json')
+            with open(output_path, 'w') as f:
+                json.dump(obj=settings, fp=f, indent=2)
+
+            logger.info(f"Generated FMEA settings saved to {output_path}")
+            return settings
+
+        except Exception as e:
+            logger.error(f"Error generating FMEA settings: {str(e)}")
+            logger.error(traceback.format_exc())
+            raise
+
 
     def _initialize_timing_thresholds(self) -> Dict[str, Dict]:
         """Initialize timing thresholds from OCEL threshold file"""
@@ -490,38 +602,7 @@ class OCELEnhancedFMEA:
         """
         try:
             # Define temporal dependency map for activities
-            temporal_dependencies = {
-                'Trade Execution': {
-                    'required_before': ['Market Data Validation', 'Risk Assessment'],
-                    'required_after': [],
-                    'timing_constraint': 'market_hours',
-                    'max_delay': timedelta(minutes=5)
-                },
-                'Settlement': {
-                    'required_before': ['Trade Execution', 'Position Reconciliation'],
-                    'required_after': ['Trade Confirmation'],
-                    'timing_constraint': 'end_of_day',
-                    'max_delay': timedelta(hours=2)
-                },
-                'Risk Assessment': {
-                    'required_before': [],
-                    'required_after': ['Trade Initiated'],
-                    'timing_constraint': 'continuous',
-                    'max_delay': timedelta(minutes=15)
-                },
-                'Position Reconciliation': {
-                    'required_before': ['Settlement'],
-                    'required_after': ['Trade Execution'],
-                    'timing_constraint': 'daily',
-                    'max_delay': timedelta(hours=1)
-                },
-                'Market Data Validation': {
-                    'required_before': ['Trade Execution'],
-                    'required_after': [],
-                    'timing_constraint': 'real_time',
-                    'max_delay': timedelta(minutes=1)
-                }
-            }
+            temporal_dependencies = self.fmea_settings['temporal_dependencies']
 
             # Check if activity has defined temporal dependencies
             if activity in temporal_dependencies:
@@ -768,21 +849,14 @@ class OCELEnhancedFMEA:
 
     def calculate_detectability(self, failure_mode: OCELFailureMode) -> int:
         """Calculate detectability in OCPM context"""
-        detectability = 10  # Start with worst detectability
+        detectability = 10
 
-        # System controls
+        # Use settings for object visibility
+        detectability += self.fmea_settings['object_visibility'].get(failure_mode.object_type, 0)
+
+        # Keep rest of the method same
         if self._has_automated_monitoring(failure_mode.activity):
             detectability -= 3
-
-        # Object visibility
-        object_visibility = {
-            'Trade': -2,  # High visibility
-            'Market': -2,  # Real-time data
-            'Risk': -1,  # Regular monitoring
-            'Settlement': -2,  # Clear checkpoints
-            'Position': -1  # Daily reconciliation
-        }
-        detectability += object_visibility.get(failure_mode.object_type, 0)
 
         # Process controls
         control_points = self._get_control_points(failure_mode.activity)
@@ -790,7 +864,7 @@ class OCELEnhancedFMEA:
 
         # Multi-object detectability
         if len(self._get_object_interactions(failure_mode.activity)) > 1:
-            detectability -= 1  # Easier to detect with multiple object involvement
+            detectability -= 1
 
         return max(detectability, 1)
 
@@ -942,37 +1016,35 @@ class OCELEnhancedFMEA:
 
     def calculate_severity(self, failure_mode: OCELFailureMode) -> int:
         """Calculate severity in OCPM context"""
-        severity = 1
+        try:
+            # Get base severity from settings
+            severity = self.fmea_settings['object_criticality'].get(failure_mode.object_type, 1)
 
-        # Object criticality impact
-        object_criticality = {
-            'Trade': 5,  # Highest criticality - direct business impact
-            'Risk': 4,  # Critical for compliance and risk management
-            'Market': 3,  # Market data and pricing impact
-            'Settlement': 4,  # Financial impact
-            'Position': 3  # Portfolio impact
-        }
-        severity += object_criticality.get(failure_mode.object_type, 1)
+            # Calculate multi-object impact
+            affected_objects = set()
+            events = self.events[self.events['ocel:activity'] == failure_mode.activity]
+            for _, event in events.iterrows():
+                for obj in event.get('ocel:objects', []):
+                    affected_objects.add(obj.get('type'))
 
-        # Multi-object impact
-        affected_objects = set()
-        events = self.events[self.events['ocel:activity'] == failure_mode.activity]
-        for _, event in events.iterrows():
-            for obj in event.get('ocel:objects', []):
-                affected_objects.add(obj.get('type'))
+            # Add severity based on number of affected object types
+            severity += min(len(affected_objects), 3)
 
-        # Add severity based on number of affected object types
-        severity += min(len(affected_objects), 3)
+            # Check if activity is critical (using settings instead of hardcoded values)
+            if failure_mode.activity in self.fmea_settings['critical_activities']:
+                severity += 1
 
-        # Process stage impact
-        if failure_mode.activity in ['Trade Execution', 'Settlement', 'Risk Assessment']:
-            severity += 1
+            # Check for regulatory/compliance impact using keywords from settings
+            if any(keyword in failure_mode.description.lower()
+                   for keyword in self.fmea_settings['regulatory_keywords']):
+                severity += 1
 
-        # Regulatory impact
-        if any(reg in failure_mode.description.lower() for reg in ['regulatory', 'compliance', 'legal']):
-            severity += 1
+            return min(severity, 10)
 
-        return min(severity, 10)
+        except Exception as e:
+            logger.error(f"Error calculating severity: {str(e)}")
+            logger.error(traceback.format_exc())
+            return 5  # Return moderate severity as fallback
 
     def _calculate_cascade_depth(self, failure_mode: OCELFailureMode) -> int:
         """Calculate how deep failures can cascade"""
