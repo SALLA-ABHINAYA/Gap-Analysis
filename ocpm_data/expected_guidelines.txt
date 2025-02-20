@@ -1,0 +1,53 @@
+FX Trade Execution Process Guidelines
+
+1. Pre-Trade Phase
+   a. KYC Check
+      - Verify client identity
+      - Check client's trading limits
+      - Ensure ISDA agreement is in place
+   b. Market Data Validation
+      - Retrieve real-time FX rates
+      - Validate against multiple data sources
+      - Check for any market anomalies
+
+2. Trade Execution Phase
+   a. Order Routing
+      - Select appropriate liquidity provider
+      - Apply best execution rules
+   b. Price Validation
+      - Compare against recent trades
+      - Ensure within acceptable spread
+
+3. Post-Trade Phase
+   a. Trade Confirmation
+      - Generate trade confirmation
+      - Send to client within 15 minutes
+   b. Risk Assessment
+      - Calculate VaR (Value at Risk)
+      - Update position limits
+   c. Regulatory Reporting
+      - Prepare trade report for relevant authorities
+      - Submit within required timeframe
+
+4. Settlement Phase
+   a. Payment Instructions
+      - Generate SWIFT messages
+      - Verify counterparty details
+   b. Reconciliation
+      - Match trade details with counterparty
+      - Resolve any discrepancies within 24 hours
+
+Each step should be completed with appropriate object interactions:
+- Client object must be linked to KYC Check
+- MarketData object must be associated with Market Data Validation
+- Trade object should be created during Order Routing
+- Position object should be updated post Risk Assessment
+
+Time constraints:
+- KYC Check to Trade Execution: Maximum 30 minutes
+- Trade Execution to Confirmation: Maximum 15 minutes
+- Full cycle completion: Within same business day
+
+Compliance requirements:
+- All steps must be logged for audit purposes
+- Any deviation from expected process must be flagged and reported
