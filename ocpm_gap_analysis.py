@@ -16,6 +16,13 @@ from typing import Dict, List, Any, Optional
 from datetime import datetime
 import traceback
 
+
+def datetime_handler(obj):
+    """Handle datetime serialization for JSON"""
+    if hasattr(obj, 'isoformat'):
+        return obj.isoformat()
+    raise TypeError(f"Object of type {type(obj)} is not JSON serializable")
+
 from utils import get_azure_openai_client
 
 # Configure detailed logging
@@ -220,57 +227,87 @@ class OCPMAnalyzer:
             raise
 
     def _analyze_case(self, case: Dict[str, Any]) -> Dict[str, Any]:
-        """Analyze gaps in individual case execution"""
+        """Analyze gaps in individual case execution with structured approach"""
         logger.debug(f"=== Analyzing case {case['case_id']} ===")
-        logger.debug(f"Case details: {json.dumps(case, indent=2, default=str)}")
 
         try:
-            # Construct the prompt
+            # Convert timestamps to string format for JSON serialization
+            activities = case['activities']
+            timestamps = [ts.isoformat() if hasattr(ts, 'isoformat') else str(ts)
+                          for ts in case['timestamps']]
+            object_types = case['object_types']
+
+            # Create analysis prompt with explicit JSON request
             prompt = f"""
-            Analyze process execution gaps using these guidelines:
+            Please analyze this process execution case and provide the gaps analysis in JSON format.
+
+            Guidelines:
             {self.guidelines}
 
-            Actual Execution:
+            Case Details:
             - Case ID: {case['case_id']}
-            - Activities: {case['activities']}
-            - Timestamps: {case['timestamps']}
-            - Object Types: {case['object_types']}
+            - Activities: {activities}
+            - Timestamps: {timestamps}
+            - Object Types: {object_types}
 
-            Identify:
-            1. Missing required steps
-            2. Unexpected activities
-            3. Sequence violations
-            4. Timing violations
-            5. Object interaction issues
-            6. Compliance gaps
-
-            Return JSON with:
+            Return a JSON object with the following structure:
             {{
-                "missing_steps": [],
-                "extra_steps": [],
-                "sequence_issues": [],
-                "timing_violations": [],
-                "object_violations": [],
-                "compliance_gaps": [],
-                "severity_score": 0-100,
-                "recommendations": []
+                "missing_steps": [list of required steps that are missing],
+                "extra_steps": [list of steps that are not in guidelines],
+                "sequence_issues": [
+                    {{
+                        "issue": "description of sequence violation",
+                        "expected_sequence": [expected activity order],
+                        "actual_sequence": [actual activity order]
+                    }}
+                ],
+                "timing_violations": [
+                    {{
+                        "step": "step name",
+                        "expected_time": "expected duration",
+                        "actual_time": "actual duration",
+                        "timestamps": [relevant timestamps]
+                    }}
+                ],
+                "object_violations": [
+                    {{
+                        "step": "step name",
+                        "issue": "description of object violation"
+                    }}
+                ],
+                "compliance_gaps": [
+                    {{
+                        "issue": "description of compliance gap",
+                        "impact": "impact description"
+                    }}
+                ],
+                "severity_score": (numeric 0-100),
+                "recommendations": [list of improvement recommendations]
             }}
             """
-            logger.debug(f"Generated prompt length: {len(prompt)}")
-            logger.debug(f"First 200 chars of prompt: {prompt[:200]}...")
 
-            logger.debug("Calling Azure OpenAI...")
+            logger.debug("Calling Azure OpenAI for analysis...")
             response = self.llm_client.chat.completions.create(
                 model="gpt-4o",
-                messages=[{"role": "user", "content": prompt}],
+                messages=[
+                    {"role": "system",
+                     "content": "You are a process mining expert that analyzes process gaps and returns results in JSON format."},
+                    {"role": "user", "content": prompt}
+                ],
                 temperature=0,
-                max_tokens=1000,
+                max_tokens=2000,
                 response_format={"type": "json_object"}
             )
-            logger.debug(f"Received response from Azure OpenAI")
 
+            # Process and structure the response
             analysis = json.loads(response.choices[0].message.content)
-            logger.debug(f"Parsed analysis result: {json.dumps(analysis, indent=2)}")
+
+            # Add case metadata
+            analysis['case_id'] = case['case_id']
+            analysis['timestamp_range'] = {
+                'start': min(case['timestamps']).isoformat(),
+                'end': max(case['timestamps']).isoformat()
+            }
 
             logger.info(f"Completed analysis for case {case['case_id']}")
             return analysis
@@ -280,7 +317,7 @@ class OCPMAnalyzer:
             logger.error(f"Traceback: {traceback.format_exc()}")
             raise
 
-    def generate_report(self, output_path: str = "gap_analysis.csv") -> pd.DataFrame:
+    def generate_report(self, output_path: str = "ocpm_output/gap_analysis.csv") -> pd.DataFrame:
         """Generate gap analysis report"""
         logger.info(f"=== Generating gap analysis report to {output_path} ===")
 
@@ -309,7 +346,9 @@ class OCPMAnalyzer:
             logger.debug(f"DataFrame columns: {df.columns.tolist()}")
 
             # Ensure output directory exists
-            os.makedirs(os.path.dirname(output_path), exist_ok=True)
+            output_dir = os.path.dirname(output_path)
+            if output_dir:  # Only create directory if path has a directory component
+                os.makedirs(output_dir, exist_ok=True)
 
             # Save to CSV
             logger.debug(f"Saving DataFrame to {output_path}...")
