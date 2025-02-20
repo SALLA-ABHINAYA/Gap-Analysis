@@ -99,6 +99,8 @@ class GapAnalysisUI:
             "Missing & Extra Steps",
             "Sequence Issues",
             "Timing Violations",
+            "Object Violations",
+            "Compliance Gaps",
             "Recommendations"
         ])
 
@@ -141,8 +143,34 @@ class GapAnalysisUI:
                                delta=violation.get('difference', ''))
                 st.divider()
 
-        # Recommendations Tab
+        # Object Violations Tab
         with gap_tabs[3]:
+            st.markdown("##### Object Violations")
+            for violation in eval(case_data['object_violations']):
+                cols = st.columns(2)
+                with cols[0]:
+                    st.markdown(f"**Step**: {violation.get('step', '')}")
+                with cols[1]:
+                    st.error(f"**Issue**: {violation.get('issue', '')}")
+                if violation.get('affected_objects'):
+                    st.write("**Affected Objects:**")
+                    for obj in violation.get('affected_objects', []):
+                        st.warning(f"• {obj}")
+                st.divider()
+
+        # Compliance Gaps Tab
+        with gap_tabs[4]:
+            st.markdown("##### Compliance Gaps")
+            for gap in eval(case_data['compliance_gaps']):
+                cols = st.columns(2)
+                with cols[0]:
+                    st.markdown(f"**Issue**: {gap.get('issue', '')}")
+                with cols[1]:
+                    st.error(f"**Impact**: {gap.get('impact', '')}")
+                st.divider()
+
+        # Recommendations Tab
+        with gap_tabs[5]:
             st.markdown("##### Recommendations")
             for idx, rec in enumerate(eval(case_data['recommendations']), 1):
                 st.info(f"{idx}. {rec}")
