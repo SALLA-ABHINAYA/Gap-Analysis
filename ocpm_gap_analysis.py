@@ -228,6 +228,79 @@ class OCPMAnalyzer:
 
         return ' & '.join(sorted(set(applied_frameworks)))
 
+    def _check_regulatory_sla(self, timestamps: List[str], activities: List[str]) -> List[Dict[str, Any]]:
+        """Analyze regulatory SLA breaches"""
+        sla_breaches = []
+
+        # Convert timestamps to datetime objects
+        ts = [pd.to_datetime(t) for t in timestamps]
+        activity_times = dict(zip(activities, ts))
+
+        # Define regulatory SLAs
+        regulatory_slas = {
+            'Trade Execution': {
+                'regulation': 'MiFID II RTS 2',
+                'requirement': 'Real-time trade transparency',
+                'max_delay': pd.Timedelta(minutes=1)
+            },
+            'Transaction Reporting': {
+                'regulation': 'MiFID II Article 26',
+                'requirement': 'Report by T+1',
+                'max_delay': pd.Timedelta(days=1)
+            },
+            'Trade Confirmation': {
+                'regulation': 'CFTC 1.35',
+                'requirement': 'Trade confirmation timing',
+                'max_delay': pd.Timedelta(minutes=15)
+            },
+            'Position Reconciliation': {
+                'regulation': 'EMIR Article 11',
+                'requirement': 'Daily reconciliation',
+                'max_delay': pd.Timedelta(days=1)
+            },
+            'Risk Assessment': {
+                'regulation': 'Dodd-Frank 165',
+                'requirement': 'Risk reporting deadline',
+                'max_delay': pd.Timedelta(hours=24)
+            }
+        }
+
+        # Check for SLA breaches
+        for activity in activities:
+            base_activity = next((key for key in regulatory_slas.keys() if key in activity), None)
+            if base_activity:
+                sla = regulatory_slas[base_activity]
+
+                # Find next reportable activity
+                reportable_activities = {
+                    'Trade Execution': ['Trade Reporting', 'Regulatory Reporting'],
+                    'Transaction Reporting': ['Report Submission', 'Regulatory Filing'],
+                    'Trade Confirmation': ['Confirmation Sent', 'Confirmation Matching'],
+                    'Position Reconciliation': ['Reconciliation Complete', 'Position Reporting'],
+                    'Risk Assessment': ['Risk Report', 'Risk Disclosure']
+                }
+
+                for report_activity in reportable_activities.get(base_activity, []):
+                    if report_activity in activities:
+                        idx_base = activities.index(activity)
+                        idx_report = activities.index(report_activity)
+
+                        if idx_report > idx_base:
+                            time_taken = ts[idx_report] - ts[idx_base]
+
+                            if time_taken > sla['max_delay']:
+                                sla_breaches.append({
+                                    'regulation': sla['regulation'],
+                                    'sla_requirement': sla['requirement'],
+                                    'activity': f'{base_activity} to {report_activity}',
+                                    'required_time': str(sla['max_delay']),
+                                    'actual_time': str(time_taken),
+                                    'breach_category': 'Regulatory Reporting',
+                                    'impact': f'Late {sla["requirement"].lower()}'
+                                })
+
+        return sla_breaches
+
     def _determine_execution_pattern(self, activities: List[str]) -> str:
         """Analyze process execution pattern"""
         start_indicators = ['Initialize', 'Start', 'Create', 'Begin']
@@ -355,7 +428,7 @@ class OCPMAnalyzer:
             raise
 
     def _analyze_case(self, case: Dict[str, Any]) -> Dict[str, Any]:
-        """Analyze gaps focusing on process compliance and control checks"""
+        """Analyze gaps focusing on regulatory compliance and control requirements"""
         logger.debug(f"=== Analyzing case {case['case_id']} ===")
 
         try:
@@ -364,9 +437,8 @@ class OCPMAnalyzer:
                           for ts in case['timestamps']]
             object_types = case['object_types']
 
-            # Create analysis prompt with generic process focus
             prompt = f"""
-            Analyze this process execution case against established guidelines and control requirements.
+            Analyze this FX trading process case for control and compliance gaps against guidelines.
 
             Process Guidelines:
             {self.guidelines}
@@ -377,80 +449,116 @@ class OCPMAnalyzer:
             - Timestamps: {timestamps}
             - Object Types: {object_types}
 
-            Focus on:
-            1. Pre-execution Controls
-            2. Execution Controls
-            3. Post-execution Controls
-            4. Process Requirements
-            5. Documentation Controls
-            6. Object Lifecycle Controls
+            Analyze for the following specific gaps:
+
+            1. Control Gaps (missing_steps):
+            - Missing mandatory controls (e.g., limit checks, KYC validation)
+            - Missing compliance validations
+            - Missing regulatory reporting controls
+            - Missing risk controls
+
+            2. Unsupported Control Gaps (extra_steps):
+            - Unauthorized control steps
+            - Non-standard compliance checks
+            - Redundant control validations
+            - Unofficial control measures
+
+            3. Control Flow Gaps (sequence_issues):
+            - Pre-trade controls executed post-trade
+            - Risk validations out of sequence
+            - Compliance checks in wrong order
+            - Control dependencies violated
+
+            4. SLA Breaches (timing_violations):
+            - Regulatory reporting deadlines missed
+            - Compliance validation timeframes exceeded
+            - Control execution delays
+            - Risk assessment timing breaches
+
+            5. Object Control Violations (object_violations):
+            - Trade object control violations
+            - Position limit breaches
+            - Client object control gaps
+            - Market data control issues
+
+            6. Compliance Gaps (compliance_gaps):
+            - Direct regulatory violations
+            - Control framework breaches
+            - Compliance rule violations
+            - Regulatory reporting failures
 
             Return a JSON object with:
             {{
                 "missing_steps": [
                     {{
-                        "step": "required step name",
-                        "control_type": "Pre/During/Post-execution",
-                        "process_impact": "description of process impact",
-                        "requirement_source": "relevant guideline section"
+                        "control": "missing control name",
+                        "category": "Pre-trade/Post-trade/Risk/Compliance",
+                        "regulation": "specific regulation requiring control",
+                        "impact": "regulatory/compliance impact",
+                        "risk_rating": "High/Medium/Low"
                     }}
                 ],
                 "extra_steps": [
                     {{
-                        "step": "extra step name",
-                        "risk_assessment": "potential risk introduced",
-                        "control_impact": "impact on control framework"
+                        "control": "unauthorized control step",
+                        "risk": "introduced compliance risk",
+                        "impact": "control framework impact",
+                        "mitigation_required": "True/False"
                     }}
                 ],
                 "sequence_issues": [
                     {{
-                        "issue": "description of sequence violation",
-                        "expected_sequence": ["steps in correct order"],
-                        "actual_sequence": ["actual steps executed"],
-                        "control_framework": "affected control area"
+                        "control_sequence": "affected control sequence",
+                        "expected_order": ["correct control order"],
+                        "actual_order": ["executed control order"],
+                        "compliance_impact": "regulatory impact description"
                     }}
                 ],
                 "timing_violations": [
                     {{
-                        "phase": "process phase name",
-                        "expected_time": "expected timeframe",
-                        "actual_time": "actual duration",
-                        "requirement": "specific timing requirement"
+                        "control_sla": "control or regulatory SLA",
+                        "requirement": "specific timing requirement",
+                        "actual_execution": "actual timing",
+                        "breach_severity": "High/Medium/Low",
+                        "regulatory_impact": "description of regulatory impact"
                     }}
                 ],
                 "object_violations": [
                     {{
-                        "step": "process step name",
-                        "issue": "object interaction violation description",
-                        "affected_objects": ["impacted object types"],
-                        "requirement": "specific requirement violated"
+                        "object_control": "violated object control",
+                        "violation_type": "limit/validation/relationship",
+                        "affected_objects": ["impacted objects"],
+                        "control_requirement": "specific control requirement",
+                        "regulatory_impact": "compliance impact"
                     }}
                 ],
                 "compliance_gaps": [
                     {{
-                        "issue": "gap description",
-                        "impact": "process/control impact",
-                        "framework": "affected guideline area",
-                        "severity": "High/Medium/Low"
+                        "regulation": "specific regulation",
+                        "violation": "detailed violation description",
+                        "control_failure": "associated control failure",
+                        "risk_level": "High/Medium/Low",
+                        "remediation_priority": "1-5 (1 highest)"
                     }}
                 ],
-                "severity_score": "numeric score based on overall impact (0-100)",
+                "severity_score": "numeric score based on control and compliance impact (0-100)",
                 "recommendations": [
                     {{
-                        "item": "recommendation text",
-                        "control_area": "affected area",
-                        "expected_benefit": "expected process improvement"
+                        "control_enhancement": "control improvement recommendation",
+                        "compliance_category": "Regulatory/Control Framework/Risk",
+                        "implementation_urgency": "Immediate/Short-term/Long-term",
+                        "expected_compliance_benefit": "expected regulatory compliance improvement"
                     }}
                 ]
             }}
             """
 
-            logger.debug("Calling Azure OpenAI for process analysis...")
+            logger.debug("Calling Azure OpenAI for control and compliance analysis...")
             response = self.llm_client.chat.completions.create(
                 model="gpt-4o",
                 messages=[
                     {"role": "system",
-                     "content": "You are a process analysis expert specializing in object-centric process mining."},
+                     "content": "You are a financial compliance and control expert focusing on FX trading regulations and controls."},
                     {"role": "user", "content": prompt}
                 ],
                 temperature=0,
@@ -460,7 +568,7 @@ class OCPMAnalyzer:
 
             analysis = json.loads(response.choices[0].message.content)
 
-            # Add case metadata with process context
+            # Add case metadata
             analysis['case_id'] = case['case_id']
             analysis['timestamp_range'] = {
                 'start': min(case['timestamps']).isoformat(),
@@ -468,7 +576,7 @@ class OCPMAnalyzer:
             }
             analysis['process_context'] = self._get_process_context(activities)
 
-            logger.info(f"Completed process analysis for case {case['case_id']}")
+            logger.info(f"Completed control and compliance analysis for case {case['case_id']}")
             return analysis
 
         except Exception as e:

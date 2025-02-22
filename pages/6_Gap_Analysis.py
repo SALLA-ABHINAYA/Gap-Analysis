@@ -34,12 +34,12 @@ class GapAnalysisUI:
     def _get_gap_type_description(self, gap_type: str) -> str:
         """Get description for each gap type"""
         descriptions = {
-            'Missing Steps': 'Required process steps that were not executed in the case',
-            'Extra Steps': 'Additional steps executed that were not in the expected process flow',
-            'Sequence Issues': 'Steps executed in incorrect order compared to guidelines',
-            'Timing Violations': 'Activities that exceeded expected execution time windows',
-            'Object Violations': 'Incorrect object interactions or missing required object relationships',
-            'Compliance Gaps': 'Violations of compliance rules and regulatory requirements'
+            'Control Gaps': 'Missing mandatory controls and compliance requirements in the process',
+            'Unsupported Control Gaps': 'Additional unauthorized or non-compliant control steps',
+            'Control Flow Gaps': 'Control and compliance steps executed out of required sequence',
+            'SLA breach': 'Regulatory and compliance SLA violations',
+            'Object Violations': 'Control violations in object interactions and relationships',
+            'Compliance Gaps': 'Direct violations of compliance rules and regulatory requirements'
         }
         return descriptions.get(gap_type, '')
 
@@ -70,13 +70,22 @@ class GapAnalysisUI:
 
     def _create_gap_type_chart(self, df: pd.DataFrame) -> go.Figure:
         """Create gap type distribution chart"""
+        # Map internal names to display names
+        display_names = {
+            'missing_steps': 'Control Gaps',
+            'extra_steps': 'Unsupported Control Gaps',
+            'sequence_issues': 'Control Flow Gaps',
+            'timing_violations': 'SLA breach',
+            'object_violations': 'Object Violations',
+            'compliance_gaps': 'Compliance Gaps'
+        }
+
+        # Calculate values using internal names
         gap_types = {
-            'Missing Steps': df['missing_steps'].str.len().sum(),
-            'Extra Steps': df['extra_steps'].str.len().sum(),
-            'Sequence Issues': df['sequence_issues'].str.len().sum(),
-            'Timing Violations': df['timing_violations'].str.len().sum(),
-            'Object Violations': df['object_violations'].str.len().sum(),
-            'Compliance Gaps': df['compliance_gaps'].str.len().sum()
+            display_names[k]: df[k].str.len().sum() for k in [
+                'missing_steps', 'extra_steps', 'sequence_issues',
+                'timing_violations', 'object_violations', 'compliance_gaps'
+            ]
         }
 
         fig = go.Figure(data=[
