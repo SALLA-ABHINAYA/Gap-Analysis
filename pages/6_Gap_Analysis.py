@@ -106,8 +106,8 @@ class GapAnalysisUI:
 
         # Tabs for different types of gaps
         gap_tabs = st.tabs([
-            "Missing & Extra Steps",
-            "Sequence Issues",
+            "Control Gaps",
+            "Control Flow Gaps",
             "Timing Violations",
             "Object Violations",
             "Compliance Gaps",
@@ -118,25 +118,25 @@ class GapAnalysisUI:
         with gap_tabs[0]:
             col1, col2 = st.columns(2)
             with col1:
-                st.markdown("##### Missing Steps")
+                st.markdown("##### Control Gaps")
                 for step in eval(case_data['missing_steps']):
                     st.error(f"• {step}")
             with col2:
-                st.markdown("##### Extra Steps")
+                st.markdown("##### Unsupported Control Gaps")
                 for step in eval(case_data['extra_steps']):
                     st.warning(f"• {step}")
 
         # Sequence Issues Tab
         with gap_tabs[1]:
-            st.markdown("##### Sequence Issues")
+            st.markdown("##### Control Flow Gaps")
             for issue in eval(case_data['sequence_issues']):
                 st.markdown(f"**Issue**: {issue.get('issue', '')}")
                 cols = st.columns(2)
                 with cols[0]:
-                    st.info("Expected Sequence:")
+                    st.info("Expected Control Flow:")
                     st.write(' → '.join(issue.get('expected_sequence', [])))
                 with cols[1]:
-                    st.warning("Actual Sequence:")
+                    st.warning("Actual Control Flow:")
                     st.write(' → '.join(issue.get('actual_sequence', [])))
                 st.divider()
 
