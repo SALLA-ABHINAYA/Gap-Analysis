@@ -11,9 +11,8 @@ import json
 import pandas as pd
 from neo4j import GraphDatabase
 import logging
-from pathlib import Path
-from typing import Dict, List, Any, Optional
-from datetime import datetime
+from utils import get_azure_openai_client
+from typing import Dict, List, Any
 import traceback
 
 
@@ -23,9 +22,6 @@ def datetime_handler(obj):
         return obj.isoformat()
     raise TypeError(f"Object of type {type(obj)} is not JSON serializable")
 
-from utils import get_azure_openai_client
-
-# Configure detailed logging
 logging.basicConfig(
     level=logging.DEBUG,  # Changed to DEBUG for maximum detail
     format='%(asctime)s - %(name)s - %(levelname)s - [%(filename)s:%(lineno)d] - %(message)s',
