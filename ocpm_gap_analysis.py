@@ -8,6 +8,8 @@ OCPM Gap Analysis Tool
 
 import os
 import json
+from datetime import datetime
+
 import pandas as pd
 from neo4j import GraphDatabase
 import logging
@@ -102,42 +104,84 @@ class OCPMAnalyzer:
 
             # Create Neo4j schema and load data
             with self.neo4j_driver.session() as session:
-                # First clear existing data
-                session.run("MATCH (n) DETACH DELETE n")
+                # First properly clean up existing data and constraints
+                logger.debug("Cleaning up existing data and constraints...")
+                cleanup_queries = [
+                    "MATCH (n) DETACH DELETE n",  # Delete all nodes and relationships
+                    "DROP CONSTRAINT case_id IF EXISTS",  # Drop existing constraints
+                    "DROP CONSTRAINT event_id IF EXISTS"
+                ]
+                for query in cleanup_queries:
+                    session.run(query)
 
                 # Create constraints
-                session.run("CREATE CONSTRAINT case_id IF NOT EXISTS FOR (c:Case) REQUIRE c.id IS UNIQUE")
-                session.run("CREATE CONSTRAINT event_id IF NOT EXISTS FOR (e:Event) REQUIRE e.id IS UNIQUE")
+                logger.debug("Creating constraints...")
+                constraint_queries = [
+                    "CREATE CONSTRAINT case_id IF NOT EXISTS FOR (c:Case) REQUIRE c.id IS UNIQUE",
+                    "CREATE CONSTRAINT event_id IF NOT EXISTS FOR (e:Event) REQUIRE e.id IS UNIQUE"
+                ]
+                for query in constraint_queries:
+                    session.run(query)
 
-                # Create Cases and Events
-                for event in ocel_data.get('ocel:events', []):
-                    case_id = event.get('ocel:attributes', {}).get('case_id')
-                    if not case_id:
-                        continue
+                # Create Cases and Events using batch processing
+                logger.debug("Creating Cases and Events...")
+                batch_size = 100  # Process in smaller batches
+                events = ocel_data.get('ocel:events', [])
 
-                    # Create Case if not exists
-                    session.run("""
-                        MERGE (c:Case {id: $case_id})
-                        ON CREATE SET c.created_at = datetime()
-                    """, case_id=case_id)
+                for i in range(0, len(events), batch_size):
+                    batch = events[i:i + batch_size]
+                    # Create unique cases first
+                    case_query = """
+                    UNWIND $cases as case_data
+                    MERGE (c:Case {id: case_data.case_id})
+                    ON CREATE SET c.created_at = datetime()
+                    """
+                    case_data = [
+                        {'case_id': event.get('ocel:attributes', {}).get('case_id')}
+                        for event in batch
+                        if event.get('ocel:attributes', {}).get('case_id')
+                    ]
+                    if case_data:
+                        session.run(case_query, cases=case_data)
 
-                    # Create Event
-                    session.run("""
-                        MATCH (c:Case {id: $case_id})
-                        CREATE (e:Event {
-                            id: $event_id,
-                            activity: $activity,
-                            timestamp: datetime($timestamp),
-                            object_type: $object_type
-                        })
-                        CREATE (c)-[:HAS_EVENT]->(e)
-                    """,
-                                case_id=case_id,
-                                event_id=event['ocel:id'],
-                                activity=event['ocel:activity'],
-                                timestamp=event['ocel:timestamp'],
-                                object_type=event.get('ocel:attributes', {}).get('object_type', 'Unknown')
-                                )
+                    # Then create events with relationships
+                    event_query = """
+                    UNWIND $events as event_data
+                    MATCH (c:Case {id: event_data.case_id})
+                    CREATE (e:Event {
+                        id: event_data.event_id,
+                        activity: event_data.activity,
+                        timestamp: datetime(event_data.timestamp),
+                        object_type: event_data.object_type
+                    })
+                    CREATE (c)-[:HAS_EVENT]->(e)
+                    """
+                    event_data = [
+                        {
+                            'case_id': event.get('ocel:attributes', {}).get('case_id'),
+                            'event_id': event['ocel:id'],
+                            'activity': event['ocel:activity'],
+                            'timestamp': event['ocel:timestamp'],
+                            'object_type': event.get('ocel:attributes', {}).get('object_type', 'Unknown')
+                        }
+                        for event in batch
+                        if event.get('ocel:attributes', {}).get('case_id')
+                    ]
+                    if event_data:
+                        session.run(event_query, events=event_data)
+
+                    logger.debug(f"Processed batch of {len(batch)} events")
+
+                # Verify data loading
+                verification_query = """
+                MATCH (c:Case)
+                WITH count(c) as case_count
+                MATCH (e:Event)
+                WITH case_count, count(e) as event_count
+                RETURN case_count, event_count
+                """
+                result = session.run(verification_query).single()
+                logger.info(f"Loaded {result['case_count']} cases and {result['event_count']} events")
 
             logger.info("Neo4j schema initialized and data loaded successfully")
 
@@ -161,6 +205,93 @@ class OCPMAnalyzer:
             logger.error(f"Traceback: {traceback.format_exc()}")
             raise
 
+    def _determine_control_framework(self, activities: List[str]) -> str:
+        """Determine appropriate control framework based on activities"""
+        control_frameworks = {
+            'Data Controls': ['Validation', 'Check', 'Verify', 'Audit'],
+            'Process Controls': ['Execute', 'Process', 'Perform', 'Handle'],
+            'System Controls': ['Calculate', 'Generate', 'Compute', 'Route'],
+            'User Controls': ['Approve', 'Review', 'Authorize', 'Decide'],
+            'Integration Controls': ['Connect', 'Link', 'Interface', 'Transfer'],
+            'Compliance Controls': ['Monitor', 'Report', 'Track', 'Log']
+        }
+
+        activity_str = ' '.join(activities).upper()
+        applied_frameworks = []
+
+        for framework, indicators in control_frameworks.items():
+            if any(ind.upper() in activity_str for ind in indicators):
+                applied_frameworks.append(framework)
+
+        if not applied_frameworks:
+            return "Basic Process Controls"
+
+        return ' & '.join(sorted(set(applied_frameworks)))
+
+    def _determine_execution_pattern(self, activities: List[str]) -> str:
+        """Analyze process execution pattern"""
+        start_indicators = ['Initialize', 'Start', 'Create', 'Begin']
+        middle_indicators = ['Process', 'Execute', 'Handle', 'Perform']
+        end_indicators = ['Complete', 'Finish', 'Close', 'End']
+
+        activity_str = ' '.join(activities).upper()
+        patterns = []
+
+        if any(ind.upper() in activity_str for ind in start_indicators):
+            patterns.append('Initialization')
+        if any(ind.upper() in activity_str for ind in middle_indicators):
+            patterns.append('Processing')
+        if any(ind.upper() in activity_str for ind in end_indicators):
+            patterns.append('Completion')
+
+        if len(patterns) == 3:
+            return "Complete Process Flow"
+        elif len(patterns) == 0:
+            return "Unknown Pattern"
+        else:
+            return ' & '.join(patterns)
+
+    def _determine_process_type(self, activities: List[str], object_types: List[str]) -> str:
+        """Determine process type based on activities and objects"""
+        # Count unique object types
+        unique_objects = set(object_types)
+
+        # Analyze activity complexity
+        activity_complexity = len(set(activities))
+
+        if len(unique_objects) > 3:
+            if activity_complexity > 10:
+                return "Complex Multi-Object Process"
+            return "Standard Multi-Object Process"
+        elif len(unique_objects) > 1:
+            if activity_complexity > 5:
+                return "Complex Object Interaction"
+            return "Simple Object Interaction"
+        else:
+            if activity_complexity > 3:
+                return "Complex Single Object"
+            return "Simple Single Object"
+
+    def _extract_object_types(self, activities: List[str]) -> List[str]:
+        """Extract potential object types from activity names"""
+        object_types = set()
+        for activity in activities:
+            # Split activity name and look for potential object names
+            words = activity.split()
+            # Simple heuristic: words starting with capital letters are likely objects
+            objects = [w for w in words if w[0].isupper() and len(w) > 2]
+            object_types.update(objects)
+        return list(object_types)
+
+    def _get_process_context(self, activities: List[str]) -> Dict[str, str]:
+        """Get comprehensive process context"""
+        return {
+            'control_framework': self._determine_control_framework(activities),
+            'execution_pattern': self._determine_execution_pattern(activities),
+            'process_type': self._determine_process_type(activities,
+                                                         self._extract_object_types(activities))
+        }
+
     def _load_guidelines(self, path: str) -> str:
         """Load process guidelines from file"""
         logger.debug(f"=== Loading guidelines from {path} ===")
@@ -169,7 +300,8 @@ class OCPMAnalyzer:
                 logger.error(f"Guidelines file not found: {path}")
                 raise FileNotFoundError(f"Guidelines file not found: {path}")
 
-            with open(path, 'r') as f:
+            # Changed to use utf-8 encoding with error handling
+            with open(path, 'r', encoding='utf-8', errors='replace') as f:
                 guidelines = f.read()
 
             if not guidelines.strip():
@@ -223,21 +355,20 @@ class OCPMAnalyzer:
             raise
 
     def _analyze_case(self, case: Dict[str, Any]) -> Dict[str, Any]:
-        """Analyze gaps in individual case execution with structured approach"""
+        """Analyze gaps focusing on process compliance and control checks"""
         logger.debug(f"=== Analyzing case {case['case_id']} ===")
 
         try:
-            # Convert timestamps to string format for JSON serialization
             activities = case['activities']
             timestamps = [ts.isoformat() if hasattr(ts, 'isoformat') else str(ts)
                           for ts in case['timestamps']]
             object_types = case['object_types']
 
-            # Create analysis prompt with explicit JSON request
+            # Create analysis prompt with generic process focus
             prompt = f"""
-            Please analyze this process execution case and provide the gaps analysis in JSON format.
+            Analyze this process execution case against established guidelines and control requirements.
 
-            Guidelines:
+            Process Guidelines:
             {self.guidelines}
 
             Case Details:
@@ -246,48 +377,80 @@ class OCPMAnalyzer:
             - Timestamps: {timestamps}
             - Object Types: {object_types}
 
-            Return a JSON object with the following structure:
+            Focus on:
+            1. Pre-execution Controls
+            2. Execution Controls
+            3. Post-execution Controls
+            4. Process Requirements
+            5. Documentation Controls
+            6. Object Lifecycle Controls
+
+            Return a JSON object with:
             {{
-                "missing_steps": [list of required steps that are missing],
-                "extra_steps": [list of steps that are not in guidelines],
+                "missing_steps": [
+                    {{
+                        "step": "required step name",
+                        "control_type": "Pre/During/Post-execution",
+                        "process_impact": "description of process impact",
+                        "requirement_source": "relevant guideline section"
+                    }}
+                ],
+                "extra_steps": [
+                    {{
+                        "step": "extra step name",
+                        "risk_assessment": "potential risk introduced",
+                        "control_impact": "impact on control framework"
+                    }}
+                ],
                 "sequence_issues": [
                     {{
                         "issue": "description of sequence violation",
-                        "expected_sequence": [expected activity order],
-                        "actual_sequence": [actual activity order]
+                        "expected_sequence": ["steps in correct order"],
+                        "actual_sequence": ["actual steps executed"],
+                        "control_framework": "affected control area"
                     }}
                 ],
                 "timing_violations": [
                     {{
-                        "step": "step name",
-                        "expected_time": "expected duration",
+                        "phase": "process phase name",
+                        "expected_time": "expected timeframe",
                         "actual_time": "actual duration",
-                        "timestamps": [relevant timestamps]
+                        "requirement": "specific timing requirement"
                     }}
                 ],
                 "object_violations": [
                     {{
-                        "step": "step name",
-                        "issue": "description of object violation"
+                        "step": "process step name",
+                        "issue": "object interaction violation description",
+                        "affected_objects": ["impacted object types"],
+                        "requirement": "specific requirement violated"
                     }}
                 ],
                 "compliance_gaps": [
                     {{
-                        "issue": "description of compliance gap",
-                        "impact": "impact description"
+                        "issue": "gap description",
+                        "impact": "process/control impact",
+                        "framework": "affected guideline area",
+                        "severity": "High/Medium/Low"
                     }}
                 ],
-                "severity_score": (numeric 0-100),
-                "recommendations": [list of improvement recommendations]
+                "severity_score": "numeric score based on overall impact (0-100)",
+                "recommendations": [
+                    {{
+                        "item": "recommendation text",
+                        "control_area": "affected area",
+                        "expected_benefit": "expected process improvement"
+                    }}
+                ]
             }}
             """
 
-            logger.debug("Calling Azure OpenAI for analysis...")
+            logger.debug("Calling Azure OpenAI for process analysis...")
             response = self.llm_client.chat.completions.create(
                 model="gpt-4o",
                 messages=[
                     {"role": "system",
-                     "content": "You are a process mining expert that analyzes process gaps and returns results in JSON format."},
+                     "content": "You are a process analysis expert specializing in object-centric process mining."},
                     {"role": "user", "content": prompt}
                 ],
                 temperature=0,
@@ -295,22 +458,22 @@ class OCPMAnalyzer:
                 response_format={"type": "json_object"}
             )
 
-            # Process and structure the response
             analysis = json.loads(response.choices[0].message.content)
 
-            # Add case metadata
+            # Add case metadata with process context
             analysis['case_id'] = case['case_id']
             analysis['timestamp_range'] = {
                 'start': min(case['timestamps']).isoformat(),
                 'end': max(case['timestamps']).isoformat()
             }
+            analysis['process_context'] = self._get_process_context(activities)
 
-            logger.info(f"Completed analysis for case {case['case_id']}")
+            logger.info(f"Completed process analysis for case {case['case_id']}")
             return analysis
 
         except Exception as e:
             logger.error(f"Error analyzing case {case['case_id']}: {str(e)}")
-            logger.error(f"Traceback: {traceback.format_exc()}")
+            logger.error(traceback.format_exc())
             raise
 
     def generate_report(self, output_path: str = "ocpm_output/gap_analysis.csv") -> pd.DataFrame:
