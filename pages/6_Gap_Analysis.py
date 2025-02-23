@@ -1,7 +1,9 @@
 # pages/6_Gap_Analysis.py
+import json
 import os
+import traceback
 from collections import defaultdict
-from typing import List, Dict
+from typing import List, Dict, Tuple, Any
 
 import streamlit as st
 import pandas as pd
@@ -31,13 +33,104 @@ class GapAnalysisUI:
             st.error("Please run gap analysis first")
             return pd.DataFrame()
 
+    def _check_sla_breaches(self, timestamps: List[str], activities: List[str], object_types: List[str]) -> List[
+        Dict[str, Any]]:
+        """Analyze SLA breaches for any process type"""
+        sla_breaches = []
+
+        # Convert timestamps to datetime objects
+        ts = [pd.to_datetime(t) for t in timestamps]
+        activity_times = dict(zip(activities, ts))
+
+        # Get SLA definitions based on object types
+        sla_requirements = self._get_sla_requirements(object_types)
+
+        # Check each activity pair for SLA breaches
+        for i in range(len(activities) - 1):
+            start_activity = activities[i]
+            start_time = ts[i]
+
+            for j in range(i + 1, len(activities)):
+                end_activity = activities[j]
+                end_time = ts[j]
+
+                # Check if this activity pair has SLA requirements
+                activity_pair = (start_activity, end_activity)
+                if activity_pair in sla_requirements:
+                    sla = sla_requirements[activity_pair]
+                    time_taken = end_time - start_time
+
+                    if time_taken > sla['max_duration']:
+                        sla_breaches.append({
+                            'start_activity': start_activity,
+                            'end_activity': end_activity,
+                            'requirement_type': sla['type'],
+                            'requirement_source': sla['source'],
+                            'required_duration': str(sla['max_duration']),
+                            'actual_duration': str(time_taken),
+                            'object_types': sla['affected_objects'],
+                            'impact': sla['breach_impact']
+                        })
+
+        return sla_breaches
+
+    def _get_sla_requirements(self, object_types: List[str]) -> Dict[Tuple[str, str], Dict[str, Any]]:
+        """Get SLA requirements based on object types"""
+        # Read SLA requirements from OCEL model
+        sla_requirements = {}
+
+        try:
+            with open('ocpm_output/output_ocel.json', 'r') as f:
+                ocel_model = json.load(f)
+
+            # Extract SLA requirements for each object type
+            for obj_type in object_types:
+                if obj_type in ocel_model:
+                    obj_info = ocel_model[obj_type]
+                    activities = obj_info.get('activities', [])
+
+                    # For each sequential pair of activities
+                    for i in range(len(activities) - 1):
+                        activity_pair = (activities[i], activities[i + 1])
+
+                        # Define SLA based on activity relationships
+                        sla_requirements[activity_pair] = {
+                            'type': 'Business Process SLA',
+                            'source': f'{obj_type} Process Requirements',
+                            'max_duration': pd.Timedelta(hours=24),  # Default
+                            'affected_objects': [obj_type],
+                            'breach_impact': f'Process delay in {obj_type} lifecycle'
+                        }
+
+                    # Check for inter-object SLAs
+                    relationships = obj_info.get('relationships', [])
+                    for rel_obj in relationships:
+                        if rel_obj in ocel_model:
+                            rel_activities = ocel_model[rel_obj].get('activities', [])
+                            for act1 in activities:
+                                for act2 in rel_activities:
+                                    activity_pair = (act1, act2)
+                                    sla_requirements[activity_pair] = {
+                                        'type': 'Object Interaction SLA',
+                                        'source': f'{obj_type}-{rel_obj} Interaction',
+                                        'max_duration': pd.Timedelta(hours=48),  # Default
+                                        'affected_objects': [obj_type, rel_obj],
+                                        'breach_impact': f'Delayed interaction between {obj_type} and {rel_obj}'
+                                    }
+
+        except Exception as e:
+            logger.error(f"Error loading SLA requirements: {str(e)}")
+            logger.error(traceback.format_exc())
+
+        return sla_requirements
+
     def _get_gap_type_description(self, gap_type: str) -> str:
         """Get description for each gap type"""
         descriptions = {
             'Control Gaps': 'Missing mandatory controls and compliance requirements in the process',
             'Unsupported Control Gaps': 'Additional unauthorized or non-compliant control steps',
             'Control Flow Gaps': 'Control and compliance steps executed out of required sequence',
-            'SLA breach': 'Regulatory and compliance SLA violations',
+            'SLA Breaches': 'Regulatory and business SLA requirement violations',  # Updated description
             'Object Violations': 'Control violations in object interactions and relationships',
             'Compliance Gaps': 'Direct violations of compliance rules and regulatory requirements'
         }
@@ -70,22 +163,21 @@ class GapAnalysisUI:
 
     def _create_gap_type_chart(self, df: pd.DataFrame) -> go.Figure:
         """Create gap type distribution chart"""
-        # Map internal names to display names
-        display_names = {
+        # Map internal column names to display labels
+        column_labels = {
             'missing_steps': 'Control Gaps',
             'extra_steps': 'Unsupported Control Gaps',
             'sequence_issues': 'Control Flow Gaps',
-            'timing_violations': 'SLA breach',
+            'timing_violations': 'SLA Breaches',  # Changed from "timing_violations" display label
             'object_violations': 'Object Violations',
             'compliance_gaps': 'Compliance Gaps'
         }
 
-        # Calculate values using internal names
+        # Calculate values using internal column names but display with new labels
         gap_types = {
-            display_names[k]: df[k].str.len().sum() for k in [
-                'missing_steps', 'extra_steps', 'sequence_issues',
-                'timing_violations', 'object_violations', 'compliance_gaps'
-            ]
+            column_labels[col]: df[col].str.len().sum()
+            for col in ['missing_steps', 'extra_steps', 'sequence_issues',
+                        'timing_violations', 'object_violations', 'compliance_gaps']
         }
 
         fig = go.Figure(data=[
@@ -104,6 +196,19 @@ class GapAnalysisUI:
 
         return fig
 
+    def _parse_time_value(self, time_str: str) -> float:
+        """Parse time string to numeric value in minutes"""
+        try:
+            if 'minutes' in time_str.lower():
+                return float(time_str.lower().replace('minutes', '').strip())
+            elif 'hours' in time_str.lower():
+                return float(time_str.lower().replace('hours', '').strip()) * 60
+            elif 'business day' in time_str.lower():
+                return 8 * 60  # Convert business day to minutes
+            return None
+        except (ValueError, AttributeError):
+            return None
+
     def display_case_details(self, case_data: pd.Series):
         """Display detailed analysis for a case"""
         st.subheader(f"Case Analysis: {case_data['case_id']}")
@@ -117,7 +222,7 @@ class GapAnalysisUI:
         gap_tabs = st.tabs([
             "Control Gaps",
             "Control Flow Gaps",
-            "Timing Violations",
+            "SLA Breaches",
             "Object Violations",
             "Compliance Gaps",
             "Recommendations"
@@ -151,31 +256,73 @@ class GapAnalysisUI:
 
         # Timing Violations Tab
         with gap_tabs[2]:
-            st.markdown("##### Timing Violations")
+            st.markdown("##### SLA Breaches")
             for violation in eval(case_data['timing_violations']):
+                # Phase header
                 st.markdown(f"**Phase**: {violation.get('phase', '')}")
+
                 cols = st.columns(3)
-                cols[0].metric("Expected", violation.get('expected_time', ''))
-                cols[1].metric("Actual", violation.get('actual_time', ''))
-                cols[2].metric("Status", "Delayed" if violation.get('actual_time', '') > violation.get('expected_time',
-                                                                                                       '') else "On Time",
-                               delta=violation.get('difference', ''))
+
+                # Expected column
+                expected_val = violation.get('expected_time', '')
+                cols[0].markdown("Expected")
+                cols[0].markdown(f"### {expected_val}")
+
+                # Actual column
+                actual_val = violation.get('actual_time', '')
+                cols[1].markdown("Actual")
+                cols[1].markdown(f"### {actual_val}")
+
+                # Status column with validation
+                is_delayed = False
+                if 'exceeded by' in actual_val.lower():
+                    is_delayed = True
+                elif 'minute' in actual_val.lower() and 'minute' in expected_val.lower():
+                    try:
+                        actual_mins = float(actual_val.split()[0])
+                        max_mins = float(expected_val.split()[-2])
+                        is_delayed = actual_mins > max_mins
+                    except (ValueError, IndexError):
+                        is_delayed = False
+
+                status = "Delayed" if is_delayed else "On Time"
+                cols[2].markdown("Status")
+                cols[2].markdown(f"### {status}")
+
                 st.divider()
 
         # Object Violations Tab
-        with gap_tabs[3]:
-            st.markdown("##### Object Violations")
-            for violation in eval(case_data['object_violations']):
-                cols = st.columns(2)
-                with cols[0]:
-                    st.markdown(f"**Step**: {violation.get('step', '')}")
-                with cols[1]:
-                    st.error(f"**Issue**: {violation.get('issue', '')}")
-                if violation.get('affected_objects'):
-                    st.write("**Affected Objects:**")
-                    for obj in violation.get('affected_objects', []):
-                        st.warning(f"• {obj}")
-                st.divider()
+        with gap_tabs[3]:  # Index 3 for SLA Breaches tab
+            st.markdown("##### Regulatory & Compliance SLA Breaches")
+            for breach in eval(case_data['timing_violations']):  # Still using timing_violations column
+                with st.expander(f"**{breach.get('requirement_type', 'SLA Breach')}**"):
+                    col1, col2 = st.columns(2)
+
+                    with col1:
+                        st.markdown("**Regulatory Context**")
+                        st.write(f"Requirement Source: {breach.get('requirement_source', 'N/A')}")
+                        st.write(f"Affected Objects: {', '.join(breach.get('object_types', []))}")
+                        st.write(f"Impact Category: {breach.get('impact_category', 'N/A')}")
+
+                    with col2:
+                        st.markdown("**Breach Details**")
+                        st.write(f"Start Activity: {breach.get('start_activity', 'N/A')}")
+                        st.write(f"End Activity: {breach.get('end_activity', 'N/A')}")
+                        st.metric(
+                            "Time Requirements",
+                            f"Required: {breach.get('required_duration', 'N/A')}",
+                            f"Actual: {breach.get('actual_duration', 'N/A')}"
+                        )
+
+                    st.markdown("**Impact Analysis**")
+                    st.warning(breach.get('impact', 'No impact description available'))
+
+                    if breach.get('remediation_steps'):
+                        st.markdown("**Remediation Steps**")
+                        for step in breach['remediation_steps']:
+                            st.write(f"• {step}")
+
+                    st.divider()
 
         # Compliance Gaps Tab
         with gap_tabs[4]:

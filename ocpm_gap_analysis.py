@@ -14,7 +14,7 @@ import pandas as pd
 from neo4j import GraphDatabase
 import logging
 from utils import get_azure_openai_client
-from typing import Dict, List, Any
+from typing import Dict, List, Any, Tuple
 import traceback
 
 
@@ -204,6 +204,39 @@ class OCPMAnalyzer:
             logger.error(f"Neo4j connection test failed: {str(e)}")
             logger.error(f"Traceback: {traceback.format_exc()}")
             raise
+
+    def _validate_sla_breach(self, expected: str, actual: str) -> Tuple[bool, str]:
+        """
+        Compare expected vs actual time values to determine SLA breach
+        Returns: (is_breached: bool, status: str)
+        """
+
+        def parse_duration(time_str: str) -> float:
+            # Convert everything to minutes for comparison
+            try:
+                if isinstance(time_str, (int, float)):
+                    return float(time_str)
+
+                time_str = time_str.lower().strip()
+                if 'minute' in time_str:
+                    return float(time_str.split()[0])
+                elif 'hour' in time_str:
+                    return float(time_str.split()[0]) * 60
+                elif 'business day' in time_str:
+                    return 8 * 60  # business day = 8 hours = 480 minutes
+                elif 'day' in time_str:
+                    return 24 * 60
+                return float(time_str.split()[0])  # Try parsing first number
+            except (ValueError, IndexError, AttributeError):
+                return 0
+
+        expected_mins = parse_duration(expected)
+        actual_mins = parse_duration(actual)
+
+        is_breached = actual_mins > expected_mins
+        status = "Delayed" if is_breached else "On Time"
+
+        return is_breached, status
 
     def _determine_control_framework(self, activities: List[str]) -> str:
         """Determine appropriate control framework based on activities"""
@@ -470,10 +503,14 @@ class OCPMAnalyzer:
             - Control dependencies violated
 
             4. SLA Breaches (timing_violations):
-            - Regulatory reporting deadlines missed
-            - Compliance validation timeframes exceeded
-            - Control execution delays
-            - Risk assessment timing breaches
+            - Process lifecycle SLA requirements
+            - Object interaction timing requirements
+            - Business process timing constraints
+            - Cross-object timing dependencies
+            - Process completion requirements
+            - Inter-activity timing rules
+            - Process stage timing requirements
+            - Object state transition timing
 
             5. Object Control Violations (object_violations):
             - Trade object control violations
@@ -567,6 +604,21 @@ class OCPMAnalyzer:
             )
 
             analysis = json.loads(response.choices[0].message.content)
+
+            # Add SLA breach validation
+            if 'timing_violations' in analysis:
+                timing_violations = []
+                for violation in analysis['timing_violations']:
+                    # Structure timing violation with proper phase and time information
+                    formatted_violation = {
+                        'phase': violation.get('control_sla', '').split(' - ')[0],
+                        'expected_time': violation.get('requirement', 'Maximum 30 minutes'),
+                        'actual_time': violation.get('actual_execution', ''),
+                        'difference': violation.get('difference', '')
+                    }
+                    timing_violations.append(formatted_violation)
+
+                analysis['timing_violations'] = timing_violations
 
             # Add case metadata
             analysis['case_id'] = case['case_id']
