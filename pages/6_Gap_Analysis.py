@@ -292,37 +292,35 @@ class GapAnalysisUI:
                 st.divider()
 
         # Object Violations Tab
-        with gap_tabs[3]:  # Index 3 for SLA Breaches tab
-            st.markdown("##### Regulatory & Compliance SLA Breaches")
-            for breach in eval(case_data['timing_violations']):  # Still using timing_violations column
-                with st.expander(f"**{breach.get('requirement_type', 'SLA Breach')}**"):
-                    col1, col2 = st.columns(2)
+        # Object Violations Tab
+        with gap_tabs[3]:
+            st.markdown("##### Object Violations")
+            violations = eval(case_data['object_violations'])
+            if violations:
+                for violation in violations:
+                    with st.expander(f"**{violation.get('object_control', 'Object Control Violation')}**"):
+                        col1, col2 = st.columns(2)
 
-                    with col1:
-                        st.markdown("**Regulatory Context**")
-                        st.write(f"Requirement Source: {breach.get('requirement_source', 'N/A')}")
-                        st.write(f"Affected Objects: {', '.join(breach.get('object_types', []))}")
-                        st.write(f"Impact Category: {breach.get('impact_category', 'N/A')}")
+                        with col1:
+                            st.markdown("**Violation Details**")
+                            st.write(f"Type: {violation.get('violation_type', 'N/A')}")
+                            st.write(f"Affected Objects: {', '.join(violation.get('affected_objects', ['N/A']))}")
 
-                    with col2:
-                        st.markdown("**Breach Details**")
-                        st.write(f"Start Activity: {breach.get('start_activity', 'N/A')}")
-                        st.write(f"End Activity: {breach.get('end_activity', 'N/A')}")
-                        st.metric(
-                            "Time Requirements",
-                            f"Required: {breach.get('required_duration', 'N/A')}",
-                            f"Actual: {breach.get('actual_duration', 'N/A')}"
-                        )
+                        with col2:
+                            st.markdown("**Control Information**")
+                            st.write(f"Requirement: {violation.get('control_requirement', 'N/A')}")
 
-                    st.markdown("**Impact Analysis**")
-                    st.warning(breach.get('impact', 'No impact description available'))
+                        st.markdown("**Regulatory Impact**")
+                        st.warning(violation.get('regulatory_impact', 'No impact description available'))
 
-                    if breach.get('remediation_steps'):
-                        st.markdown("**Remediation Steps**")
-                        for step in breach['remediation_steps']:
-                            st.write(f"• {step}")
+                        if violation.get('remediation_steps'):
+                            st.markdown("**Remediation Steps**")
+                            for step in violation['remediation_steps']:
+                                st.write(f"• {step}")
 
-                    st.divider()
+                        st.divider()
+            else:
+                st.info("No object violations detected")
 
         # Compliance Gaps Tab
         with gap_tabs[4]:
