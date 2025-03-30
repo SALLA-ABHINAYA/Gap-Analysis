@@ -13,6 +13,7 @@ import json
 
 
 from azure_processor import process_log_file
+from constants import OBJECT_TYPES
 from utils import get_azure_openai_client
 
 # Add this at the start of your script, before any other imports
@@ -287,39 +288,13 @@ class OCPMAnalyzer:
         """Return default object types"""
         print("Using default object types")
         return {
-            'Trade': ObjectType(
-                name='Trade',
-                activities=[
-                    'Trade Initiated', 'Trade Executed', 'Trade Allocated',
-                    'Trade Settled', 'Trade Canceled'
-                ],
-                attributes=['currency_pair', 'notional_amount'],
-                relationships=['Market', 'Risk', 'Settlement']
-            ),
-            'Market': ObjectType(
-                name='Market',
-                activities=[
-                    'Trade Executed', 'Quote Requested', 'Quote Provided'
-                ],
-                attributes=['currency_pair'],
-                relationships=['Trade']
-            ),
-            'Risk': ObjectType(
-                name='Risk',
-                activities=[
-                    'Trade Allocated', 'Risk Assessment'
-                ],
-                attributes=['risk_score'],
-                relationships=['Trade', 'Settlement']
-            ),
-            'Settlement': ObjectType(
-                name='Settlement',
-                activities=[
-                    'Trade Settled', 'Position Reconciliation'
-                ],
-                attributes=['settlement_amount'],
-                relationships=['Trade', 'Risk']
+            obj_name: ObjectType(
+                name=obj_name,
+                activities=obj_data['activities'],
+                attributes=obj_data['attributes'],
+                relationships=obj_data['relationships']
             )
+            for obj_name, obj_data in OBJECT_TYPES.items()
         }
 
     def _create_activity_mapping(self) -> Dict[str, List[str]]:

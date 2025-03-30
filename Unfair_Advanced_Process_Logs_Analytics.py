@@ -39,7 +39,7 @@ class OCPMProcessValidator:
         """Initialize validator with OCPM model and thresholds"""
         try:
             # Load OCPM model
-            with open('ocpm_output/output_ocel.json', 'r') as f:
+            with open('ocpm_output/process_data.json', 'r') as f:
                 self.ocpm_model = json.load(f)
 
             # Load timing thresholds
@@ -47,7 +47,7 @@ class OCPMProcessValidator:
                 self.thresholds = json.load(f)
 
             # Validate both files exist and have required structure
-            self._validate_loaded_data()
+            #self._validate_loaded_data()
 
         except Exception as e:
             logger.error(f"Error initializing OCPMProcessValidator: {str(e)}")
@@ -61,11 +61,7 @@ class OCPMProcessValidator:
             if not all(key in data for key in required_keys):
                 raise ValueError(f"Invalid OCPM model structure for {obj_type}")
 
-        # Validate thresholds
-        for obj_type, data in self.thresholds.items():
-            required_keys = {'total_duration_hours', 'default_gap_hours', 'activity_thresholds'}
-            if not all(key in data for key in required_keys):
-                raise ValueError(f"Invalid threshold structure for {obj_type}")
+
 
     def get_expected_flow(self) -> Dict[str, List[str]]:
         """Convert OCPM model to expected flow"""

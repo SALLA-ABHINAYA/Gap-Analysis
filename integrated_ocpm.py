@@ -13,6 +13,8 @@ import json
 from pathlib import Path
 import traceback
 
+from constants import OBJECT_TYPES
+
 
 @dataclass
 class ObjectType:
@@ -64,33 +66,18 @@ class IntegratedOCPMAnalyzer:
 
         return df
 
+    from constants import OBJECT_TYPES
+
     def _initialize_object_types(self) -> Dict[str, ObjectType]:
-        """Initialize predefined object types with enhanced attributes"""
+        """Initialize object types from constants"""
         return {
-            'Trade': ObjectType(
-                name='Trade',
-                activities=['Trade Initiated', 'Trade Executed', 'Trade Allocated', 'Trade Settled'],
-                attributes=['currency_pair', 'notional_amount', 'trade_type'],
-                relationships=['Market', 'Risk', 'Settlement']
-            ),
-            'Market': ObjectType(
-                name='Market',
-                activities=['Quote Requested', 'Quote Provided', 'Market Analysis'],
-                attributes=['market_condition', 'volatility'],
-                relationships=['Trade']
-            ),
-            'Risk': ObjectType(
-                name='Risk',
-                activities=['Risk Assessment', 'Limit Check', 'Exposure Analysis'],
-                attributes=['risk_score', 'exposure_level'],
-                relationships=['Trade', 'Settlement']
-            ),
-            'Settlement': ObjectType(
-                name='Settlement',
-                activities=['Settlement Processing', 'Position Reconciliation'],
-                attributes=['settlement_amount', 'settlement_status'],
-                relationships=['Trade', 'Risk']
+            obj_name: ObjectType(
+                name=obj_name,
+                activities=obj_data['activities'],
+                attributes=obj_data['attributes'],
+                relationships=obj_data['relationships']
             )
+            for obj_name, obj_data in OBJECT_TYPES.items()
         }
 
     def _create_activity_mapping(self) -> Dict[str, List[str]]:
