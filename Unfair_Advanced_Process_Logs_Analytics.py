@@ -66,7 +66,7 @@ class OCPMProcessValidator:
     def get_expected_flow(self) -> Dict[str, List[str]]:
         """Convert OCPM model to expected flow"""
         return {
-            obj_type: data['activities']
+            obj_type: data['activity']
             for obj_type, data in self.ocpm_model.items()
         }
 
