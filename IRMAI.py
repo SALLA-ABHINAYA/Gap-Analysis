@@ -1260,7 +1260,7 @@ def main():
         layout="wide"
     )
 
-    delete_all_files()
+    #delete_all_files()
 
 
 if __name__ == "__main__":
