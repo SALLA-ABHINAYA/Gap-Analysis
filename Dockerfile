@@ -13,11 +13,6 @@ RUN mkdir -p /code/temp
 
 RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
 
-RUN <<EOF
-python -m spacy download en_core_web_sm
-python -m spacy download en_core_web_lg
-EOF
-
 ENV AZURE_FILE_PATH=/mnt/azure/graphviz-12.2.0.zip
 
 COPY . .

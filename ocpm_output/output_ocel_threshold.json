@@ -1,0 +1,156 @@
+{
+  "Trade": {
+    "total_duration_hours": 6,
+    "default_gap_hours": 0.5,
+    "activity_thresholds": {
+      "Trade Initiated": {
+        "max_duration_hours": 0.5,
+        "max_gap_after_hours": 0.5
+      },
+      "Trade Execution": {
+        "max_duration_hours": 0.5,
+        "max_gap_after_hours": 0.5
+      },
+      "Trade Validation": {
+        "max_duration_hours": 1,
+        "max_gap_after_hours": 0.5
+      },
+      "Trade Confirmation": {
+        "max_duration_hours": 0.5,
+        "max_gap_after_hours": 0.5
+      },
+      "Trade Matching": {
+        "max_duration_hours": 1,
+        "max_gap_after_hours": 0.5
+      },
+      "Trade Reconciliation": {
+        "max_duration_hours": 1,
+        "max_gap_after_hours": 0.5
+      },
+      "Final Settlement": {
+        "max_duration_hours": 1.5,
+        "max_gap_after_hours": 1
+      },
+      "Trade Transparency Assessment": {
+        "max_duration_hours": 1,
+        "max_gap_after_hours": 0.5
+      }
+    }
+  },
+  "Order": {
+    "total_duration_hours": 4,
+    "default_gap_hours": 0.5,
+    "activity_thresholds": {
+      "Quote Requested": {
+        "max_duration_hours": 0.25,
+        "max_gap_after_hours": 0.25
+      },
+      "Quote Provided": {
+        "max_duration_hours": 0.25,
+        "max_gap_after_hours": 0.25
+      },
+      "Client Limit Validation": {
+        "max_duration_hours": 0.5,
+        "max_gap_after_hours": 0.5
+      },
+      "Strategy Validation": {
+        "max_duration_hours": 0.5,
+        "max_gap_after_hours": 0.5
+      },
+      "ISDA Master Agreement Check": {
+        "max_duration_hours": 1,
+        "max_gap_after_hours": 0.5
+      },
+      "KYC Refresh Check": {
+        "max_duration_hours": 1,
+        "max_gap_after_hours": 0.5
+      },
+      "Best Execution Validation": {
+        "max_duration_hours": 0.5,
+        "max_gap_after_hours": 0.5
+      },
+      "Exercise Decision": {
+        "max_duration_hours": 0.5,
+        "max_gap_after_hours": 0.5
+      },
+      "Trade Allocation": {
+        "max_duration_hours": 0.5,
+        "max_gap_after_hours": 0.5
+      }
+    }
+  },
+  "Position": {
+    "total_duration_hours": 8,
+    "default_gap_hours": 1,
+    "activity_thresholds": {
+      "Position Reconciliation": {
+        "max_duration_hours": 2,
+        "max_gap_after_hours": 1
+      },
+      "Risk Assessment": {
+        "max_duration_hours": 2,
+        "max_gap_after_hours": 1
+      },
+      "Initial Margin Calculation": {
+        "max_duration_hours": 2,
+        "max_gap_after_hours": 1
+      },
+      "Collateral Management": {
+        "max_duration_hours": 2,
+        "max_gap_after_hours": 1
+      }
+    }
+  },
+  "MarketData": {
+    "total_duration_hours": 2,
+    "default_gap_hours": 0.25,
+    "activity_thresholds": {
+      "Market Data Validation": {
+        "max_duration_hours": 0.25,
+        "max_gap_after_hours": 0.25
+      },
+      "Volatility Surface Analysis": {
+        "max_duration_hours": 0.25,
+        "max_gap_after_hours": 0.25
+      },
+      "Greeks Calculation": {
+        "max_duration_hours": 0.25,
+        "max_gap_after_hours": 0.25
+      },
+      "Premium Calculation": {
+        "max_duration_hours": 0.25,
+        "max_gap_after_hours": 0.25
+      },
+      "CSA Verification": {
+        "max_duration_hours": 0.5,
+        "max_gap_after_hours": 0.25
+      },
+      "Transaction Reporting Check": {
+        "max_duration_hours": 0.25,
+        "max_gap_after_hours": 0.25
+      },
+      "Regulatory Reporting Generation": {
+        "max_duration_hours": 0.25,
+        "max_gap_after_hours": 0.25
+      }
+    }
+  },
+  "Client": {
+    "total_duration_hours": 3,
+    "default_gap_hours": 0.5,
+    "activity_thresholds": {
+      "Credit Check": {
+        "max_duration_hours": 1,
+        "max_gap_after_hours": 0.5
+      },
+      "Settlement Instructions": {
+        "max_duration_hours": 1,
+        "max_gap_after_hours": 0.5
+      },
+      "Premium Settlement": {
+        "max_duration_hours": 1,
+        "max_gap_after_hours": 0.5
+      }
+    }
+  }
+}
