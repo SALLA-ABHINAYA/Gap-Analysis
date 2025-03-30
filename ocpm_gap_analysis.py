@@ -55,9 +55,9 @@ class OCPMAnalyzer:
 
             if not all([neo4j_uri, neo4j_user, neo4j_password]):
                 logger.warning("Environment variables not found, using default test instance")
-                neo4j_uri = "neo4j+s://1bcd5ab7.databases.neo4j.io"
+                neo4j_uri = "bolt://vm0.node-xe3ghzegk55di.canadacentral.cloudapp.azure.com:7687"
                 neo4j_user = "neo4j"
-                neo4j_password = "mfk00LT6txYy1Szvv_lxpfg_UvlG5A5D921WHeWCaX0"
+                neo4j_password = "J993219Sashtra2103"
 
             logger.debug(f"Using Neo4j URI: {neo4j_uri}")
             logger.debug(f"Using Neo4j user: {neo4j_user}")

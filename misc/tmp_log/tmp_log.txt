@@ -1,0 +1,206 @@
+import sys; print('Python %s on %s' % (sys.version, sys.platform))
+C:\samadhi\personal\side_hustle\IRMAI\workspace\pm4py-poc-1\Scripts\python.exe -X pycache_prefix=C:\Users\worka\AppData\Local\JetBrains\PyCharmCE2024.1\cpython-cache "C:/Program Files/JetBrains/PyCharm Community Edition 2024.1.3/plugins/python-ce/helpers/pydev/pydevd.py" --module --multiprocess --qt-support=auto --client 127.0.0.1 --port 42639 --file streamlit run IRMAI.py
+Connected to pydev debugger (build 241.17890.14)
+  You can now view your Streamlit app in your browser.
+  Local URL: http://localhost:8501
+  Network URL: http://192.168.2.16:8501
+Original columns: ['case_id', 'activity', 'timestamp', 'Channel', 'resource', 'Loan Amount', 'Credit Score', 'Property Value', 'Reasons for Rejection', 'Location']
+Input DataFrame Info:
+<class 'pandas.core.frame.DataFrame'>
+RangeIndex: 1696 entries, 0 to 1695
+Data columns (total 10 columns):
+ #   Column                 Non-Null Count  Dtype
+---  ------                 --------------  -----
+ 0   case_id                1696 non-null   object
+ 1   activity               1696 non-null   object
+ 2   timestamp              1696 non-null   object
+ 3   Channel                1696 non-null   object
+ 4   resource               1696 non-null   object
+ 5   Loan Amount            1696 non-null   int64
+ 6   Credit Score           1696 non-null   int64
+ 7   Property Value         1696 non-null   int64
+ 8   Reasons for Rejection  730 non-null    object
+ 9   Location               1696 non-null   object
+dtypes: int64(3), object(7)
+memory usage: 132.6+ KB
+None
+Processed DataFrame Info:
+<class 'pandas.core.frame.DataFrame'>
+RangeIndex: 1696 entries, 0 to 1695
+Data columns (total 10 columns):
+ #   Column                 Non-Null Count  Dtype
+---  ------                 --------------  -----
+ 0   case_id                1696 non-null   object
+ 1   activity               1696 non-null   object
+ 2   timestamp              1696 non-null   datetime64[ns]
+ 3   Channel                1696 non-null   object
+ 4   resource               1696 non-null   object
+ 5   Loan Amount            1696 non-null   int64
+ 6   Credit Score           1696 non-null   int64
+ 7   Property Value         1696 non-null   int64
+ 8   Reasons for Rejection  730 non-null    object
+ 9   Location               1696 non-null   object
+dtypes: datetime64[ns](1), int64(3), object(6)
+memory usage: 132.6+ KB
+None
+Analyzing log file...
+Enhanced prompt saved to ocpm_output/enhanced_prompt_20250330_122208.txt
+Processing chunk 1/2
+Processing chunk 1:
+Chunk size: 1000 rows
+INFO:httpx:HTTP Request: POST https://smartcall.openai.azure.com/openai/deployments/gpt-4o/chat/completions?api-version=2024-02-01 "HTTP/1.1 200 OK"
+Chunk 1 Raw Response:
+Response length: 1656
+First 500 chars of response:
+{
+    "LoanApplication": {
+        "activities": [
+            "Application Submission",
+            "Initial Assessment",
+            "Pre-Approval",
+            "Appraisal Request",
+            "Valuation Accepted",
+            "Valuation Issues",
+            "Additional Info Required",
+            "Underwriting Approved",
+            "Underwriting Rejected",
+            "Final Approval",
+            "Signing of Loan Agreement",
+            "Loan Funding",
+            "Disbursement of Funds",
+Last 500 chars of response:
+ "channel",
+            "location"
+        ],
+        "relationships": [
+            "LoanApplication"
+        ]
+    },
+    "Property": {
+        "activities": [
+            "Appraisal Request",
+            "Valuation Accepted",
+            "Valuation Issues",
+            "Additional Info Required"
+        ],
+        "attributes": [
+            "property_id",
+            "property_value",
+            "location"
+        ],
+        "relationships": [
+            "LoanApplication"
+        ]
+    }
+}
+Successfully parsed JSON for chunk 1
+Validating object type: LoanApplication
+Validating object type: Client
+Validating object type: Property
+Successfully validated chunk 1 with 3 object types
+Processing chunk 2/2
+Processing chunk 2:
+Chunk size: 696 rows
+INFO:httpx:HTTP Request: POST https://smartcall.openai.azure.com/openai/deployments/gpt-4o/chat/completions?api-version=2024-02-01 "HTTP/1.1 200 OK"
+Chunk 2 Raw Response:
+Response length: 1653
+First 500 chars of response:
+{
+    "LoanApplication": {
+        "activities": [
+            "Application Submission",
+            "Initial Assessment",
+            "Pre-Approval",
+            "Appraisal Request",
+            "Valuation Accepted",
+            "Valuation Issues",
+            "Additional Info Required",
+            "Underwriting Approved",
+            "Underwriting Rejected",
+            "Final Approval",
+            "Signing of Loan Agreement",
+            "Loan Funding",
+            "Disbursement of Funds",
+Last 500 chars of response:
+location",
+            "credit_score",
+            "reasons_for_rejection"
+        ],
+        "relationships": [
+            "LoanApplication"
+        ]
+    },
+    "Property": {
+        "activities": [
+            "Appraisal Request",
+            "Valuation Accepted",
+            "Valuation Issues"
+        ],
+        "attributes": [
+            "property_id",
+            "property_value",
+            "location"
+        ],
+        "relationships": [
+            "LoanApplication"
+        ]
+    }
+}
+Successfully parsed JSON for chunk 2
+Validating object type: LoanApplication
+Validating object type: Client
+Validating object type: Property
+Successfully validated chunk 2 with 3 object types
+Successfully saved 3 object types to ocpm_output/output_ocel.json
+INFO:httpx:HTTP Request: POST https://smartcall.openai.azure.com/openai/deployments/gpt-4o/chat/completions?api-version=2024-02-01 "HTTP/1.1 200 OK"
+Using default object type: LoanApplication
+Using default object type: LoanApplication
+Using default object type: LoanApplication
+INFO:Unfair_Advanced_Process_Logs_Analytics:Initializing UnfairOCELAnalyzer with ocpm_output\process_data.json
+INFO:Unfair_Advanced_Process_Logs_Analytics:OpenAI client initialized
+INFO:Unfair_Advanced_Process_Logs_Analytics:Processing OCEL data
+INFO:Unfair_Advanced_Process_Logs_Analytics:Building trace indices
+INFO:Unfair_Advanced_Process_Logs_Analytics:Processing outliers
+ERROR:Unfair_Advanced_Process_Logs_Analytics:Error in duration outlier detection: string indices must be integers, not 'str'
+ERROR:Unfair_Advanced_Process_Logs_Analytics:Traceback (most recent call last):
+  File "C:\samadhi\personal\side_hustle\IRMAI\workspace\Unfair_Advanced_Process_Logs_Analytics.py", line 493, in _detect_duration_outliers
+    expected_pos = self._get_expected_activity_index(activity, obj_type)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\samadhi\personal\side_hustle\IRMAI\workspace\Unfair_Advanced_Process_Logs_Analytics.py", line 551, in _get_expected_activity_index
+    activities = self.process_validator.get_expected_flow().get(object_type, [])
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\samadhi\personal\side_hustle\IRMAI\workspace\Unfair_Advanced_Process_Logs_Analytics.py", line 68, in get_expected_flow
+    return {
+           ^
+  File "C:\samadhi\personal\side_hustle\IRMAI\workspace\Unfair_Advanced_Process_Logs_Analytics.py", line 69, in <dictcomp>
+    obj_type: data['activity']
+              ~~~~^^^^^^^^^^^^
+TypeError: string indices must be integers, not 'str'
+INFO:Unfair_Advanced_Process_Logs_Analytics: events_df Build up [start]
+INFO:Unfair_Advanced_Process_Logs_Analytics:
+                                 event_id           timestamp    case_id                   activity   resource       object_types
+0        MORT_0001_Application Submission 2021-12-26 19:57:00  MORT_0001     Application Submission     WDAVIS  [LoanApplication]
+1            MORT_0001_Initial Assessment 2021-12-31 12:43:00  MORT_0001         Initial Assessment        RPA  [LoanApplication]
+2                  MORT_0001_Pre-Approval 2021-12-31 12:45:00  MORT_0001               Pre-Approval   DJOHNSON  [LoanApplication]
+3             MORT_0001_Appraisal Request 2022-01-03 08:34:00  MORT_0001          Appraisal Request    CMARTIN  [LoanApplication]
+4            MORT_0001_Valuation Accepted 2022-01-19 01:35:00  MORT_0001         Valuation Accepted  PMITCHELL  [LoanApplication]
+5         MORT_0001_Underwriting Approved 2022-01-20 13:51:00  MORT_0001      Underwriting Approved     MBROWN  [LoanApplication]
+6                MORT_0001_Final Approval 2022-01-29 16:27:00  MORT_0001             Final Approval     MALLEN  [LoanApplication]
+7     MORT_0001_Signing of Loan Agreement 2022-02-01 06:08:00  MORT_0001  Signing of Loan Agreement    CMARTIN  [LoanApplication]
+8                  MORT_0001_Loan Funding 2022-02-02 20:26:00  MORT_0001               Loan Funding     ABAKER  [LoanApplication]
+9         MORT_0001_Disbursement of Funds 2022-02-05 03:21:00  MORT_0001      Disbursement of Funds  PMITCHELL  [LoanApplication]
+10                 MORT_0001_Loan Closure 2022-02-09 23:28:00  MORT_0001               Loan Closure    HCOOPER  [LoanApplication]
+11       MORT_0002_Application Submission 2020-05-31 04:41:00  MORT_0002     Application Submission     MALLEN  [LoanApplication]
+12           MORT_0002_Initial Assessment 2020-06-03 08:23:00  MORT_0002         Initial Assessment   DJOHNSON  [LoanApplication]
+13                 MORT_0002_Pre-Approval 2020-06-13 21:26:00  MORT_0002               Pre-Approval    LWILSON  [LoanApplication]
+14            MORT_0002_Appraisal Request 2020-06-15 13:21:00  MORT_0002          Appraisal Request    CMARTIN  [LoanApplication]
+15             MORT_0002_Valuation Issues 2020-06-24 10:35:00  MORT_0002           Valuation Issues     MALLEN  [LoanApplication]
+16           MORT_0002_Valuation Accepted 2020-07-04 00:35:00  MORT_0002         Valuation Accepted     WDAVIS  [LoanApplication]
+17        MORT_0002_Underwriting Approved 2020-07-05 14:11:00  MORT_0002      Underwriting Approved    LWILSON  [LoanApplication]
+18               MORT_0002_Final Approval 2020-07-12 01:20:00  MORT_0002             Final Approval  PMITCHELL  [LoanApplication]
+19    MORT_0002_Signing of Loan Agreement 2020-07-13 15:21:00  MORT_0002  Signing of Loan Agreement  PMITCHELL  [LoanApplication]
+20                 MORT_0002_Loan Funding 2020-07-15 06:01:00  MORT_0002               Loan Funding  PMITCHELL  [LoanApplication]
+21        MORT_0002_Disbursement of Funds 2020-07-17 06:38:00  MORT_0002      Disbursement of Funds     ABAKER  [LoanApplication]
+22                 MORT_0002_Loan Closure 2020-07-21 16:53:00  MORT_0002               Loan Closure     LJONES  [LoanApplication]
+23       MORT_0003_Application Submission 2022-10-20 10:19:00  MORT_0003     Application Submission    CMARTIN  [LoanApplication]
+

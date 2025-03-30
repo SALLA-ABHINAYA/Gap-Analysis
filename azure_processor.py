@@ -472,8 +472,18 @@ def process_log_file(df: pd.DataFrame, chunk_size=1000):
         print("Analyzing log file...")
         log_summary = analyze_log_file(df)
 
-        # Read industry context
-        context_file = 'staging/industry_context/fx_trade_log_context.txt'
+        # Read config.json to determine domain
+        config_path = 'config.json'
+        try:
+            with open(config_path, 'r') as f:
+                config = json.load(f)
+                domain = config.get('domain', 'fx_trade')  # Default to fx_trade if not specified
+        except (FileNotFoundError, json.JSONDecodeError) as e:
+            print(f"Error reading config file: {str(e)}. Using default domain 'fx_trade'")
+            domain = 'fx_trade'
+
+        # Read industry context based on domain
+        context_file = f'staging/industry_context/{domain}/industry_context.txt'
         industry_context = read_industry_context(context_file)
 
         # Create enhanced prompt

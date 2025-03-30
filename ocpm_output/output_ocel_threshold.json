@@ -1,155 +1,219 @@
 {
-  "Trade": {
-    "total_duration_hours": 6,
-    "default_gap_hours": 0.5,
+  "LoanApplication": {
+    "total_duration_hours": 72,
+    "default_gap_hours": 4,
     "activity_thresholds": {
-      "Trade Initiated": {
-        "max_duration_hours": 0.5,
-        "max_gap_after_hours": 0.5
-      },
-      "Trade Execution": {
-        "max_duration_hours": 0.5,
-        "max_gap_after_hours": 0.5
-      },
-      "Trade Validation": {
+      "Application Submission": {
         "max_duration_hours": 1,
-        "max_gap_after_hours": 0.5
+        "max_gap_after_hours": 2
       },
-      "Trade Confirmation": {
-        "max_duration_hours": 0.5,
-        "max_gap_after_hours": 0.5
+      "Initial Assessment": {
+        "max_duration_hours": 4,
+        "max_gap_after_hours": 6
       },
-      "Trade Matching": {
-        "max_duration_hours": 1,
-        "max_gap_after_hours": 0.5
+      "Pre-Approval": {
+        "max_duration_hours": 8,
+        "max_gap_after_hours": 12
       },
-      "Trade Reconciliation": {
-        "max_duration_hours": 1,
-        "max_gap_after_hours": 0.5
+      "Appraisal Request": {
+        "max_duration_hours": 2,
+        "max_gap_after_hours": 4
       },
-      "Final Settlement": {
-        "max_duration_hours": 1.5,
-        "max_gap_after_hours": 1
+      "Valuation Accepted": {
+        "max_duration_hours": 6,
+        "max_gap_after_hours": 8
       },
-      "Trade Transparency Assessment": {
-        "max_duration_hours": 1,
-        "max_gap_after_hours": 0.5
+      "Valuation Issues": {
+        "max_duration_hours": 6,
+        "max_gap_after_hours": 8
+      },
+      "Additional Info Required": {
+        "max_duration_hours": 12,
+        "max_gap_after_hours": 24
+      },
+      "Underwriting Approved": {
+        "max_duration_hours": 8,
+        "max_gap_after_hours": 12
+      },
+      "Underwriting Rejected": {
+        "max_duration_hours": 8,
+        "max_gap_after_hours": 12
+      },
+      "Final Approval": {
+        "max_duration_hours": 4,
+        "max_gap_after_hours": 6
+      },
+      "Signing of Loan Agreement": {
+        "max_duration_hours": 2,
+        "max_gap_after_hours": 4
+      },
+      "Loan Funding": {
+        "max_duration_hours": 6,
+        "max_gap_after_hours": 8
+      },
+      "Disbursement of Funds": {
+        "max_duration_hours": 6,
+        "max_gap_after_hours": 8
+      },
+      "Loan Closure": {
+        "max_duration_hours": 12,
+        "max_gap_after_hours": 24
+      },
+      "Rejected": {
+        "max_duration_hours": 2,
+        "max_gap_after_hours": 4
       }
     }
   },
-  "Order": {
-    "total_duration_hours": 4,
-    "default_gap_hours": 0.5,
+  "Borrower": {
+    "total_duration_hours": 48,
+    "default_gap_hours": 6,
     "activity_thresholds": {
-      "Quote Requested": {
-        "max_duration_hours": 0.25,
-        "max_gap_after_hours": 0.25
-      },
-      "Quote Provided": {
-        "max_duration_hours": 0.25,
-        "max_gap_after_hours": 0.25
-      },
-      "Client Limit Validation": {
-        "max_duration_hours": 0.5,
-        "max_gap_after_hours": 0.5
-      },
-      "Strategy Validation": {
-        "max_duration_hours": 0.5,
-        "max_gap_after_hours": 0.5
-      },
-      "ISDA Master Agreement Check": {
+      "Application Submission": {
         "max_duration_hours": 1,
-        "max_gap_after_hours": 0.5
+        "max_gap_after_hours": 2
       },
-      "KYC Refresh Check": {
-        "max_duration_hours": 1,
-        "max_gap_after_hours": 0.5
+      "Initial Assessment": {
+        "max_duration_hours": 4,
+        "max_gap_after_hours": 6
       },
-      "Best Execution Validation": {
-        "max_duration_hours": 0.5,
-        "max_gap_after_hours": 0.5
+      "Pre-Approval": {
+        "max_duration_hours": 8,
+        "max_gap_after_hours": 12
       },
-      "Exercise Decision": {
-        "max_duration_hours": 0.5,
-        "max_gap_after_hours": 0.5
+      "Rejected": {
+        "max_duration_hours": 2,
+        "max_gap_after_hours": 4
       },
-      "Trade Allocation": {
-        "max_duration_hours": 0.5,
-        "max_gap_after_hours": 0.5
+      "Underwriting Approved": {
+        "max_duration_hours": 8,
+        "max_gap_after_hours": 12
+      },
+      "Underwriting Rejected": {
+        "max_duration_hours": 8,
+        "max_gap_after_hours": 12
+      },
+      "Final Approval": {
+        "max_duration_hours": 4,
+        "max_gap_after_hours": 6
+      },
+      "Signing of Loan Agreement": {
+        "max_duration_hours": 2,
+        "max_gap_after_hours": 4
+      },
+      "Loan Closure": {
+        "max_duration_hours": 12,
+        "max_gap_after_hours": 24
+      },
+      "Additional Info Required": {
+        "max_duration_hours": 12,
+        "max_gap_after_hours": 24
       }
     }
   },
-  "Position": {
-    "total_duration_hours": 8,
-    "default_gap_hours": 1,
+  "Property": {
+    "total_duration_hours": 36,
+    "default_gap_hours": 6,
     "activity_thresholds": {
-      "Position Reconciliation": {
+      "Appraisal Request": {
         "max_duration_hours": 2,
-        "max_gap_after_hours": 1
+        "max_gap_after_hours": 4
       },
-      "Risk Assessment": {
-        "max_duration_hours": 2,
-        "max_gap_after_hours": 1
+      "Valuation Accepted": {
+        "max_duration_hours": 6,
+        "max_gap_after_hours": 8
       },
-      "Initial Margin Calculation": {
-        "max_duration_hours": 2,
-        "max_gap_after_hours": 1
+      "Valuation Issues": {
+        "max_duration_hours": 6,
+        "max_gap_after_hours": 8
       },
-      "Collateral Management": {
-        "max_duration_hours": 2,
-        "max_gap_after_hours": 1
+      "Underwriting Approved": {
+        "max_duration_hours": 8,
+        "max_gap_after_hours": 12
+      },
+      "Underwriting Rejected": {
+        "max_duration_hours": 8,
+        "max_gap_after_hours": 12
+      },
+      "Loan Closure": {
+        "max_duration_hours": 12,
+        "max_gap_after_hours": 24
       }
     }
   },
-  "MarketData": {
-    "total_duration_hours": 2,
-    "default_gap_hours": 0.25,
+  "Appraisal": {
+    "total_duration_hours": 24,
+    "default_gap_hours": 4,
     "activity_thresholds": {
-      "Market Data Validation": {
-        "max_duration_hours": 0.25,
-        "max_gap_after_hours": 0.25
+      "Appraisal Request": {
+        "max_duration_hours": 2,
+        "max_gap_after_hours": 4
       },
-      "Volatility Surface Analysis": {
-        "max_duration_hours": 0.25,
-        "max_gap_after_hours": 0.25
+      "Valuation Accepted": {
+        "max_duration_hours": 6,
+        "max_gap_after_hours": 8
       },
-      "Greeks Calculation": {
-        "max_duration_hours": 0.25,
-        "max_gap_after_hours": 0.25
+      "Valuation Issues": {
+        "max_duration_hours": 6,
+        "max_gap_after_hours": 8
       },
-      "Premium Calculation": {
-        "max_duration_hours": 0.25,
-        "max_gap_after_hours": 0.25
-      },
-      "CSA Verification": {
-        "max_duration_hours": 0.5,
-        "max_gap_after_hours": 0.25
-      },
-      "Transaction Reporting Check": {
-        "max_duration_hours": 0.25,
-        "max_gap_after_hours": 0.25
-      },
-      "Regulatory Reporting Generation": {
-        "max_duration_hours": 0.25,
-        "max_gap_after_hours": 0.25
+      "Additional Info Required": {
+        "max_duration_hours": 12,
+        "max_gap_after_hours": 24
       }
     }
   },
-  "Client": {
-    "total_duration_hours": 3,
-    "default_gap_hours": 0.5,
+  "Underwriting": {
+    "total_duration_hours": 48,
+    "default_gap_hours": 6,
     "activity_thresholds": {
-      "Credit Check": {
-        "max_duration_hours": 1,
-        "max_gap_after_hours": 0.5
+      "Underwriting Approved": {
+        "max_duration_hours": 8,
+        "max_gap_after_hours": 12
       },
-      "Settlement Instructions": {
-        "max_duration_hours": 1,
-        "max_gap_after_hours": 0.5
+      "Underwriting Rejected": {
+        "max_duration_hours": 8,
+        "max_gap_after_hours": 12
       },
-      "Premium Settlement": {
-        "max_duration_hours": 1,
-        "max_gap_after_hours": 0.5
+      "Additional Info Required": {
+        "max_duration_hours": 12,
+        "max_gap_after_hours": 24
+      }
+    }
+  },
+  "LoanApproval": {
+    "total_duration_hours": 24,
+    "default_gap_hours": 4,
+    "activity_thresholds": {
+      "Final Approval": {
+        "max_duration_hours": 4,
+        "max_gap_after_hours": 6
+      },
+      "Signing of Loan Agreement": {
+        "max_duration_hours": 2,
+        "max_gap_after_hours": 4
+      }
+    }
+  },
+  "Closing": {
+    "total_duration_hours": 48,
+    "default_gap_hours": 6,
+    "activity_thresholds": {
+      "Loan Funding": {
+        "max_duration_hours": 6,
+        "max_gap_after_hours": 8
+      },
+      "Disbursement of Funds": {
+        "max_duration_hours": 6,
+        "max_gap_after_hours": 8
+      },
+      "Loan Closure": {
+        "max_duration_hours": 12,
+        "max_gap_after_hours": 24
+      },
+      "Signing of Loan Agreement": {
+        "max_duration_hours": 2,
+        "max_gap_after_hours": 4
       }
     }
   }
