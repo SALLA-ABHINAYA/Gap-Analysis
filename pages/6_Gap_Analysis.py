@@ -435,6 +435,16 @@ class GapAnalysisUI:
         """Render the gap analysis UI"""
         st.title("OCPM Gap Analysis")
 
+        # Add guidelines file expander at the top
+        try:
+            with open(self.guidelines_file, 'r') as f:
+                guidelines_content = f.read()
+
+            with st.expander(f"Guidelines For Gap Analysis"):
+                st.text_area("Guidelines Content", guidelines_content, height=300, disabled=True)
+        except Exception as e:
+            st.warning(f"Could not load guidelines file: {str(e)}")
+
         # Add run analysis button
         if st.button("Run Gap Analysis"):
             with st.spinner("Running gap analysis..."):

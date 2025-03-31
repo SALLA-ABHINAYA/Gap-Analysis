@@ -27723,15 +27723,17 @@
       "ocel:attributes": {
         "activity": "Application Submission",
         "attributes": [
+          "assets",
           "borrower_id",
+          "case_id",
           "channel",
           "contact_information",
           "credit_score",
           "debt_to_income_ratio",
           "income_details",
+          "liabilities",
           "name",
-          "reasons_for_rejection",
-          "resource"
+          "reasons_for_rejection"
         ]
       }
     },
@@ -27741,15 +27743,17 @@
       "ocel:attributes": {
         "activity": "Initial Assessment",
         "attributes": [
+          "assets",
           "borrower_id",
+          "case_id",
           "channel",
           "contact_information",
           "credit_score",
           "debt_to_income_ratio",
           "income_details",
+          "liabilities",
           "name",
-          "reasons_for_rejection",
-          "resource"
+          "reasons_for_rejection"
         ]
       }
     },
@@ -27759,33 +27763,17 @@
       "ocel:attributes": {
         "activity": "Pre-Approval",
         "attributes": [
+          "assets",
           "borrower_id",
+          "case_id",
           "channel",
           "contact_information",
           "credit_score",
           "debt_to_income_ratio",
           "income_details",
+          "liabilities",
           "name",
-          "reasons_for_rejection",
-          "resource"
-        ]
-      }
-    },
-    {
-      "ocel:id": "Borrower_Rejected",
-      "ocel:type": "Borrower",
-      "ocel:attributes": {
-        "activity": "Rejected",
-        "attributes": [
-          "borrower_id",
-          "channel",
-          "contact_information",
-          "credit_score",
-          "debt_to_income_ratio",
-          "income_details",
-          "name",
-          "reasons_for_rejection",
-          "resource"
+          "reasons_for_rejection"
         ]
       }
     },
@@ -27795,15 +27783,17 @@
       "ocel:attributes": {
         "activity": "Underwriting Approved",
         "attributes": [
+          "assets",
           "borrower_id",
+          "case_id",
           "channel",
           "contact_information",
           "credit_score",
           "debt_to_income_ratio",
           "income_details",
+          "liabilities",
           "name",
-          "reasons_for_rejection",
-          "resource"
+          "reasons_for_rejection"
         ]
       }
     },
@@ -27813,15 +27803,17 @@
       "ocel:attributes": {
         "activity": "Underwriting Rejected",
         "attributes": [
+          "assets",
           "borrower_id",
+          "case_id",
           "channel",
           "contact_information",
           "credit_score",
           "debt_to_income_ratio",
           "income_details",
+          "liabilities",
           "name",
-          "reasons_for_rejection",
-          "resource"
+          "reasons_for_rejection"
         ]
       }
     },
@@ -27831,51 +27823,37 @@
       "ocel:attributes": {
         "activity": "Final Approval",
         "attributes": [
+          "assets",
           "borrower_id",
+          "case_id",
           "channel",
           "contact_information",
           "credit_score",
           "debt_to_income_ratio",
           "income_details",
+          "liabilities",
           "name",
-          "reasons_for_rejection",
-          "resource"
+          "reasons_for_rejection"
         ]
       }
     },
     {
-      "ocel:id": "Borrower_Signing of Loan Agreement",
+      "ocel:id": "Borrower_Rejected",
       "ocel:type": "Borrower",
       "ocel:attributes": {
-        "activity": "Signing of Loan Agreement",
+        "activity": "Rejected",
         "attributes": [
+          "assets",
           "borrower_id",
+          "case_id",
           "channel",
           "contact_information",
           "credit_score",
           "debt_to_income_ratio",
           "income_details",
+          "liabilities",
           "name",
-          "reasons_for_rejection",
-          "resource"
-        ]
-      }
-    },
-    {
-      "ocel:id": "Borrower_Loan Closure",
-      "ocel:type": "Borrower",
-      "ocel:attributes": {
-        "activity": "Loan Closure",
-        "attributes": [
-          "borrower_id",
-          "channel",
-          "contact_information",
-          "credit_score",
-          "debt_to_income_ratio",
-          "income_details",
-          "name",
-          "reasons_for_rejection",
-          "resource"
+          "reasons_for_rejection"
         ]
       }
     },
@@ -27885,15 +27863,17 @@
       "ocel:attributes": {
         "activity": "Additional Info Required",
         "attributes": [
+          "assets",
           "borrower_id",
+          "case_id",
           "channel",
           "contact_information",
           "credit_score",
           "debt_to_income_ratio",
           "income_details",
+          "liabilities",
           "name",
-          "reasons_for_rejection",
-          "resource"
+          "reasons_for_rejection"
         ]
       }
     },
@@ -27904,12 +27884,16 @@
         "activity": "Appraisal Request",
         "attributes": [
           "address",
-          "insurance_details",
+          "age",
+          "case_id",
+          "condition",
           "location",
+          "market_value",
           "property_id",
           "property_type",
           "property_value",
-          "tax_assessment"
+          "sale_price",
+          "size"
         ]
       }
     },
@@ -27920,12 +27904,16 @@
         "activity": "Valuation Accepted",
         "attributes": [
           "address",
-          "insurance_details",
+          "age",
+          "case_id",
+          "condition",
           "location",
+          "market_value",
           "property_id",
           "property_type",
           "property_value",
-          "tax_assessment"
+          "sale_price",
+          "size"
         ]
       }
     },
@@ -27936,60 +27924,36 @@
         "activity": "Valuation Issues",
         "attributes": [
           "address",
-          "insurance_details",
+          "age",
+          "case_id",
+          "condition",
           "location",
+          "market_value",
           "property_id",
           "property_type",
           "property_value",
-          "tax_assessment"
+          "sale_price",
+          "size"
         ]
       }
     },
     {
-      "ocel:id": "Property_Underwriting Approved",
+      "ocel:id": "Property_Additional Info Required",
       "ocel:type": "Property",
       "ocel:attributes": {
-        "activity": "Underwriting Approved",
+        "activity": "Additional Info Required",
         "attributes": [
           "address",
-          "insurance_details",
+          "age",
+          "case_id",
+          "condition",
           "location",
+          "market_value",
           "property_id",
           "property_type",
           "property_value",
-          "tax_assessment"
-        ]
-      }
-    },
-    {
-      "ocel:id": "Property_Underwriting Rejected",
-      "ocel:type": "Property",
-      "ocel:attributes": {
-        "activity": "Underwriting Rejected",
-        "attributes": [
-          "address",
-          "insurance_details",
-          "location",
-          "property_id",
-          "property_type",
-          "property_value",
-          "tax_assessment"
-        ]
-      }
-    },
-    {
-      "ocel:id": "Property_Loan Closure",
-      "ocel:type": "Property",
-      "ocel:attributes": {
-        "activity": "Loan Closure",
-        "attributes": [
-          "address",
-          "insurance_details",
-          "location",
-          "property_id",
-          "property_type",
-          "property_value",
-          "tax_assessment"
+          "sale_price",
+          "size"
         ]
       }
     },
@@ -28004,7 +27968,7 @@
           "appraised_value",
           "appraiser_details",
           "case_id",
-          "channel",
+          "comparable_property_analysis",
           "location",
           "property_condition",
           "property_value"
@@ -28022,7 +27986,7 @@
           "appraised_value",
           "appraiser_details",
           "case_id",
-          "channel",
+          "comparable_property_analysis",
           "location",
           "property_condition",
           "property_value"
@@ -28040,7 +28004,7 @@
           "appraised_value",
           "appraiser_details",
           "case_id",
-          "channel",
+          "comparable_property_analysis",
           "location",
           "property_condition",
           "property_value"
@@ -28058,7 +28022,7 @@
           "appraised_value",
           "appraiser_details",
           "case_id",
-          "channel",
+          "comparable_property_analysis",
           "location",
           "property_condition",
           "property_value"
@@ -28072,14 +28036,15 @@
         "activity": "Underwriting Approved",
         "attributes": [
           "case_id",
-          "channel",
+          "completion_date",
           "conditions_for_approval",
           "credit_score",
+          "decision",
           "loan_amount",
-          "location",
           "property_value",
           "reasons_for_rejection",
           "risk_assessment_score",
+          "start_date",
           "underwriter_id",
           "underwriting_id"
         ]
@@ -28092,14 +28057,15 @@
         "activity": "Underwriting Rejected",
         "attributes": [
           "case_id",
-          "channel",
+          "completion_date",
           "conditions_for_approval",
           "credit_score",
+          "decision",
           "loan_amount",
-          "location",
           "property_value",
           "reasons_for_rejection",
           "risk_assessment_score",
+          "start_date",
           "underwriter_id",
           "underwriting_id"
         ]
@@ -28112,14 +28078,15 @@
         "activity": "Additional Info Required",
         "attributes": [
           "case_id",
-          "channel",
+          "completion_date",
           "conditions_for_approval",
           "credit_score",
+          "decision",
           "loan_amount",
-          "location",
           "property_value",
           "reasons_for_rejection",
           "risk_assessment_score",
+          "start_date",
           "underwriter_id",
           "underwriting_id"
         ]
@@ -28131,33 +28098,53 @@
       "ocel:attributes": {
         "activity": "Final Approval",
         "attributes": [
-          "approval_conditions_met",
           "approval_date",
           "approval_id",
+          "approval_status",
           "case_id",
-          "channel",
+          "conditions_met",
           "credit_score",
           "loan_amount",
           "loan_terms",
-          "location",
-          "property_value"
+          "property_value",
+          "reasons_for_rejection"
         ]
       }
     },
     {
-      "ocel:id": "LoanApproval_Signing of Loan Agreement",
+      "ocel:id": "LoanApproval_Rejected",
       "ocel:type": "LoanApproval",
       "ocel:attributes": {
-        "activity": "Signing of Loan Agreement",
+        "activity": "Rejected",
         "attributes": [
-          "approval_conditions_met",
           "approval_date",
           "approval_id",
+          "approval_status",
           "case_id",
-          "channel",
+          "conditions_met",
           "credit_score",
           "loan_amount",
           "loan_terms",
+          "property_value",
+          "reasons_for_rejection"
+        ]
+      }
+    },
+    {
+      "ocel:id": "Closing_Signing of Loan Agreement",
+      "ocel:type": "Closing",
+      "ocel:attributes": {
+        "activity": "Signing of Loan Agreement",
+        "attributes": [
+          "case_id",
+          "closing_agent_details",
+          "closing_date",
+          "closing_id",
+          "closing_location",
+          "credit_score",
+          "documents_signed",
+          "funds_disbursed",
+          "loan_amount",
           "location",
           "property_value"
         ]
@@ -28170,11 +28157,12 @@
         "activity": "Loan Funding",
         "attributes": [
           "case_id",
-          "channel",
           "closing_agent_details",
           "closing_date",
           "closing_id",
+          "closing_location",
           "credit_score",
+          "documents_signed",
           "funds_disbursed",
           "loan_amount",
           "location",
@@ -28189,11 +28177,12 @@
         "activity": "Disbursement of Funds",
         "attributes": [
           "case_id",
-          "channel",
           "closing_agent_details",
           "closing_date",
           "closing_id",
+          "closing_location",
           "credit_score",
+          "documents_signed",
           "funds_disbursed",
           "loan_amount",
           "location",
@@ -28208,30 +28197,12 @@
         "activity": "Loan Closure",
         "attributes": [
           "case_id",
-          "channel",
           "closing_agent_details",
           "closing_date",
           "closing_id",
+          "closing_location",
           "credit_score",
-          "funds_disbursed",
-          "loan_amount",
-          "location",
-          "property_value"
-        ]
-      }
-    },
-    {
-      "ocel:id": "Closing_Signing of Loan Agreement",
-      "ocel:type": "Closing",
-      "ocel:attributes": {
-        "activity": "Signing of Loan Agreement",
-        "attributes": [
-          "case_id",
-          "channel",
-          "closing_agent_details",
-          "closing_date",
-          "closing_id",
-          "credit_score",
+          "documents_signed",
           "funds_disbursed",
           "loan_amount",
           "location",

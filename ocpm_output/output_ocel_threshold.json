@@ -1,6 +1,72 @@
 {
   "LoanApplication": {
     "total_duration_hours": 72,
+    "default_gap_hours": 6,
+    "activity_thresholds": {
+      "Application Submission": {
+        "max_duration_hours": 1,
+        "max_gap_after_hours": 2
+      },
+      "Initial Assessment": {
+        "max_duration_hours": 4,
+        "max_gap_after_hours": 6
+      },
+      "Pre-Approval": {
+        "max_duration_hours": 8,
+        "max_gap_after_hours": 6
+      },
+      "Appraisal Request": {
+        "max_duration_hours": 2,
+        "max_gap_after_hours": 4
+      },
+      "Valuation Accepted": {
+        "max_duration_hours": 6,
+        "max_gap_after_hours": 4
+      },
+      "Valuation Issues": {
+        "max_duration_hours": 6,
+        "max_gap_after_hours": 4
+      },
+      "Additional Info Required": {
+        "max_duration_hours": 12,
+        "max_gap_after_hours": 6
+      },
+      "Underwriting Approved": {
+        "max_duration_hours": 8,
+        "max_gap_after_hours": 6
+      },
+      "Underwriting Rejected": {
+        "max_duration_hours": 8,
+        "max_gap_after_hours": 6
+      },
+      "Final Approval": {
+        "max_duration_hours": 4,
+        "max_gap_after_hours": 2
+      },
+      "Signing of Loan Agreement": {
+        "max_duration_hours": 2,
+        "max_gap_after_hours": 4
+      },
+      "Loan Funding": {
+        "max_duration_hours": 6,
+        "max_gap_after_hours": 4
+      },
+      "Disbursement of Funds": {
+        "max_duration_hours": 8,
+        "max_gap_after_hours": 6
+      },
+      "Loan Closure": {
+        "max_duration_hours": 12,
+        "max_gap_after_hours": 6
+      },
+      "Rejected": {
+        "max_duration_hours": 2,
+        "max_gap_after_hours": 2
+      }
+    }
+  },
+  "Borrower": {
+    "total_duration_hours": 48,
     "default_gap_hours": 4,
     "activity_thresholds": {
       "Application Submission": {
@@ -9,111 +75,37 @@
       },
       "Initial Assessment": {
         "max_duration_hours": 4,
-        "max_gap_after_hours": 6
-      },
-      "Pre-Approval": {
-        "max_duration_hours": 8,
-        "max_gap_after_hours": 12
-      },
-      "Appraisal Request": {
-        "max_duration_hours": 2,
         "max_gap_after_hours": 4
       },
-      "Valuation Accepted": {
+      "Pre-Approval": {
         "max_duration_hours": 6,
-        "max_gap_after_hours": 8
-      },
-      "Valuation Issues": {
-        "max_duration_hours": 6,
-        "max_gap_after_hours": 8
-      },
-      "Additional Info Required": {
-        "max_duration_hours": 12,
-        "max_gap_after_hours": 24
+        "max_gap_after_hours": 4
       },
       "Underwriting Approved": {
         "max_duration_hours": 8,
-        "max_gap_after_hours": 12
+        "max_gap_after_hours": 4
       },
       "Underwriting Rejected": {
         "max_duration_hours": 8,
-        "max_gap_after_hours": 12
+        "max_gap_after_hours": 4
       },
       "Final Approval": {
         "max_duration_hours": 4,
-        "max_gap_after_hours": 6
-      },
-      "Signing of Loan Agreement": {
-        "max_duration_hours": 2,
-        "max_gap_after_hours": 4
-      },
-      "Loan Funding": {
-        "max_duration_hours": 6,
-        "max_gap_after_hours": 8
-      },
-      "Disbursement of Funds": {
-        "max_duration_hours": 6,
-        "max_gap_after_hours": 8
-      },
-      "Loan Closure": {
-        "max_duration_hours": 12,
-        "max_gap_after_hours": 24
-      },
-      "Rejected": {
-        "max_duration_hours": 2,
-        "max_gap_after_hours": 4
-      }
-    }
-  },
-  "Borrower": {
-    "total_duration_hours": 48,
-    "default_gap_hours": 6,
-    "activity_thresholds": {
-      "Application Submission": {
-        "max_duration_hours": 1,
         "max_gap_after_hours": 2
       },
-      "Initial Assessment": {
-        "max_duration_hours": 4,
-        "max_gap_after_hours": 6
-      },
-      "Pre-Approval": {
-        "max_duration_hours": 8,
-        "max_gap_after_hours": 12
-      },
       "Rejected": {
         "max_duration_hours": 2,
-        "max_gap_after_hours": 4
-      },
-      "Underwriting Approved": {
-        "max_duration_hours": 8,
-        "max_gap_after_hours": 12
-      },
-      "Underwriting Rejected": {
-        "max_duration_hours": 8,
-        "max_gap_after_hours": 12
-      },
-      "Final Approval": {
-        "max_duration_hours": 4,
-        "max_gap_after_hours": 6
-      },
-      "Signing of Loan Agreement": {
-        "max_duration_hours": 2,
-        "max_gap_after_hours": 4
-      },
-      "Loan Closure": {
-        "max_duration_hours": 12,
-        "max_gap_after_hours": 24
+        "max_gap_after_hours": 2
       },
       "Additional Info Required": {
         "max_duration_hours": 12,
-        "max_gap_after_hours": 24
+        "max_gap_after_hours": 6
       }
     }
   },
   "Property": {
-    "total_duration_hours": 36,
-    "default_gap_hours": 6,
+    "total_duration_hours": 24,
+    "default_gap_hours": 4,
     "activity_thresholds": {
       "Appraisal Request": {
         "max_duration_hours": 2,
@@ -121,23 +113,15 @@
       },
       "Valuation Accepted": {
         "max_duration_hours": 6,
-        "max_gap_after_hours": 8
+        "max_gap_after_hours": 4
       },
       "Valuation Issues": {
         "max_duration_hours": 6,
-        "max_gap_after_hours": 8
+        "max_gap_after_hours": 4
       },
-      "Underwriting Approved": {
-        "max_duration_hours": 8,
-        "max_gap_after_hours": 12
-      },
-      "Underwriting Rejected": {
-        "max_duration_hours": 8,
-        "max_gap_after_hours": 12
-      },
-      "Loan Closure": {
-        "max_duration_hours": 12,
-        "max_gap_after_hours": 24
+      "Additional Info Required": {
+        "max_duration_hours": 10,
+        "max_gap_after_hours": 6
       }
     }
   },
@@ -151,15 +135,15 @@
       },
       "Valuation Accepted": {
         "max_duration_hours": 6,
-        "max_gap_after_hours": 8
+        "max_gap_after_hours": 4
       },
       "Valuation Issues": {
         "max_duration_hours": 6,
-        "max_gap_after_hours": 8
+        "max_gap_after_hours": 4
       },
       "Additional Info Required": {
-        "max_duration_hours": 12,
-        "max_gap_after_hours": 24
+        "max_duration_hours": 10,
+        "max_gap_after_hours": 6
       }
     }
   },
@@ -169,15 +153,15 @@
     "activity_thresholds": {
       "Underwriting Approved": {
         "max_duration_hours": 8,
-        "max_gap_after_hours": 12
+        "max_gap_after_hours": 6
       },
       "Underwriting Rejected": {
         "max_duration_hours": 8,
-        "max_gap_after_hours": 12
+        "max_gap_after_hours": 6
       },
       "Additional Info Required": {
         "max_duration_hours": 12,
-        "max_gap_after_hours": 24
+        "max_gap_after_hours": 6
       }
     }
   },
@@ -187,11 +171,11 @@
     "activity_thresholds": {
       "Final Approval": {
         "max_duration_hours": 4,
-        "max_gap_after_hours": 6
+        "max_gap_after_hours": 2
       },
-      "Signing of Loan Agreement": {
+      "Rejected": {
         "max_duration_hours": 2,
-        "max_gap_after_hours": 4
+        "max_gap_after_hours": 2
       }
     }
   },
@@ -199,21 +183,21 @@
     "total_duration_hours": 48,
     "default_gap_hours": 6,
     "activity_thresholds": {
-      "Loan Funding": {
-        "max_duration_hours": 6,
-        "max_gap_after_hours": 8
-      },
-      "Disbursement of Funds": {
-        "max_duration_hours": 6,
-        "max_gap_after_hours": 8
-      },
-      "Loan Closure": {
-        "max_duration_hours": 12,
-        "max_gap_after_hours": 24
-      },
       "Signing of Loan Agreement": {
         "max_duration_hours": 2,
         "max_gap_after_hours": 4
+      },
+      "Loan Funding": {
+        "max_duration_hours": 6,
+        "max_gap_after_hours": 4
+      },
+      "Disbursement of Funds": {
+        "max_duration_hours": 8,
+        "max_gap_after_hours": 6
+      },
+      "Loan Closure": {
+        "max_duration_hours": 12,
+        "max_gap_after_hours": 6
       }
     }
   }
