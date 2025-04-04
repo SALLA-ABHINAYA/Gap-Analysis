@@ -1,0 +1,13 @@
+replicaCount: 2
+
+image:
+  repository: gapanalysisacr.azurecr.io/gapanalysis
+  tag: v1
+  pullPolicy: IfNotPresent
+
+service:
+  name: gap-analysis-service
+  type: LoadBalancer
+  port: 8000
+
+namespace: gap-analysis
